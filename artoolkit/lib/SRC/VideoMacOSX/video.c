@@ -1255,7 +1255,7 @@ AR2VideoParamT *ar2VideoOpen(char *config)
                 }
             } else if (strncmp(a, "-grabber=", 9) == 0) {
                 sscanf(a, "%s", line);
-                if (sscanf(&line[8], "%d", &grabber) == 0) {
+                if (sscanf(&line[9], "%d", &grabber) == 0) {
                     ar2VideoDispOption();
                     return (NULL);
                 }
