@@ -29,7 +29,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/DEBUG"
-				AdditionalDependencies="libARd.lib libARgsubd.lib libARvideod.lib"
+				AdditionalDependencies="libARd.lib libARgsub_lited.lib libARvideod.lib"
 				OutputFile="$(ProjectDir)/../../bin/$(ProjectName)d.exe"
 				AdditionalLibraryDirectories="&quot;$(ProjectDir)/../../lib&quot;"
 				GenerateDebugInformation="TRUE"/>
@@ -76,7 +76,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libAR.lib libARgsub.lib libARvideo.lib"
+				AdditionalDependencies="libAR.lib libARgsub_lite.lib libARvideo.lib"
 				OutputFile="$(ProjectDir)/../../bin/$(ProjectName).exe"
 				AdditionalLibraryDirectories="&quot;$(ProjectDir)/../../lib&quot;"/>
 			<Tool

@@ -3,7 +3,7 @@ LIB_DIR= ../../lib
 BIN_DIR= ../../bin
 
 LDFLAG=@LDFLAG@ -L$(LIB_DIR)
-LIBS= -lARgsub -lARvideo -lAR @LIBS@
+LIBS= -lARgsub_lite -lARvideo -lAR @LIBS@
 CFLAG= @CFLAG@ -I$(INC_DIR)
 
 OBJS =
