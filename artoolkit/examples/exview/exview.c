@@ -24,7 +24,7 @@
 // modified by Thomas Pintaric, Vienna University of Technology
 
 #ifdef _WIN32
-char    *vconf = "showDlg"; // see video.h for a list of supported parameters
+char    *vconf = "showDlg,flipV"; // see video.h for a list of supported parameters
 #else
 char    *vconf = "";
 #endif

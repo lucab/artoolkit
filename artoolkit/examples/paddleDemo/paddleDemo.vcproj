@@ -2,9 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="7.10"
-	Name="simpleLite"
-	ProjectGUID="{A1BB0AD4-A5E7-4C0F-9FE8-D584F6B2FBF2}"
-	Keyword="Win32Proj">
+	Name="paddleDemo"
+	ProjectGUID="{A363668A-A9B7-4CB4-89C6-67911CE040E0}">
 	<Platforms>
 		<Platform
 			Name="Win32"/>
@@ -14,13 +13,12 @@
 			Name="Debug|Win32"
 			OutputDirectory="Debug"
 			IntermediateDirectory="Debug"
-			ConfigurationType="1"
-			CharacterSet="0">
+			ConfigurationType="1">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="$(ProjectDir)/../../include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
+				PreprocessorDefinitions="WIN32;_DEBUG"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				BrowseInformation="1"
@@ -30,14 +28,17 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libARd.lib libARgsub_lited.lib libARvideod.lib"
+				AdditionalOptions="/DEBUG"
+				AdditionalDependencies="libARd.lib libARMultid.lib libARgsubd.lib libARvideod.lib"
 				OutputFile="$(ProjectDir)/../../bin/$(ProjectName)d.exe"
-				LinkIncremental="0"
 				AdditionalLibraryDirectories="&quot;$(ProjectDir)/../../lib&quot;"
-				GenerateDebugInformation="TRUE"
-				TargetMachine="0"/>
+				GenerateDebugInformation="TRUE"/>
 			<Tool
-				Name="VCMIDLTool"/>
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
 			<Tool
@@ -62,24 +63,28 @@
 			OutputDirectory="Release"
 			IntermediateDirectory="Release"
 			ConfigurationType="1"
-			CharacterSet="0">
+			WholeProgramOptimization="TRUE">
 			<Tool
 				Name="VCCLCompilerTool"
 				GlobalOptimizations="TRUE"
 				InlineFunctionExpansion="1"
 				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="$(ProjectDir)/../../include"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
+				PreprocessorDefinitions="WIN32;NDEBUG"
 				RuntimeLibrary="0"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libAR.lib libARgsub_lite.lib libARvideo.lib"
+				AdditionalDependencies="libAR.lib libARMulti.lib libARgsub.lib libARvideo.lib"
 				OutputFile="$(ProjectDir)/../../bin/$(ProjectName).exe"
 				AdditionalLibraryDirectories="&quot;$(ProjectDir)/../../lib&quot;"/>
 			<Tool
-				Name="VCMIDLTool"/>
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
 			<Tool
@@ -103,14 +108,27 @@
 	<References>
 	</References>
 	<Files>
-		<Filter
-			Name="Source Files"
-			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
-			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
-			<File
-				RelativePath="simpleLite.c">
-			</File>
-		</Filter>
+		<File
+			RelativePath="paddleDemo.c">
+		</File>
+		<File
+			RelativePath="paddle.c">
+		</File>
+		<File
+			RelativePath="paddle.h">
+		</File>
+		<File
+			RelativePath="command_sub.c">
+		</File>
+		<File
+			RelativePath="command_sub.h">
+		</File>
+		<File
+			RelativePath="util.c">
+		</File>
+		<File
+			RelativePath="util.h">
+		</File>
 	</Files>
 	<Globals>
 	</Globals>
