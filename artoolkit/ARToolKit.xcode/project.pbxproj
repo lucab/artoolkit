@@ -61,6 +61,7 @@
 				4A3F1626064A0D910042B0D7,
 				4A5F9A47064B4EF400525EC0,
 				4A5F9B6F064B501700525EC0,
+				4A488AC90751CC26003D46BE,
 				4A2244E30659A2F40014DA8E,
 				4A5F9BDD064B51FB00525EC0,
 				4A5F9C36064B52E700525EC0,
@@ -78,6 +79,7 @@
 		08FB7794FE84155DC02AAC07 = {
 			children = (
 				4AB5532806A4BA0C00FAEE19,
+				4A0D818507526B1B00CB0B40,
 				4AB5532706A4BA0C00FAEE19,
 				4AAB8CEC0728BCF500708844,
 				4AAB8CED0728BCF500708844,
@@ -109,6 +111,14 @@
 //4A2
 //4A3
 //4A4
+		4A0D818507526B1B00CB0B40 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			path = ChangeLog.txt;
+			refType = 4;
+			sourceTree = "<group>";
+		};
 		4A2244930659A20D0014DA8E = {
 			children = (
 				4AAB8C900728942D00708844,
@@ -1122,8 +1132,6 @@
 			buildSettings = {
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = /;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = include;
@@ -2966,6 +2974,168 @@
 			refType = 4;
 			sourceTree = "<group>";
 		};
+		4A488AC70751CC26003D46BE = {
+			buildActionMask = 2147483647;
+			files = (
+				4A488ACE0751CCB3003D46BE,
+			);
+			isa = PBXSourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4A488AC80751CC26003D46BE = {
+			buildActionMask = 2147483647;
+			files = (
+				4A488BA50751CD0E003D46BE,
+				4A488BA60751CD0E003D46BE,
+				4A488BA70751CD0E003D46BE,
+				4A488BA80751CD0E003D46BE,
+				4A488ACF0751CCDA003D46BE,
+				4A488AD00751CCDB003D46BE,
+				4A488AD10751CCDB003D46BE,
+				4A488BA40751CCFB003D46BE,
+			);
+			isa = PBXFrameworksBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4A488AC90751CC26003D46BE = {
+			buildPhases = (
+				4A488AC70751CC26003D46BE,
+				4A488AC80751CC26003D46BE,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				DEPLOYMENT_LOCATION = YES;
+				DSTROOT = /;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				HEADER_SEARCH_PATHS = include;
+				INSTALL_PATH = "$(SRCROOT)/bin";
+				LIBRARY_SEARCH_PATHS = "lib /Users/phil/Documents/Development/Projects/ARToolKit/artoolkit/lib";
+				PRODUCT_NAME = rangeTest;
+				WARNING_CFLAGS = "-Wmost";
+			};
+			dependencies = (
+				4A488BAA0751CD59003D46BE,
+				4A488BAC0751CD59003D46BE,
+				4A488BAE0751CD59003D46BE,
+			);
+			isa = PBXNativeTarget;
+			name = rangeTest;
+			productName = rangeTest;
+			productReference = 4A488ACA0751CC26003D46BE;
+			productType = "com.apple.product-type.tool";
+		};
+		4A488ACA0751CC26003D46BE = {
+			explicitFileType = "compiled.mach-o.executable";
+			includeInIndex = 0;
+			isa = PBXFileReference;
+			path = rangeTest;
+			refType = 3;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		4A488ACC0751CC8E003D46BE = {
+			containerPortal = 08FB7793FE84155DC02AAC07;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 4A488AC90751CC26003D46BE;
+			remoteInfo = rangeTest;
+		};
+		4A488ACD0751CC8E003D46BE = {
+			isa = PBXTargetDependency;
+			target = 4A488AC90751CC26003D46BE;
+			targetProxy = 4A488ACC0751CC8E003D46BE;
+		};
+		4A488ACE0751CCB3003D46BE = {
+			fileRef = 4AC3C0B907518C7E0073D2C6;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A488ACF0751CCDA003D46BE = {
+			fileRef = 4A427D120484329800B56093;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A488AD00751CCDB003D46BE = {
+			fileRef = 4A427D130484329800B56093;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A488AD10751CCDB003D46BE = {
+			fileRef = 4A427D160484329800B56093;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A488BA40751CCFB003D46BE = {
+			fileRef = 4A3F1601064A0CE40042B0D7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A488BA50751CD0E003D46BE = {
+			fileRef = 4A3F167F064A0E270042B0D7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A488BA60751CD0E003D46BE = {
+			fileRef = 4A3F14FC064A0C510042B0D7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A488BA70751CD0E003D46BE = {
+			fileRef = 4A3F14FD064A0C510042B0D7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A488BA80751CD0E003D46BE = {
+			fileRef = 4A3F14FE064A0C510042B0D7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A488BA90751CD59003D46BE = {
+			containerPortal = 08FB7793FE84155DC02AAC07;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 4A3F11430649F7BA0042B0D7;
+			remoteInfo = AR;
+		};
+		4A488BAA0751CD59003D46BE = {
+			isa = PBXTargetDependency;
+			target = 4A3F11430649F7BA0042B0D7;
+			targetProxy = 4A488BA90751CD59003D46BE;
+		};
+		4A488BAB0751CD59003D46BE = {
+			containerPortal = 08FB7793FE84155DC02AAC07;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 4A3F1305064A02100042B0D7;
+			remoteInfo = ARvideo;
+		};
+		4A488BAC0751CD59003D46BE = {
+			isa = PBXTargetDependency;
+			target = 4A3F1305064A02100042B0D7;
+			targetProxy = 4A488BAB0751CD59003D46BE;
+		};
+		4A488BAD0751CD59003D46BE = {
+			containerPortal = 08FB7793FE84155DC02AAC07;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 4A3F13F4064A091B0042B0D7;
+			remoteInfo = ARgsub;
+		};
+		4A488BAE0751CD59003D46BE = {
+			isa = PBXTargetDependency;
+			target = 4A3F13F4064A091B0042B0D7;
+			targetProxy = 4A488BAD0751CD59003D46BE;
+		};
 		4A5F9A43064B4EF400525EC0 = {
 			buildActionMask = 2147483647;
 			files = (
@@ -3906,6 +4076,7 @@
 				4A5F9D90064B557700525EC0,
 				4A5F9D92064B557700525EC0,
 				4A5F9D96064B557700525EC0,
+				4A488ACD0751CC8E003D46BE,
 			);
 			isa = PBXAggregateTarget;
 			name = "ARToolKit examples";
@@ -4422,11 +4593,11 @@
 			);
 			isa = PBXShellScriptBuildPhase;
 			outputPaths = (
-				doc/gsub_lite/gsub_lite.html,
+				doc/gsub_lite/CompositePage.html,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/tcsh;
-			shellScript = "rm -rf doc/gsub_lite\nif ($ACTION != clean) then\n\t/usr/bin/headerdoc2html -o doc/ \\\n\t\tinclude/AR/gsub_lite.h\nendif";
+			shellScript = "rm -f doc/gsub_lite/CompositePage.html\nrm -f doc/gsub_lite/DataTypes/DataTypes.html\nrm -f doc/gsub_lite/Functions/Functions.html\nrm -f doc/gsub_lite/Vars/Vars.html\nrm -f doc/gsub_lite/gsub_lite.html\nrm -f doc/gsub_lite/index.html\nrm -f doc/gsub_lite/toc.html\nif ($ACTION != clean) then\n\t/usr/bin/headerdoc2html -o doc/ \\\n\t\tinclude/AR/gsub_lite.h\nendif";
 		};
 		4A8EA5A30658752200ADDDD1 = {
 			fileEncoding = 30;
@@ -6244,6 +6415,7 @@
 		};
 		4AE2305E0659B7D10047D402 = {
 			children = (
+				4A488ACA0751CC26003D46BE,
 				4AE22FFD0659B7A80047D402,
 				4AE22FFE0659B7A80047D402,
 				4AE22FFF0659B7A80047D402,
