@@ -11,7 +11,6 @@
 #  include <GLUT/glut.h>
 #endif
 #include <AR/gsub.h>
-#include <AR/video.h>
 #include <AR/param.h>
 #include <AR/ar.h>
 
