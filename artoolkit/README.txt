@@ -9,10 +9,7 @@ Building on Windows.
 Building on Linux / SGI Irix.
 Building on Mac OS X.
 Latest changes.
-Changes in version 2.69.
-Changes in version 2.68.2.
-Changes in version 2.68.1.
-Changes in version 2.68.
+Previous changes.
 
 
 About this archive.
@@ -93,50 +90,13 @@ Latest changes.
 - Added new utilities for testing graphics and video without marker recognition, graphicsTest and videoTest.
 - VideoLinuxV4L patch by Uwe Woessner for YUV support (at last!)
 - VideoLinuxV4L patches by Raphael Grasset for improved camera parameter control and compressed jpeg video stream to support Sony Eyetoy camera.
-- VideoLinux1394Cam patch by Wayne Wayne Piekarski for improved lib1394 support, including multiple lib1394 versions.
+- VideoLinux1394Cam patch by Wayne Piekarski for improved lib1394 support, including multiple lib1394 versions.
 - Preliminary API documentation by Raphael Grasset.
 
 
-Changes in version 2.69.
-------------------------
-- Windows builds still depend on DSVideoLib, but DSVideoLib is no longer included in source-only ARToolKit releases and must be downloaded separately.
-- Fixed bugs identified by Raphael Grasset: typo 'DEFALUT' in config.h.in and arUtil.c, return values in arMultiActivate.c, implementation of arUtilSleep for Win32.
-- Fixed help text in arVideoDispOption for VideoWin32DirectShow.
-- Fixed bug in ar2VideoClose() identified by Joerg Hedrich (http://www.hitl.washington.edu/artoolkit/mail-archive/message-thread-00690-possible-bug-in-libARvid.html).
-- For builds under Visual Studio 6, all projects are now in one workspace (.dsw) file, and builds now go into lib/ and bin/ rather than lib.vc60/ and bin.vc60/.
-- For debug builds under Visual Studio, libraries and binaries now have the character 'd' appended to the name.
-- For builds under Visual Studio 6, all libraries now use multithreaded code generation model.
-- For builds under Apple XCode, creation of config.h is now performed by a script run by the aggregate target 'Configure'.
-- Changed the '_' character in releases to a '-' character to be more compatible with Unix packaging system conventions.
-- Fix bug identified by Alexandre Gillet: arLabelling.c allocates buffer for arImage with maximum dimension 512 pixels.
-
-
-Changes in version 2.68.2.
---------------------------
-- VideoWin32DirectShow uses DSVideoLib 0.0.4 (was 0.0.3). The samples now correct the vertical orientation of video from DSVideoLib by specifying the "flipV" parameter by default. An alternative is to use the WDM capture settings dialog 'Mirror horizontally' parameter and rotate the camera 180 degrees.
-- Rewrite of Windows AR/video.h interface to follow same scheme for multiple cameras as used on other platforms (i.e. using the ar2Video*() set of functions).
-- All platforms now support the arVideoDispOptions() call, which prints acceptable options for arVideoOpen()'s configuration string to the standard output. New applications using ARToolKit should provide a way for a user to specify a preferred configuration string at runtime (rather than compile time), and to see the output of arVideoDispOptions() so that he or she can learn possible configuration strings.
-- Optimisations in arLabelling.c and arGetCode.c by Thomas Pintaric.
-- gsub libraries compile correctly on platforms with older OpenGL headers. Removed extraneous glPixelStorei(GL_UNPACK_IMAGE_HEIGHT,...) calls.
-- New function arglDispImageStateful() in gsub_lite for special effects.
-- Removed the obsolete graphicsTest example.
-
-
-Changes in version 2.68.1.
---------------------------
-- Mac video settings dialog can now be disabled by adding "-nodialog" to options string passed to arVideoOpen().
-- Fixed some build bugs.
-
-
-Changes in version 2.68.
-------------------------
-Version 2.65 of ARToolKit incorporated the enhanced Windows video capture library created by Thomas Pintaric (http://www.ims.tuwien.ac.at/~thomas/artoolkit.php). Version 2.68 is based on 2.65f with the following changes:
-- New gsub_lite library designed to allow easier use of ARToolKit in existing applications, plus complete documentation in HTML format in doc/gsub_lite.
-- New high-performance Macintosh video capture library by Philip Lamb.
-- Support throughout the toolkit for three extra pixel formats including two packed-pixel YCbCr types (Mac pixel format codes 'ARGB', '2vuy', 'yuvs'). 
-- Several minor changes for compiler correctness, such as return values from main() and const declarations in some function parameter lists.
-- Fix for bug in arGetTransMat2.c identified by Joerg Stoecklein (http://www.hitl.washington.edu/artoolkit/mail-archive/message-thread-00627--variable--s1--not-initi.html).
-- Fix for bug in VideoLinuxDV/video.c identified by Tobias Laubach (http://www.hitl.washington.edu/artoolkit/mail-archive/message-thread-00626-Segmentation-error---fix.html).
+Previous changes.
+-----------------
+Please see the file ChangeLog.txt.
 
 --
 EOF
