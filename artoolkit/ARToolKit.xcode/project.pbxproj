@@ -77,6 +77,7 @@
 				4AB9FF440651CD8D003B9097,
 				4A835647074D914100F58781,
 				4A835659074D936800F58781,
+				4A1309F7075C26F900D62ACD,
 			);
 		};
 		08FB7794FE84155DC02AAC07 = {
@@ -119,6 +120,302 @@
 			isa = PBXFileReference;
 			lastKnownFileType = text;
 			path = ChangeLog.txt;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		4A1308AC075BE4A700D62ACD = {
+			children = (
+				4A1308AF075BE4A700D62ACD,
+				4A1308B0075BE4A700D62ACD,
+				4A1308B1075BE4A700D62ACD,
+				4A1308AE075BE4A700D62ACD,
+				4A130A48075C2C1B00D62ACD,
+			);
+			isa = PBXGroup;
+			path = simpleVRML;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		4A1308AE075BE4A700D62ACD = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			path = Makefile.in;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		4A1308AF075BE4A700D62ACD = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			path = object.c;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		4A1308B0075BE4A700D62ACD = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = object.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		4A1308B1075BE4A700D62ACD = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			path = simpleVRML.c;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		4A1309D5075C25CF00D62ACD = {
+			isa = PBXFileReference;
+			lastKnownFileType = folder;
+			path = Wrl;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		4A1309F7075C26F900D62ACD = {
+			buildPhases = (
+				4A1309FB075C26F900D62ACD,
+				4A1309FF075C26F900D62ACD,
+				4A130A01075C26F900D62ACD,
+				4A130A02075C26F900D62ACD,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				DEPLOYMENT_LOCATION = YES;
+				DSTROOT = /;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				HEADER_SEARCH_PATHS = include;
+				INSTALL_PATH = "$(SRCROOT)/bin";
+				LIBRARY_SEARCH_PATHS = "lib /sw/lib /usr/lib/gcc/darwin/3.3";
+				PRODUCT_NAME = simpleVRML;
+				WARNING_CFLAGS = "-Wmost";
+			};
+			dependencies = (
+				4A1309F8075C26F900D62ACD,
+				4A1309F9075C26F900D62ACD,
+				4A1309FA075C26F900D62ACD,
+				4A130A0E075C270F00D62ACD,
+			);
+			isa = PBXNativeTarget;
+			name = simpleVRML;
+			productName = simpleTest;
+			productReference = 4A130A0B075C26F900D62ACD;
+			productType = "com.apple.product-type.tool";
+		};
+		4A1309F8075C26F900D62ACD = {
+			isa = PBXTargetDependency;
+			target = 4A3F11430649F7BA0042B0D7;
+			targetProxy = 4A5F9A4C064B4F0600525EC0;
+		};
+		4A1309F9075C26F900D62ACD = {
+			isa = PBXTargetDependency;
+			target = 4A3F1305064A02100042B0D7;
+			targetProxy = 4A5F9A4E064B4F0600525EC0;
+		};
+		4A1309FA075C26F900D62ACD = {
+			isa = PBXTargetDependency;
+			target = 4A8EA585065873E100ADDDD1;
+			targetProxy = 4A2244FE0659A32C0014DA8E;
+		};
+		4A1309FB075C26F900D62ACD = {
+			buildActionMask = 2147483647;
+			files = (
+				4A130A10075C273900D62ACD,
+			);
+			isa = PBXHeadersBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4A1309FF075C26F900D62ACD = {
+			buildActionMask = 2147483647;
+			files = (
+				4A130A0F075C273800D62ACD,
+				4A130A11075C273900D62ACD,
+			);
+			isa = PBXSourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4A130A01075C26F900D62ACD = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXRezBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4A130A02075C26F900D62ACD = {
+			buildActionMask = 2147483647;
+			files = (
+				4A130A03075C26F900D62ACD,
+				4A130A04075C26F900D62ACD,
+				4A130A05075C26F900D62ACD,
+				4A130A06075C26F900D62ACD,
+				4A130A07075C26F900D62ACD,
+				4A130A08075C26F900D62ACD,
+				4A130A09075C26F900D62ACD,
+				4A130A0A075C26F900D62ACD,
+				4A130A12075C275900D62ACD,
+				4A130A17075C27F900D62ACD,
+				4A130A18075C27F900D62ACD,
+				4A130A1A075C284C00D62ACD,
+			);
+			isa = PBXFrameworksBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4A130A03075C26F900D62ACD = {
+			fileRef = 4A3F1601064A0CE40042B0D7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A130A04075C26F900D62ACD = {
+			fileRef = 4A3F167F064A0E270042B0D7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A130A05075C26F900D62ACD = {
+			fileRef = 4A3F14FC064A0C510042B0D7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A130A06075C26F900D62ACD = {
+			fileRef = 4A3F14FD064A0C510042B0D7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A130A07075C26F900D62ACD = {
+			fileRef = 4A3F14FE064A0C510042B0D7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A130A08075C26F900D62ACD = {
+			fileRef = 4A427D120484329800B56093;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A130A09075C26F900D62ACD = {
+			fileRef = 4A427D160484329800B56093;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A130A0A075C26F900D62ACD = {
+			fileRef = 4A66475606598B950061DA76;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A130A0B075C26F900D62ACD = {
+			explicitFileType = "compiled.mach-o.executable";
+			includeInIndex = 0;
+			isa = PBXFileReference;
+			path = simpleVRML;
+			refType = 3;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		4A130A0D075C270F00D62ACD = {
+			containerPortal = 08FB7793FE84155DC02AAC07;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 4A835659074D936800F58781;
+			remoteInfo = ARvrml;
+		};
+		4A130A0E075C270F00D62ACD = {
+			isa = PBXTargetDependency;
+			target = 4A835659074D936800F58781;
+			targetProxy = 4A130A0D075C270F00D62ACD;
+		};
+		4A130A0F075C273800D62ACD = {
+			fileRef = 4A1308AF075BE4A700D62ACD;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A130A10075C273900D62ACD = {
+			fileRef = 4A1308B0075BE4A700D62ACD;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A130A11075C273900D62ACD = {
+			fileRef = 4A1308B1075BE4A700D62ACD;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A130A12075C275900D62ACD = {
+			fileRef = 4A83565A074D936800F58781;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A130A15075C27F900D62ACD = {
+			isa = PBXFileReference;
+			lastKnownFileType = "compiled.mach-o.dylib";
+			name = "libopenvrml-gl.dylib";
+			path = "/sw/lib/libopenvrml-gl.dylib";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		4A130A16075C27F900D62ACD = {
+			isa = PBXFileReference;
+			lastKnownFileType = "compiled.mach-o.dylib";
+			name = libopenvrml.dylib;
+			path = /sw/lib/libopenvrml.dylib;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		4A130A17075C27F900D62ACD = {
+			fileRef = 4A130A15075C27F900D62ACD;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A130A18075C27F900D62ACD = {
+			fileRef = 4A130A16075C27F900D62ACD;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A130A19075C284C00D62ACD = {
+			isa = PBXFileReference;
+			lastKnownFileType = archive.ar;
+			name = "libstdc++.a";
+			path = "/usr/lib/libstdc++.a";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		4A130A1A075C284C00D62ACD = {
+			fileRef = 4A130A19075C284C00D62ACD;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A130A2D075C28C600D62ACD = {
+			containerPortal = 08FB7793FE84155DC02AAC07;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 4A1309F7075C26F900D62ACD;
+			remoteInfo = simpleVRML;
+		};
+		4A130A2E075C28C600D62ACD = {
+			isa = PBXTargetDependency;
+			target = 4A1309F7075C26F900D62ACD;
+			targetProxy = 4A130A2D075C28C600D62ACD;
+		};
+		4A130A48075C2C1B00D62ACD = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = text.xml;
+			path = simpleVRML.vcproj;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1382,6 +1679,9 @@
 		};
 		4A3F1552064A0C7C0042B0D7 = {
 			children = (
+				4A130A19075C284C00D62ACD,
+				4A130A15075C27F900D62ACD,
+				4A130A16075C27F900D62ACD,
 				4A3F1601064A0CE40042B0D7,
 				4A3F167F064A0E270042B0D7,
 				4A3F14FC064A0C510042B0D7,
@@ -1389,7 +1689,7 @@
 				4A3F14FE064A0C510042B0D7,
 			);
 			isa = PBXGroup;
-			name = Frameworks;
+			name = "External Libraries & Frameworks";
 			path = "";
 			refType = 4;
 			sourceTree = "<group>";
@@ -1892,6 +2192,7 @@
 				4A427CDC0484329800B56093,
 				4A427CE70484329800B56093,
 				4A2244930659A20D0014DA8E,
+				4A1308AC075BE4A700D62ACD,
 			);
 			isa = PBXGroup;
 			path = examples;
@@ -3054,10 +3355,11 @@
 		};
 		4A461B5C04843FAA00B56093 = {
 			children = (
+				4A1309D5075C25CF00D62ACD,
+				4A5103A4075A7E8E0072C3BA,
 				4A461B5E04843FAA00B56093,
 				4A461B5F04843FAA00B56093,
 				4A461B6004843FAA00B56093,
-				4A461B6104843FAA00B56093,
 				4A461B7104843FAA00B56093,
 				4A461B7204843FAA00B56093,
 				4A461B7304843FAA00B56093,
@@ -3091,145 +3393,6 @@
 			isa = PBXFileReference;
 			lastKnownFileType = "compiled.mach-o.executable";
 			path = calib_dist;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		4A461B6104843FAA00B56093 = {
-			children = (
-				4AC3C06C075187D00073D2C6,
-				4AC3C06D075187D00073D2C6,
-				4A461B6204843FAA00B56093,
-				4A461B6304843FAA00B56093,
-				4A461B6B04843FAA00B56093,
-				4A461B6C04843FAA00B56093,
-				4A461B6D04843FAA00B56093,
-				4A461B6E04843FAA00B56093,
-				4A461B6F04843FAA00B56093,
-				4A461B7004843FAA00B56093,
-			);
-			isa = PBXGroup;
-			path = Data;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		4A461B6204843FAA00B56093 = {
-			isa = PBXFileReference;
-			lastKnownFileType = file;
-			path = camera_para.dat;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		4A461B6304843FAA00B56093 = {
-			children = (
-				4A461B6404843FAA00B56093,
-				4A461B6504843FAA00B56093,
-				4A461B6604843FAA00B56093,
-				4A461B6704843FAA00B56093,
-				4A461B6804843FAA00B56093,
-				4A461B6904843FAA00B56093,
-				4A461B6A04843FAA00B56093,
-			);
-			isa = PBXGroup;
-			path = multi;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		4A461B6404843FAA00B56093 = {
-			isa = PBXFileReference;
-			lastKnownFileType = text;
-			path = marker.dat;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		4A461B6504843FAA00B56093 = {
-			explicitFileType = text;
-			isa = PBXFileReference;
-			path = patt.a;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		4A461B6604843FAA00B56093 = {
-			explicitFileType = text;
-			isa = PBXFileReference;
-			path = patt.b;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		4A461B6704843FAA00B56093 = {
-			explicitFileType = text;
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			path = patt.c;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		4A461B6804843FAA00B56093 = {
-			explicitFileType = text;
-			isa = PBXFileReference;
-			path = patt.d;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		4A461B6904843FAA00B56093 = {
-			explicitFileType = text;
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			path = patt.f;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		4A461B6A04843FAA00B56093 = {
-			explicitFileType = text;
-			isa = PBXFileReference;
-			path = patt.g;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		4A461B6B04843FAA00B56093 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = text;
-			path = object_data;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		4A461B6C04843FAA00B56093 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = text;
-			path = patt.calib;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		4A461B6D04843FAA00B56093 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = text;
-			path = patt.hiro;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		4A461B6E04843FAA00B56093 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = text;
-			path = patt.kanji;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		4A461B6F04843FAA00B56093 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = text;
-			path = patt.sample1;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		4A461B7004843FAA00B56093 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = text;
-			path = patt.sample2;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -3450,6 +3613,13 @@
 			isa = PBXTargetDependency;
 			target = 4A3F13F4064A091B0042B0D7;
 			targetProxy = 4A488BAD0751CD59003D46BE;
+		};
+		4A5103A4075A7E8E0072C3BA = {
+			isa = PBXFileReference;
+			lastKnownFileType = folder;
+			path = Data;
+			refType = 4;
+			sourceTree = "<group>";
 		};
 		4A5F9A43064B4EF400525EC0 = {
 			buildActionMask = 2147483647;
@@ -4525,7 +4695,6 @@
 				4A83563D074D90E300F58781,
 				4A83563E074D90E300F58781,
 				4A83563F074D90E300F58781,
-				4A835640074D90E300F58781,
 				4A835641074D90E300F58781,
 				4A835642074D90E300F58781,
 			);
@@ -4558,19 +4727,11 @@
 			refType = 4;
 			sourceTree = "<group>";
 		};
-		4A835640074D90E300F58781 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = text;
-			path = libarvrml.sln;
-			refType = 4;
-			sourceTree = "<group>";
-		};
 		4A835641074D90E300F58781 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = text.xml;
-			path = libarvrml.vcproj;
+			path = libARvrml.vcproj;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -4595,6 +4756,7 @@
 			};
 			dependencies = (
 				4A83565D074D93A900F58781,
+				4A130A2E075C28C600D62ACD,
 			);
 			isa = PBXAggregateTarget;
 			name = "ARToolKit extensions";
@@ -6153,22 +6315,6 @@
 			refType = 4;
 			sourceTree = "<group>";
 		};
-		4AC3C06C075187D00073D2C6 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = text;
-			path = object_data2;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		4AC3C06D075187D00073D2C6 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = text;
-			path = paddle_data;
-			refType = 4;
-			sourceTree = "<group>";
-		};
 		4AC3C076075188AB0073D2C6 = {
 			children = (
 				4AC3C077075188AB0073D2C6,
@@ -6891,6 +7037,7 @@
 		};
 		4AE2305E0659B7D10047D402 = {
 			children = (
+				4A130A0B075C26F900D62ACD,
 				4A94DD490756B1EB00D79CD1,
 				4A1F9E1B07568A0100DEC369,
 				4A1F9DF40756897100DEC369,

@@ -17,7 +17,8 @@ MDIR=". \
       examples/collide  examples/exview \
       examples/loadMultiple  examples/modeTest  examples/multi  examples/optical  \
       examples/paddle examples/paddleDemo examples/paddleInteraction examples/range \
-      examples/relation examples/simple examples/simple2 examples/simpleLite examples/twoView \
+      examples/relation examples/simple examples/simple2 examples/simpleLite \
+      examples/twoView examples/simpleVRML \
       "
 
 SED=/tmp/SED.$$
