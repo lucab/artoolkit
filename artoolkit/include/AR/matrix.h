@@ -139,7 +139,7 @@ int    arMatrixFree(ARMat *m);
 * \brief copy a matrix
 *
 * copy one matrix to another. The two ARMat must
-* be allocate
+* be allocated.
 * \param dest the destination matrix of the copy
 * \param source the original matrix source
 * \return 0 if success, -1 if error (matrix with different size)
@@ -170,7 +170,7 @@ int    arMatrixUnit(ARMat *unit);
 * \brief Creates a unit matrix.
 *
 * Allocates and initializes a matrix to a 
-* a unit matrix.
+* an identity matrix.
 * \param dim dimensions of the unit matrix (square)
 * \return the matrix allocated if success, NULL if error
 */
@@ -186,7 +186,7 @@ ARMat  *arMatrixAllocUnit(int dim);
 * \param dest final matrix product
 * \param a first matrix
 * \param b second matrix
-* \return 0 if success, -1 if error
+* \return 0 if success, -1 if error (multiplication impossible, or destination matrix have not comptabile size)
 */
 int    arMatrixMul(ARMat *dest, ARMat *a, ARMat *b);
 
@@ -210,7 +210,7 @@ ARMat  *arMatrixAllocMul(ARMat *a, ARMat *b);
 * must be allocated (the source matrix is unmodified).
 * \param dest the destination matrix of the copy
 * \param source the source matrix
-* \return 0 if success, -1 if error
+* \return 0 if success, -1 if error (source and destination matrix have different size)
 */
 int    arMatrixTrans(ARMat *dest, ARMat *source);
 
@@ -220,7 +220,7 @@ int    arMatrixTrans(ARMat *dest, ARMat *source);
 * transposes a matrix and copy the result in a new
 * allocate matrix (the source matrix is unmodified).
 * \param source the matrix to transpose
-* \return the allocated matrix if success, NULL if error
+* \return the allocated matrix if success, NULL if error (creation or transposition impossible)
 */
 ARMat  *arMatrixAllocTrans(ARMat *source);
 
@@ -233,7 +233,7 @@ ARMat  *arMatrixAllocTrans(ARMat *source);
 * square matrix.
 * \param dest result matrix of the inverse operation
 * \param source source matrix
-* \return 0 if success, -1 if error
+* \return 0 if success, -1 if error (not square matrix)
 */
 int    arMatrixInv(ARMat *dest, ARMat *source);
 
@@ -269,23 +269,23 @@ double arMatrixDet(ARMat *m);
 /** \fn int arMatrixPCA( ARMat *input, ARMat *evec, ARVec *ev, ARVec *mean )
 * \brief compute the PCA of a matrix.
 *
-* XXXBK
-* \param input XXXBK
-* \param evec XXXBK
-* \param ev XXXBK
-* \param mean XXXBK
-* \return XXXBK
+* Compute the Principal Component Analysis (PCA) of a matrix.
+* \param input source matrix
+* \param evec eigen vector computed
+* \param ev eigen value computed
+* \param mean mean computed
+* \return 0 if success to compute, -1 otherwise
 */
 int    arMatrixPCA( ARMat *input, ARMat *evec, ARVec *ev, ARVec *mean );
 
 /** \fn int arMatrixPCA2( ARMat *input, ARMat *evec, ARVec *ev )
 * \brief compute the PCA of a matrix.
 *
-* XXXBK
-* \param input XXXBK
-* \param evec XXXBK 
-* \param ev XXXBK
-* \return XXXBK
+* Compute the Principal Component Analysis (PCA) of a matrix.
+* \param input source matrix
+* \param evec result matrix
+* \param ev egein value computed
+* \return 0 if success to compute, -1 otherwise
 */
 int    arMatrixPCA2( ARMat *input, ARMat *evec, ARVec *ev );
 
@@ -304,7 +304,7 @@ int    arMatrixDisp(ARMat *m);
 *
 * Allocates and initializes new vector structure.
 * \param clm dimension of vector
-* \return the allocated vector, NULL if error
+* \return the allocated vector, NULL if error (impossible allocation)
 */
 ARVec  *arVecAlloc( int clm );
 
@@ -312,7 +312,7 @@ ARVec  *arVecAlloc( int clm );
 * \brief delete a vector.
 *
 * Delete a vector structure (deallocate used memory).
-* \param v vector to delete
+* \param v the vector to delete
 * \return 0
 */
 int    arVecFree( ARVec *v );

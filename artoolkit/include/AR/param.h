@@ -115,8 +115,8 @@ int  arParamDecomp( ARParam *source, ARParam *icpara, double trans[3][4] );
 * \brief  XXXBK
 *
 *  XXXBK
-* \param source XXXBK
-* \param cpara XXXBK
+* \param source input camera matrix
+* \param cpara camera parameter to be set
 * \param trans XXXBK
 * \return  XXXBK
 */
@@ -125,15 +125,16 @@ int  arParamDecompMat( double source[3][4], double cpara[3][4], double trans[3][
 /** \fn int int arParamIdeal2Observ( const double dist_factor[4], const double ix, const double iy,
 						 double *ox, double *oy )
 
-* \brief  XXXBK
+* \brief  Convert ideal screen coordinates of a vertex to observed ones. 
 *
-*  XXXBK
-* \param dist_factor XXXBK
-* \param ix XXXBK
-* \param iy XXXBK
-* \param ox XXXBK
-* \param oy XXXBK
-* \return  XXXBK
+* Ideal coordinates mean that the distortion of the camera is compensated (so a straight line looks straight). 
+* In observed coordinates the camera-distortion is not compensated and thus a straight line is not shown really straight.
+* \param dist_factor distorsion factors of used camera
+* \param ix x in ideal screen coordinates
+* \param iy y in ideal screen coordinates
+* \param ox resulted x in observed screen coordinates
+* \param oy resulted y in observed screen coordinates
+* \return 0 if success, -1 otherwise
 */
 int arParamIdeal2Observ( const double dist_factor[4], const double ix, const double iy,
                          double *ox, double *oy );
@@ -141,15 +142,16 @@ int arParamIdeal2Observ( const double dist_factor[4], const double ix, const dou
 /** \fn int arParamObserv2Ideal( const double dist_factor[4], const double ox, const double oy,
                          double *ix, double *iy )
 
-* \brief XXXBK
-*
-* XXXBK
-* \param dist_factor XXXBK
-* \param ox  XXXBK
-* \param oy XXXBK
-* \param ix XXXBK
-* \param iy XXXBK
-* \return  XXXBK
+* \brief Convert observed screen coordinates of a vertex to ideal ones. 
+
+* Ideal coordinates mean that the distortion of the camera is compensated (so a straight line looks straight).
+* In observed coordinates the camera-distortion is not compensated and thus a straight line is not shown really straight.
+* \param dist_factor distorsion factors of used camera
+* \param ox x in observed screen coordinates
+* \param oy y in observed screen coordinates
+* \param ix resulted x in ideal screen coordinates
+* \param iy resulted y in ideal screen coordinates
+* \return 0 if success, -1 otherwise
 */
 int arParamObserv2Ideal( const double dist_factor[4], const double ox, const double oy,
                          double *ix, double *iy );
@@ -171,7 +173,7 @@ int arParamChangeSize( ARParam *source, int xsize, int ysize, ARParam *newparam 
 *
 * Save manipulated camera intrinsic parameters in a file.
 * \param filename name of the parameters file.
-* \param num XXXBK
+* \param num number of variable arguments
 * \param param parameters to save
 * \return 0 if success, -1 if Error (file not found, file structure problem)
 */
@@ -183,7 +185,7 @@ int    arParamSave( char *filename, int num, ARParam *param, ...);
 * Load camera intrinsic parameters in the ARToolkit Library from 
 * a file (itselft, a resulted output of calibration step). 
 * \param filename name of the parameters file.
-* \param num XXXBK
+* \param num number of variable arguments
 * \param param result of the loaded parameters
 * \return 0 if success, -1 if Error (file not found, file structure problem)
 */
