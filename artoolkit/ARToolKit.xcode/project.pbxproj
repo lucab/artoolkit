@@ -68,6 +68,8 @@
 				4A5F9C84064B538700525EC0,
 				4A5F9D3F064B54D800525EC0,
 				4AB9FF750651CDE3003B9097,
+				4A1F9DE00756897100DEC369,
+				4A1F9E0A07568A0100DEC369,
 				4AB9FDF30651CB83003B9097,
 				4AB9FE590651CC50003B9097,
 				4AB9FEFD0651CD1F003B9097,
@@ -118,6 +120,320 @@
 			path = ChangeLog.txt;
 			refType = 4;
 			sourceTree = "<group>";
+		};
+		4A1F9DE00756897100DEC369 = {
+			buildPhases = (
+				4A1F9DE40756897100DEC369,
+				4A1F9DE60756897100DEC369,
+				4A1F9DEA0756897100DEC369,
+				4A1F9DEB0756897100DEC369,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				DEPLOYMENT_LOCATION = YES;
+				DSTROOT = /;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				HEADER_SEARCH_PATHS = include;
+				INSTALL_PATH = "$(SRCROOT)/bin";
+				LIBRARY_SEARCH_PATHS = lib;
+				PRODUCT_NAME = videoTest;
+				WARNING_CFLAGS = "-Wmost";
+			};
+			dependencies = (
+				4A1F9DE10756897100DEC369,
+				4A1F9DE20756897100DEC369,
+				4A1F9DE30756897100DEC369,
+			);
+			isa = PBXNativeTarget;
+			name = videoTest;
+			productName = simpleTest;
+			productReference = 4A1F9DF40756897100DEC369;
+			productType = "com.apple.product-type.tool";
+		};
+		4A1F9DE10756897100DEC369 = {
+			isa = PBXTargetDependency;
+			target = 4A3F11430649F7BA0042B0D7;
+			targetProxy = 4A5F9A4C064B4F0600525EC0;
+		};
+		4A1F9DE20756897100DEC369 = {
+			isa = PBXTargetDependency;
+			target = 4A3F1305064A02100042B0D7;
+			targetProxy = 4A5F9A4E064B4F0600525EC0;
+		};
+		4A1F9DE30756897100DEC369 = {
+			isa = PBXTargetDependency;
+			target = 4A3F13F4064A091B0042B0D7;
+			targetProxy = 4A5F9A50064B4F0600525EC0;
+		};
+		4A1F9DE40756897100DEC369 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXHeadersBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4A1F9DE60756897100DEC369 = {
+			buildActionMask = 2147483647;
+			files = (
+				4A1F9E07075689CE00DEC369,
+			);
+			isa = PBXSourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4A1F9DEA0756897100DEC369 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXRezBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4A1F9DEB0756897100DEC369 = {
+			buildActionMask = 2147483647;
+			files = (
+				4A1F9DEC0756897100DEC369,
+				4A1F9DED0756897100DEC369,
+				4A1F9DEE0756897100DEC369,
+				4A1F9DEF0756897100DEC369,
+				4A1F9DF00756897100DEC369,
+				4A1F9DF10756897100DEC369,
+				4A1F9DF20756897100DEC369,
+				4A1F9DF30756897100DEC369,
+			);
+			isa = PBXFrameworksBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4A1F9DEC0756897100DEC369 = {
+			fileRef = 4A3F1601064A0CE40042B0D7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A1F9DED0756897100DEC369 = {
+			fileRef = 4A3F167F064A0E270042B0D7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A1F9DEE0756897100DEC369 = {
+			fileRef = 4A3F14FC064A0C510042B0D7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A1F9DEF0756897100DEC369 = {
+			fileRef = 4A3F14FD064A0C510042B0D7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A1F9DF00756897100DEC369 = {
+			fileRef = 4A3F14FE064A0C510042B0D7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A1F9DF10756897100DEC369 = {
+			fileRef = 4A427D120484329800B56093;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A1F9DF20756897100DEC369 = {
+			fileRef = 4A427D130484329800B56093;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A1F9DF30756897100DEC369 = {
+			fileRef = 4A427D160484329800B56093;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A1F9DF40756897100DEC369 = {
+			explicitFileType = "compiled.mach-o.executable";
+			includeInIndex = 0;
+			isa = PBXFileReference;
+			path = videoTest;
+			refType = 3;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		4A1F9E07075689CE00DEC369 = {
+			fileRef = 4AC3C07D075188AB0073D2C6;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A1F9E08075689F900DEC369 = {
+			containerPortal = 08FB7793FE84155DC02AAC07;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 4A1F9DE00756897100DEC369;
+			remoteInfo = videoTest;
+		};
+		4A1F9E09075689F900DEC369 = {
+			isa = PBXTargetDependency;
+			target = 4A1F9DE00756897100DEC369;
+			targetProxy = 4A1F9E08075689F900DEC369;
+		};
+		4A1F9E0A07568A0100DEC369 = {
+			buildPhases = (
+				4A1F9E0E07568A0100DEC369,
+				4A1F9E0F07568A0100DEC369,
+				4A1F9E1107568A0100DEC369,
+				4A1F9E1207568A0100DEC369,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				DEPLOYMENT_LOCATION = YES;
+				DSTROOT = /;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				HEADER_SEARCH_PATHS = include;
+				INSTALL_PATH = "$(SRCROOT)/bin";
+				LIBRARY_SEARCH_PATHS = lib;
+				PRODUCT_NAME = graphicsTest;
+				WARNING_CFLAGS = "-Wmost";
+			};
+			dependencies = (
+				4A1F9E0B07568A0100DEC369,
+				4A1F9E0C07568A0100DEC369,
+				4A1F9E0D07568A0100DEC369,
+			);
+			isa = PBXNativeTarget;
+			name = graphicsTest;
+			productName = simpleTest;
+			productReference = 4A1F9E1B07568A0100DEC369;
+			productType = "com.apple.product-type.tool";
+		};
+		4A1F9E0B07568A0100DEC369 = {
+			isa = PBXTargetDependency;
+			target = 4A3F11430649F7BA0042B0D7;
+			targetProxy = 4A5F9A4C064B4F0600525EC0;
+		};
+		4A1F9E0C07568A0100DEC369 = {
+			isa = PBXTargetDependency;
+			target = 4A3F1305064A02100042B0D7;
+			targetProxy = 4A5F9A4E064B4F0600525EC0;
+		};
+		4A1F9E0D07568A0100DEC369 = {
+			isa = PBXTargetDependency;
+			target = 4A3F13F4064A091B0042B0D7;
+			targetProxy = 4A5F9A50064B4F0600525EC0;
+		};
+		4A1F9E0E07568A0100DEC369 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXHeadersBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4A1F9E0F07568A0100DEC369 = {
+			buildActionMask = 2147483647;
+			files = (
+				4A1F9E2007568A7A00DEC369,
+			);
+			isa = PBXSourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4A1F9E1107568A0100DEC369 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXRezBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4A1F9E1207568A0100DEC369 = {
+			buildActionMask = 2147483647;
+			files = (
+				4A1F9E1307568A0100DEC369,
+				4A1F9E1407568A0100DEC369,
+				4A1F9E1507568A0100DEC369,
+				4A1F9E1607568A0100DEC369,
+				4A1F9E1707568A0100DEC369,
+				4A1F9E1807568A0100DEC369,
+				4A1F9E1907568A0100DEC369,
+				4A1F9E1A07568A0100DEC369,
+			);
+			isa = PBXFrameworksBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4A1F9E1307568A0100DEC369 = {
+			fileRef = 4A3F1601064A0CE40042B0D7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A1F9E1407568A0100DEC369 = {
+			fileRef = 4A3F167F064A0E270042B0D7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A1F9E1507568A0100DEC369 = {
+			fileRef = 4A3F14FC064A0C510042B0D7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A1F9E1607568A0100DEC369 = {
+			fileRef = 4A3F14FD064A0C510042B0D7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A1F9E1707568A0100DEC369 = {
+			fileRef = 4A3F14FE064A0C510042B0D7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A1F9E1807568A0100DEC369 = {
+			fileRef = 4A427D120484329800B56093;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A1F9E1907568A0100DEC369 = {
+			fileRef = 4A427D130484329800B56093;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A1F9E1A07568A0100DEC369 = {
+			fileRef = 4A427D160484329800B56093;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A1F9E1B07568A0100DEC369 = {
+			explicitFileType = "compiled.mach-o.executable";
+			includeInIndex = 0;
+			isa = PBXFileReference;
+			path = graphicsTest;
+			refType = 3;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		4A1F9E1D07568A2C00DEC369 = {
+			containerPortal = 08FB7793FE84155DC02AAC07;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 4A1F9E0A07568A0100DEC369;
+			remoteInfo = graphicsTest;
+		};
+		4A1F9E1E07568A2C00DEC369 = {
+			isa = PBXTargetDependency;
+			target = 4A1F9E0A07568A0100DEC369;
+			targetProxy = 4A1F9E1D07568A2C00DEC369;
+		};
+		4A1F9E2007568A7A00DEC369 = {
+			fileRef = 4AC3C077075188AB0073D2C6;
+			isa = PBXBuildFile;
+			settings = {
+			};
 		};
 		4A2244930659A20D0014DA8E = {
 			children = (
@@ -5536,6 +5852,8 @@
 				4AB9FF7B0651CDE8003B9097,
 				4AB9FF7D0651CDE8003B9097,
 				4AB9FF7F0651CDE8003B9097,
+				4A1F9E09075689F900DEC369,
+				4A1F9E1E07568A2C00DEC369,
 			);
 			isa = PBXAggregateTarget;
 			name = "ARToolKit utilities";
@@ -6415,6 +6733,8 @@
 		};
 		4AE2305E0659B7D10047D402 = {
 			children = (
+				4A1F9E1B07568A0100DEC369,
+				4A1F9DF40756897100DEC369,
 				4A488ACA0751CC26003D46BE,
 				4AE22FFD0659B7A80047D402,
 				4AE22FFE0659B7A80047D402,
