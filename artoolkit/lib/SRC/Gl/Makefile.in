@@ -53,9 +53,9 @@ ${LIB3OBJS}:		${INCLUDE3}
 
 clean:
 	rm -f *.o
-	rm -f ${LIB} ${LIB2}
+	rm -f ${LIB} ${LIB2} ${LIB3}
 
 allclean:
 	rm -f *.o
-	rm -f ${LIB} ${LIB2}
+	rm -f ${LIB} ${LIB2} ${LIB3}
 	rm -f Makefile
