@@ -15,7 +15,11 @@
 #undef  AR_INPUT_1394CAM
 
 #  ifdef AR_INPUT_V4L
+#    ifdef USE_EYETOY
+#     define AR_PIX_FORMAT_RGB
+#    else
 #    define  AR_PIX_FORMAT_BGR
+#    endif
 #    undef   AR_PIX_FORMAT_BGRA
 #  endif
 
