@@ -14,13 +14,16 @@
  *								Added config option "-fps" to superimpose frame counter on video.
  *								Returns aligned data in ARGB pixel format.
  *  1.2.0   2004-04-28  PRL		Now one thread per video source. Versions of QuickTime
- *								prior to 6.4 are NOT thread safe, and if using a non-thread
- *								safe version, you should comment out AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
- *								so serialise access when there is more than one thread.
+ *								prior to 6.4 are NOT thread safe, and with these earlier
+ *								versions, QuickTime toolbox access will be serialised.
  *	1.2.1   2004-06-28  PRL		Support for 2vuy and yuvs pixel formats.
  *  1.3.0   2004-07-13  PRL		Code from Daniel Heckenberg to directly access vDig.
  *  1.3.1   2004-12-07  PRL		Added config option "-pixelformat=" to support pixel format
  *								specification at runtime, with default determined at compile time.
+ *	1.4.0	2005-03-08	PRL		Video input settings now saved and restored.
+ *  1.4.1   2005-03-15  PRL     QuickTime 6.4 or newer is now required by default. In order
+ *								to allow earlier versions, AR_VIDEO_SUPPORT_OLD_QUICKTIME must
+ *								be uncommented at compile time.
  *
  */
 /*

@@ -125,9 +125,7 @@ The VRML renderering library and example (libARvrml & simpleVRML) are optional b
 
 Changes in this release.
 ------------------------
-- Mac OS X video driver: support added for runtime specification of pixel format.
-- Mac OS X video driver: video input settings are now saved to and restored from preferences.
-- Linux 1394cam video driver: Patch by Henrik Erkkonen to support version 11 of libdc1394.
+- Mac OS X video driver: QuickTime 6.4 is now required by default. (Support for earlier versions can be enabled at compile-time). 
 
 Changes in earlier releases.
 ----------------------------

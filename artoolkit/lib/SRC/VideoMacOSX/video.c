@@ -14,16 +14,17 @@
  *								Added config option "-fps" to superimpose frame counter on video.
  *								Returns aligned data in ARGB pixel format.
  *  1.2.0   2004-04-28  PRL		Now one thread per video source. Versions of QuickTime
- *								prior to 6.4 are NOT thread safe, and if using a non-thread
- *								safe version, you should comment out AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
- *								so serialise access when there is more than one thread.
+ *								prior to 6.4 are NOT thread safe, and with these earlier
+ *								versions, QuickTime toolbox access will be serialised.
  *	1.2.1   2004-06-28  PRL		Support for 2vuy and yuvs pixel formats.
  *  1.3.0   2004-07-13  PRL		Code from Daniel Heckenberg to directly access vDig.
  *  1.3.1   2004-12-07  PRL		Added config option "-pixelformat=" to support pixel format
  *								specification at runtime, with default determined at compile time.
  *	1.4.0	2005-03-08	PRL		Video input settings now saved and restored.
+ *  1.4.1   2005-03-15  PRL     QuickTime 6.4 or newer is now required by default. In order
+ *								to allow earlier versions, AR_VIDEO_SUPPORT_OLD_QUICKTIME must
+ *								be uncommented at compile time.
  *
- *	TODO: Check version of Quicktime available at runtime.
  */
 /*
  * 
@@ -90,7 +91,7 @@
 // ============================================================================
 
 #define AR_VIDEO_DEBUG_BUFFERCOPY					// Uncomment to have ar2VideoGetImage() return a copy of video pixel data.
-#define AR_VIDEO_HAVE_THREADSAFE_QUICKTIME			// Uncomment to trust QuickTime's thread-safety, QuickTime 6.4 and later are thread-safe.
+//#define AR_VIDEO_SUPPORT_OLD_QUICKTIME		// Uncomment to allow use of non-thread safe QuickTime (pre-6.4).
 
 #define AR_VIDEO_IDLE_INTERVAL_MILLISECONDS_MIN		20L
 #define AR_VIDEO_IDLE_INTERVAL_MILLISECONDS_MAX		100L
@@ -171,9 +172,9 @@ typedef struct _AR2VideoParamT *AR2VideoParamTRef;
 
 static AR2VideoParamT   *gVid = NULL;
 static unsigned int		gVidCount = 0;
-#ifndef AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
+#ifdef AR_VIDEO_SUPPORT_OLD_QUICKTIME
 static pthread_mutex_t  gVidQuickTimeMutex;
-#endif // !AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
+#endif // AR_VIDEO_SUPPORT_OLD_QUICKTIME
 
 #pragma mark -
 
@@ -973,11 +974,11 @@ static void ar2VideoInternalThreadCleanup(void *arg)
 	
 	vid = (AR2VideoParamT *)arg;
 	ar2VideoInternalUnlock(&(vid->bufMutex)); // A cancelled thread shouldn't leave mutexes locked.
-#ifndef AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
-	ar2VideoInternalUnlock(&gVidQuickTimeMutex);
-#else
+#ifndef AR_VIDEO_SUPPORT_OLD_QUICKTIME
 	ExitMoviesOnThread();
-#endif // !AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
+#else
+	ar2VideoInternalUnlock(&gVidQuickTimeMutex);
+#endif // !AR_VIDEO_SUPPORT_OLD_QUICKTIME
 }
 
 //
@@ -987,11 +988,11 @@ static void ar2VideoInternalThreadCleanup(void *arg)
 //
 static void *ar2VideoInternalThread(void *arg)
 {
-#ifdef AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
+#ifndef AR_VIDEO_SUPPORT_OLD_QUICKTIME
 	OSErr				err_o;
 #else
 	int					weLocked = 0;
-#endif // AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
+#endif // !AR_VIDEO_SUPPORT_OLD_QUICKTIME
 	AR2VideoParamT		*vid;
 	int					keepAlive = 1;
 	struct timeval		tv;  // Seconds and microseconds since Jan 1, 1970.
@@ -1009,13 +1010,13 @@ static void *ar2VideoInternalThread(void *arg)
 	GDHandle			theSavedDevice;
 
 	
-#ifdef AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
+#ifndef AR_VIDEO_SUPPORT_OLD_QUICKTIME
 	// Signal to QuickTime that this is a separate thread.
 	if ((err_o = EnterMoviesOnThread(0)) != noErr) {
 		fprintf(stderr, "ar2VideoInternalThread(): Error %d initing QuickTime for this thread.\n", err_o);
 		return (NULL);
 	}
-#endif // AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
+#endif // !AR_VIDEO_SUPPORT_OLD_QUICKTIME
 
 	// Register our cleanup function, with arg as arg.
 	pthread_cleanup_push(ar2VideoInternalThreadCleanup, arg);
@@ -1040,7 +1041,7 @@ static void *ar2VideoInternalThread(void *arg)
 			ts.tv_nsec -= 1E9;
 			ts.tv_sec += 1;
 		}
-#ifndef AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
+#ifdef AR_VIDEO_SUPPORT_OLD_QUICKTIME
 		// Get a lock to access QuickTime (for SGIdle()), but only if more than one thread is running.
 		if (gVidCount > 1) {
 			if (!ar2VideoInternalLock(&gVidQuickTimeMutex)) {
@@ -1050,7 +1051,7 @@ static void *ar2VideoInternalThread(void *arg)
 			}
 			weLocked = 1;
 		}
-#endif // !AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
+#endif // AR_VIDEO_SUPPORT_OLD_QUICKTIME
 		
 		if ((err = vdgIdle(vid->pVdg, &isUpdated)) != noErr) {
 			// In QT 4 you would always encounter a cDepthErr error after a user drags
@@ -1068,7 +1069,7 @@ static void *ar2VideoInternalThread(void *arg)
 			break;
 		}
 		
-#ifndef AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
+#ifdef AR_VIDEO_SUPPORT_OLD_QUICKTIME
 		// vdgIdle() is done, unlock our hold on QuickTime if we locked it.
 		if (weLocked) {
 			if (!ar2VideoInternalUnlock(&gVidQuickTimeMutex)) {
@@ -1078,7 +1079,7 @@ static void *ar2VideoInternalThread(void *arg)
 			}
 			weLocked = 0;
 		}
-#endif // !AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
+#endif // AR_VIDEO_SUPPORT_OLD_QUICKTIME
 		
 		if (isUpdated) {
 			// Write status information onto the frame if so desired.
@@ -1169,6 +1170,7 @@ int ar2VideoDispOption(void)
 AR2VideoParamT *ar2VideoOpen(char *config)
 {
     static int			initF = 0;
+	long				qtVersion = 0L;
 	int					width = 0;
 	int					height = 0;
 	int					grabber = 1;
@@ -1179,9 +1181,9 @@ AR2VideoParamT *ar2VideoOpen(char *config)
 	int					err_i = 0;
     AR2VideoParamT		*vid = NULL;
     char				*a, line[256];
-#ifndef AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
+#ifdef AR_VIDEO_SUPPORT_OLD_QUICKTIME
 	int					weLocked = 0;
-#endif // !AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
+#endif // AR_VIDEO_SUPPORT_OLD_QUICKTIME
 	OSType				pixFormat = (OSType)0;
 	long				bytesPerPixel;
 	CGrafPtr			theSavedPort;
@@ -1287,6 +1289,23 @@ AR2VideoParamT *ar2VideoOpen(char *config)
 
 	// If there are no active grabbers, init the QuickTime access mutex.
 	if (gVidCount == 0) {
+	
+		if ((err_s = Gestalt(gestaltQuickTimeVersion, &qtVersion)) != noErr) {
+			fprintf(stderr,"ar2VideoOpen(): QuickTime not installed (%d).\n", err_s);
+			return (NULL);
+		}
+		
+#ifndef AR_VIDEO_SUPPORT_OLD_QUICKTIME
+		if ((qtVersion >> 16) < 0x640) {
+			fprintf(stderr,"ar2VideoOpen(): QuickTime version 6.4 or newer is required by this program.\n");;
+			return (NULL);
+		}
+#else
+		if ((qtVersion >> 16) < 0x400) {
+			fprintf(stderr,"ar2VideoOpen(): QuickTime version 4.0 or newer is required by this program.\n");;
+			return (NULL);
+		}
+#endif // !AR_VIDEO_SUPPORT_OLD_QUICKTIME
 		
 		// Initialise QuickTime (a.k.a. Movie Toolbox).
 		if ((err_s = EnterMovies()) != noErr) {
@@ -1294,16 +1313,16 @@ AR2VideoParamT *ar2VideoOpen(char *config)
 			return (NULL);
 		}
 		
-#ifndef AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
+#ifdef AR_VIDEO_SUPPORT_OLD_QUICKTIME
 		// If there are no active grabbers, init the QuickTime access mutex.		
 		if ((err_i = pthread_mutex_init(&gVidQuickTimeMutex, NULL)) != 0) {
 			fprintf(stderr, "ar2VideoOpen(): Error %d creating mutex (for QuickTime).\n", err_i);
 			return (NULL);
 		}
-#endif // !AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
+#endif // AR_VIDEO_SUPPORT_OLD_QUICKTIME
 	}
 	
-#ifndef AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
+#ifdef AR_VIDEO_SUPPORT_OLD_QUICKTIME
 	// Get a hold on the QuickTime toolbox.
 	// Need to unlock this mutex before returning, so any errors should goto bail;
 	if (gVidCount > 0) {
@@ -1313,7 +1332,7 @@ AR2VideoParamT *ar2VideoOpen(char *config)
 		}
 		weLocked = 1;
 	}
-#endif // !AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
+#endif // AR_VIDEO_SUPPORT_OLD_QUICKTIME
 		
 	gVidCount++;
 	
@@ -1489,7 +1508,7 @@ out1:
 	vid = NULL;
 	gVidCount--;
 out:
-#ifndef AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
+#ifdef AR_VIDEO_SUPPORT_OLD_QUICKTIME
 	// Release our hold on the QuickTime toolbox.
 	if (weLocked) {
 		if (!ar2VideoInternalUnlock(&gVidQuickTimeMutex)) {
@@ -1497,7 +1516,7 @@ out:
 			return (NULL);
 		}
 	}
-#endif // !AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
+#endif // AR_VIDEO_SUPPORT_OLD_QUICKTIME
 	
 	return (vid);
 }
@@ -1505,11 +1524,11 @@ out:
 int ar2VideoClose(AR2VideoParamT *vid)
 {
 	int err_i;
-#ifndef AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
+#ifdef AR_VIDEO_SUPPORT_OLD_QUICKTIME
 	int weLocked = 0;
-#endif // !AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
+#endif // AR_VIDEO_SUPPORT_OLD_QUICKTIME
 	
-#ifndef AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
+#ifdef AR_VIDEO_SUPPORT_OLD_QUICKTIME
 	// Get a hold on the QuickTime toolbox.
 	if (gVidCount > 1) {
 		if (!ar2VideoInternalLock(&gVidQuickTimeMutex)) {
@@ -1517,7 +1536,7 @@ int ar2VideoClose(AR2VideoParamT *vid)
 		}
 		weLocked = 1;
 	}
-#endif // !AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
+#endif // AR_VIDEO_SUPPORT_OLD_QUICKTIME
 	
 	// Destroy the condition variable.
 	if ((err_i = pthread_cond_destroy(&(vid->condition))) != 0) {
@@ -1561,14 +1580,14 @@ int ar2VideoClose(AR2VideoParamT *vid)
 	
 	vdgReleaseAndDealloc(vid->pVdg);
 	
-#ifndef AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
+#ifdef AR_VIDEO_SUPPORT_OLD_QUICKTIME
 	// Release our hold on the QuickTime toolbox.
 	if (weLocked) {
 		if (!ar2VideoInternalUnlock(&gVidQuickTimeMutex)) {
 			fprintf(stderr, "ar2VideoClose(): Unable to unlock mutex (for QuickTime).\n");
 		}
 	}
-#endif // !AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
+#endif // AR_VIDEO_SUPPORT_OLD_QUICKTIME
 	
 	// Count one less grabber running.
 	free (vid);
@@ -1576,12 +1595,12 @@ int ar2VideoClose(AR2VideoParamT *vid)
 
 	// If we're the last to close, clean up after everybody.
 	if (!gVidCount) {
-#ifndef AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
+#ifdef AR_VIDEO_SUPPORT_OLD_QUICKTIME
 		// Destroy the mutex.
 		if ((err_i = pthread_mutex_destroy(&gVidQuickTimeMutex)) != 0) {
 			fprintf(stderr, "ar2VideoClose(): Error %d destroying mutex (for QuickTime).\n", err_i);
 		}
-#endif // !AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
+#endif // AR_VIDEO_SUPPORT_OLD_QUICKTIME
 		
 		// Probably a good idea to close down QuickTime.
 		ExitMovies();
@@ -1594,11 +1613,11 @@ int ar2VideoCapStart(AR2VideoParamT *vid)
 {
 	ComponentResult err;
 	int err_i = 0;
-#ifndef AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
+#ifdef AR_VIDEO_SUPPORT_OLD_QUICKTIME
 	int weLocked = 0;
-#endif // !AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
+#endif // AR_VIDEO_SUPPORT_OLD_QUICKTIME
 	
-#ifndef AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
+#ifdef AR_VIDEO_SUPPORT_OLD_QUICKTIME
 	// Get a hold on the QuickTime toolbox.
 	if (gVidCount > 1) {
 		if (!ar2VideoInternalLock(&gVidQuickTimeMutex)) {
@@ -1607,7 +1626,7 @@ int ar2VideoCapStart(AR2VideoParamT *vid)
 		}
 		weLocked = 1;
 	}
-#endif // !AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
+#endif // AR_VIDEO_SUPPORT_OLD_QUICKTIME
 	
     vid->status = 0;
 	
@@ -1616,7 +1635,7 @@ int ar2VideoCapStart(AR2VideoParamT *vid)
 		err_i = (int)err;
 	}
 
-#ifndef AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
+#ifdef AR_VIDEO_SUPPORT_OLD_QUICKTIME
 	// Release our hold on the QuickTime toolbox.
 	if (weLocked) {
 		if (!ar2VideoInternalUnlock(&gVidQuickTimeMutex)) {
@@ -1624,7 +1643,7 @@ int ar2VideoCapStart(AR2VideoParamT *vid)
 			return (1);
 		}
 	}
-#endif // !AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
+#endif // AR_VIDEO_SUPPORT_OLD_QUICKTIME
 	
 	if (err_i == 0) {
 		// Create the new thread - no attr, vid as user data.
@@ -1646,9 +1665,9 @@ int ar2VideoCapNext(AR2VideoParamT *vid)
 int ar2VideoCapStop(AR2VideoParamT *vid)
 {
 	int err_i = 0;
-#ifndef AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
+#ifdef AR_VIDEO_SUPPORT_OLD_QUICKTIME
 	int weLocked = 0;
-#endif // !AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
+#endif // AR_VIDEO_SUPPORT_OLD_QUICKTIME
 	void *exit_status_p; // Pointer to return value from thread, will be filled in by pthread_join().
 	ComponentResult err = noErr;
 	
@@ -1671,7 +1690,7 @@ int ar2VideoCapStop(AR2VideoParamT *vid)
 	
     if (vid->pVdg) {
 		
-#ifndef AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
+#ifdef AR_VIDEO_SUPPORT_OLD_QUICKTIME
 		// Get a hold on the QuickTime toolbox.
 		if (gVidCount > 1) {
 			if (!ar2VideoInternalLock(&gVidQuickTimeMutex)) {
@@ -1680,14 +1699,14 @@ int ar2VideoCapStop(AR2VideoParamT *vid)
 			}
 			weLocked = 1;
 		}
-#endif // !AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
+#endif // AR_VIDEO_SUPPORT_OLD_QUICKTIME
 		
 		if ((err = vdgStopGrabbing(vid->pVdg)) != noErr) {
 			fprintf(stderr, "vdgStopGrabbing err=%ld\n", err);
 			err_i = (int)err;
 		}
 
-#ifndef AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
+#ifdef AR_VIDEO_SUPPORT_OLD_QUICKTIME
 		// Release our hold on the QuickTime toolbox.
 		if (weLocked) {
 			if (!ar2VideoInternalUnlock(&gVidQuickTimeMutex)) {
@@ -1695,7 +1714,7 @@ int ar2VideoCapStop(AR2VideoParamT *vid)
 				return (1);
 			}
 		}
-#endif // !AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
+#endif // AR_VIDEO_SUPPORT_OLD_QUICKTIME
 		
 	}
 	
