@@ -126,6 +126,7 @@ The VRML renderering library and example (libARvrml & simpleVRML) are optional b
 Changes in this release.
 ------------------------
 - Mac OS X video driver: support added for runtime specification of pixel format.
+- Mac OS X video driver: video input settings are now saved to and restored from preferences.
 
 Changes in earlier releases.
 ----------------------------

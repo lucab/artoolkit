@@ -7,7 +7,7 @@
  *
  */
 /*
- *	Copyright (c) 2003-2004 Philip Lamb (PRL) phil@eden.net.nz. All rights reserved.
+ *	Copyright (c) 2003-2005 Philip Lamb (PRL) phil@eden.net.nz. All rights reserved.
  *	
  *	Rev		Date		Who		Changes
  *	1.1.0	2003-09-09	PRL		Based on Apple "Son of MungGrab" sample code for QuickTime 6.
@@ -21,7 +21,9 @@
  *  1.3.0   2004-07-13  PRL		Code from Daniel Heckenberg to directly access vDig.
  *  1.3.1   2004-12-07  PRL		Added config option "-pixelformat=" to support pixel format
  *								specification at runtime, with default determined at compile time.
+ *	1.4.0	2005-03-08	PRL		Video input settings now saved and restored.
  *
+ *	TODO: Check version of Quicktime available at runtime.
  */
 /*
  * 
@@ -81,6 +83,7 @@
 #include <AR/config.h>
 #include <AR/ar.h>
 #include <AR/video.h>
+#include "videoInternal.h"
 
 // ============================================================================
 //	Private definitions
@@ -210,15 +213,13 @@ static SeqGrabComponent MakeSequenceGrabber(WindowRef pWindow, const int grabber
 	}
 	
    	// initialize the default sequence grabber component
-   	if(err = SGInitialize(seqGrab))
-	{
+   	if(err = SGInitialize(seqGrab)) {
 		fprintf(stderr, "SGInitialize err=%ld\n", err);
 		goto endFunc;
 	}
 	
 	// This should be defaulted to the current port according to QT doco
-	if (err = SGSetGWorld(seqGrab, GetWindowPort(pWindow), NULL))
-	{
+	if (err = SGSetGWorld(seqGrab, GetWindowPort(pWindow), NULL)) {
 		fprintf(stderr, "SGSetGWorld err=%ld\n", err);
 		goto endFunc;
 	}
@@ -238,8 +239,7 @@ static SeqGrabComponent MakeSequenceGrabber(WindowRef pWindow, const int grabber
 	}
 	
 endFunc:	
-		if (err && (seqGrab != NULL)) 
-		{ // clean up on failure
+		if (err && (seqGrab != NULL)) { // clean up on failure
 			CloseComponent(seqGrab);
 			seqGrab = NULL;
 		}
@@ -256,8 +256,7 @@ static ComponentResult MakeSequenceGrabChannel(SeqGrabComponent seqGrab, SGChann
     long  flags = 0;
     ComponentResult err = noErr;
     
-    if (err = SGNewChannel(seqGrab, VideoMediaType, psgchanVideo))
-	{
+    if (err = SGNewChannel(seqGrab, VideoMediaType, psgchanVideo)) {
 		fprintf(stderr, "SGNewChannel err=%ld\n", err);
 		goto endFunc;
 	}
@@ -265,8 +264,7 @@ static ComponentResult MakeSequenceGrabChannel(SeqGrabComponent seqGrab, SGChann
 	//	err = SGSetChannelBounds(*sgchanVideo, rect);
    	// set usage for new video channel to avoid playthrough
 	// note we don't set seqGrabPlayDuringRecord
-	if (err = SGSetChannelUsage(*psgchanVideo, flags | seqGrabRecord))
-	{
+	if (err = SGSetChannelUsage(*psgchanVideo, flags | seqGrabRecord)) {
 		fprintf(stderr, "SGSetChannelUsage err=%ld\n", err);
 		goto endFunc;
 	}
@@ -279,61 +277,6 @@ endFunc:
 		}
 	
 	return err;
-}
-
-// From QT sample code
-// Declaration of a typical application-defined function
-static Boolean MySGModalFilterProc (
-									DialogPtr            theDialog,
-									const EventRecord    *theEvent,
-									short                *itemHit,
-									long                 refCon )
-{
-	// Ordinarily, if we had multiple windows we cared about, we'd handle
-	// updating them in here, but since we don't, we'll just clear out
-	// any update events meant for us
-	Boolean	handled = false;
-	
-	if ((theEvent->what == updateEvt) && 
-		((WindowPtr) theEvent->message == (WindowPtr) refCon))
-	{
-		BeginUpdate ((WindowPtr) refCon);
-		EndUpdate ((WindowPtr) refCon);
-		handled = true;
-	}
-	return (handled);
-}
-
-static ComponentResult RequestSGSettings(  SeqGrabComponent		seqGrab, 
-					SGChannel				sgchanVideo )
-{
-	ComponentResult err;
-	
-    SGModalFilterUPP MySGModalFilterUPP;
-	if (!(MySGModalFilterUPP = NewSGModalFilterUPP (MySGModalFilterProc)))
-	{
-		fprintf(stderr, "NewSGModalFilterUPP error\n");
-		err = -1L; // TODO appropriate error code
-		goto endFunc;
-	}
-    
-	// let the user configure and choose the device and settings
-	// "Due to a bug in all versions QuickTime 6.x for the function call "SGSettingsDialog()" 
-	// when used with the "seqGrabSettingsPreviewOnly" parameter, all third party panels will 
-	// be excluded."  	from http://www.outcastsoft.com/ASCDFG1394.html  15/03/04
-	//if (err = SGSettingsDialog(seqGrab, sgchanVideo, 0, NULL, seqGrabSettingsPreviewOnly, MySGModalFilterUPP, 0))
-	if (err = SGSettingsDialog(seqGrab, sgchanVideo, 0, NULL, 0, MySGModalFilterUPP, 0))
-	{
-		fprintf(stderr, "SGSettingsDialog err=%ld\n", err);
-		goto endFunc;
-	}
-    
-	// Dispose of the UPP
-	if (MySGModalFilterUPP)
-		DisposeSGModalFilterUPP(MySGModalFilterUPP);
-    
-endFunc:
-		return err;
 }
 
 static ComponentResult vdgGetSettings(VdigGrab* pVdg)
@@ -395,19 +338,16 @@ VdigGrabRef vdgAllocAndInit(const int grabber)
 	return (pVdg);
 }
 
-static ComponentResult vdgRequestSettings(VdigGrab* pVdg, int showDialog)
+static ComponentResult vdgRequestSettings(VdigGrab* pVdg, const int showDialog, const int inputIndex)
 {
 	ComponentResult err;
 	
 	// Use the SG Dialog to allow the user to select device and compression settings
-	if (showDialog) {
-		if (err = RequestSGSettings(  pVdg->seqGrab,
-									  pVdg->sgchanVideo)) {
-			fprintf(stderr, "RequestSGSettings err=%ld\n", err); 
-			goto endFunc;
-		}
-	}
-	
+	if (err = RequestSGSettings(inputIndex, pVdg->seqGrab, pVdg->sgchanVideo, showDialog)) {
+		fprintf(stderr, "RequestSGSettings err=%ld\n", err); 
+		goto endFunc;
+	}	
+
 	if (err = vdgGetSettings(pVdg)) {
 		fprintf(stderr, "vdgGetSettings err=%ld\n", err); 
 		goto endFunc;
@@ -420,11 +360,10 @@ endFunc:
 static VideoDigitizerError vdgGetDeviceNameAndFlags(VdigGrab* pVdg, char* szName, long* pBuffSize, UInt32* pVdFlags)
 {
 	VideoDigitizerError err;
-	Str255	vdName;
+	Str255	vdName; // Pascal string (first byte is string length.
     UInt32	vdFlags;
 	
-	if (!pBuffSize)
-	{
+	if (!pBuffSize) {
 		fprintf(stderr, "vdgGetDeviceName: NULL pointer error\n");
 		err = (VideoDigitizerError)qtParamErr; 
 		goto endFunc;
@@ -432,23 +371,20 @@ static VideoDigitizerError vdgGetDeviceNameAndFlags(VdigGrab* pVdg, char* szName
 	
 	if (err = VDGetDeviceNameAndFlags(  pVdg->vdCompInst,
 										vdName,
-										&vdFlags))
-	{
+										&vdFlags)) {
 		fprintf(stderr, "VDGetDeviceNameAndFlags err=%ld\n", err);
 		*pBuffSize = 0; 
 		goto endFunc;
 	}
 	
-	if (szName)
-	{
+	if (szName) {
 		int copyLen = (*pBuffSize-1 < vdName[0] ? *pBuffSize-1 : vdName[0]);
 		
 		strncpy(szName, vdName+1, copyLen);
 		szName[copyLen] = '\0';
 		
 		*pBuffSize = copyLen + 1;
-	} else
-	{
+	} else {
 		*pBuffSize = vdName[0] + 1;
 	} 
 	
@@ -1396,7 +1332,7 @@ AR2VideoParamT *ar2VideoOpen(char *config)
 		goto out1;
 	}
 	
-	if (err = vdgRequestSettings(vid->pVdg, showDialog)) {
+	if (err = vdgRequestSettings(vid->pVdg, showDialog, gVidCount)) {
 		fprintf(stderr, "vdgRequestSettings err=%ld\n", err);
 		goto out2;
 	}

@@ -114,7 +114,7 @@ then
     LDFLAG=""
     ARFLAG="-r"
     RANLIB="ranlib \$\@"
-    LIBS="-framework Carbon -framework QuickTime -framework GLUT -framework OpenGL -lobjc"
+    LIBS="-framework Carbon -framework QuickTime -framework GLUT -framework OpenGL -framework AppKit -framework Foundation -lobjc"
 
     echo "Dose your Mac have fast texture mapping hardware? (y or n)"
     echo -n "Enter : "
