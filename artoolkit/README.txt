@@ -84,7 +84,7 @@ Mac OS X 10.3 and later include an inbuilt IIDC FireWire camera driver. USB came
 
 Latest changes.
 ---------------
-- Added libARvrml. Build instructions and examples are in the works.
+- Added libARvrml and simpleVRML example. Build instructions are in the works.
 - Turn off texturing in gsub/gsub_lite when argDrawMode/arglDrawmode is AR_DRAW_BY_GL_DRAW_PIXELS.
 - Added new examples collide, loadMultiple, paddle, paddleDemo, paddleInteraction, range and twoView.
 - Added new utilities for testing graphics and video without marker recognition, graphicsTest and videoTest.
