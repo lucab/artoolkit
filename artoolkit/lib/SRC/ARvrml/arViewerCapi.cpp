@@ -45,7 +45,7 @@ static int              vrID = -1;
 static char *get_buff( char *buf, int n, FILE *fp );
 
 
-int arVrmlLoadFile( char *file )
+int arVrmlLoadFile(const char *file)
 {
   
     FILE             *fp;

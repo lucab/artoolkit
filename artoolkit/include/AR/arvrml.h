@@ -25,7 +25,7 @@
 extern "C" {
 #endif
 
-int arVrmlLoadFile( char *file );
+int arVrmlLoadFile(const char *file);
 int arVrmlFree( int id );
 int arVrmlDraw( int id );
 int arVrmlTimerUpdate( void );
