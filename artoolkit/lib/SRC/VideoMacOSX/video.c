@@ -19,6 +19,8 @@
  *								so serialise access when there is more than one thread.
  *	1.2.1   2004-06-28  PRL		Support for 2vuy and yuvs pixel formats.
  *  1.3.0   2004-07-13  PRL		Code from Daniel Heckenberg to directly access vDig.
+ *  1.3.1   2004-12-07  PRL		Added config option "-pixelformat=" to support pixel format
+ *								specification at runtime, with default determined at compile time.
  *
  */
 /*
@@ -1195,18 +1197,30 @@ static void *ar2VideoInternalThread(void *arg)
 
 int ar2VideoDispOption(void)
 {
+	//     0         1         2         3         4         5         6         7
+	//     0123456789012345678901234567890123456789012345678901234567890123456789012
     printf("ARVideo may be configured using one or more of the following options,\n");
     printf("separated by a space:\n\n");
     printf(" -nodialog\n");
-    printf("    don't display video settings dialog.\n");
+    printf("    Don't display video settings dialog.\n");
     printf(" -width=w\n");
-    printf("    scale camera native image to width w.\n");
+    printf("    Scale camera native image to width w.\n");
     printf(" -height=h\n");
-    printf("    scale camera native image to height w.\n");
+    printf("    Scale camera native image to height h.\n");
     printf(" -fps\n");
-    printf("    overlay camera frame counter on image.\n");
+    printf("    Overlay camera frame counter on image.\n");
     printf(" -grabber=n\n");
-    printf("    with multiple video grabbers available, use grabber n, default 1.\n");
+    printf("    With multiple QuickTime video grabber components installed,\n");
+	printf("    use component n (default n=1).\n");
+	printf("    N.B. It is NOT necessary to use this option if you have installed\n");
+	printf("    more than one video input device (e.g. two cameras) as the default\n");
+	printf("    QuickTime grabber can manage multiple video channels.\n");
+	printf(" -pixelformat=cccc\n");
+    printf("    Return images with pixels in format cccc, where cccc is either a\n");
+    printf("    numeric pixel format number or a valid 4-character-code for a\n");
+    printf("    pixel format. The following values are supported: \n");
+    printf("    32, BGRA, RGBA, ABGR, 24, 24BG, 2vuy, yuvs.\n");
+    printf("    (See definitions in <QuickDraw.h> and QuickTime API reference IV-2862.)\n");
     printf("\n");
 
     return (0);
@@ -1229,7 +1243,8 @@ AR2VideoParamT *ar2VideoOpen(char *config)
 #ifndef AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
 	int					weLocked = 0;
 #endif // !AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
-	OSType				pixFormat;
+	OSType				pixFormat = (OSType)0;
+	long				bytesPerPixel;
 	CGrafPtr			theSavedPort;
 	GDHandle			theSavedDevice;
 	Rect				sourceRect = {0, 0};
@@ -1259,6 +1274,15 @@ AR2VideoParamT *ar2VideoOpen(char *config)
                     ar2VideoDispOption();
                     return (NULL);
                 }
+            } else if (strncmp(a, "-pixelformat=", 13) == 0) {
+                sscanf(a, "%s", line);
+                if (sscanf(&line[13], "%c%c%c%c", (char *)&pixFormat, ((char *)&pixFormat) + 1,
+						   ((char *)&pixFormat) + 2, ((char *)&pixFormat) + 3) < 4) { // Try 4-cc first.
+					if (sscanf(&line[13], "%li", (long *)&pixFormat) < 1) { // Fall back to integer.
+						ar2VideoDispOption();
+						return (NULL);
+					}
+                }
             } else if (strncmp(a, "-fps", 4) == 0) {
                 showFPS = 1;
             } else if (strncmp(a, "-nodialog", 9) == 0) {
@@ -1269,9 +1293,53 @@ AR2VideoParamT *ar2VideoOpen(char *config)
             }
 
             while (*a != ' ' && *a != '\t' && *a != '\0') a++; // Skip non-whitespace.
-        }           
-    }           
-
+        }
+    }
+	// If no pixel format was specified in command-line options,
+	// assign the one specified at compile-time as the default.
+	if (!pixFormat) {
+#if defined(AR_PIX_FORMAT_2vuy)
+		pixFormat = k2vuyPixelFormat;		// k422YpCbCr8CodecType, k422YpCbCr8PixelFormat
+#elif defined(AR_PIX_FORMAT_yuvs)
+		pixFormat = kYUVSPixelFormat;		// kComponentVideoUnsigned
+#elif defined(AR_PIX_FORMAT_RGB)
+		pixFormat = k24RGBPixelFormat;
+#elif defined(AR_PIX_FORMAT_BGR)
+		pixFormat = k24BGRPixelFormat;
+#elif defined(AR_PIX_FORMAT_ARGB)
+		pixFormat = k32ARGBPixelFormat;
+#elif defined(AR_PIX_FORMAT_RGBA)
+		pixFormat = k32RGBAPixelFormat;
+#elif defined(AR_PIX_FORMAT_ABGR)
+		pixFormat = k32ABGRPixelFormat;
+#elif defined(AR_PIX_FORMAT_BGRA)
+		pixFormat = k32BGRAPixelFormat;
+#else
+#  error Unsupported default pixel format specified in config.h.
+#endif
+	}
+	
+	switch (pixFormat) {
+		case k2vuyPixelFormat:
+		case kYUVSPixelFormat:
+			bytesPerPixel = 2l;
+			break; 
+		case k24RGBPixelFormat:
+		case k24BGRPixelFormat:
+			bytesPerPixel = 3l;
+			break;
+		case k32ARGBPixelFormat:
+		case k32BGRAPixelFormat:
+		case k32ABGRPixelFormat:
+		case k32RGBAPixelFormat:
+			bytesPerPixel = 4l;
+			break;
+		default:
+			fprintf(stderr, "ar2VideoOpen(): Unsupported pixel format requested.\n");
+			return(NULL);
+			break;			
+	}
+	
 	// Once only, initialize for Carbon.
     if(initF == 0) {
         InitCursor();
@@ -1317,8 +1385,8 @@ AR2VideoParamT *ar2VideoOpen(char *config)
 	vid->showFPS		= showFPS;
 	vid->frameCount		= 0;
 	//vid->lastTime		= 0;
-	//vid->timeScale		= 0;
-	vid->grabber			= grabber;
+	//vid->timeScale	= 0;
+	vid->grabber		= grabber;
 
 	if(!(vid->pVdg = vdgAllocAndInit(grabber))) {
 		fprintf(stderr, "vdgAllocAndInit err=%ld\n", err);
@@ -1378,8 +1446,8 @@ AR2VideoParamT *ar2VideoOpen(char *config)
 			(char)(((*(vid->vdImageDesc))->cType >>  0) & 0xFF),
 			((*vid->vdImageDesc)->width), ((*vid->vdImageDesc)->height));
 			
-	// If a particular size was requested, set our window size based on the request,
-	// otherwise set our window size based on the video size.
+	// If a particular size was requested, set the size of the GWorld to
+	// the request, otherwise set it to the size of the incoming video.
 	vid->width = (width ? width : (int)((*vid->vdImageDesc)->width));
 	vid->height = (height ? height : (int)((*vid->vdImageDesc)->height));
 	SetRect(&(vid->theRect), 0, 0, (short)vid->width, (short)vid->height);
@@ -1397,18 +1465,9 @@ AR2VideoParamT *ar2VideoOpen(char *config)
 	
 	// Allocate buffer for the grabber to write pixel data into, and use
 	// QTNewGWorldFromPtr() to wrap an offscreen GWorld structure around
-	// it. We do this rather than using QTNewGWorld() to do the equivalent
+	// it. We do it in these two steps rather than using QTNewGWorld()
 	// to guarantee that we don't get padding bytes at the end of rows.
-#if defined(AR_PIX_FORMAT_ARGB)
-	pixFormat = k32ARGBPixelFormat;
-#elif defined(AR_PIX_FORMAT_2vuy)
-	pixFormat = k2vuyPixelFormat;		// k422YpCbCr8CodecType, k422YpCbCr8PixelFormat
-#elif defined(AR_PIX_FORMAT_yuvs)
-	pixFormat = kYUVSPixelFormat;		// kComponentVideoUnsigned
-#else
-#  error Unsupported pixel format specified in config.h.
-#endif
-	vid->rowBytes = vid->width * AR_PIX_SIZE;
+	vid->rowBytes = vid->width * bytesPerPixel;
 	vid->bufSize = vid->height * vid->rowBytes;
 	arMalloc(vid->bufPixels, ARUint8, vid->bufSize);
 #ifdef AR_VIDEO_DEBUG_BUFFERCOPY

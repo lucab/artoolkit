@@ -125,18 +125,7 @@ The VRML renderering library and example (libARvrml & simpleVRML) are optional b
 
 Changes in this release.
 ------------------------
-- Added libARvrml and simpleVRML example.
-- Turn off texturing in gsub/gsub_lite when argDrawMode/arglDrawmode is AR_DRAW_BY_GL_DRAW_PIXELS.
-- Added examples loadMultiple, demonstrating basic usage.
-- Added examples rangeTest, collideTest, paddleTest, paddleDemo, paddleInteractionTest, demonstrating interaction techniques.
-- Added example twoView, demonstrating input, processing and output from two (or more) cameras.
-- Added utilities  graphicsTest and videoTest, for testing graphics and video without marker recognition.
-- VideoLinuxV4L patch by Uwe Woessner for YUV support (at last!)
-- VideoLinuxV4L patches by Raphael Grasset for improved camera parameter control and compressed jpeg video stream to support Sony Eyetoy camera.
-- VideoLinux1394Cam patch by Wayne Piekarski for improved lib1394 support, including multiple lib1394 versions.
-- Preliminary API documentation by Raphael Grasset.
-- Default DEFAULT_DRAW_MODE changed to AR_DRAW_BY_TEXTURE_MAPPING on Windows.
-
+- Mac OS X video driver: support added for runtime specification of pixel format.
 
 Changes in earlier releases.
 ----------------------------

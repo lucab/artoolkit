@@ -19,6 +19,8 @@
  *								so serialise access when there is more than one thread.
  *	1.2.1   2004-06-28  PRL		Support for 2vuy and yuvs pixel formats.
  *  1.3.0   2004-07-13  PRL		Code from Daniel Heckenberg to directly access vDig.
+ *  1.3.1   2004-12-07  PRL		Added config option "-pixelformat=" to support pixel format
+ *								specification at runtime, with default determined at compile time.
  *
  */
 /*
