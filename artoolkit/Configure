@@ -1,0 +1,207 @@
+#!/bin/sh
+# ARToolKit Configure for Linux Video Devices
+#
+#####################################################
+
+MDIR=". \
+      lib/SRC \
+      lib/SRC/AR lib/SRC/ARMulti lib/SRC/Gl \
+      lib/SRC/VideoLinux1394Cam lib/SRC/VideoLinuxDV \
+      lib/SRC/VideoLinuxV4L lib/SRC/VideoSGI \
+      lib/SRC/VideoMacOSX \
+      util \
+      util/calib_camera2 util/calib_cparam util/calib_distortion \
+      util/mk_patt \
+      examples \
+      examples/exview  examples/modeTest  examples/multi  \
+      examples/optical  examples/relation  examples/simple  examples/simple2  \
+      examples/simpleLite \
+      "
+
+SED=/tmp/SED.$$
+trap "rm -f $SED; exit 0" 0 1 2 3 15
+
+
+
+E=`uname`
+if [ "$E" = "Linux" ]
+then
+    echo "Select a video capture driver."
+    echo "  1: Video4Linux"
+    echo "  2: Digital Video Camcoder through IEEE 1394 (DV Format)"
+    echo "  3: Digital Video Camera through IEEE 1394 (VGA NONCOMPRESSED Image Format)"
+    echo -n "Enter : "
+    read ANS
+    if [ "$ANS" = "1" ]
+    then
+        VIDEO_DRIVER="VideoLinuxV4L"
+        CFLAG="-O -I/usr/X11R6/include"
+        LDFLAG="-L/usr/X11R6/lib"
+        ARFLAG="rs"
+        RANLIB=""
+        LIBS="-lglut -lGLU -lGL -lXi -lXmu -lX11 -lm"
+        CONFIG="AR_INPUT_V4L"
+    elif [ "$ANS" = "2" ]
+    then
+        VIDEO_DRIVER="VideoLinuxDV"
+        CFLAG="-O -I/usr/include/glib-1.2 -I/usr/lib/glib/include -I/usr/X11R6/include"
+        LDFLAG="-L/usr/X11R6/lib -L/usr/local/lib"
+        ARFLAG="rs"
+        RANLIB=""
+        LIBS="-lraw1394 -ldv -lpthread -lglut -lGLU -lGL -lXi -lXmu -lX11 -lm"
+        CONFIG="AR_INPUT_DV"
+    elif [ "$ANS" = "3" ]
+    then
+        VIDEO_DRIVER="VideoLinux1394Cam"
+        CFLAG="-O -I/usr/X11R6/include"
+        LDFLAG="-L/usr/X11R6/lib"
+        ARFLAG="rs"
+        RANLIB=""
+        LIBS="-lglut -lGLU -lGL -lXi -lXmu -lX11 -lm -lraw1394 -ldc1394_control"
+        CONFIG="AR_INPUT_1394CAM"
+
+        echo "Do you use a DragonFly as the default camera? (y or n)"
+        echo -n "Enter : "
+        read ANS
+        if [ "$ANS" = "y" ]
+        then
+            DRAGON="y"
+        elif [ "$ANS" = "n" ]
+        then
+            DRAGON="n"
+        else
+            echo "Please enter y or n."
+            exit 0
+        fi
+
+    else
+        echo "Please enter 1,2 or 3."
+        exit 0
+    fi
+elif [ "$E" = "IRIX" ]
+then
+    VIDEO_DRIVER="VideoSGI"
+    CFLAG="-O -n32"
+    LDFLAG="-n32"
+    ARFLAG="rs"
+    RANLIB=""
+    LIBS="-lglut -lGLU -lGL -lXmu -lX11 -lvl -lm"
+elif [ "$E" = "IRIX64" ]
+then
+    VIDEO_DRIVER="VideoSGI"
+    CFLAG="-O -n32"
+    LDFLAG="-n32"
+    ARFLAG="rs"
+    RANLIB=""
+    LIBS="-lglut -lGLU -lGL -lXmu -lX11 -lvl -lm"
+elif [ "$E" = "Darwin" ]
+then
+    VIDEO_DRIVER="VideoMacOSX"
+    CFLAG="-O"
+    LDFLAG=""
+    ARFLAG="-r"
+    RANLIB="ranlib \$\@"
+    LIBS=" -framework Carbon -framework QuickTime -framework GLUT -framework OpenGL -lobjc"
+
+    echo "Dose your Mac have fast texture mapping hardware? (y or n)"
+    echo -n "Enter : "
+    read ANS
+    if [ "$ANS" = "y" ]
+    then
+        APPLE_FAST_TEX="y"
+    elif [ "$ANS" = "n" ]
+    then
+        APPLE_FAST_TEX="n"
+    else
+        echo "Please enter y or n."
+        exit 0
+    fi
+else
+    echo "This configure command supports Linux, IRIX and MacOSX."
+    exit 0
+fi
+
+echo "Build gsub libraries with texture rectangle support? (y or n)"
+echo "GL_NV_texture_rectangle is supported on most NVidia graphics cards"
+echo "and on ATi Radeon and better graphics cards"
+echo -n "Enter : "
+read ANS
+if [ "$ANS" = "y" ]
+then
+    NVEXT="y"
+elif [ "$ANS" = "n" ]
+then
+    NVEXT="n"
+else
+    echo "Please enter y or n."
+    exit 0
+fi
+
+echo $VIDEO_DRIVER | sed -e 's/\//\\\//g' >$SED
+VIDEO_DRIVER=`cat $SED`
+echo $CFLAG | sed -e 's/\//\\\//g' >$SED
+CFLAG=`cat $SED`
+echo $LDFLAG | sed -e 's/\//\\\//g' >$SED
+LDFLAG=`cat $SED`
+echo $ARFLAG | sed -e 's/\//\\\//g' >$SED
+ARFLAG=`cat $SED`
+echo $RANLIB | sed -e 's/\//\\\//g' >$SED
+RANLIB=`cat $SED`
+echo $LIBS | sed -e 's/\//\\\//g' >$SED
+LIBS=`cat $SED`
+
+cat > $SED <<EOF
+s/@VIDEO_DRIVER@/$VIDEO_DRIVER/
+s/@CFLAG@/$CFLAG/
+s/@LDFLAG@/$LDFLAG/
+s/@ARFLAG@/$ARFLAG/
+s/@RANLIB@/$RANLIB/
+s/@LIBS@/$LIBS/
+EOF
+
+
+for i in $MDIR
+do
+    echo "  create $i/Makefile"
+    sed -f $SED <$i/Makefile.in > $i/Makefile
+done
+
+if [ "$NVEXT" = "y" ]
+then
+cat > $SED <<EOF
+s/#undef    AR_OPENGL_TEXTURE_RECTANGLE/#define    AR_OPENGL_TEXTURE_RECTANGLE/
+EOF
+elif [ "$NVEXT" = "n" ]
+then
+cat > $SED <<EOF
+s/#undef    AR_OPENGL_TEXTURE_RECTANGLE/#undef    AR_OPENGL_TEXTURE_RECTANGLE/
+EOF
+fi
+
+if [ "$DRAGON" = "y" ]
+then
+cat >> $SED <<EOF
+s/#undef    DRAGONFLY/#define    DRAGONFLY/
+EOF
+fi
+
+if [ "$APPLE_FAST_TEX" = "y" ]
+then
+cat >> $SED <<EOF
+s/#undef    APPLE_TEXTURE_FAST_TRANSFER/#define   APPLE_TEXTURE_FAST_TRANSFER/
+EOF
+fi
+
+if [ $CONFIG ]
+then
+UNDEF="#undef  $CONFIG"
+DEF="#define  $CONFIG"
+cat >> $SED <<EOF
+s/$UNDEF/$DEF/
+EOF
+fi
+
+echo "  create include/AR/config.h"
+sed -f $SED <include/AR/config.h.in > include/AR/config.h
+
+echo "Done."

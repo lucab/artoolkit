@@ -1,0 +1,30 @@
+all:
+	(cd simple;     make -f Makefile)
+	(cd simple2;    make -f Makefile)
+	(cd simpleLite; make -f Makefile)
+	(cd modeTest;   make -f Makefile)
+	(cd optical;    make -f Makefile)
+	(cd exview;     make -f Makefile)
+	(cd relation;   make -f Makefile)
+	(cd multi;      make -f Makefile)
+
+clean:
+	(cd simple;     make -f Makefile clean)
+	(cd simple2;    make -f Makefile clean)
+	(cd simpleLite; make -f Makefile clean)
+	(cd modeTest;   make -f Makefile clean)
+	(cd optical;    make -f Makefile clean)
+	(cd exview;     make -f Makefile clean)
+	(cd relation;   make -f Makefile clean)
+	(cd multi;      make -f Makefile clean)
+
+allclean:
+	(cd simple;     make -f Makefile allclean)
+	(cd simple2;    make -f Makefile allclean)
+	(cd simpleLite; make -f Makefile allclean)
+	(cd modeTest;   make -f Makefile allclean)
+	(cd optical;    make -f Makefile allclean)
+	(cd exview;     make -f Makefile allclean)
+	(cd relation;   make -f Makefile allclean)
+	(cd multi;      make -f Makefile allclean)
+	rm -f Makefile

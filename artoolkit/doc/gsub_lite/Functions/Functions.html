@@ -1,0 +1,252 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+    "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html><style type="text/css"><!--a:link {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: small; color: #0000ff;}a:visited {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: small; color: #0000ff;}a:visited:hover {text-decoration: underline; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: small; color: #ff6600;}a:active {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: small; color: #ff6600;}a:hover {text-decoration: underline; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: small; color: #ff6600;}h4 {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: tiny; font-weight: bold;}body {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: 10pt;}--></style><head>
+    <title>Functions</title>
+	 <meta name="generator" content="HeaderDoc">
+</head><body bgcolor="#ffffff">
+<h1><font face="Geneva,Arial,Helvtica">Functions</font></h1><br>
+<a name="HeaderDoc_functions"></a>
+<dl>
+<dt><tt><a href="Functions.html#arglSetupForCurrentContext" target="doc">arglSetupForCurrentContext</a></tt></dt>
+<dd>Initialise the gsub_lite library for the current OpenGL context.
+</dd>
+<dt><tt><a href="Functions.html#arglCleanup" target="doc">arglCleanup</a></tt></dt>
+<dd>Free memory used by gsub_lite associated with the specified context.
+</dd>
+<dt><tt><a href="Functions.html#arglCameraFrustum" target="doc">arglCameraFrustum</a></tt></dt>
+<dd>Create an OpenGL perspective projection matrix.
+</dd>
+<dt><tt><a href="Functions.html#arglCameraView" target="doc">arglCameraView</a></tt></dt>
+<dd>Create an OpenGL viewing transformation matrix.
+</dd>
+<dt><tt><a href="Functions.html#arglDispImage" target="doc">arglDispImage</a></tt></dt>
+<dd>Display an ARVideo image, by drawing it using OpenGL.
+</dd>
+<dt><tt><a href="Functions.html#arglDispImageStateful" target="doc">arglDispImageStateful</a></tt></dt>
+<dd>Display an ARVideo image, by drawing it using OpenGL, using and modifying current OpenGL state.
+</dd>
+</dl>
+<hr><!-- headerDoc=func; name=arglCameraFrustum --><a name="//apple_ref/c/func/arglCameraFrustum"></a>
+<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h2><a name="arglCameraFrustum">arglCameraFrustum</a></h2>
+</td></tr></table><hr><dl>Create an OpenGL perspective projection matrix.
+
+</dl><blockquote><pre>void arglCameraFrustum(
+    const ARParam *cparam,
+    const double focalmin,
+    const double focalmax,
+    GLdouble m_projection [ 16 ]);
+</pre></blockquote>
+<p>Use this function to create a matrix suitable for passing to OpenGL
+to set the viewing projection.
+</p>
+<h5><font face="Lucida Grande,Helvetica,Arial">Parameter Descriptions</font></h5>
+<blockquote>
+<dl>
+<dt><tt><em>cparam</em></tt></dt><dd>Pointer to a set of ARToolKit camera parameters for the
+current video source.</dd>
+<dt><tt><em>focalmax</em></tt></dt><dd>The maximum distance at which geometry will be rendered.
+Any geometry further away from the camera than this distance will be clipped
+and will not be appear in a rendered frame. Thus, this value should be
+set high enough to avoid clipping of any geometry you care about. However,
+the precision of the depth buffer is correlated with the ratio of focalmin
+to focalmax, thus you should not set focalmax any higher than it needs to be.
+This value should be specified in the same units as your OpenGL drawing.</dd>
+<dt><tt><em>focalmin</em></tt></dt><dd>The minimum distance at which geometry will be rendered.
+Any geometry closer to the camera than this distance will be clipped
+and will not be appear in a rendered frame. Thus, this value should be
+set low enough to avoid clipping of any geometry you care about. However,
+the precision of the depth buffer is correlated with the ratio of focalmin
+to focalmax, thus you should not set focalmin any lower than it needs to be.
+Additionally, geometry viewed in a stereo projections that is too close to
+camera is difficult and tiring to view, so if you are rendering stereo
+perspectives you should set this value no lower than the near-point of
+the eyes. The near point in humans varies, but usually lies between 0.1 m
+0.3 m. This value should be specified in the same units as your OpenGL drawing.</dd>
+<dt><tt><em>m_projection</em></tt></dt><dd>Pointer to a array of 16 GLdoubles, which will be filled
+out with a projection matrix suitable for passing to OpenGL. The matrix
+is specified in column major order.</dd>
+</dl>
+</blockquote>
+<dl><dt><i>availability</i></dt><dd>First appeared in ARToolKit 2.68.
+</dd>
+</dl>
+<hr><!-- headerDoc=func; name=arglCameraView --><a name="//apple_ref/c/func/arglCameraView"></a>
+<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h2><a name="arglCameraView">arglCameraView</a></h2>
+</td></tr></table><hr><dl>Create an OpenGL viewing transformation matrix.
+
+</dl><blockquote><pre>void arglCameraView(
+    double para [ 3 ][ 4 ],
+    GLdouble m_modelview [ 16 ],
+    double scale );
+</pre></blockquote>
+<p>Use this function to create a matrix suitable for passing to OpenGL
+to set the viewing transformation of the virtual camera.
+</p>
+<h5><font face="Lucida Grande,Helvetica,Arial">Parameter Descriptions</font></h5>
+<blockquote>
+<dl>
+<dt><tt><em>para</em></tt></dt><dd>Pointer to 3x4 matrix array of doubles which specify the
+position of an ARToolKit marker, as returned by arGetTransMat().</dd>
+<dt><tt><em>m_modelview</em></tt></dt><dd>Pointer to a array of 16 GLdoubles, which will be filled
+out with a modelview matrix suitable for passing to OpenGL. The matrix
+is specified in column major order.</dd>
+<dt><tt><em>scale</em></tt></dt><dd>Specifies a scaling between ARToolKit's
+units (usually millimeters) and OpenGL's coordinate system units.</dd>
+</dl>
+</blockquote>
+<dl><dt><i>availability</i></dt><dd>First appeared in ARToolKit 2.68.
+</dd>
+</dl>
+<hr><!-- headerDoc=func; name=arglCleanup --><a name="//apple_ref/c/func/arglCleanup"></a>
+<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h2><a name="arglCleanup">arglCleanup</a></h2>
+</td></tr></table><hr><dl>Free memory used by gsub_lite associated with the specified context.
+
+</dl><blockquote><pre>void arglCleanup(
+    ARGL_CONTEXT_SETTINGS_REF contextSettings );
+</pre></blockquote>
+<p>Should be called after no more argl* functions are needed, in order
+to prevent memory leaks etc.
+<br><br>
+The library can be setup again for the context at a later time by calling
+arglSetupForCurrentContext() again.
+</p>
+<h5><font face="Lucida Grande,Helvetica,Arial">Parameter Descriptions</font></h5>
+<blockquote>
+<dl>
+<dt><tt><em>contextSettings</em></tt></dt><dd>A reference to ARGL's settings for an OpenGL
+context, as returned by arglSetupForCurrentContext().</dd>
+</dl>
+</blockquote>
+<dl><dt><i>availability</i></dt><dd>First appeared in ARToolKit 2.68.
+</dd>
+</dl>
+<hr><!-- headerDoc=func; name=arglDispImage --><a name="//apple_ref/c/func/arglDispImage"></a>
+<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h2><a name="arglDispImage">arglDispImage</a></h2>
+</td></tr></table><hr><dl>Display an ARVideo image, by drawing it using OpenGL.
+
+</dl><blockquote><pre>void arglDispImage(
+    ARUint8 *image,
+    const ARParam *cparam,
+    const double zoom,
+    ARGL_CONTEXT_SETTINGS_REF contextSettings );
+</pre></blockquote>
+<p>This function draws an image from an ARVideo source to the current
+OpenGL context. This operation is most useful in video see-through
+augmented reality applications for drawing the camera view as a
+background image, but can also be used in other ways.
+<br><br>
+An undistorted image is drawn with the lower-left corner of the
+bottom-left-most pixel at OpenGL screen coordinates (0,0), and the
+upper-right corner of the top-right-most pixel at OpenGL screen
+coodinates (x * zoom, y * zoom), where x and y are the values of the
+fields cparam->xsize and cparam->ysize (see below) and zoom is the
+value of the parameter zoom (also see below). If cparam->dist_factor
+indicates that an un-warping correction should be applied, the actual
+coordinates will differ from the values specified here. 
+<br><br>
+OpenGL state: Drawing is performed with depth testing and lighting
+disabled, and thus leaves the the depth buffer (if any) unmodified. If
+pixel transfer is by texturing (see documentation for arglDrawMode),
+the drawing is done in replacement texture environment mode.
+The depth test enable and lighting enable state and the texture
+environment mode are restored before the function returns.
+</p>
+<h5><font face="Lucida Grande,Helvetica,Arial">Parameter Descriptions</font></h5>
+<blockquote>
+<dl>
+<dt><tt><em>image</em></tt></dt><dd>Pointer to the tightly-packed image data (as returned by
+arVideoGetImage()). The horizontal and vertical dimensions of the image
+data must exactly match the values specified in the fields cparam->xsize
+and cparam->ysize (see below).
+<br><br>
+The first byte of image data corresponds to the first component of the
+top-left-most pixel in the image. The data continues with the remaining
+pixels of the first row, followed immediately by the pixels of the second
+row, and so on to the last byte of the image data, which corresponds to
+the last component of the bottom-right-most pixel.
+<br><br>
+In the current version of gsub_lite, the format of the pixels (i.e. the
+arrangement of components within each pixel) is fixed at the time the
+library is built, and cannot be changed at runtime. (It is determined by
+which of the possible AR_PIXEL_FORMAT_xxxx symbols was defined at the
+time the library was built.) Usually, image data is passed in directly
+from images generated by ARVideo, and so you should ensure that ARVideo
+is generating pixels of the same format.</dd>
+<dt><tt><em>cparam</em></tt></dt><dd>Pointer to a set of ARToolKit camera parameters for the
+current video source. The size of the source image is taken from the
+fields xsize and ysize of the ARParam structure pointed to. Also, when
+the draw mode is AR_DRAW_BY_TEXTURE_MAPPING (see the documentation for
+the global variable arglDrawMode) the field dist_factor of the ARParam
+structure pointed to will be taken as the amount to un-warp the supplied
+image.</dd>
+<dt><tt><em>zoom</em></tt></dt><dd>The amount to scale the video image up or down. To draw the video
+image double size, use a zoom value of 2.0. To draw the video image
+half size use a zoom value of 0.5.</dd>
+<dt><tt><em>contextSettings</em></tt></dt><dd>A reference to ARGL's settings for the current OpenGL
+context, as returned by arglSetupForCurrentContext() for this context. It
+is the callers responsibility to make sure that the current context at the
+time arglDisplayImage() is called matches that under which contextSettings
+was created.</dd>
+</dl>
+</blockquote>
+<dl><dt><i>availability</i></dt><dd>First appeared in ARToolKit 2.68.
+</dd>
+</dl>
+<hr><!-- headerDoc=func; name=arglDispImageStateful --><a name="//apple_ref/c/func/arglDispImageStateful"></a>
+<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h2><a name="arglDispImageStateful">arglDispImageStateful</a></h2>
+</td></tr></table><hr><dl>Display an ARVideo image, by drawing it using OpenGL, using and modifying current OpenGL state.
+
+</dl><blockquote><pre>void arglDispImageStateful(
+    ARUint8 *image,
+    const ARParam *cparam,
+    const double zoom,
+    ARGL_CONTEXT_SETTINGS_REF contextSettings );
+</pre></blockquote>
+<p>This function is identical to arglDispImage except that whereas
+arglDispImage sets an orthographic 2D projection and the OpenGL state
+prior to drawing, this function does not. It also does not restore any
+changes made to OpenGL state.
+<br><br>
+This allows you to do effects with your image, other than just drawing it
+2D and with the lower-left corner of the bottom-left-most pixel attached
+to the bottom-left (0,0) of the window. For example, you might use a
+perspective projection instead of an orthographic projection with a
+glLoadIdentity() / glTranslate() on the modelview matrix to place the
+lower-left corner of the bottom-left-most pixel somewhere other than 0,0
+and leave depth-testing enabled.
+<br><br>
+See the documentation for arglDispImage() for more information.
+</p>
+<dl><dt><i>availability</i></dt><dd>First appeared in ARToolKit 2.68.2.
+ </dd>
+</dl>
+<hr><!-- headerDoc=func; name=arglSetupForCurrentContext --><a name="//apple_ref/c/func/arglSetupForCurrentContext"></a>
+<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h2><a name="arglSetupForCurrentContext">arglSetupForCurrentContext</a></h2>
+</td></tr></table><hr><dl>Initialise the gsub_lite library for the current OpenGL context.
+
+</dl><blockquote><pre>ARGL_CONTEXT_SETTINGS_REF arglSetupForCurrentContext(
+    void );
+</pre></blockquote>
+<p>This function performs required setup of the gsub_lite library
+for the current OpenGL context and must be called before any other argl*()
+functions are called for this context.
+<br><br>
+An OpenGL context holds all of the state of the OpenGL machine, including
+textures and display lists etc. There will usually be one OpenGL context
+for each window displaying OpenGL content.
+<br><br>
+Other argl*() functions whose operation depends on OpenGL state will
+require an ARGL_CONTEXT_SETTINGS_REF. This is just so that
+they can keep track of per-context variables.
+<br><br>
+You should call arglCleanup() passing in the ARGL_CONTEXT_SETTINGS_REF
+when you have finished with the library for this context.
+</p>
+<dl><dt><i>function result</i></dt><dd>An ARGL_CONTEXT_SETTINGS_REF. See the documentation for this type for more info.
+</dd>
+<dt><i>availability</i></dt><dd>First appeared in ARToolKit 2.68.
+</dd>
+</dl>
+<p><p>&#169; 2003-2004 Philip Lamb
+ (Last Updated 07/02/2004)
+</p></body></html>

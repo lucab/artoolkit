@@ -1,0 +1,347 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "calib_camera2"=.\util\calib_camera2\calib_camera2.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libAR
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARgsub
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARvideo
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "calib_cparam"=.\util\calib_cparam\calib_cparam.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libAR
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARgsub
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARvideo
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "calib_distortion"=.\util\calib_distortion\calib_distortion.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libAR
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARgsub
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARvideo
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "exview"=.\examples\exview\exview.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libAR
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARgsub
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARvideo
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "libAR"=.\lib\SRC\AR\libAR.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "libARgsub"=.\lib\SRC\Gl\libARgsub.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "libARgsubUtil"=.\LIB\SRC\GL\libARgsubUtil.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "libARgsub_lite"=.\LIB\SRC\GL\libARgsub_lite.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "libARmulti"=.\lib\SRC\ARMulti\libARmulti.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "libARvideo"=.\LIB\SRC\VIDEOWIN32DIRECTSHOW\libARvideo.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "mkpatt"=.\util\mk_patt\mkpatt.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libAR
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARgsub
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARvideo
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "modetest"=.\examples\modeTest\modetest.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libAR
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARgsub
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARvideo
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "multi"=.\examples\multi\multi.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libAR
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARgsub
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARmulti
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARvideo
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "optical"=.\examples\optical\optical.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libAR
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARgsub
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARgsubUtil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARvideo
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "relation"=.\examples\relation\relation.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libAR
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARgsub
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARvideo
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "simple"=.\examples\simple\simple.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libAR
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARgsub
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARvideo
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "simple2"=.\examples\simple2\simple2.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libAR
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARgsub
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARvideo
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "simpleLite"=.\examples\simpleLite\simpleLite.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libAR
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARgsub_lite
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARvideo
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+
