@@ -71,6 +71,7 @@
 
 - (void)dealloc
 {
+	if (mUserData) DisposeUserData(mUserData);
 	[super dealloc];
 }
 
