@@ -1,5 +1,5 @@
 /*
- *  gsub_lite_demo.c
+ *  simpleLite.c
  *
  *  Some code to demonstrate use of gsub_lite's argl*() functions.
  *  Shows the correct GLUT usage to read a video frame (in the idle callback)
@@ -14,11 +14,30 @@
  *	1.0.1	20040721	PRL		Correctly sets window size; supports arVideoDispOption().
  *
  */
+/*
+ * 
+ * This file is part of ARToolKit.
+ * 
+ * ARToolKit is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * ARToolKit is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with ARToolKit; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * 
+ */
+
 
 // ============================================================================
 //	Includes
 // ============================================================================
-
 
 #include <stdio.h>
 #include <stdlib.h>					// malloc(), free()
@@ -37,10 +56,7 @@
 //	Constants
 // ============================================================================
 
-#define MY_SCALEFACTOR			0.025		// 1.0 ARToolKit unit becomes 0.025 of my OpenGL units.
-#define MY_CPARAM				"Data/camera_para.dat"
-#define MY_PATTERN				"Data/patt.hiro"
-
+#define VIEW_SCALEFACTOR		0.025		// 1.0 ARToolKit unit becomes 0.025 of my OpenGL units.
 #define VIEW_DISTANCE_MIN		0.1			// Objects closer to the camera than this will not be displayed.
 #define VIEW_DISTANCE_MAX		100.0		// Objects further away from the camera than this will not be displayed.
 
@@ -50,63 +66,121 @@
 
 // Preferences.
 static BOOL prefWindowed = TRUE;
+static int prefWidth = 640;					// Fullscreen mode width.
+static int prefHeight = 480;				// Fullscreen mode height.
+//static int prefDepth = 32;				// Fullscreen mode bit depth.
+//static int prefRefresh = 60;				// Fullscreen mode refresh rate.
 
 // ARToolKit globals.
-static long			gMainCountCallsMarkerDetect = 0;
+static long			gCallCountMarkerDetect = 0;
 static int			gARTThreshhold = 100;
-static ARParam		gARTCparam;
 static int			gPatt_id;
 static double		gPatt_width     = 80.0;
 static double		gPatt_centre[2] = {0.0, 0.0};
+
+static ARParam		gARTCparam;
+static ARUint8		*gARTImage = NULL;
 static double		gPatt_trans[3][4];
 static BOOL			gPatt_found;
-static ARUint8		*gARTImage = NULL;
-static ARGL_CONTEXT_SETTINGS_REF gContextSettings = NULL;
+static ARGL_CONTEXT_SETTINGS_REF gArglSettings = NULL;
 
 // Other globals.
-static float gDrawRotateAngle;			// For use in drawing.
+static BOOL gDrawRotate = FALSE;
+static float gDrawRotateAngle = 0;			// For use in drawing.
 
 // ============================================================================
 //	Functions
 // ============================================================================
 
-BOOL demoARSetupCamera(const unsigned char *cparam_name, ARParam *cparam)
+// Something to look at, draw a rotating colour cube.
+static void DrawCube(void)
 {
-	// Press the '?' key while running to see what options are accepted.
-#if defined(_WIN32)
-	char *vconf = "flipV,showDlg";
-#elif defined(__APPLE__)
-	char *vconf = NULL;
-#else
-	char *vconf = NULL;
-#endif
+	// Colour cube data.
+	static GLuint polyList = 0;
+	float fSize = 0.5f;
+	long f, i;	
+	const GLfloat cube_vertices [8][3] = {
+	{1.0, 1.0, 1.0}, {1.0, -1.0, 1.0}, {-1.0, -1.0, 1.0}, {-1.0, 1.0, 1.0},
+	{1.0, 1.0, -1.0}, {1.0, -1.0, -1.0}, {-1.0, -1.0, -1.0}, {-1.0, 1.0, -1.0} };
+	const GLfloat cube_vertex_colors [8][3] = {
+	{1.0, 1.0, 1.0}, {1.0, 1.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 1.0, 1.0},
+	{1.0, 0.0, 1.0}, {1.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 1.0} };
+	GLint cube_num_faces = 6;
+	const short cube_faces [6][4] = {
+	{3, 2, 1, 0}, {2, 3, 7, 6}, {0, 1, 5, 4}, {3, 0, 4, 7}, {1, 2, 6, 5}, {4, 5, 6, 7} };
 	
+	if (!polyList) {
+		polyList = glGenLists (1);
+		glNewList(polyList, GL_COMPILE);
+		glBegin (GL_QUADS);
+		for (f = 0; f < cube_num_faces; f++)
+			for (i = 0; i < 4; i++) {
+				glColor3f (cube_vertex_colors[cube_faces[f][i]][0], cube_vertex_colors[cube_faces[f][i]][1], cube_vertex_colors[cube_faces[f][i]][2]);
+				glVertex3f(cube_vertices[cube_faces[f][i]][0] * fSize, cube_vertices[cube_faces[f][i]][1] * fSize, cube_vertices[cube_faces[f][i]][2] * fSize);
+			}
+				glEnd ();
+		glColor3f (0.0, 0.0, 0.0);
+		for (f = 0; f < cube_num_faces; f++) {
+			glBegin (GL_LINE_LOOP);
+			for (i = 0; i < 4; i++)
+				glVertex3f(cube_vertices[cube_faces[f][i]][0] * fSize, cube_vertices[cube_faces[f][i]][1] * fSize, cube_vertices[cube_faces[f][i]][2] * fSize);
+			glEnd ();
+		}
+		glEndList ();
+	}
+	
+	glPushMatrix(); // Save world coordinate system.
+	glTranslatef(0.0, 0.0, 0.5); // Place base of cube on marker surface.
+	glRotatef(gDrawRotateAngle, 0.0, 0.0, 1.0); // Rotate about z axis.
+	glDisable(GL_LIGHTING);	// Just use colours.
+	glCallList(polyList);	// Draw the cube.
+	glPopMatrix();	// Restore world coordinate system.
+	
+}
+
+static void DrawCubeUpdate(float timeDelta)
+{
+	if (gDrawRotate) {
+		gDrawRotateAngle += timeDelta * 45.0f; // Rotate cube at 45 degrees per second.
+		if (gDrawRotateAngle > 360.0f) gDrawRotateAngle -= 360.0f;
+	}
+}
+
+// Sets up gARTCparam.
+static BOOL demoARSetupCamera(const unsigned char *cparam_name, char *vconf)
+{	
     ARParam  wparam;
 	int xsize, ysize;
-	
+
     // Open the video path.
-    if(arVideoOpen(vconf) < 0) return (FALSE);
+    if (arVideoOpen(vconf) < 0) {
+    	fprintf(stderr, "demoARSetupCamera(): Unable to open connection to camera.\n");
+    	return (FALSE);
+	}
 	
     // Find the size of the window.
-    if(arVideoInqSize(&xsize, &ysize) < 0) return (FALSE);
-    fprintf(stderr, "demoARSetupCamera(): Image size (x,y) = (%d,%d)\n", xsize, ysize);
+    if (arVideoInqSize(&xsize, &ysize) < 0) return (FALSE);
+    fprintf(stderr, "demoARSetupCamera(): Camera image size (x,y) = (%d,%d)\n", xsize, ysize);
 	
-    // Set the initial camera parameters.
-    if(arParamLoad(cparam_name, 1, &wparam) < 0) {
-        fprintf(stderr, "demoARSetupCamera(): Camera parameter load error !!\n");
+	// Load the camera parameters, resize for the window and init.
+    if (arParamLoad(cparam_name, 1, &wparam) < 0) {
+		fprintf(stderr, "demoARSetupCamera(): Error loading parameter file %s for camera.\n", cparam_name);
         return (FALSE);
     }
-    arParamChangeSize(&wparam, xsize, ysize, cparam);
-    arInitCparam(cparam);
+    arParamChangeSize(&wparam, xsize, ysize, &gARTCparam);
+    arInitCparam(&gARTCparam);
     fprintf(stderr, "*** Camera Parameter ***\n");
-    arParamDisp(cparam);
+    arParamDisp(&gARTCparam);
 	
-    arVideoCapStart();
+    if (arVideoCapStart() != 0) {
+    	fprintf(stderr, "demoARSetupCamera(): Unable to begin camera data capture.\n");
+		return (FALSE);		
+	}
 	
 	return (TRUE);
 }
 
-BOOL demoARSetupMarker(const unsigned char *patt_name, int *patt_id)
+static BOOL demoARSetupMarker(const unsigned char *patt_name, int *patt_id)
 {
 	
     if((*patt_id = arLoadPatt(patt_name)) < 0) {
@@ -119,7 +193,7 @@ BOOL demoARSetupMarker(const unsigned char *patt_name, int *patt_id)
 
 // Report state of ARToolKit global variables arFittingMode,
 // arImageProcMode, arglDrawMode, arTemplateMatchingMode, arMatchingPCAMode.
-void demoARDebugReportMode(void)
+static void demoARDebugReportMode(void)
 {
 	if(arFittingMode == AR_FITTING_TO_INPUT ) {
 		fprintf(stderr, "FittingMode (Z): INPUT IMAGE\n");
@@ -154,16 +228,19 @@ void demoARDebugReportMode(void)
 	}
 }
 
-void Keyboard(unsigned char key, int x, int y)
+static void Keyboard(unsigned char key, int x, int y)
 {
 	switch (key) {
 		case 0x1B:						// Quit.
 		case 'Q':
 		case 'q':
-			arglCleanup(gContextSettings);
+			arglCleanup(gArglSettings);
 			arVideoCapStop();
 			arVideoClose();
 			exit(0);
+			break;
+		case ' ':
+			gDrawRotate = !gDrawRotate;
 			break;
 		case 'C':
 		case 'c':
@@ -175,25 +252,27 @@ void Keyboard(unsigned char key, int x, int y)
 			} else {
 				arglDrawMode  = AR_DRAW_BY_GL_DRAW_PIXELS;
 			}
-			fprintf(stderr, "*** %f (frame/sec)\n", (double)gMainCountCallsMarkerDetect/arUtilTimer());
-			gMainCountCallsMarkerDetect = 0;
+			fprintf(stderr, "*** Camera - %f (frame/sec)\n", (double)gCallCountMarkerDetect/arUtilTimer());
+			gCallCountMarkerDetect = 0;
+			arUtilTimerReset();
 			demoARDebugReportMode();
 			break;
 			break;
+#ifdef AR_OPENGL_TEXTURE_RECTANGLE
 		case 'R':
 		case 'r':
-			#ifdef AR_OPENGL_TEXTURE_RECTANGLE
 			arglTexRectangle = !arglTexRectangle;
 			fprintf(stderr, "Toggled arglTexRectangle to %d.\n", arglTexRectangle);
-			#endif // AR_OPENGL_TEXTURE_RECTANGLE
 			break;
+#endif // AR_OPENGL_TEXTURE_RECTANGLE
 		case '?':
 		case '/':
 			printf("Keys:\n");
 			printf(" q or [esc]    Quit demo.\n");
 			printf(" c             Change arglDrawMode and arglTexmapMode.\n");
+#ifdef AR_OPENGL_TEXTURE_RECTANGLE
 			printf(" r             Toggle arglTexRectangle.\n");
-			printf(" ? or /        Show this help.\n");
+#endif // AR_OPENGL_TEXTURE_RECTANGLE
 			printf(" ? or /        Show this help.\n");
 			printf("\nAdditionally, the ARVideo library supplied the following help text:\n");
 			arVideoDispOption();
@@ -203,7 +282,7 @@ void Keyboard(unsigned char key, int x, int y)
 	}
 }
 
-void Idle(void)
+static void Idle(void)
 {
 	static int ms_prev;
 	int ms;
@@ -217,21 +296,20 @@ void Idle(void)
 	// Find out how long since Idle() last ran.
 	ms = glutGet(GLUT_ELAPSED_TIME);
 	s_elapsed = (float)(ms - ms_prev) * 0.001;
-	if (s_elapsed < 0.01) return; // Don't update more often than 100 Hz.
+	if (s_elapsed < 0.01f) return; // Don't update more often than 100 Hz.
 	ms_prev = ms;
 	
 	// Update drawing.
-	gDrawRotateAngle += s_elapsed * 5.0; // Rotate cube at 5 degrees per second.
-	if (gDrawRotateAngle > 360.0) gDrawRotateAngle -= 360.0;
+	DrawCubeUpdate(s_elapsed);
 	
 	// Grab a video frame.
-	if((image = arVideoGetImage()) != NULL) {
+	if ((image = arVideoGetImage()) != NULL) {
 		gARTImage = image;
 		
-		gMainCountCallsMarkerDetect++; // Increment ARToolKit FPS counter.
+		gCallCountMarkerDetect++; // Increment ARToolKit FPS counter.
 		
 		// Detect the markers in the video frame.
-		if(arDetectMarker(gARTImage, gARTThreshhold, &marker_info, &marker_num) < 0) {
+		if (arDetectMarker(gARTImage, gARTThreshhold, &marker_info, &marker_num) < 0) {
 			exit(-1);
 		}
 		
@@ -245,25 +323,22 @@ void Idle(void)
 			}
 		}
 		
-		if(k != -1) {
+		if (k != -1) {
 			// Get the transformation between the marker and the real camera into gPatt_trans.
 			arGetTransMat(&(marker_info[k]), gPatt_centre, gPatt_width, gPatt_trans);
 			gPatt_found = TRUE;
-		} else {
-			gPatt_found = FALSE;
 		}
 		
 		// Tell GLUT the display has changed.
 		glutPostRedisplay();
-	}
-		
+	}	
 }
 
 //
 //	The function is called on events when the visibility of the
 //	GLUT window changes (including when it first becomes visible).
 //
-void Visibility(int visible)
+static void Visibility(int visible)
 {
 	if (visible == GLUT_VISIBLE) {
 		glutIdleFunc(Idle);
@@ -276,7 +351,7 @@ void Visibility(int visible)
 //	The function is called when the
 //	GLUT window is resized.
 //
-void Reshape(int w, int h)
+static void Reshape(int w, int h)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glViewport(0, 0, (GLsizei) w, (GLsizei) h);
@@ -289,103 +364,80 @@ void Reshape(int w, int h)
 	// Call through to anyone else who needs to know about window sizing here.
 }
 
-// Something to look at, draw a rotating colour cube.
-void Draw(void)
-{
-	// Colour cube data.
-	static GLuint polyList = 0;
-	float fSize = 0.5f;
-	long f, i;	
-	const GLfloat cube_vertices [8][3] = {
-	{1.0, 1.0, 1.0}, {1.0, -1.0, 1.0}, {-1.0, -1.0, 1.0}, {-1.0, 1.0, 1.0},
-	{1.0, 1.0, -1.0}, {1.0, -1.0, -1.0}, {-1.0, -1.0, -1.0}, {-1.0, 1.0, -1.0} };
-	const GLfloat cube_vertex_colors [8][3] = {
-	{1.0, 1.0, 1.0}, {1.0, 1.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 1.0, 1.0},
-	{1.0, 0.0, 1.0}, {1.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 1.0} };
-	GLint cube_num_faces = 6;
-	const short cube_faces [6][4] = {
-	{3, 2, 1, 0}, {2, 3, 7, 6}, {0, 1, 5, 4}, {3, 0, 4, 7}, {1, 2, 6, 5}, {4, 5, 6, 7} };
-	
-	if (!polyList) {
-		polyList = glGenLists (1);
-		glNewList(polyList, GL_COMPILE);
-		glBegin (GL_QUADS);
-		for (f = 0; f < cube_num_faces; f++)
-			for (i = 0; i < 4; i++) {
-				glColor3f (cube_vertex_colors[cube_faces[f][i]][0], cube_vertex_colors[cube_faces[f][i]][1], cube_vertex_colors[cube_faces[f][i]][2]);
-				glVertex3f(cube_vertices[cube_faces[f][i]][0] * fSize, cube_vertices[cube_faces[f][i]][1] * fSize, cube_vertices[cube_faces[f][i]][2] * fSize);
-			}
-			glEnd ();
-		glColor3f (0.0, 0.0, 0.0);
-		for (f = 0; f < cube_num_faces; f++) {
-			glBegin (GL_LINE_LOOP);
-			for (i = 0; i < 4; i++)
-				glVertex3f(cube_vertices[cube_faces[f][i]][0] * fSize, cube_vertices[cube_faces[f][i]][1] * fSize, cube_vertices[cube_faces[f][i]][2] * fSize);
-			glEnd ();
-		}
-		glEndList ();
-	}
-
-	glPushMatrix(); // Save world coordinate system.
-	glRotatef(gDrawRotateAngle, 0.0, 0.0, 1.0); // Rotate about z axis.
-	glDisable(GL_LIGHTING);	// Just use colours.
-	glCallList(polyList);	// Draw the cube.
-	glPopMatrix();	// Restore world coordinate system.
-
-}
-
 //
 // The function is called when the window needs redrawing.
 //
-void Display(void)
+static void Display(void)
 {
-
     static GLdouble *p = NULL;
 	GLdouble  m[16];
 	
-	if (gARTImage) {
-
-		// Context setup.
-		glDrawBuffer(GL_BACK);
-		arglDispImage(gARTImage, &gARTCparam, 1.0, gContextSettings);	// zoom = 1.0.
+	// Context setup.
+	glDrawBuffer(GL_BACK);
+	arglDispImage(gARTImage, &gARTCparam, 1.0, gArglSettings);	// zoom = 1.0.
 	
-		arVideoCapNext();
+	arVideoCapNext();
 				
-		if (gPatt_found) {
-			glClear(GL_DEPTH_BUFFER_BIT);	// Clear the buffers for new frame.
-			
-			if (p == NULL) {
-				p = (GLdouble *)malloc(16 * (sizeof(GLdouble)));
-				arglCameraFrustum(&gARTCparam, VIEW_DISTANCE_MIN, VIEW_DISTANCE_MAX, p);
-			}
-			glMatrixMode(GL_PROJECTION);
-			glLoadMatrixd(p);
-			glMatrixMode(GL_MODELVIEW);
-			
-			// Load the camera transformation matrix.
-			// ARToolKit supplied distance in millimetres, but I want OpenGL to work in metres.
-			arglCameraView(gPatt_trans, m, MY_SCALEFACTOR);
-			glLoadMatrixd(m);
-			
-			glTranslatef(0.0, 0.0, 0.5); // Place base of cube on marker surface.
-			Draw();
-			
-			gPatt_found = FALSE;
-		}
+	if (gPatt_found) {
+		glClear(GL_DEPTH_BUFFER_BIT);	// Clear the buffers for new frame.
 		
-		glutSwapBuffers();
-	}
-
+		// Projection transformation.
+		if (p == NULL) {
+			p = (GLdouble *)malloc(16 * (sizeof(GLdouble)));
+			arglCameraFrustum(&gARTCparam, VIEW_DISTANCE_MIN, VIEW_DISTANCE_MAX, p);
+		}
+		glMatrixMode(GL_PROJECTION);
+		glLoadMatrixd(p);
+		glMatrixMode(GL_MODELVIEW);
+		
+		// Viewing transformation.
+		glLoadIdentity();
+		// Lighting and geometry that moves with the camera should go here.
+		// (I.e. must be specified before viewing transformations.)
+		//none
+		
+		// ARToolKit supplied distance in millimetres, but I want OpenGL to work in metres.
+		arglCameraView(gPatt_trans, m, VIEW_SCALEFACTOR);
+		glLoadMatrixd(m);
+		
+		// All other lighting and geometry goes here.
+		DrawCube();
+		
+		gPatt_found = FALSE;
+	} // gPatt_found
+	
+	// Any 2D overlays go here.
+	//none
+	
+	glutSwapBuffers();
 }
-
 
 int main(int argc, char** argv)
 {
-	const unsigned char *cparam_name    = MY_CPARAM;
-	const unsigned char *patt_name      = MY_PATTERN;
 	char glutGamemode[32];
+	const unsigned char *cparam_name = 
+		"Data/camera_para.dat";
+	char *vconf = // Camera configuration.
+#if defined(_WIN32)
+		"showDlg,flipV";
+#elif defined(__APPLE__)
+		"";
+#else
+		"-dev=/dev/video0 -channel=0 -palette=YUV420P -width=320 -height=240";
+#endif
+	const unsigned char *patt_name  = "Data/patt.hiro";
 	
-	if (!demoARSetupCamera(cparam_name, &gARTCparam)) {
+	// ----------------------------------------------------------------------------
+	// Library inits.
+	//
+
+	glutInit(&argc, argv);
+
+	// ----------------------------------------------------------------------------
+	// Hardware setup.
+	//
+
+	if (!demoARSetupCamera(cparam_name, vconf)) {
 		fprintf(stderr, "main(): Unable to set up AR camera.\n");
 		exit(-1);
 	}
@@ -394,26 +446,29 @@ int main(int argc, char** argv)
 		fprintf(stderr, "main(): Unable to set up AR marker.\n");
 		exit(-1);
 	}
-	glutInit(&argc, argv);
 	
-	// Set up the OpenGL context.
+	// ----------------------------------------------------------------------------
+	// Library setup.
+	//
+
+	// Set up GL context(s) for OpenGL to draw into.
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
 	if (!prefWindowed) {								// GLUT mono fullscreen.
 		//sprintf(glutGamemode, "%ix%i:%i@%i", prefWidth, prefHeight, prefDepth, prefRefresh);
-		sprintf(glutGamemode, "%ix%i", gARTCparam.xsize, gARTCparam.ysize);
+		sprintf(glutGamemode, "%ix%i", prefWidth, prefHeight);
 		glutGameModeString(glutGamemode);
 		glutEnterGameMode();
 	} else {											// GLUT mono windowed.
 		glutInitWindowSize(gARTCparam.xsize, gARTCparam.ysize);
-		//glutInitWindowPosition(100, 100);
 		glutCreateWindow(argv[0]);
 	}
 
 	// Setup argl library for current context.
-	if ((gContextSettings = arglSetupForCurrentContext()) == NULL) {
+	if ((gArglSettings = arglSetupForCurrentContext()) == NULL) {
 		fprintf(stderr, "main(): arglSetupForCurrentContext() returned error.\n");
 		exit(-1);
 	}
+	arUtilTimerReset();
 		
 	// Register GLUT event-handling callbacks.
 	// NB: Idle() is registered by Visibility.

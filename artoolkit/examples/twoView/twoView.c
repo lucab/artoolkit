@@ -10,6 +10,26 @@
  *	1.0.0	2004-10-27	PRL		Initial version.
  *
  */
+/*
+ * 
+ * This file is part of ARToolKit.
+ * 
+ * ARToolKit is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * ARToolKit is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with ARToolKit; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * 
+ */
+
 
 // ============================================================================
 //	Includes
@@ -60,11 +80,8 @@ typedef struct {
 
 static GLuint *gDrawListBox = NULL;
 
-CONTEXT_INFO gContextsActive[CONTEXTSACTIVECOUNTMAX];
+CONTEXT_INFO *gContextsActive;
 int gContextsActiveCount = 0;
-
-static BOOL gAlwaysVisible = FALSE;	// Setting this to true will make the program ignore
-									// events that tell it it is not visible.
 
 // ARToolKit globals.
 static long			gCallCountGetImage = 0;
@@ -75,13 +92,13 @@ static double		gPatt_centre[2] = {0.0, 0.0};
 
 // Other globals.
 static BOOL gDrawRotate = FALSE;
-static float gDrawRotateAngle;			// For use in drawing.
+static float gDrawRotateAngle = 0;			// For use in drawing.
 
 // ============================================================================
 //	Functions
 // ============================================================================
 
-BOOL DrawCubeInit(int contextsActiveCountMax)
+static BOOL DrawCubeInit(int contextsActiveCountMax)
 {
 	// Allocate room for display lists for all contexts.
 	if (gDrawListBox) return (FALSE); // Sanity check.
@@ -92,7 +109,7 @@ BOOL DrawCubeInit(int contextsActiveCountMax)
 	
 }
 
-BOOL DrawCubeSetup(int contextIndex)
+static BOOL DrawCubeSetup(int contextIndex)
 {
 	// Colour cube data.
 	float fSize = 0.5f;
@@ -130,7 +147,7 @@ BOOL DrawCubeSetup(int contextIndex)
 }
 
 // Something to look at, draw a rotating colour cube.
-void DrawCube(int contextIndex)
+static void DrawCube(int contextIndex)
 {
 	// Draw the colour cube.
 	glPushMatrix(); // Save world coordinate system.
@@ -141,7 +158,7 @@ void DrawCube(int contextIndex)
 	glPopMatrix();	// Restore world coordinate system.
 }
 
-void DrawCubeUpdate(float timeDelta)
+static void DrawCubeUpdate(float timeDelta)
 {
 	if (gDrawRotate) {
 		gDrawRotateAngle += timeDelta * 45.0f; // Rotate cube at 45 degrees per second.
@@ -149,7 +166,7 @@ void DrawCubeUpdate(float timeDelta)
 	}
 }
 
-BOOL DrawCubeCleanup(int contextIndex)
+static BOOL DrawCubeCleanup(int contextIndex)
 {
 	if (contextIndex >= gContextsActiveCount) return (FALSE); // Sanity check.
 	
@@ -162,7 +179,7 @@ BOOL DrawCubeCleanup(int contextIndex)
 	return (TRUE);
 }
 
-BOOL DrawCubeFinal(void)
+static BOOL DrawCubeFinal(void)
 {
 	if (!gDrawListBox) {
 		free(gDrawListBox);
@@ -171,7 +188,8 @@ BOOL DrawCubeFinal(void)
 	return (TRUE);	
 }
 
-//	Function to clean up and then exit.
+// Function to clean up and then exit. Will be
+// installed by atexit() and called when program exit()s.
 static void Quit(void)
 {
 	int i;
@@ -194,16 +212,10 @@ static void Quit(void)
 	
 	// Library finals (in reverse order to inits.)
 	DrawCubeFinal();
-
-	// Unless we don't have an atexit() function, terminate by falling off end
-	// (since Quit is called by exit()'s exitfunc.)
-#ifdef NOATEXIT
-	exit(0);
-#endif
 }
 
 // Sets up fields ARTVideo, ARTCparam of gContextsActive[0] through gContextsActive[cameraCount - 1].
-BOOL demoARSetupCameras(const int cameraCount, const unsigned char *cparam_names[], char *vconfs[])
+static BOOL demoARSetupCameras(const int cameraCount, const unsigned char *cparam_names[], char *vconfs[])
 {
 	int i;
 	ARParam wparam;
@@ -241,7 +253,7 @@ BOOL demoARSetupCameras(const int cameraCount, const unsigned char *cparam_names
 	return (TRUE);
 }
 
-BOOL demoARSetupMarker(const unsigned char *patt_name, int *patt_id)
+static BOOL demoARSetupMarker(const unsigned char *patt_name, int *patt_id)
 {
 	
     if((*patt_id = arLoadPatt(patt_name)) < 0) {
@@ -254,7 +266,7 @@ BOOL demoARSetupMarker(const unsigned char *patt_name, int *patt_id)
 
 // Report state of ARToolKit global variables arFittingMode,
 // arImageProcMode, arglDrawMode, arTemplateMatchingMode, arMatchingPCAMode.
-void demoARDebugReportMode(void)
+static void demoARDebugReportMode(void)
 {
 	if(arFittingMode == AR_FITTING_TO_INPUT ) {
 		fprintf(stderr, "FittingMode (Z): INPUT IMAGE\n");
@@ -310,22 +322,15 @@ void demoARDebugReportMode(void)
 #endif // APPLE_TEXTURE_FAST_TRANSFER
 }
 
-void Keyboard(unsigned char key, int x, int y)
+static void Keyboard(unsigned char key, int x, int y)
 {
-	int modifiers, shift, i;
-
-	modifiers = glutGetModifiers();
-	shift = (modifiers & GLUT_ACTIVE_SHIFT);	// Get status of shift key.
+	int i;
 	
 	switch (key) {
-		case 0x1b:						// Quit.
+		case 0x1B:						// Quit.
 		case 'Q':
 		case 'q':
-#ifdef NOATEXIT
-				Quit();
-#else
-				exit(0);
-#endif // NOATEXIT
+			exit(0);
 			break;
 		case ' ':
 			gDrawRotate = !gDrawRotate;
@@ -344,88 +349,39 @@ void Keyboard(unsigned char key, int x, int y)
 				fprintf(stderr, "*** Camera %2d - %f (frame/sec)\n", i + 1, (double)(gContextsActive[i].callCountMarkerDetect)/arUtilTimer());
 				gContextsActive[i].callCountMarkerDetect = 0;
 			}
+			arUtilTimerReset();
 			demoARDebugReportMode();
 			break;
+#ifdef AR_OPENGL_TEXTURE_RECTANGLE
 		case 'R':
 		case 'r':
-			#ifdef AR_OPENGL_TEXTURE_RECTANGLE
 			arglTexRectangle = !arglTexRectangle;
 			fprintf(stderr, "Toggled arglTexRectangle to %d.\n", arglTexRectangle);
-			#endif // AR_OPENGL_TEXTURE_RECTANGLE
 			break;
-		case 'T':
-		case 't':
-#ifdef APPLE_TEXTURE_FAST_TRANSFER
-#  ifdef GL_APPLE_client_storage
-			arglAppleClientStorage = !arglAppleClientStorage;
-			fprintf(stderr, "Toggled arglAppleClientStorage to %d.\n", arglAppleClientStorage);
-#  endif
-#endif
-			break;
-		case 'Y':
-		case 'y':
-#ifdef APPLE_TEXTURE_FAST_TRANSFER
-#  ifdef GL_APPLE_texture_range
-			arglAppleTextureRange = !arglAppleTextureRange;
-			fprintf(stderr, "Toggled arglAppleTextureRange to %d.\n", arglAppleTextureRange);
-#  endif
-#endif
-			break;
-		case 'U':
-		case 'u':
-#ifdef APPLE_TEXTURE_FAST_TRANSFER
-#  ifdef GL_APPLE_texture_range
-			fprintf(stderr, "Toggled arglAppleTextureRangeStorageHint to ");
-			switch (arglAppleTextureRangeStorageHint) {
-				case GL_STORAGE_PRIVATE_APPLE:
-					arglAppleTextureRangeStorageHint = GL_STORAGE_SHARED_APPLE;
-					fprintf(stderr, "GL_STORAGE_SHARED_APPLE.\n");
-					break;
-				case GL_STORAGE_SHARED_APPLE:
-					arglAppleTextureRangeStorageHint = GL_STORAGE_CACHED_APPLE;
-					fprintf(stderr, "GL_STORAGE_CACHED_APPLE.\n");
-					break;
-				case GL_STORAGE_CACHED_APPLE:
-				default:
-					arglAppleTextureRangeStorageHint = GL_STORAGE_PRIVATE_APPLE;
-					fprintf(stderr, "GL_STORAGE_PRIVATE_APPLE.\n");
-					break;
-			}
-#  endif
-#endif
-				break;
+#endif // AR_OPENGL_TEXTURE_RECTANGLE
 		case '?':
 		case '/':
-			fprintf(stderr,"Keys:\n");
-			fprintf(stderr," q or [esc]    Quit demo.\n");
-			fprintf(stderr," c             Change arglDrawMode and arglTexmapMode.\n");
-			fprintf(stderr," r             Toggle arglTexRectangle.\n");
-			fprintf(stderr," ? or /        Show this help.\n");
-#ifdef APPLE_TEXTURE_FAST_TRANSFER
-#  ifdef GL_APPLE_client_storage
-			fprintf(stderr," t             Toggle arglAppleClientStorage.\n");
-#  endif // GL_APPLE_client_storage
-#  ifdef GL_APPLE_texture_range
-			fprintf(stderr," y             Toggle arglAppleTextureRange.\n");
-			fprintf(stderr," u             Toggle arglAppleTextureRangeStorageHint.\n");
-#  endif // GL_APPLE_texture_range
-#endif APPLE_TEXTURE_FAST_TRANSFER
+			printf("Keys:\n");
+			printf(" q or [esc]    Quit demo.\n");
+			printf(" c             Change arglDrawMode and arglTexmapMode.\n");
+#ifdef AR_OPENGL_TEXTURE_RECTANGLE
+			printf(" r             Toggle arglTexRectangle.\n");
+#endif // AR_OPENGL_TEXTURE_RECTANGLE
+			printf(" ? or /        Show this help.\n");
+			printf("\nAdditionally, the ARVideo library supplied the following help text:\n");
+			arVideoDispOption();
+			break;
 		default:
 			break;
 	}
 }
 
-void Mouse(int button, int state, int x, int y)
-{
-	// Nothing here yet.
-}
-
-void Idle(void)
+static void Idle(void)
 {
 	int i;
-	static double timeRecentPast;
-	double timeNow;
-	float timeDelta;
+	static int ms_prev;
+	int ms;
+	float s_elapsed;
 	ARUint8 *image;
 
 	ARMarkerInfo    *marker_info;					// Pointer to array holding the details of detected markers.
@@ -433,16 +389,15 @@ void Idle(void)
     int             j, k;
 	
 	// Find out how long since Idle() last ran.
-	timeNow = (double)glutGet(GLUT_ELAPSED_TIME) / 1000.0;		// Get the current time.
-	timeDelta = (float)(timeNow - timeRecentPast); // Work out how long in seconds since the last epoch.
-	if (timeDelta < 0.01f) return; // Don't update more often than 100 Hz.
-	timeRecentPast = timeNow;
+	ms = glutGet(GLUT_ELAPSED_TIME);
+	s_elapsed = (float)(ms - ms_prev) * 0.001;
+	if (s_elapsed < 0.01f) return; // Don't update more often than 100 Hz.
+	ms_prev = ms;
 	
 	// Update drawing.
-	DrawCubeUpdate(timeDelta);
+	DrawCubeUpdate(s_elapsed);
 	
-	if (!gCallCountGetImage) arUtilTimerReset();
-	gCallCountGetImage++; // Increment ARToolKit FPS counter.
+	gCallCountGetImage++; // Increment Idle() counter.
 	
 	for (i = 0; i < gContextsActiveCount; i++) {
 		
@@ -486,7 +441,7 @@ void Idle(void)
 //
 static void Visibility(int visible)
 {
-	if (gAlwaysVisible || (visible == GLUT_VISIBLE)) {
+	if (visible == GLUT_VISIBLE) {
 		glutIdleFunc(Idle);
 	} else {
 		glutIdleFunc(NULL);
@@ -497,7 +452,7 @@ static void Visibility(int visible)
 //	The function is called when a
 //	GLUT window is resized.
 //
-void Reshape(int w, int h)
+static void Reshape(int w, int h)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glViewport(0, 0, (GLsizei) w, (GLsizei) h);
@@ -510,9 +465,8 @@ void Reshape(int w, int h)
 	// Call through to anyone else who needs to know about window sizing here.
 }
 
-static void Draw(const int drawContextIndex)
+static void DisplayPerContext(const int drawContextIndex)
 {
-	int i;
     GLdouble p[16];
 	GLdouble m[16];
 
@@ -540,6 +494,7 @@ static void Draw(const int drawContextIndex)
 		// (I.e. must be specified before viewing transformations.)
 		//none
 		
+		// ARToolKit supplied distance in millimetres, but I want OpenGL to work in metres.
 		arglCameraView(gContextsActive[drawContextIndex].patt_trans, m, VIEW_SCALEFACTOR);
 		glLoadMatrixd(m);
 		
@@ -547,7 +502,7 @@ static void Draw(const int drawContextIndex)
 		DrawCube(drawContextIndex);
 		
 		gContextsActive[drawContextIndex].patt_found = FALSE;
-	} // gPatt_found
+	} // patt_found
 	
 	// Any 2D overlays go here.
 	//none
@@ -573,7 +528,7 @@ static void Display(void)
 	int contextIndex;
 	
 	if ((contextIndex = getContextIndexForCurrentGLUTWindow()) != -1) {
-		Draw(contextIndex);
+		DisplayPerContext(contextIndex);
 		glutSwapBuffers();
 	}
 }
@@ -608,12 +563,10 @@ int main(int argc, char** argv)
 	glutInit(&argc, argv);
 
 	// Register a cleanup function to be called upon exit().
-#ifndef NOATEXIT
 	if (atexit(Quit) < 0) {
 		fprintf(stderr, "main(): Unable to register exit function.\n");
-		exit (-1);						// Bail out if we can't even register our exit function.
+		exit(-1); // Bail out if we can't even register our exit function.
 	}
-#endif // NOATEXIT
 
 	// Initialise drawing libraries.
 	if (!DrawCubeInit(CONTEXTSACTIVECOUNTMAX)) {
@@ -626,7 +579,7 @@ int main(int argc, char** argv)
 	// Hardware setup.
 	//
 
-	
+	if ((gContextsActive = (CONTEXT_INFO *)calloc(CONTEXTSACTIVECOUNTMAX, sizeof(CONTEXT_INFO))) == NULL) exit(-1);
 	if (!demoARSetupCameras(CONTEXTSACTIVECOUNT, cparam_names, vconfs)) {
 		fprintf(stderr, "main(): Unable to set up %d AR cameras.\n", CONTEXTSACTIVECOUNT);
 		exit(-1);
@@ -657,7 +610,6 @@ int main(int argc, char** argv)
 		glutDisplayFunc(Display);
 		glutReshapeFunc(Reshape);
 		glutVisibilityFunc(Visibility);
-		glutMouseFunc(Mouse);
 		glutKeyboardFunc(Keyboard);
 		
 		DrawCubeSetup(i);
@@ -667,16 +619,11 @@ int main(int argc, char** argv)
 			exit(-1);
 		}
 	}
+	arUtilTimerReset();
 
 	// Register GLUT event-handling callbacks.
-	// NB: MainRunLoop() is registered by Visibility.
+	// NB: Idle() is registered by Visibility.
 	glutMainLoop();
 	
-	// All done. Exit the program now.
-#ifdef NOATEXIT
-	Quit();
-#else
 	return (0);
-#endif // NOATEXIT
-	
 }
