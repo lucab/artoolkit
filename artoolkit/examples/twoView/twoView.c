@@ -37,12 +37,14 @@
 
 #include <stdio.h>				// fprintf(), stderr
 #include <stdlib.h>				// malloc(), free(), atexit()
-#ifdef __APPLE__
+#ifndef __APPLE__
+#  include <GL/glut.h>
+#  ifdef GL_VERSION_1_2
+#    include <GL/glext.h>
+#  endif
+#else
 #  include <GLUT/glut.h>
 #  include <OpenGL/glext.h>
-#else
-#  include <GL/glut.h>
-#  include <GL/glext.h>
 #endif
 #include <AR/config.h>
 #include <AR/video.h>
