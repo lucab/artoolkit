@@ -1,8 +1,9 @@
 #ifdef _WIN32
-#include <windows.h>
+#  include <windows.h>
 #endif
 #include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <AR/param.h>
 #include <AR/matrix.h>
 #include "calib_dist.h"

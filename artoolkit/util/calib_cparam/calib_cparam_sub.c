@@ -1,8 +1,9 @@
 #ifdef _WIN32
-#include <windows.h>
+#  include <windows.h>
 #endif
 #include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "calib_cparam.h"
 
 void   initLineModel( int   *line_num, int *loop_num,
