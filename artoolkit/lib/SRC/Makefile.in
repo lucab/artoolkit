@@ -15,6 +15,7 @@ clean:
 	(cd VideoLinuxDV;      make -f Makefile clean)
 	(cd VideoLinux1394Cam; make -f Makefile clean)
 	(cd VideoMacOSX;       make -f Makefile clean)
+	(cd ARvrml;     make -f Makefile clean)
 
 allclean:
 	(cd AR;         make -f Makefile allclean)
@@ -25,4 +26,5 @@ allclean:
 	(cd VideoLinuxDV;      make -f Makefile allclean)
 	(cd VideoLinux1394Cam; make -f Makefile allclean)
 	(cd VideoMacOSX;       make -f Makefile allclean)
+	(cd ARvrml;     make -f Makefile allclean)
 	rm -f Makefile

@@ -9,6 +9,7 @@ MDIR=". \
       lib/SRC/VideoLinux1394Cam lib/SRC/VideoLinuxDV \
       lib/SRC/VideoLinuxV4L lib/SRC/VideoSGI \
       lib/SRC/VideoMacOSX \
+      lib/SRC/ARvrml \
       util \
       util/calib_camera2 util/calib_cparam util/calib_distortion \
       util/mk_patt \

@@ -8,6 +8,7 @@ About this archive.
 Building on Windows.
 Building on Linux / SGI Irix.
 Building on Mac OS X.
+Latest changes.
 Changes in version 2.69.
 Changes in version 2.68.2.
 Changes in version 2.68.1.
@@ -82,10 +83,16 @@ Following a successful build, to run a binary such as simpleTest, add these comm
 	./simpleTest
 	
 Mac OS X 10.3 and later include an inbuilt IIDC FireWire camera driver. USB camera drivers and Firewire camera drivers for pre-10.3 systems can be obtained from ioXperts at http://www.ioxperts.com.
- 
+
+
+Latest changes.
+---------------
+- Added libARvrml.
+- Turn off texturing in gsub/gsub_lite when argDrawMode/arglDrawmode is AR_DRAW_BY_GL_DRAW_PIXELS.
+
 
 Changes in version 2.69.
---------------------------
+------------------------
 - Windows builds still depend on DSVideoLib, but DSVideoLib is no longer included in source-only ARToolKit releases and must be downloaded separately.
 - Fixed bugs identified by Raphael Grasset: typo 'DEFALUT' in config.h.in and arUtil.c, return values in arMultiActivate.c, implementation of arUtilSleep for Win32.
 - Fixed help text in arVideoDispOption for VideoWin32DirectShow.
@@ -116,7 +123,7 @@ Changes in version 2.68.1.
 
 
 Changes in version 2.68.
---------------------------
+------------------------
 Version 2.65 of ARToolKit incorporated the enhanced Windows video capture library created by Thomas Pintaric (http://www.ims.tuwien.ac.at/~thomas/artoolkit.php). Version 2.68 is based on 2.65f with the following changes:
 - New gsub_lite library designed to allow easier use of ARToolKit in existing applications, plus complete documentation in HTML format in doc/gsub_lite.
 - New high-performance Macintosh video capture library by Philip Lamb.
