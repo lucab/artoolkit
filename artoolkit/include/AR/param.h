@@ -122,8 +122,9 @@ int  arParamDecomp( ARParam *source, ARParam *icpara, double trans[3][4] );
 */
 int  arParamDecompMat( double source[3][4], double cpara[3][4], double trans[3][4] );
 
-/** \fn int arParamIdeal2Observ( double dist_factor[4], double ix, double iy,
-                         double *ox, double *oy )
+/** \fn int int arParamIdeal2Observ( const double dist_factor[4], const double ix, const double iy,
+						 double *ox, double *oy )
+
 * \brief  XXXBK
 *
 *  XXXBK
@@ -134,11 +135,12 @@ int  arParamDecompMat( double source[3][4], double cpara[3][4], double trans[3][
 * \param oy XXXBK
 * \return  XXXBK
 */
-int arParamIdeal2Observ( double dist_factor[4], double ix, double iy,
+int arParamIdeal2Observ( const double dist_factor[4], const double ix, const double iy,
                          double *ox, double *oy );
 
-/** \fn int arParamObserv2Ideal( double dist_factor[4], double ox, double oy,
+/** \fn int arParamObserv2Ideal( const double dist_factor[4], const double ox, const double oy,
                          double *ix, double *iy )
+
 * \brief XXXBK
 *
 * XXXBK
@@ -149,7 +151,7 @@ int arParamIdeal2Observ( double dist_factor[4], double ix, double iy,
 * \param iy XXXBK
 * \return  XXXBK
 */
-int arParamObserv2Ideal( double dist_factor[4], double ox, double oy,
+int arParamObserv2Ideal( const double dist_factor[4], const double ox, const double oy,
                          double *ix, double *iy );
 
 /** \fn int arParamChangeSize( ARParam *source, int xsize, int ysize, ARParam *newparam )
@@ -175,7 +177,7 @@ int arParamChangeSize( ARParam *source, int xsize, int ysize, ARParam *newparam 
 */
 int    arParamSave( char *filename, int num, ARParam *param, ...);
 
-/** \fn int arParamLoad( char *filename, int num, ARParam *param, ...)
+/** \fn int arParamLoad( const char *filename, int num, ARParam *param, ...)
 * \brief load the camera intrinsic parameters.
 *
 * Load camera intrinsic parameters in the ARToolkit Library from 
@@ -185,7 +187,7 @@ int    arParamSave( char *filename, int num, ARParam *param, ...);
 * \param param result of the loaded parameters
 * \return 0 if success, -1 if Error (file not found, file structure problem)
 */
-int    arParamLoad( char *filename, int num, ARParam *param, ...);
+int    arParamLoad( const char *filename, int num, ARParam *param, ...);
 
 /** \fn int arParamDisp( ARParam *param )
 * \brief display parameters.
