@@ -1,13 +1,16 @@
 #ifdef _WIN32
-#include <windows.h>
+#  include <windows.h>
 #endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
 
-#include <GL/gl.h>
-#include <GL/glut.h>
+#ifndef __APPLE__
+#  include <GL/glut.h>
+#else
+#  include <GLUT/glut.h>
+#endif
 #include <AR/gsub.h>
 #include <AR/param.h>
 #include <AR/ar.h>

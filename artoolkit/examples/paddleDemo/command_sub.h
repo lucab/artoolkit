@@ -29,6 +29,6 @@ int check_shake   ( double paddleTrans[3][4], int f );
 int check_incline ( double paddleTrans[3][4], double baseTrans[3][4], double *angle );
 
 /* picking gesture to take an object from the ground*/
-int check_pickup(double card_trans[3][4], double base_trans[3][4], ItemList* itlist,float* angle);
+int check_pickup(double card_trans[3][4], double base_trans[3][4], ItemList* itlist, double* angle);
 
 #endif

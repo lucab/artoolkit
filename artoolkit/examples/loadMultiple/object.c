@@ -24,7 +24,6 @@
 */
 
 #include <stdio.h>
-#include <malloc.h>
 #include <stdlib.h>
 #include <string.h>
 #include <AR/ar.h>
@@ -58,7 +57,7 @@ ObjectData_T *read_ObjData( char *name, int *objectnum )
 		object[i].visible = 0;        
 		
 		get_buff(buf, 256, fp);
-        if( sscanf(buf, "%s", buf1, object[i].name) != 1 ) {
+        if( sscanf(buf, "%s", object[i].name) != 1 ) {
             fclose(fp); free(object); return(0);
         }
 

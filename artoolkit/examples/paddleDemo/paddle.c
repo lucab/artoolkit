@@ -1,13 +1,7 @@
 #include <stdio.h>
-#include <malloc.h>
 #include <stdlib.h>
 #include <AR/ar.h>
 #include "paddle.h"
-
-static ARMarkerInfo  prevInfoL;
-static ARMarkerInfo  prevInfoR;
-static int           pcountL = 0;
-static int           pcountR = 0;
 
 static char *get_buff( char *buf, int n, FILE *fp );
 

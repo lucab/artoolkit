@@ -1,13 +1,16 @@
 #ifdef _WIN32
-#include <windows.h>
+#  include <windows.h>
 #endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
 
-#include <GL/gl.h>
-#include <GL/glut.h>
+#ifndef __APPLE__
+#  include <GL/glut.h>
+#else
+#  include <GLUT/glut.h>
+#endif
 #include <AR/gsub.h>
 #include <AR/param.h>
 #include <AR/matrix.h>
@@ -68,7 +71,6 @@ static void   keyEvent( unsigned char key, int x, int y);
 static void   mainLoop(void);
 static void draw( targetInfo myTarget, double BaseTrans[3][4]);
 int drawGroundGrid( double trans[3][4], int divisions, float x, float y, float height);
-static void initTargets(targetInfo myTarget);
 static int checkCollision(float Pos1[],float Pos2[], float range);
 static void	  findPaddlePosition(float curPaddlePos[], double card_trans[3][4],double base_trans[3][4]);
 
@@ -190,15 +192,15 @@ static void mainLoop(void)
     }
 
 	//draw a red ground grid
-	drawGroundGrid( config->trans, 20, 150.0, 105.0, 0.0);
+	drawGroundGrid( config->trans, 20, 150.0f, 105.0f, 0.0f);
 
 	/* find the paddle position relative to the base */
-	findPaddlePosition(&curPaddlePos,paddleInfo->trans,config->trans);
+	findPaddlePosition(curPaddlePos, paddleInfo->trans, config->trans);
 
 	/* check for collisions with targets */
 	for(i=0;i<TARGET_NUM;i++){
 		myTarget[i].state = NOT_TOUCHED;
-		if(checkCollision(&curPaddlePos,myTarget[i].pos,20.0))
+		if(checkCollision(curPaddlePos, myTarget[i].pos, 20.0f))
 		  {
 			myTarget[i].state = TOUCHED;
 			fprintf(stderr,"touched !!\n");
@@ -389,9 +391,6 @@ int  draw_paddle( ARPaddleInfo *paddleInfo )
 {
     double  gl_para[16];
     int     i;
-    GLfloat   mat_ambient2[]    = {0.0, 1.0, 1.0, 1.0};
-    GLfloat   mat_flash2[]      = {0.0, 1.0, 1.0, 1.0};
-    GLfloat   mat_flash_shiny2[]= {50.0};
 
     argDrawMode3D();
     glEnable(GL_DEPTH_TEST);

@@ -34,10 +34,10 @@ typedef struct {
 
 static SHAKE_BUF_T    shake_buf[SHAKE_BUF_SIZE];
 static int            shake_buf_num = 0;
-static PUNCH_BUF_T    punch_buf[PUNCH_BUF_SIZE];
-static int            punch_buf_num = 0;
-static PUSH_BUF_T     push_buf[PUNCH_BUF_SIZE];
-static int            push_buf_num = 0;
+//static PUNCH_BUF_T    punch_buf[PUNCH_BUF_SIZE];
+//static int            punch_buf_num = 0;
+//static PUSH_BUF_T     push_buf[PUNCH_BUF_SIZE];
+//static int            push_buf_num = 0;
 
 
 int check_shake( double card_trans[3][4], int f )
@@ -202,7 +202,7 @@ int check_incline( double card_trans[3][4], double base_trans[3][4], double *ang
     return 0;
 }
 
-int check_pickup(double card_trans[3][4], double base_trans[3][4], ItemList* itlist,float* angle)
+int check_pickup(double card_trans[3][4], double base_trans[3][4], ItemList* itlist, double* angle)
 {
     ARMat   *t1, *t2, *t3;
     double   x, y, z;
