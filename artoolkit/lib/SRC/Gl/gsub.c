@@ -423,6 +423,7 @@ static void argDispImageDrawPixels( ARUint8 *image, int xwin, int ywin )
         sx = (xwin-1)*gMiniXsize;
         sy = gWinYsize - gYsize - (ywin-1)*gMiniYsize - 0.5;
     }
+	glDisable(GL_TEXTURE_2D);
     glPixelZoom( zoom, -zoom);
     glRasterPos3f( sx, sy, -1.0 );
 

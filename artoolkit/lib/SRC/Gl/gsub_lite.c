@@ -741,6 +741,7 @@ void arglDispImageStateful(ARUint8 *image, const ARParam *cparam, const double z
 	
 	zoomf = (float)zoom;
 	if (arglDrawMode == AR_DRAW_BY_GL_DRAW_PIXELS) {
+		glDisable(GL_TEXTURE_2D);
 		glPixelZoom(zoomf, -zoomf);
 		glRasterPos2f(0.0f, cparam->ysize * zoomf);
 		glDrawPixels(cparam->xsize, cparam->ysize, AR_PIX_FORMAT, AR_PIX_TYPE, image);

@@ -3424,7 +3424,7 @@
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = include;
 				INSTALL_PATH = "$(SRCROOT)/bin";
-				LIBRARY_SEARCH_PATHS = "lib \"/Users/phil/Documents/Development active/ARToolKit/lib\"";
+				LIBRARY_SEARCH_PATHS = lib;
 				PRODUCT_NAME = multiTest;
 				WARNING_CFLAGS = "-Wmost";
 			};
@@ -3570,7 +3570,7 @@
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = include;
 				INSTALL_PATH = "$(SRCROOT)/bin";
-				LIBRARY_SEARCH_PATHS = "lib \"/Users/phil/Documents/Development active/ARToolKit/lib\"";
+				LIBRARY_SEARCH_PATHS = lib;
 				PRODUCT_NAME = optical;
 				WARNING_CFLAGS = "-Wmost";
 			};
