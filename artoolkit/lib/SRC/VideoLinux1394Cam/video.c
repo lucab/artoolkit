@@ -12,6 +12,9 @@
  *   - Either autodetect of cameras or specifying the exact camera is now possible
  *   - Support for changing of various 1394 camera properties
  *
+ *   Revision 1.1.1  Date: 2005/03/14
+ *   Patch by Henrik Erkkonen to support version 11 of libdc1394.
+ *
  */
 
 #include <sys/ioctl.h>
@@ -37,6 +40,7 @@
 #undef  LIBDC_8
 #undef  LIBDC_9
 #undef  LIBDC_10
+#undef  LIBDC_11
 #undef  LIBDC_DEF
 
 
@@ -45,7 +49,8 @@
    more stable for multiple cameras and so is recommended */
 // #define LIBDC_8
 // #define LIBDC_9
-#define LIBDC_10
+// #define LIBDC_10
+#define LIBDC_11
 /* ----------------------- MAKE ANY #define CHANGES HERE ONLY -------------------------------- */
 
 
@@ -71,8 +76,13 @@
 #define LIBDC_DEF
 #endif
 
+#ifdef LIBDC_11
+#warning Compiling using the 1.0.0 libDC library
+#define LIBDC_DEF
+#endif
+
 #ifndef LIBDC_DEF
-#error One of the LIBDC_[8,9,10] macros must be defined to compile this code properly!
+#error One of the LIBDC_[8,9,10,11] macros must be defined to compile this code properly!
 #endif
 
 
@@ -428,7 +438,7 @@ AR2VideoParamT *ar2VideoOpen( char *config )
 #ifdef LIBDC_10
 				 0, /* do_extra_buffering */
 #endif
-#ifndef LIBDC_8
+#if !defined(LIBDC_8) || defined(LIBDC_11)
 				 1, video1394devname, /* drop_frames, dma_device_file */
 #endif
 			         &(vid->camera)) != DC1394_SUCCESS ) {
@@ -499,7 +509,7 @@ int ar2VideoCapStart( AR2VideoParamT *vid )
 #ifdef LIBDC_10
 				     0, /* do_extra_buffering */
 #endif
-#ifndef LIBDC_8
+#if !defined(LIBDC_8) || defined(LIBDC_11)
 				     1, video1394devname, /* drop_frames, dma_device_file */
 #endif
 			             &(vid->camera)) != DC1394_SUCCESS ) {
