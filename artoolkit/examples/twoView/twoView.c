@@ -227,17 +227,17 @@ static int demoARSetupCameras(const int cameraCount, const unsigned char *cparam
 		
 		// Open the video path.
 		if ((gContextsActive[i].ARTVideo = ar2VideoOpen(vconfs[i])) == NULL) {
-			fprintf(stderr, "demoARSetupCamera(): Unable to open connection to camera %d.\n", i + 1);
+			fprintf(stderr, "demoARSetupCameras(): Unable to open connection to camera %d.\n", i + 1);
 			return (FALSE);
 		}
 		
 		// Find the size of the window.
 		if (ar2VideoInqSize(gContextsActive[i].ARTVideo, &xsize, &ysize) < 0) return (FALSE);
-		fprintf(stderr, "demoARSetupCamera(): Camera %d image size (x,y) = (%d,%d)\n", i + 1, xsize, ysize);
+		fprintf(stderr, "demoARSetupCameras(): Camera %d image size (x,y) = (%d,%d)\n", i + 1, xsize, ysize);
 
 		// Load the camera parameters, resize for the window and init.
 		if (arParamLoad(cparam_names[i], 1, &wparam) < 0) {
-			fprintf(stderr, "demoARSetupCamera(): Error loading parameter file %s for camera %d.\n", cparam_names[i], i + 1);
+			fprintf(stderr, "demoARSetupCameras(): Error loading parameter file %s for camera %d.\n", cparam_names[i], i + 1);
 			return (FALSE);
 		}
 		arParamChangeSize(&wparam, xsize, ysize, &(gContextsActive[i].ARTCparam));
@@ -247,7 +247,7 @@ static int demoARSetupCameras(const int cameraCount, const unsigned char *cparam
 		
 		// Start the video capture for this camera.
 		if (ar2VideoCapStart(gContextsActive[i].ARTVideo) != 0) {
-			fprintf(stderr, "demoARSetupCamera(): Unable to begin camera data capture for camera %d.\n", i + 1);
+			fprintf(stderr, "demoARSetupCameras(): Unable to begin camera data capture for camera %d.\n", i + 1);
 			return (FALSE);		
 		}
 		
@@ -352,6 +352,7 @@ static void Keyboard(unsigned char key, int x, int y)
 				gContextsActive[i].callCountMarkerDetect = 0;
 			}
 			arUtilTimerReset();
+			gCallCountGetImage = 0;
 			demoARDebugReportMode();
 			break;
 #ifdef AR_OPENGL_TEXTURE_RECTANGLE
@@ -478,7 +479,7 @@ static void DisplayPerContext(const int drawContextIndex)
 	arglDispImage(gContextsActive[drawContextIndex].ARTImage,
 				  &(gContextsActive[drawContextIndex].ARTCparam),
 				  1.0,
-				  gContextsActive[drawContextIndex].arglSettings);	// zoom = 1.0, contextIndex = 0.
+				  gContextsActive[drawContextIndex].arglSettings);	// zoom = 1.0.
 	ar2VideoCapNext(gContextsActive[drawContextIndex].ARTVideo);
 	
 	if (gContextsActive[drawContextIndex].patt_found) {
