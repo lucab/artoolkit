@@ -127,6 +127,7 @@ Changes in this release.
 ------------------------
 - Mac OS X video driver: support added for runtime specification of pixel format.
 - Mac OS X video driver: video input settings are now saved to and restored from preferences.
+- Linux 1394cam video driver: Patch by Henrik Erkkonen to support version 11 of libdc1394.
 
 Changes in earlier releases.
 ----------------------------
