@@ -1,5 +1,5 @@
-Read me for ARToolKit-2.70.
-===========================
+Read me for ARToolKit-2.70.1.
+=============================
 
 
 Contents.
@@ -14,7 +14,7 @@ Changes in earlier releases.
 
 About this archive.
 -------------------
-This archive contains the ARToolKit libraries, utilities and examples, version 2.70.
+This archive contains the ARToolKit libraries, utilities and examples, version 2.70.1.
 
 ARToolKit is released under the GNU General Public License (GPL). Please read the file COPYING.txt.
 
@@ -26,7 +26,7 @@ This archive was assembled by:
     Philip Lamb
     HIT Lab NZ
     http://www.hitlabnz.org
-    2004-12-02
+    2005-03-14
 
 
 Building on Windows.
@@ -65,7 +65,7 @@ Prerequisites:
  *  (Optional, for VRML renderer only) openvrml-0.14.3 and dependencies. Download from http://sf.net/projects/openvrml.
  
 Unpack the ARToolKit to a convenient location. The root of this location will be referred to below as {ARToolKit}:
-    tar zxvf ARToolKit-2.70.tgz
+    tar zxvf ARToolKit-2.70.1.tgz
 Configure and build. The Linux builds support video input using either Video4Linux, an IIDC-compliant or DV camera connected via IEEE-1394, or a Sony EyeToy camera connected via USB. You will be prompted as to which of the four Linux video drivers you wish to use at the Configure step.
     cd {ARToolKit}
     ./Configure
@@ -103,7 +103,7 @@ The VRML renderering library and example (libARvrml & simpleVRML) are optional b
 Alternately, ARToolKit can be built from the Terminal, using the Unix makefiles.
 Drop the ARToolKit into a convenient location, e.g. your Desktop, then open a Terminal window and type:
 	cd ~/Desktop
-	tar zxvf ARToolKit-2.70.tgz
+	tar zxvf ARToolKit-2.70.1.tgz
 Configure and build
 	cd ~/ARToolKit
 	./Configure
