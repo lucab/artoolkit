@@ -23,7 +23,7 @@
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;OPENVRML_ENABLE_IMAGETEXTURE_NODE;OPENVRML_ENABLE_GZIP"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
+				RuntimeLibrary="3"
 				BufferSecurityCheck="FALSE"
 				EnableFunctionLevelLinking="FALSE"
 				TreatWChar_tAsBuiltInType="TRUE"
@@ -73,7 +73,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="$(ProjectDir)/../../include;$(ProjectDir)/../../OpenVRML/include;$(ProjectDir)/../../OpenVRML/dependencies/include;$(NOINHERIT)"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
-				RuntimeLibrary="0"
+				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"/>
 			<Tool
