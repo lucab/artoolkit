@@ -1058,8 +1058,8 @@ static void *ar2VideoInternalThread(void *arg)
 #endif // AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
 	AR2VideoParamT		*vid;
 	int					keepAlive = 1;
-	struct				timeval tv;  // Seconds and microseconds since Jan 1, 1970.
-	struct				timespec ts;  // Seconds and nanoseconds since Jan 1, 1970.
+	struct timeval		tv;  // Seconds and microseconds since Jan 1, 1970.
+	struct timespec		ts;  // Seconds and nanoseconds since Jan 1, 1970.
 	ComponentResult		err;
 	int					err_i;
 	int					isUpdated = 0;
@@ -1098,9 +1098,12 @@ static void *ar2VideoInternalThread(void *arg)
 	while (keepAlive && vdgIsGrabbing(vid->pVdg)) {
 		
 		gettimeofday(&tv, NULL);
-		ts.tv_sec = tv.tv_sec; // TODO: Also add overflow from value below.
+		ts.tv_sec = tv.tv_sec;
 		ts.tv_nsec = tv.tv_usec * 1000 + vid->milliSecPerTimer * 1E6;
-		
+		if (ts.tv_nsec >= 1E9) {
+			ts.tv_nsec -= 1E9;
+			ts.tv_sec += 1;
+		}
 #ifndef AR_VIDEO_HAVE_THREADSAFE_QUICKTIME
 		// Get a lock to access QuickTime (for SGIdle()), but only if more than one thread is running.
 		if (gVidCount > 1) {
@@ -1469,11 +1472,11 @@ AR2VideoParamT *ar2VideoOpen(char *config)
 	// to guarantee that we don't get padding bytes at the end of rows.
 	vid->rowBytes = vid->width * bytesPerPixel;
 	vid->bufSize = vid->height * vid->rowBytes;
-	arMalloc(vid->bufPixels, ARUint8, vid->bufSize);
+	if (!(vid->bufPixels = (ARUint8 *)valloc(vid->bufSize * sizeof(ARUint8)))) exit (1);
 #ifdef AR_VIDEO_DEBUG_BUFFERCOPY
 	// And another two buffers for OpenGL to read out of.
-	arMalloc(vid->bufPixelsCopy1, ARUint8, vid->bufSize);
-	arMalloc(vid->bufPixelsCopy2, ARUint8, vid->bufSize);
+	if (!(vid->bufPixelsCopy1 = (ARUint8 *)valloc(vid->bufSize * sizeof(ARUint8)))) exit (1);
+	if (!(vid->bufPixelsCopy2 = (ARUint8 *)valloc(vid->bufSize * sizeof(ARUint8)))) exit (1);
 #endif // AR_VIDEO_DEBUG_BUFFERCOPY
 	   // Wrap a GWorld around the pixel buffer.
 	err_s = QTNewGWorldFromPtr(&(vid->pGWorld),			// returned GWorld
