@@ -94,7 +94,7 @@ Prerequisites:
 Building using the XCode IDE:
 (1) Unpack the archive to a convenient location using StuffIt Expander, and open the ARToolKit.xproj.
 (2) Builds include a script target "Configure" which enables accelerated and rectangular texturing by default. If you wish to change these defaults, manually run the ./Configure script from Terminal as for a command-line build.
-(3) XCode will build the binaries in ARToolKit/bin. This must also be the working directory when the binaries are run, but by default XCode runs executables with the working directory set to Build/. In order for the binaries to be able to be run from within XCode you will need to edit the "Working directory path" of the executable to point the installed ARToolKit/bin directory on your system.
+(3) Executables are built into ARToolKit/bin. This must also be the working directory when the executables are run, but by default XCode runs executables with the working directory set to Build/. In order for the binaries to be able to be run from within XCode you will need to edit the "Working directory path" of each executable's XCode settings to the full path to ARToolKit/bin on your system.
 
 The VRML renderering library and example (libARvrml & simpleVRML) are optional builds:
 (4) Using FinkCommander, do a binary install of mozilla-dev, followed by an install of openvrml4-dev and openvrml-gl5-dev.
@@ -135,6 +135,7 @@ Changes in this release.
 - VideoLinuxV4L patches by Raphael Grasset for improved camera parameter control and compressed jpeg video stream to support Sony Eyetoy camera.
 - VideoLinux1394Cam patch by Wayne Piekarski for improved lib1394 support, including multiple lib1394 versions.
 - Preliminary API documentation by Raphael Grasset.
+- Default DEFAULT_DRAW_MODE changed to AR_DRAW_BY_TEXTURE_MAPPING on Windows.
 
 
 Changes in earlier releases.
