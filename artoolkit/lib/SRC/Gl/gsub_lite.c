@@ -14,6 +14,7 @@
  *	2.7.3	2004-07-02	PRL		Much more object-orientated through use of ARGL_CONTEXT_SETTINGS type.
  *	2.7.4	2004-07-14	PRL		Added gluCheckExtension hack for GLU versions pre-1.3.
  *	2.7.5	2004-07-15	PRL		Added arglDispImageStateful(); removed extraneous glPixelStorei(GL_UNPACK_IMAGE_HEIGHT,...) calls.
+ *	2.7.6	2005-02-18	PRL		Go back to using int rather than BOOL, to avoid conflict with Objective-C.
  *
  */
 /*
@@ -136,15 +137,15 @@
 //#define ARGL_DEBUG
 
 struct _ARGL_CONTEXT_SETTINGS {
-	BOOL		textureRectangleCapabilitiesChecked;
-	BOOL		texturePow2CapabilitiesChecked;
+	int		textureRectangleCapabilitiesChecked;
+	int		texturePow2CapabilitiesChecked;
 	GLuint		textureRectangle;
 	GLuint		texturePow2;
 	GLuint		listRectangle;
 	GLuint		listPow2;
-	BOOL		initedRectangle;
+	int		initedRectangle;
 	int			initedRectangleTexmapScaleFactor;
-	BOOL		initedPow2;
+	int		initedPow2;
 	int			initedPow2TexmapScaleFactor;
 	GLsizei		texturePow2SizeX;
 	GLsizei		texturePow2SizeY;
@@ -159,17 +160,17 @@ typedef struct _ARGL_CONTEXT_SETTINGS ARGL_CONTEXT_SETTINGS;
 // It'd be nice if we could wrap these in accessor functions!
 int	arglDrawMode   = DEFAULT_DRAW_MODE;
 int	arglTexmapMode = DEFAULT_DRAW_TEXTURE_IMAGE;
-BOOL arglTexRectangle = TRUE; // TRUE | FALSE .
+int arglTexRectangle = TRUE; // TRUE | FALSE .
 
 // These items relate to Apple's fast texture transfer support.
 //#define ARGL_USE_TEXTURE_RANGE	// Commented out due to conflicts with GL_APPLE_ycbcr_422 extension.
 #if defined(__APPLE__) && defined(APPLE_TEXTURE_FAST_TRANSFER)
-BOOL arglAppleClientStorage = TRUE; // TRUE | FALSE .
+int arglAppleClientStorage = TRUE; // TRUE | FALSE .
 #  ifdef ARGL_USE_TEXTURE_RANGE
-BOOL arglAppleTextureRange = TRUE; // TRUE | FALSE .
+int arglAppleTextureRange = TRUE; // TRUE | FALSE .
 GLuint arglAppleTextureRangeStorageHint = GL_STORAGE_SHARED_APPLE; // GL_STORAGE_PRIVATE_APPLE | GL_STORAGE_SHARED_APPLE | GL_STORAGE_CACHED_APPLE .
 #  else
-BOOL arglAppleTextureRange = FALSE; // TRUE | FALSE .
+int arglAppleTextureRange = FALSE; // TRUE | FALSE .
 GLuint arglAppleTextureRangeStorageHint = GL_STORAGE_PRIVATE_APPLE; // GL_STORAGE_PRIVATE_APPLE | GL_STORAGE_SHARED_APPLE | GL_STORAGE_CACHED_APPLE .
 #  endif // ARGL_USE_TEXTURE_RANGE
 #endif // __APPLE__ && APPLE_TEXTURE_FAST_TRANSFER
@@ -279,7 +280,7 @@ GLboolean gluCheckExtension(const GLubyte* extName, const GLubyte *extString)
 //  is non-NULL, and is found in the current driver's list of supported extensions.
 //  Returns: TRUE If either of the tests passes, or FALSE if both fail.
 //
-static BOOL arglGLCapabilityCheck(const unsigned short minVersion, const char *extension)
+static int arglGLCapabilityCheck(const unsigned short minVersion, const char *extension)
 {
 	const GLubyte * strRenderer;
 	const GLubyte * strVersion;
@@ -309,7 +310,7 @@ static BOOL arglGLCapabilityCheck(const unsigned short minVersion, const char *e
 }
 
 #ifdef AR_OPENGL_TEXTURE_RECTANGLE
-static BOOL arglDispImageTexRectangleCapabilitiesCheck(const ARParam *cparam, ARGL_CONTEXT_SETTINGS_REF contextSettings)
+static int arglDispImageTexRectangleCapabilitiesCheck(const ARParam *cparam, ARGL_CONTEXT_SETTINGS_REF contextSettings)
 {
 	GLint textureRectangleSizeMax;
 	GLint format;
@@ -460,7 +461,7 @@ static void arglDispImageTexRectangle(ARUint8 *image, const ARParam *cparam, con
 }
 #endif // AR_OPENGL_TEXTURE_RECTANGLE
 
-static BOOL arglDispImageTexPow2CapabilitiesCheck(const ARParam *cparam, ARGL_CONTEXT_SETTINGS_REF contextSettings)
+static int arglDispImageTexPow2CapabilitiesCheck(const ARParam *cparam, ARGL_CONTEXT_SETTINGS_REF contextSettings)
 {
 	GLint format;
 	GLint texture1SizeMax;

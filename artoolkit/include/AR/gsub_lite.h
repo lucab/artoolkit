@@ -14,6 +14,7 @@
  *	2.7.3	2004-07-02	PRL		Much more object-orientated through use of ARGL_CONTEXT_SETTINGS type.
  *	2.7.4	2004-07-14	PRL		Added gluCheckExtension hack for GLU versions pre-1.3.
  *	2.7.5	2004-07-15	PRL		Added arglDispImageStateful(); removed extraneous glPixelStorei(GL_UNPACK_IMAGE_HEIGHT,...) calls.
+ *	2.7.6	2005-02-18	PRL		Go back to using int rather than BOOL, to avoid conflict with Objective-C.
  *
  */
 /*
@@ -109,10 +110,6 @@ extern "C" {
 // ============================================================================
 
 // Keep code nicely typed.
-#if !defined(_WINDEF_H) && !defined(XFree86Server) && !defined(BOOL_DEFINED)
-typedef int BOOL;
-#  define BOOL_DEFINED
-#endif
 #ifndef TRUE
 #  define TRUE 1
 #endif
@@ -207,11 +204,11 @@ extern int arglTexmapMode;
 		or &lt;GL/gl.h&gt;
 	@availability First appeared in ARToolKit 2.68.
  */
-extern BOOL arglTexRectangle;
+extern int arglTexRectangle;
 
 #if defined(__APPLE__) && defined(APPLE_TEXTURE_FAST_TRANSFER)
-extern BOOL arglAppleClientStorage;
-extern BOOL arglAppleTextureRange;
+extern int arglAppleClientStorage;
+extern int arglAppleTextureRange;
 extern GLuint arglAppleTextureRangeStorageHint;
 #endif // __APPLE__ && APPLE_TEXTURE_FAST_TRANSFER
 

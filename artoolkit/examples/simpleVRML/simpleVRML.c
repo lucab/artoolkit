@@ -78,7 +78,7 @@
 // ============================================================================
 
 // Preferences.
-static BOOL prefWindowed = TRUE;
+static int prefWindowed = TRUE;
 static int prefWidth = 640;					// Fullscreen mode width.
 static int prefHeight = 480;				// Fullscreen mode height.
 static int prefDepth = 32;					// Fullscreen mode bit depth.
@@ -89,7 +89,7 @@ static long			gCallCountMarkerDetect = 0;
 static int			gARTThreshhold = 100;
 static ARParam		gARTCparam;
 static ARUint8		*gARTImage = NULL;
-static BOOL			gPatt_found;
+static int			gPatt_found;
 static ARGL_CONTEXT_SETTINGS_REF gArglSettings = NULL;
 
 // Object Data.
@@ -102,7 +102,7 @@ static int			gObjectDataCount;
 // ============================================================================
 
 // Sets up gARTCparam.
-static BOOL demoARSetupCamera(const char *cparam_name, char *vconf)
+static int demoARSetupCamera(const char *cparam_name, char *vconf)
 {	
     ARParam  wparam;
 	int xsize, ysize;
@@ -135,7 +135,7 @@ static BOOL demoARSetupCamera(const char *cparam_name, char *vconf)
 	return (TRUE);
 }
 
-static BOOL demoARSetupMarkersObjects(void)
+static int demoARSetupMarkersObjects(void)
 {	
 	// Load in the object data - trained markers and associated bitmap files.
     if ((gObjectData = read_VRMLdata(gObjectDataFilename, &gObjectDataCount)) == NULL) exit(0);

@@ -72,7 +72,7 @@ typedef struct {
 	ARUint8						*ARTImage;			// Most recent image.
 	long						callCountMarkerDetect;	// Frames received.
 	double						patt_trans[3][4];	// Marker transformation.
-	BOOL						patt_found;			// Whether marker transformation is valid.
+	int						patt_found;			// Whether marker transformation is valid.
 	ARGL_CONTEXT_SETTINGS_REF	arglSettings;		// Settings from ARGL.
 } CONTEXT_INFO;
 
@@ -93,14 +93,14 @@ static double		gPatt_width     = 80.0;
 static double		gPatt_centre[2] = {0.0, 0.0};
 
 // Other globals.
-static BOOL gDrawRotate = FALSE;
+static int gDrawRotate = FALSE;
 static float gDrawRotateAngle = 0;			// For use in drawing.
 
 // ============================================================================
 //	Functions
 // ============================================================================
 
-static BOOL DrawCubeInit(int contextsActiveCountMax)
+static int DrawCubeInit(int contextsActiveCountMax)
 {
 	// Allocate room for display lists for all contexts.
 	if (gDrawListBox) return (FALSE); // Sanity check.
@@ -111,7 +111,7 @@ static BOOL DrawCubeInit(int contextsActiveCountMax)
 	
 }
 
-static BOOL DrawCubeSetup(int contextIndex)
+static int DrawCubeSetup(int contextIndex)
 {
 	// Colour cube data.
 	float fSize = 0.5f;
@@ -168,7 +168,7 @@ static void DrawCubeUpdate(float timeDelta)
 	}
 }
 
-static BOOL DrawCubeCleanup(int contextIndex)
+static int DrawCubeCleanup(int contextIndex)
 {
 	if (contextIndex >= gContextsActiveCount) return (FALSE); // Sanity check.
 	
@@ -181,7 +181,7 @@ static BOOL DrawCubeCleanup(int contextIndex)
 	return (TRUE);
 }
 
-static BOOL DrawCubeFinal(void)
+static int DrawCubeFinal(void)
 {
 	if (!gDrawListBox) {
 		free(gDrawListBox);
@@ -217,7 +217,7 @@ static void Quit(void)
 }
 
 // Sets up fields ARTVideo, ARTCparam of gContextsActive[0] through gContextsActive[cameraCount - 1].
-static BOOL demoARSetupCameras(const int cameraCount, const unsigned char *cparam_names[], char *vconfs[])
+static int demoARSetupCameras(const int cameraCount, const unsigned char *cparam_names[], char *vconfs[])
 {
 	int i;
 	ARParam wparam;
@@ -255,7 +255,7 @@ static BOOL demoARSetupCameras(const int cameraCount, const unsigned char *cpara
 	return (TRUE);
 }
 
-static BOOL demoARSetupMarker(const unsigned char *patt_name, int *patt_id)
+static int demoARSetupMarker(const unsigned char *patt_name, int *patt_id)
 {
 	
     if((*patt_id = arLoadPatt(patt_name)) < 0) {

@@ -65,7 +65,7 @@
 // ============================================================================
 
 // Preferences.
-static BOOL prefWindowed = TRUE;
+static int prefWindowed = TRUE;
 static int prefWidth = 640;					// Fullscreen mode width.
 static int prefHeight = 480;				// Fullscreen mode height.
 static int prefDepth = 32;					// Fullscreen mode bit depth.
@@ -81,11 +81,11 @@ static double		gPatt_centre[2] = {0.0, 0.0};
 static ARParam		gARTCparam;
 static ARUint8		*gARTImage = NULL;
 static double		gPatt_trans[3][4];
-static BOOL			gPatt_found;
+static int			gPatt_found;
 static ARGL_CONTEXT_SETTINGS_REF gArglSettings = NULL;
 
 // Other globals.
-static BOOL gDrawRotate = FALSE;
+static int gDrawRotate = FALSE;
 static float gDrawRotateAngle = 0;			// For use in drawing.
 
 // ============================================================================
@@ -147,7 +147,7 @@ static void DrawCubeUpdate(float timeDelta)
 }
 
 // Sets up gARTCparam.
-static BOOL demoARSetupCamera(const unsigned char *cparam_name, char *vconf)
+static int demoARSetupCamera(const unsigned char *cparam_name, char *vconf)
 {	
     ARParam  wparam;
 	int xsize, ysize;
@@ -180,7 +180,7 @@ static BOOL demoARSetupCamera(const unsigned char *cparam_name, char *vconf)
 	return (TRUE);
 }
 
-static BOOL demoARSetupMarker(const unsigned char *patt_name, int *patt_id)
+static int demoARSetupMarker(const unsigned char *patt_name, int *patt_id)
 {
 	
     if((*patt_id = arLoadPatt(patt_name)) < 0) {
