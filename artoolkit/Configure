@@ -12,11 +12,12 @@ MDIR=". \
       lib/SRC/ARvrml \
       util \
       util/calib_camera2 util/calib_cparam util/calib_distortion \
-      util/mk_patt \
+      util/mk_patt util/graphicsTest util/videoTest \
       examples \
-      examples/exview  examples/modeTest  examples/multi  \
-      examples/optical  examples/relation  examples/simple  examples/simple2  \
-      examples/simpleLite \
+      examples/collide  examples/exview \
+      examples/loadMultiple  examples/modeTest  examples/multi  examples/optical  \
+      examples/paddle examples/paddleDemo examples/paddleInteraction examples/range \
+      examples/relation examples/simple examples/simple2 examples/simpleLite examples/twoView \
       "
 
 SED=/tmp/SED.$$
@@ -29,8 +30,9 @@ if [ "$E" = "Linux" ]
 then
     echo "Select a video capture driver."
     echo "  1: Video4Linux"
-    echo "  2: Digital Video Camcoder through IEEE 1394 (DV Format)"
-    echo "  3: Digital Video Camera through IEEE 1394 (VGA NONCOMPRESSED Image Format)"
+    echo "  2: Video4Linux+JPEG Decompression (EyeToy)"
+    echo "  3: Digital Video Camcoder through IEEE 1394 (DV Format)"
+    echo "  4: Digital Video Camera through IEEE 1394 (VGA NONCOMPRESSED Image Format)"
     echo -n "Enter : "
     read ANS
     if [ "$ANS" = "1" ]
@@ -44,6 +46,15 @@ then
         CONFIG="AR_INPUT_V4L"
     elif [ "$ANS" = "2" ]
     then
+        VIDEO_DRIVER="VideoLinuxV4L"
+        CFLAG="-O -I/usr/X11R6/include -DUSE_EYETOY"
+        LDFLAG="-L/usr/X11R6/lib"
+        ARFLAG="rs"
+        RANLIB=""
+        LIBS="-lglut -lGLU -lGL -lXi -lXmu -lX11 -lm -ljpeg"
+        CONFIG="AR_INPUT_V4L"
+    elif [ "$ANS" = "3" ]
+    then
         VIDEO_DRIVER="VideoLinuxDV"
         CFLAG="-O -I/usr/include/glib-1.2 -I/usr/lib/glib/include -I/usr/X11R6/include"
         LDFLAG="-L/usr/X11R6/lib -L/usr/local/lib"
@@ -51,7 +62,7 @@ then
         RANLIB=""
         LIBS="-lraw1394 -ldv -lpthread -lglut -lGLU -lGL -lXi -lXmu -lX11 -lm"
         CONFIG="AR_INPUT_DV"
-    elif [ "$ANS" = "3" ]
+    elif [ "$ANS" = "4" ]
     then
         VIDEO_DRIVER="VideoLinux1394Cam"
         CFLAG="-O -I/usr/X11R6/include"
@@ -64,10 +75,10 @@ then
         echo "Do you use a DragonFly as the default camera? (y or n)"
         echo -n "Enter : "
         read ANS
-        if [ "$ANS" = "y" ]
+	if ( [ "$ANS" = "y" ] || [ "$ANS" = "Y" ] ||  [ "$ANS" = "yes" ] || [ "$ANS" = "YES" ])
         then
             DRAGON="y"
-        elif [ "$ANS" = "n" ]
+	elif ( [ "$ANS" = "n" ] || [ "$ANS" = "N" ] ||  [ "$ANS" = "no" ] || [ "$ANS" = "NO" ])
         then
             DRAGON="n"
         else
@@ -76,7 +87,7 @@ then
         fi
 
     else
-        echo "Please enter 1,2 or 3."
+        echo "Please enter 1,2,3 or 4."
         exit 0
     fi
 elif [ "$E" = "IRIX" ]
@@ -102,7 +113,7 @@ then
     LDFLAG=""
     ARFLAG="-r"
     RANLIB="ranlib \$\@"
-    LIBS=" -framework Carbon -framework QuickTime -framework GLUT -framework OpenGL -lobjc"
+    LIBS="-framework Carbon -framework QuickTime -framework GLUT -framework OpenGL -lobjc"
 
     echo "Dose your Mac have fast texture mapping hardware? (y or n)"
     echo -n "Enter : "
@@ -127,10 +138,11 @@ echo "GL_NV_texture_rectangle is supported on most NVidia graphics cards"
 echo "and on ATi Radeon and better graphics cards"
 echo -n "Enter : "
 read ANS
-if [ "$ANS" = "y" ]
+if ( [ "$ANS" = "y" ] || [ "$ANS" = "Y" ] ||  [ "$ANS" = "yes" ] || [ "$ANS" = "YES" ])
 then
     NVEXT="y"
-elif [ "$ANS" = "n" ]
+elif ( [ "$ANS" = "n" ] || [ "$ANS" = "N" ] ||  [ "$ANS" = "no" ] || [ "$ANS" = "NO" ])
+
 then
     NVEXT="n"
 else

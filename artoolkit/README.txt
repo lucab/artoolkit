@@ -89,6 +89,12 @@ Latest changes.
 ---------------
 - Added libARvrml.
 - Turn off texturing in gsub/gsub_lite when argDrawMode/arglDrawmode is AR_DRAW_BY_GL_DRAW_PIXELS.
+- Added new examples collide, loadMultiple, paddle, paddleDemo, paddleInteraction, range and twoView.
+- Added new utilities for testing graphics and video without marker recognition, graphicsTest and videoTest.
+- VideoLinuxV4L patch by Uwe Woessner for YUV support (at last!)
+- VideoLinuxV4L patches by Raphael Grasset for improved camera parameter control and compressed jpeg video stream to support Sony Eyetoy camera.
+- VideoLinux1394Cam patch by Wayne Wayne Piekarski for improved lib1394 support, including multiple lib1394 versions.
+- Preliminary API documentation by Raphael Grasset.
 
 
 Changes in version 2.69.

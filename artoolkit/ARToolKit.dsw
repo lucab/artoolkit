@@ -66,6 +66,27 @@ Package=<4>
 
 ###############################################################################
 
+Project: "collide"=.\examples\collide\collideTest.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libAR
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARgsub
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARvideo
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "exview"=.\examples\exview\exview.dsp - Package Owner=<4>
 
 Package=<5>
@@ -84,6 +105,29 @@ Package=<4>
     Project_Dep_Name libARvideo
     End Project Dependency
 }}}
+
+
+###############################################################################
+
+Project: "graphicsTest"=.\util\graphicsTest\graphicsTest.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libAR
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARgsub
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARvideo
+    End Project Dependency
+}}}
+
 
 ###############################################################################
 
@@ -157,6 +201,28 @@ Package=<4>
 {{{
 }}}
 
+
+###############################################################################
+
+Project: "loadMultiple"=.\examples\loadMultiple\loadMultiple.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libAR
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARgsub
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARvideo
+    End Project Dependency
+}}}
+
 ###############################################################################
 
 Project: "mkpatt"=.\util\mk_patt\mkpatt.dsp - Package Owner=<4>
@@ -180,7 +246,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "modetest"=.\examples\modeTest\modetest.dsp - Package Owner=<4>
+Project: "modeTest"=.\examples\modeTest\modeTest.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -199,9 +265,10 @@ Package=<4>
     End Project Dependency
 }}}
 
+
 ###############################################################################
 
-Project: "multi"=.\examples\multi\multi.dsp - Package Owner=<4>
+Project: "multi"=.\examples\multi\multiTest.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -249,7 +316,105 @@ Package=<4>
 
 ###############################################################################
 
-Project: "relation"=.\examples\relation\relation.dsp - Package Owner=<4>
+Project: "paddle"=.\examples\paddle\paddleTest.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libAR
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARgsub
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARgsubUtil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARvideo
+    End Project Dependency
+}}}
+
+
+###############################################################################
+
+Project: "paddleDemo"=.\examples\paddleDemo\paddleDemo.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libAR
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARgsub
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARgsubUtil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARvideo
+    End Project Dependency
+}}}
+
+
+###############################################################################
+
+Project: "paddleInteraction"=.\examples\paddleInteraction\paddleInteractionTest.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libAR
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARgsub
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARgsubUtil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARvideo
+    End Project Dependency
+}}}
+
+
+###############################################################################
+
+Project: "range"=.\examples\range\rangeTest.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libAR
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARgsub
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARgsubUtil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARvideo
+    End Project Dependency
+}}}
+###############################################################################
+
+Project: "relation"=.\examples\relation\relationTest.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -270,7 +435,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "simple"=.\examples\simple\simple.dsp - Package Owner=<4>
+Project: "simple"=.\examples\simple\simpleTest.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -291,7 +456,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "simple2"=.\examples\simple2\simple2.dsp - Package Owner=<4>
+Project: "simple2"=.\examples\simple2\simpleTest2.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -332,6 +497,52 @@ Package=<4>
 }}}
 
 ###############################################################################
+
+
+###############################################################################
+
+Project: "twoView"=.\examples\twoView\twoView.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libAR
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARgsub_lite
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARvideo
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "videoTest"=.\util\videoTest\videoTest.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libAR
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARgsub_lite
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libARvideo
+    End Project Dependency
+}}}
+
+###############################################################################
+
 
 Global:
 
