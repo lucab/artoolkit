@@ -21,7 +21,7 @@ INCLUDE= ${INC_DIR}/AR/video.h
 #
 #   compilation control
 #
-LIBOBJS= ${LIB}(video.o)
+LIBOBJS= ${LIB}(video.o) ${LIB}(ccvt_i386.o)
 
 all:		${LIBOBJS}
 
@@ -31,6 +31,12 @@ ${LIBOBJS}:	${INCLUDE}
 	${CC} -c ${CFLAG} $<
 	${AR} ${ARFLAGS} $@ $*.o
 	rm -f $*.o
+
+.S.a:
+	${CC} -c ${CFLAG} $<
+	${AR} ${ARFLAGS} $@ $*.o
+	rm -f $*.o
+
 
 clean:
 	rm -f *.o

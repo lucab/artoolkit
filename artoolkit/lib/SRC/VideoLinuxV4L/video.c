@@ -3,7 +3,15 @@
  *   author: Nakazawa,Atsushi ( nakazawa@inolab.sys.es.osaka-u.ac.jp )
              Hirokazu Kato ( kato@sys.im.hiroshima-cu.ac.jp )
  *
- *   Revision: 5.2   Date: 2000/08/25
+ *   Revision: 5.3   Date: 2004/11/18
+ *      Rev             Date            Who             Changes
+ *      5.3            2004-11-18       RG              -adding patch done by Uwe Woessner for YUV support on V4L. 
+ *                                                      (Thanks a lot for this contribution !!)
+ *                                                      -modify default video options 
+ *                                                      (no overhead if define externally)
+ *                                                      -adding full V4L options support
+ *                                                      -adding eyetoy support
+ *
  */
 #include <sys/ioctl.h>
 #include <sys/types.h>
@@ -19,6 +27,10 @@
 #include <AR/config.h>
 #include <AR/ar.h>
 #include <AR/video.h>
+#include "ccvt.h"
+#ifdef USE_EYETOY
+#include "jpegtorgb.h" 
+#endif
 
 #define MAXCHANNEL   10
 
@@ -93,22 +105,33 @@ int ar2VideoDispOption( void )
 {
     printf("ARVideo may be configured using one or more of the following options,\n");
     printf("separated by a space:\n\n");
+    printf("DEVICE CONTROLS:\n");
+    printf(" -dev=filepath\n");
+    printf("    specifies device file.\n");
+    printf(" -channel=N\n");
+    printf("    specifies source channel.\n");
     printf(" -width=N\n");
     printf("    specifies expected width of image.\n");
     printf(" -height=N\n");
     printf("    specifies expected height of image.\n");
-    printf(" -contrast=N\n");
-    printf("    specifies contrast. (0.0 <-> 1.0)\n");
+    printf(" -palette=[RGB|YUV420P]\n");
+    printf("    specifies the camera palette (WARNING:all are not supported on each camera !!).\n");
+    printf("IMAGE CONTROLS (WARNING: every options are not supported by all camera !!):\n");
     printf(" -brightness=N\n");
     printf("    specifies brightness. (0.0 <-> 1.0)\n");
+    printf(" -contrast=N\n");
+    printf("    specifies contrast. (0.0 <-> 1.0)\n");
+    printf(" -saturation=N\n");
+    printf("    specifies saturation (color). (0.0 <-> 1.0) (for color camera only)\n");    
+    printf(" -hue=N\n");
+    printf("    specifies hue. (0.0 <-> 1.0) (for color camera only)\n");    
+    printf(" -whiteness=N\n");
+    printf("    specifies whiteness. (0.0 <-> 1.0) (REMARK: gamma for some drivers, otherwise for greyscale camera only)\n");
     printf(" -color=N\n");
-    printf("    specifies color. (0.0 <-> 1.0)\n");
-    printf(" -channel=N\n");
-    printf("    specifies source channel.\n");
-    printf(" -dev=filepath\n");
-    printf("    specifies device file.\n");
+    printf("    specifies saturation (color). (0.0 <-> 1.0) (REMARK: obsolete !! use saturation control)\n\n");
+    printf("OPTION CONTROLS:\n");
     printf(" -mode=[PAL|NTSC|SECAM]\n");
-    printf("    specifies TV signal mode.\n");
+    printf("    specifies TV signal mode (for tv/capture card).\n");
     printf("\n");
 
     return 0;
@@ -125,22 +148,45 @@ AR2VideoParamT *ar2VideoOpen( char *config )
 
     arMalloc( vid, AR2VideoParamT, 1 );
     strcpy( vid->dev, DEFAULT_VIDEO_DEVICE );
+    vid->channel    = DEFAULT_VIDEO_CHANNEL; 
     vid->width      = DEFAULT_VIDEO_WIDTH;
     vid->height     = DEFAULT_VIDEO_HEIGHT;
-    vid->channel    = DEFAULT_VIDEO_CHANNEL;
+#if defined(AR_PIX_FORMAT_BGRA)
+    vid->palette = VIDEO_PALETTE_RGB32;     /* palette format */
+#elif defined(AR_PIX_FORMAT_BGR) || defined(AR_PIX_FORMAT_RGB)
+    vid->palette = VIDEO_PALETTE_RGB24;     /* palette format */
+#endif
+    vid->contrast   = -1.;
+    vid->brightness = -1.;
+    vid->saturation = -1.;
+    vid->hue        = -1.;
+    vid->whiteness  = -1.;
     vid->mode       = DEFAULT_VIDEO_MODE;
     vid->debug      = 0;
-    vid->contrast   = 0.5;
-    vid->brightness = 0.5;
-    vid->color      = 0.5;
+    vid->videoBuffer=NULL;
 
     a = config;
     if( a != NULL) {
         for(;;) {
             while( *a == ' ' || *a == '\t' ) a++;
             if( *a == '\0' ) break;
-
-            if( strncmp( a, "-width=", 7 ) == 0 ) {
+            if( strncmp( a, "-dev=", 5 ) == 0 ) {
+                sscanf( a, "%s", line );
+                if( sscanf( &line[5], "%s", vid->dev ) == 0 ) {
+                    ar2VideoDispOption();
+                    free( vid );
+                    return 0;
+                }
+            }
+            else if( strncmp( a, "-channel=", 9 ) == 0 ) {
+                sscanf( a, "%s", line );
+                if( sscanf( &line[9], "%d", &vid->channel ) == 0 ) {
+                    ar2VideoDispOption();
+                    free( vid );
+                    return 0;
+                }
+            }
+            else if( strncmp( a, "-width=", 7 ) == 0 ) {
                 sscanf( a, "%s", line );
                 if( sscanf( &line[7], "%d", &vid->width ) == 0 ) {
                     ar2VideoDispOption();
@@ -155,6 +201,18 @@ AR2VideoParamT *ar2VideoOpen( char *config )
                     free( vid );
                     return 0;
                 }
+            }
+            else if( strncmp( a, "-palette=", 9 ) == 0 ) {
+                if( strncmp( &a[9], "RGB", 3) == 0 ) {
+#if defined(AR_PIX_FORMAT_BGRA)
+		  vid->palette = VIDEO_PALETTE_RGB32;     /* palette format */
+#elif defined(AR_PIX_FORMAT_BGR)|| defined(AR_PIX_FORMAT_RGB)
+		  vid->palette = VIDEO_PALETTE_RGB24;     /* palette format */
+#endif
+		}
+                else if( strncmp( &a[9], "YUV420P", 7 ) == 0 ) {
+		  vid->palette = VIDEO_PALETTE_YUV420P;
+		}
             }
             else if( strncmp( a, "-contrast=", 10 ) == 0 ) {
                 sscanf( a, "%s", line );
@@ -172,25 +230,33 @@ AR2VideoParamT *ar2VideoOpen( char *config )
                     return 0;
                 }
             }
+            else if( strncmp( a, "-saturation=", 12 ) == 0 ) {
+                sscanf( a, "%s", line );
+                if( sscanf( &line[12], "%lf", &vid->saturation ) == 0 ) {
+                    ar2VideoDispOption();
+                    free( vid );
+                    return 0;
+                }
+            }	    
+            else if( strncmp( a, "-hue=", 5 ) == 0 ) {
+                sscanf( a, "%s", line );
+                if( sscanf( &line[5], "%lf", &vid->hue ) == 0 ) {
+                    ar2VideoDispOption();
+                    free( vid );
+                    return 0;
+                }
+            }	
+	    else if( strncmp( a, "-whiteness=", 11 ) == 0 ) {
+                sscanf( a, "%s", line );
+                if( sscanf( &line[11], "%lf", &vid->whiteness ) == 0 ) {
+                    ar2VideoDispOption();
+                    free( vid );
+                    return 0;
+                }
+            }
             else if( strncmp( a, "-color=", 7 ) == 0 ) {
                 sscanf( a, "%s", line );
-                if( sscanf( &line[7], "%lf", &vid->color ) == 0 ) {
-                    ar2VideoDispOption();
-                    free( vid );
-                    return 0;
-                }
-            }
-            else if( strncmp( a, "-channel=", 9 ) == 0 ) {
-                sscanf( a, "%s", line );
-                if( sscanf( &line[9], "%d", &vid->channel ) == 0 ) {
-                    ar2VideoDispOption();
-                    free( vid );
-                    return 0;
-                }
-            }
-            else if( strncmp( a, "-dev=", 5 ) == 0 ) {
-                sscanf( a, "%s", line );
-                if( sscanf( &line[5], "%s", vid->dev ) == 0 ) {
+                if( sscanf( &line[7], "%lf", &vid->saturation ) == 0 ) {
                     ar2VideoDispOption();
                     free( vid );
                     return 0;
@@ -219,7 +285,7 @@ AR2VideoParamT *ar2VideoOpen( char *config )
         }
     }
 
-    vid->fd = open(vid->dev, O_RDWR);
+    vid->fd = open(vid->dev, O_RDWR);// O_RDONLY ?
     if(vid->fd < 0){
         printf("video device (%s) open failed\n",vid->dev); 
         free( vid );
@@ -298,22 +364,59 @@ AR2VideoParamT *ar2VideoOpen( char *config )
         return 0;
     }
 
+    if(ioctl(vid->fd, VIDIOCGPICT, &vp)) {
+        printf("error: getting palette\n");
+       free( vid );
+       return 0;
+    }
+
+    if( vid->debug ) {
+        printf("=== debug info ===\n");
+        printf("  vp.brightness=   %d\n",vp.brightness);
+        printf("  vp.hue       =   %d\n",vp.hue);
+        printf("  vp.colour    =   %d\n",vp.colour);
+        printf("  vp.contrast  =   %d\n",vp.contrast);
+        printf("  vp.whiteness =   %d\n",vp.whiteness);
+        printf("  vp.depth     =   %d\n",vp.depth);
+        printf("  vp.palette   =   %d\n",vp.palette);
+    }
+
     /* set video picture */
-    vp.brightness = 32767 * 2.0 * vid->brightness;
-    vp.hue        = 32767;
-    vp.colour     = 32767 * 2.0 * vid->color;
-    vp.contrast   = 32767 * 2.0 * vid->contrast;
-    vp.whiteness  = 32767;
-    vp.depth      = 24;                      /* color depth    */
-#if defined(AR_PIX_FORMAT_BGRA)
-    vp.palette    = VIDEO_PALETTE_RGB32;     /* palette format */
-#elif defined(AR_PIX_FORMAT_BGR)
-    vp.palette    = VIDEO_PALETTE_RGB24;     /* palette format */
-#endif
+    if ((vid->brightness+1.)>0.001)
+	vp.brightness   = 32767 * 2.0 *vid->brightness;
+    if ((vid->contrast+1.)>0.001)
+	vp.contrast   = 32767 * 2.0 *vid->contrast;
+    if ((vid->hue+1.)>0.001)
+	vp.hue   = 32767 * 2.0 *vid->hue;
+    if ((vid->whiteness+1.)>0.001)
+	vp.whiteness   = 32767 * 2.0 *vid->whiteness;
+    if ((vid->saturation+1.)>0.001)
+	vp.colour   = 32767 * 2.0 *vid->saturation;
+    vp.depth      = 24;    
+    vp.palette    = vid->palette;
+
     if(ioctl(vid->fd, VIDIOCSPICT, &vp)) {
-        printf("error: setting palette\n");
+        printf("error: setting configuration !! bad palette mode..\n TIPS:try other palette mode (or with new failure contact ARToolKit Developer)\n");
         free( vid );
         return 0;
+    }
+    if (vid->palette==VIDEO_PALETTE_YUV420P)
+        arMalloc( vid->videoBuffer, ARUint8, vid->width*vid->height*3 );
+
+    if( vid->debug ) { 
+        if(ioctl(vid->fd, VIDIOCGPICT, &vp)) {
+            printf("error: getting palette\n");
+            free( vid );
+            return 0;
+        }
+        printf("=== debug info ===\n");
+        printf("  vp.brightness=   %d\n",vp.brightness);
+        printf("  vp.hue       =   %d\n",vp.hue);
+        printf("  vp.colour    =   %d\n",vp.colour);
+        printf("  vp.contrast  =   %d\n",vp.contrast);
+        printf("  vp.whiteness =   %d\n",vp.whiteness);
+        printf("  vp.depth     =   %d\n",vp.depth);
+        printf("  vp.palette   =   %d\n",vp.palette);
     }
 
     /* get mmap info */
@@ -347,14 +450,13 @@ AR2VideoParamT *ar2VideoOpen( char *config )
     vid->vmm.frame  = 0;
     vid->vmm.width  = vid->width;
     vid->vmm.height = vid->height;
-#if defined(AR_PIX_FORMAT_BGRA)
-    vid->vmm.format = VIDEO_PALETTE_RGB32;
-#elif defined(AR_PIX_FORMAT_BGR)
-    vid->vmm.format = VIDEO_PALETTE_RGB24;
-#endif
+    vid->vmm.format= vid->palette;
 
     vid->video_cont_num = -1;
 
+#ifdef USE_EYETOY
+    JPEGToRGBInit(vid->width,vid->height);
+#endif
     return vid;
 }
 
@@ -364,6 +466,8 @@ int ar2VideoClose( AR2VideoParamT *vid )
         ar2VideoCapStop( vid );
     }
     close(vid->fd);
+    if(vid->videoBuffer!=NULL)
+        free(vid->videoBuffer);
     free( vid );
 
     return 0;
@@ -421,6 +525,8 @@ int ar2VideoCapStop( AR2VideoParamT *vid )
 
 ARUint8 *ar2VideoGetImage( AR2VideoParamT *vid )
 {
+    ARUint8 *buf;
+
     if(vid->video_cont_num < 0){
         printf("arVideoCapStart has never been called.\n");
         return NULL;
@@ -433,9 +539,24 @@ ARUint8 *ar2VideoGetImage( AR2VideoParamT *vid )
     vid->video_cont_num = 1 - vid->video_cont_num;
 
     if(vid->video_cont_num == 0)
-        return (vid->map + vid->vm.offsets[1]); 
+        buf=(vid->map + vid->vm.offsets[1]); 
     else
-        return (vid->map + vid->vm.offsets[0]);
+        buf=(vid->map + vid->vm.offsets[0]);
+	
+    if(vid->palette == VIDEO_PALETTE_YUV420P)
+    {
+
+        ccvt_420p_bgr24(vid->width, vid->height, buf, buf+(vid->width*vid->height),
+	 	        buf+(vid->width*vid->height)+(vid->width*vid->height)/4,
+		        vid->videoBuffer);
+        return vid->videoBuffer;
+    }
+#ifdef USE_EYETOY
+	buf=JPEGToRGB(buf,vid->width, vid->height);
+#endif
+
+    return buf;
+
 }
 
 int ar2VideoInqSize(AR2VideoParamT *vid, int *x,int *y)
