@@ -78,11 +78,11 @@
 // ============================================================================
 
 // Preferences.
-static BOOL prefWindowed = FALSE;
+static BOOL prefWindowed = TRUE;
 static int prefWidth = 640;					// Fullscreen mode width.
 static int prefHeight = 480;				// Fullscreen mode height.
-//static int prefDepth = 32;				// Fullscreen mode bit depth.
-//static int prefRefresh = 60;				// Fullscreen mode refresh rate.
+static int prefDepth = 32;					// Fullscreen mode bit depth.
+static int prefRefresh = 0;					// Fullscreen mode refresh rate. Set to 0 to use default rate.
 
 // ARToolKit globals.
 static long			gCallCountMarkerDetect = 0;
@@ -435,12 +435,12 @@ int main(int argc, char** argv)
 
 	// Set up GL context(s) for OpenGL to draw into.
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
-	if (!prefWindowed) {								// GLUT mono fullscreen.
-		//sprintf(glutGamemode, "%ix%i:%i@%i", prefWidth, prefHeight, prefDepth, prefRefresh);
-		sprintf(glutGamemode, "%ix%i", prefWidth, prefHeight);
+	if (!prefWindowed) {
+		if (prefRefresh) sprintf(glutGamemode, "%ix%i:%i@%i", prefWidth, prefHeight, prefDepth, prefRefresh);
+		else sprintf(glutGamemode, "%ix%i:%i", prefWidth, prefHeight, prefDepth);
 		glutGameModeString(glutGamemode);
 		glutEnterGameMode();
-	} else {											// GLUT mono windowed.
+	} else {
 		glutInitWindowSize(gARTCparam.xsize, gARTCparam.ysize);
 		glutCreateWindow(argv[0]);
 	}
