@@ -67,6 +67,7 @@
 				4A5F9C36064B52E700525EC0,
 				4A5F9C84064B538700525EC0,
 				4A5F9D3F064B54D800525EC0,
+				4A94DD350756B1EB00D79CD1,
 				4AB9FF750651CDE3003B9097,
 				4A1F9DE00756897100DEC369,
 				4A1F9E0A07568A0100DEC369,
@@ -475,8 +476,6 @@
 			buildSettings = {
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = /;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = include;
@@ -3501,8 +3500,6 @@
 			buildSettings = {
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = /;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = include;
@@ -3643,8 +3640,6 @@
 			buildSettings = {
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = /;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = include;
@@ -3784,8 +3779,6 @@
 			buildSettings = {
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = /;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = include;
@@ -3923,8 +3916,6 @@
 			buildSettings = {
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = /;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = include;
@@ -4069,8 +4060,6 @@
 			buildSettings = {
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = /;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = include;
@@ -4231,8 +4220,6 @@
 			buildSettings = {
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = /;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = include;
@@ -4393,6 +4380,7 @@
 				4A5F9D92064B557700525EC0,
 				4A5F9D96064B557700525EC0,
 				4A488ACD0751CC8E003D46BE,
+				4A94DD4C0756B27700D79CD1,
 			);
 			isa = PBXAggregateTarget;
 			name = "ARToolKit examples";
@@ -4943,6 +4931,184 @@
 			settings = {
 			};
 		};
+		4A94DD350756B1EB00D79CD1 = {
+			buildPhases = (
+				4A94DD390756B1EB00D79CD1,
+				4A94DD3D0756B1EB00D79CD1,
+				4A94DD3F0756B1EB00D79CD1,
+				4A94DD400756B1EB00D79CD1,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				DEPLOYMENT_LOCATION = YES;
+				DSTROOT = /;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				HEADER_SEARCH_PATHS = include;
+				INSTALL_PATH = "$(SRCROOT)/bin";
+				LIBRARY_SEARCH_PATHS = lib;
+				PRODUCT_NAME = twoView;
+				WARNING_CFLAGS = "-Wmost";
+			};
+			dependencies = (
+				4A94DD360756B1EB00D79CD1,
+				4A94DD370756B1EB00D79CD1,
+				4A94DD380756B1EB00D79CD1,
+			);
+			isa = PBXNativeTarget;
+			name = twoView;
+			productName = simpleTest;
+			productReference = 4A94DD490756B1EB00D79CD1;
+			productType = "com.apple.product-type.tool";
+		};
+		4A94DD360756B1EB00D79CD1 = {
+			isa = PBXTargetDependency;
+			target = 4A3F11430649F7BA0042B0D7;
+			targetProxy = 4A5F9A4C064B4F0600525EC0;
+		};
+		4A94DD370756B1EB00D79CD1 = {
+			isa = PBXTargetDependency;
+			target = 4A3F1305064A02100042B0D7;
+			targetProxy = 4A5F9A4E064B4F0600525EC0;
+		};
+		4A94DD380756B1EB00D79CD1 = {
+			isa = PBXTargetDependency;
+			target = 4A8EA585065873E100ADDDD1;
+			targetProxy = 4A2244FE0659A32C0014DA8E;
+		};
+		4A94DD390756B1EB00D79CD1 = {
+			buildActionMask = 2147483647;
+			files = (
+				4A94DD3A0756B1EB00D79CD1,
+				4A94DD3B0756B1EB00D79CD1,
+				4A94DD3C0756B1EB00D79CD1,
+			);
+			isa = PBXHeadersBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4A94DD3A0756B1EB00D79CD1 = {
+			fileRef = 4A427D000484329800B56093;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A94DD3B0756B1EB00D79CD1 = {
+			fileRef = 4A427D070484329800B56093;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A94DD3C0756B1EB00D79CD1 = {
+			fileRef = 4A427D0F0484329800B56093;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A94DD3D0756B1EB00D79CD1 = {
+			buildActionMask = 2147483647;
+			files = (
+				4A94DD4D0756B29700D79CD1,
+			);
+			isa = PBXSourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4A94DD3F0756B1EB00D79CD1 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXRezBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4A94DD400756B1EB00D79CD1 = {
+			buildActionMask = 2147483647;
+			files = (
+				4A94DD410756B1EB00D79CD1,
+				4A94DD420756B1EB00D79CD1,
+				4A94DD430756B1EB00D79CD1,
+				4A94DD440756B1EB00D79CD1,
+				4A94DD450756B1EB00D79CD1,
+				4A94DD460756B1EB00D79CD1,
+				4A94DD470756B1EB00D79CD1,
+				4A94DD480756B1EB00D79CD1,
+			);
+			isa = PBXFrameworksBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4A94DD410756B1EB00D79CD1 = {
+			fileRef = 4A3F1601064A0CE40042B0D7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A94DD420756B1EB00D79CD1 = {
+			fileRef = 4A3F167F064A0E270042B0D7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A94DD430756B1EB00D79CD1 = {
+			fileRef = 4A3F14FC064A0C510042B0D7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A94DD440756B1EB00D79CD1 = {
+			fileRef = 4A3F14FD064A0C510042B0D7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A94DD450756B1EB00D79CD1 = {
+			fileRef = 4A3F14FE064A0C510042B0D7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A94DD460756B1EB00D79CD1 = {
+			fileRef = 4A427D120484329800B56093;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A94DD470756B1EB00D79CD1 = {
+			fileRef = 4A427D160484329800B56093;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A94DD480756B1EB00D79CD1 = {
+			fileRef = 4A66475606598B950061DA76;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4A94DD490756B1EB00D79CD1 = {
+			explicitFileType = "compiled.mach-o.executable";
+			includeInIndex = 0;
+			isa = PBXFileReference;
+			path = twoView;
+			refType = 3;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		4A94DD4B0756B27700D79CD1 = {
+			containerPortal = 08FB7793FE84155DC02AAC07;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 4A94DD350756B1EB00D79CD1;
+			remoteInfo = twoView;
+		};
+		4A94DD4C0756B27700D79CD1 = {
+			isa = PBXTargetDependency;
+			target = 4A94DD350756B1EB00D79CD1;
+			targetProxy = 4A94DD4B0756B27700D79CD1;
+		};
+		4A94DD4D0756B29700D79CD1 = {
+			fileRef = 4AC3C0BE07518C7E0073D2C6;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		4AAB8C740728934300708844 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -5243,8 +5409,6 @@
 			buildSettings = {
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = /;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = include;
@@ -5403,8 +5567,6 @@
 			buildSettings = {
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = /;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = include;
@@ -5556,8 +5718,6 @@
 			buildSettings = {
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = /;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = include;
@@ -5709,8 +5869,6 @@
 			buildSettings = {
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = /;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = include;
@@ -6733,6 +6891,7 @@
 		};
 		4AE2305E0659B7D10047D402 = {
 			children = (
+				4A94DD490756B1EB00D79CD1,
 				4A1F9E1B07568A0100DEC369,
 				4A1F9DF40756897100DEC369,
 				4A488ACA0751CC26003D46BE,
