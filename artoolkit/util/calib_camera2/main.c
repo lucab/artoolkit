@@ -125,6 +125,9 @@ static void     save_param(void)
 
 int main(int argc, char *argv[])
 {
+#ifdef __APPLE__
+	glutInit(&argc, argv);
+#endif
     init( argc, argv );
 
     glutKeyboardFunc(keyEvent);
@@ -172,9 +175,6 @@ static void init(int argc, char *argv[])
     if (arVideoInqSize(&xsize, &ysize) < 0) exit(0);
     printf("Image size (x,y) = (%d,%d)\n", xsize, ysize);
 
-#ifdef __APPLE__
-    glutInit(&argc, argv);
-#endif
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
     glutInitWindowSize(xsize, ysize);
     glutInitWindowPosition(100,100);

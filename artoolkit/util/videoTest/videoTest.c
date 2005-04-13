@@ -41,6 +41,9 @@ static void   mainLoop(void);
 int main(int argc, char **argv)
 {
 	//initialize applications
+#ifdef __APPLE__
+	glutInit(&argc, argv);
+#endif
     init();
 
 	//start video capture

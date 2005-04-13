@@ -126,6 +126,7 @@ The VRML renderering library and example (libARvrml & simpleVRML) are optional b
 Changes in this release.
 ------------------------
 - Mac OS X video driver: QuickTime 6.4 is now required by default. (Support for earlier versions can be enabled at compile-time). 
+- Mac OS X libARgsub and binaries which call it: fix for bug "GLUT Warning: glutInit being called a second time" by moving glutInit to main so that it is called before calling arVideoOpen.
 
 Changes in earlier releases.
 ----------------------------

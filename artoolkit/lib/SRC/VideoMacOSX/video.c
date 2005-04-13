@@ -1270,7 +1270,7 @@ AR2VideoParamT *ar2VideoOpen(char *config)
         initF = 1;
     }
 
-	// If there are no active grabbers, init the QuickTime access mutex.
+	// If there are no active grabbers, init QuickTime.
 	if (gVidCount == 0) {
 	
 		if ((err_s = Gestalt(gestaltQuickTimeVersion, &qtVersion)) != noErr) {
@@ -1297,7 +1297,7 @@ AR2VideoParamT *ar2VideoOpen(char *config)
 		}
 		
 #ifdef AR_VIDEO_SUPPORT_OLD_QUICKTIME
-		// If there are no active grabbers, init the QuickTime access mutex.		
+		// Init the QuickTime access mutex.		
 		if ((err_i = pthread_mutex_init(&gVidQuickTimeMutex, NULL)) != 0) {
 			fprintf(stderr, "ar2VideoOpen(): Error %d creating mutex (for QuickTime).\n", err_i);
 			return (NULL);

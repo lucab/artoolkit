@@ -46,7 +46,10 @@ static void   draw( void );
 
 int main(int argc, char **argv)
 {
-    init();
+#ifdef __APPLE__
+	glutInit(&argc, argv);
+#endif
+	init();
 
     arVideoCapStart();
     argMainLoop( NULL, keyEvent, mainLoop );
@@ -114,7 +117,7 @@ static void mainLoop(void)
 static void init( void )
 {
     ARParam  wparam;
-
+	
     /* open the video path */
     if( arVideoOpen( vconf ) < 0 ) exit(0);
     /* find the size of the window */

@@ -48,9 +48,12 @@ static int checkCollisions( ObjectData_T object0, ObjectData_T object1, float co
 static int draw( ObjectData_T *object, int objectnum );
 static int  draw_object( int obj_id, double gl_para[16], int collide_flag );
 
-int main()
+int main(int argc, char **argv)
 {
 	//initialize applications
+#ifdef __APPLE__
+	glutInit(&argc, argv);
+#endif
     init();
 
 	//start video capture

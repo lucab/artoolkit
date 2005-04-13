@@ -75,9 +75,12 @@ static int checkCollision(float Pos1[],float Pos2[], float range);
 static void	  findPaddlePosition(float curPaddlePos[], double card_trans[3][4],double base_trans[3][4]);
 
 
-int main()
+int main(int argc, char **argv)
 {
 	//initialize applications
+#ifdef __APPLE__
+	glutInit(&argc, argv);
+#endif
     init();
 
 	arVideoCapStart();

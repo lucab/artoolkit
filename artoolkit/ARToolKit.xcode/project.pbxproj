@@ -57,6 +57,7 @@
 				4A3F13F4064A091B0042B0D7,
 				4A3F1465064A09F80042B0D7,
 				4A3F149E064A0AAB0042B0D7,
+				4A6AE876080CD29800149122,
 				4A5F9D84064B556E00525EC0,
 				4A5BFDCD075E856100E59760,
 				4A5F9D3F064B54D800525EC0,
@@ -205,6 +206,7 @@
 				4A1309F9075C26F900D62ACD,
 				4A1309FA075C26F900D62ACD,
 				4A130A0E075C270F00D62ACD,
+				4A6AE8A4080CE1F300149122,
 			);
 			isa = PBXNativeTarget;
 			name = simpleVRML;
@@ -450,6 +452,7 @@
 				4A1F9DE10756897100DEC369,
 				4A1F9DE20756897100DEC369,
 				4A1F9DE30756897100DEC369,
+				4A6AE898080CE1D700149122,
 			);
 			isa = PBXNativeTarget;
 			name = videoTest;
@@ -608,6 +611,7 @@
 			dependencies = (
 				4A1F9E0B07568A0100DEC369,
 				4A1F9E0D07568A0100DEC369,
+				4A6AE89A080CE1DA00149122,
 			);
 			isa = PBXNativeTarget;
 			name = graphicsTest;
@@ -774,6 +778,7 @@
 				4A2244E40659A2F40014DA8E,
 				4A2244E50659A2F40014DA8E,
 				4A2244FF0659A32C0014DA8E,
+				4A6AE890080CE1C500149122,
 			);
 			isa = PBXNativeTarget;
 			name = simpleLite;
@@ -1273,6 +1278,7 @@
 				4AF4982B066FFEBD00EEDF04,
 				4AF49830066FFED200EEDF04,
 				4AF49844066FFEE800EEDF04,
+				4AB1552407EA4D9300770B93,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1282,6 +1288,7 @@
 			files = (
 				4A3F130F064A02940042B0D7,
 				4A83CED207DFE2D100A10282,
+				4AB1552307EA4D9300770B93,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1763,6 +1770,7 @@
 				4A3F162C064A0D990042B0D7,
 				4A3F162E064A0D990042B0D7,
 				4A3F1630064A0D990042B0D7,
+				4A6AE880080CE19D00149122,
 			);
 			isa = PBXNativeTarget;
 			name = modeTest;
@@ -3262,6 +3270,8 @@
 		};
 		4A427D700484329900B56093 = {
 			children = (
+				4AB1552207EA4D9300770B93,
+				4AB1552107EA4D9300770B93,
 				4AFEA85207DEB00000483D33,
 				4AFEA7E407DE94E100483D33,
 				4A307DCF07DD3E7B00613859,
@@ -3498,7 +3508,7 @@
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = include;
 				INSTALL_PATH = "$(SRCROOT)/bin";
-				LIBRARY_SEARCH_PATHS = "lib /Users/phil/Documents/Development/Projects/ARToolKit/artoolkit/lib";
+				LIBRARY_SEARCH_PATHS = lib;
 				PRODUCT_NAME = rangeTest;
 				WARNING_CFLAGS = "-Wmost";
 			};
@@ -3506,6 +3516,7 @@
 				4A488BAA0751CD59003D46BE,
 				4A488BAC0751CD59003D46BE,
 				4A488BAE0751CD59003D46BE,
+				4A6AE88C080CE1BB00149122,
 			);
 			isa = PBXNativeTarget;
 			name = rangeTest;
@@ -3654,6 +3665,7 @@
 				4A5BFD18075E7F1200E59760,
 				4A5BFD19075E7F1200E59760,
 				4A5BFD1A075E7F1200E59760,
+				4A6AE87E080CE19700149122,
 			);
 			isa = PBXNativeTarget;
 			name = loadMultiple;
@@ -3797,6 +3809,7 @@
 				4A5BFD38075E801000E59760,
 				4A5BFD39075E801000E59760,
 				4A5BFD3A075E801000E59760,
+				4A6AE886080CE1AD00149122,
 			);
 			isa = PBXNativeTarget;
 			name = paddleTest;
@@ -3952,6 +3965,7 @@
 				4A5BFD4D075E801700E59760,
 				4A5BFD4E075E801700E59760,
 				4A5BFD4F075E801700E59760,
+				4A6AE888080CE1B200149122,
 			);
 			isa = PBXNativeTarget;
 			name = paddleDemo;
@@ -4157,6 +4171,7 @@
 				4A5BFDA3075E835B00E59760,
 				4A5BFDA4075E835B00E59760,
 				4A5BFDA5075E835B00E59760,
+				4A6AE88A080CE1B700149122,
 			);
 			isa = PBXNativeTarget;
 			name = paddleInteractionTest;
@@ -4323,6 +4338,7 @@
 				4A5BFDCE075E856100E59760,
 				4A5BFDCF075E856100E59760,
 				4A5BFDD0075E856100E59760,
+				4A6AE87A080CE18400149122,
 			);
 			isa = PBXNativeTarget;
 			name = collideTest;
@@ -4576,6 +4592,7 @@
 				4A5F9A4D064B4F0600525EC0,
 				4A5F9A4F064B4F0600525EC0,
 				4A5F9A51064B4F0600525EC0,
+				4A6AE892080CE1CA00149122,
 			);
 			isa = PBXNativeTarget;
 			name = simpleTest;
@@ -4718,6 +4735,7 @@
 				4A5F9B75064B501E00525EC0,
 				4A5F9B77064B501E00525EC0,
 				4A5F9B79064B501E00525EC0,
+				4A6AE894080CE1CD00149122,
 			);
 			isa = PBXNativeTarget;
 			name = simpleTest2;
@@ -4857,6 +4875,7 @@
 				4A5F9BDE064B51FB00525EC0,
 				4A5F9BDF064B51FB00525EC0,
 				4A5F9BE0064B51FB00525EC0,
+				4A6AE88E080CE1C000149122,
 			);
 			isa = PBXNativeTarget;
 			name = relationTest;
@@ -4997,6 +5016,7 @@
 				4A5F9C38064B52E700525EC0,
 				4A5F9C39064B52E700525EC0,
 				4A2245E00659A6BF0014DA8E,
+				4A6AE882080CE1A300149122,
 			);
 			isa = PBXNativeTarget;
 			name = multiTest;
@@ -5143,6 +5163,7 @@
 				4A5F9C86064B538700525EC0,
 				4A5F9C87064B538700525EC0,
 				4AF54FDE069E5F8000E96B52,
+				4A6AE884080CE1A800149122,
 			);
 			isa = PBXNativeTarget;
 			name = optical;
@@ -5304,6 +5325,7 @@
 				4A5F9D40064B54D800525EC0,
 				4A5F9D41064B54D800525EC0,
 				4A5F9D42064B54D800525EC0,
+				4A6AE87C080CE19200149122,
 			);
 			isa = PBXNativeTarget;
 			name = exview;
@@ -5580,6 +5602,304 @@
 			isa = PBXTargetDependency;
 			target = 4A8EA585065873E100ADDDD1;
 			targetProxy = 4A6647D4065990EE0061DA76;
+		};
+		4A6AE875080CD29800149122 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			isa = PBXShellScriptBuildPhase;
+			outputPaths = (
+				build/Data,
+				build/Wrl,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/csh;
+			shellScript = "cd build\nif ($ACTION != clean) then\nif (! -e Data) then\nln -sf ../bin/Data Data\nendif\nif (! -e Wrl) then\nln -sf ../bin/Wrl Wrl\nendif\nelse\nif (-l Data) then\nrm -f Data\nendif\nif (-l Wrl) then\nrm -f Wrl\nendif\nendif";
+		};
+		4A6AE876080CD29800149122 = {
+			buildPhases = (
+				4A6AE875080CD29800149122,
+			);
+			buildSettings = {
+				OPTIMIZATION_CFLAGS = "";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = "Fix XCode runtime cwd";
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
+			};
+			dependencies = (
+			);
+			isa = PBXAggregateTarget;
+			name = "XCode runtime cwd fix";
+			productName = "Fix XCode runtime cwd";
+		};
+		4A6AE879080CE18400149122 = {
+			containerPortal = 08FB7793FE84155DC02AAC07;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 4A6AE876080CD29800149122;
+			remoteInfo = "XCode runtime cwd fix";
+		};
+		4A6AE87A080CE18400149122 = {
+			isa = PBXTargetDependency;
+			target = 4A6AE876080CD29800149122;
+			targetProxy = 4A6AE879080CE18400149122;
+		};
+		4A6AE87B080CE19200149122 = {
+			containerPortal = 08FB7793FE84155DC02AAC07;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 4A6AE876080CD29800149122;
+			remoteInfo = "XCode runtime cwd fix";
+		};
+		4A6AE87C080CE19200149122 = {
+			isa = PBXTargetDependency;
+			target = 4A6AE876080CD29800149122;
+			targetProxy = 4A6AE87B080CE19200149122;
+		};
+		4A6AE87D080CE19700149122 = {
+			containerPortal = 08FB7793FE84155DC02AAC07;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 4A6AE876080CD29800149122;
+			remoteInfo = "XCode runtime cwd fix";
+		};
+		4A6AE87E080CE19700149122 = {
+			isa = PBXTargetDependency;
+			target = 4A6AE876080CD29800149122;
+			targetProxy = 4A6AE87D080CE19700149122;
+		};
+		4A6AE87F080CE19D00149122 = {
+			containerPortal = 08FB7793FE84155DC02AAC07;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 4A6AE876080CD29800149122;
+			remoteInfo = "XCode runtime cwd fix";
+		};
+		4A6AE880080CE19D00149122 = {
+			isa = PBXTargetDependency;
+			target = 4A6AE876080CD29800149122;
+			targetProxy = 4A6AE87F080CE19D00149122;
+		};
+		4A6AE881080CE1A300149122 = {
+			containerPortal = 08FB7793FE84155DC02AAC07;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 4A6AE876080CD29800149122;
+			remoteInfo = "XCode runtime cwd fix";
+		};
+		4A6AE882080CE1A300149122 = {
+			isa = PBXTargetDependency;
+			target = 4A6AE876080CD29800149122;
+			targetProxy = 4A6AE881080CE1A300149122;
+		};
+		4A6AE883080CE1A800149122 = {
+			containerPortal = 08FB7793FE84155DC02AAC07;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 4A6AE876080CD29800149122;
+			remoteInfo = "XCode runtime cwd fix";
+		};
+		4A6AE884080CE1A800149122 = {
+			isa = PBXTargetDependency;
+			target = 4A6AE876080CD29800149122;
+			targetProxy = 4A6AE883080CE1A800149122;
+		};
+		4A6AE885080CE1AD00149122 = {
+			containerPortal = 08FB7793FE84155DC02AAC07;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 4A6AE876080CD29800149122;
+			remoteInfo = "XCode runtime cwd fix";
+		};
+		4A6AE886080CE1AD00149122 = {
+			isa = PBXTargetDependency;
+			target = 4A6AE876080CD29800149122;
+			targetProxy = 4A6AE885080CE1AD00149122;
+		};
+		4A6AE887080CE1B200149122 = {
+			containerPortal = 08FB7793FE84155DC02AAC07;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 4A6AE876080CD29800149122;
+			remoteInfo = "XCode runtime cwd fix";
+		};
+		4A6AE888080CE1B200149122 = {
+			isa = PBXTargetDependency;
+			target = 4A6AE876080CD29800149122;
+			targetProxy = 4A6AE887080CE1B200149122;
+		};
+		4A6AE889080CE1B700149122 = {
+			containerPortal = 08FB7793FE84155DC02AAC07;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 4A6AE876080CD29800149122;
+			remoteInfo = "XCode runtime cwd fix";
+		};
+		4A6AE88A080CE1B700149122 = {
+			isa = PBXTargetDependency;
+			target = 4A6AE876080CD29800149122;
+			targetProxy = 4A6AE889080CE1B700149122;
+		};
+		4A6AE88B080CE1BB00149122 = {
+			containerPortal = 08FB7793FE84155DC02AAC07;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 4A6AE876080CD29800149122;
+			remoteInfo = "XCode runtime cwd fix";
+		};
+		4A6AE88C080CE1BB00149122 = {
+			isa = PBXTargetDependency;
+			target = 4A6AE876080CD29800149122;
+			targetProxy = 4A6AE88B080CE1BB00149122;
+		};
+		4A6AE88D080CE1C000149122 = {
+			containerPortal = 08FB7793FE84155DC02AAC07;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 4A6AE876080CD29800149122;
+			remoteInfo = "XCode runtime cwd fix";
+		};
+		4A6AE88E080CE1C000149122 = {
+			isa = PBXTargetDependency;
+			target = 4A6AE876080CD29800149122;
+			targetProxy = 4A6AE88D080CE1C000149122;
+		};
+		4A6AE88F080CE1C500149122 = {
+			containerPortal = 08FB7793FE84155DC02AAC07;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 4A6AE876080CD29800149122;
+			remoteInfo = "XCode runtime cwd fix";
+		};
+		4A6AE890080CE1C500149122 = {
+			isa = PBXTargetDependency;
+			target = 4A6AE876080CD29800149122;
+			targetProxy = 4A6AE88F080CE1C500149122;
+		};
+		4A6AE891080CE1CA00149122 = {
+			containerPortal = 08FB7793FE84155DC02AAC07;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 4A6AE876080CD29800149122;
+			remoteInfo = "XCode runtime cwd fix";
+		};
+		4A6AE892080CE1CA00149122 = {
+			isa = PBXTargetDependency;
+			target = 4A6AE876080CD29800149122;
+			targetProxy = 4A6AE891080CE1CA00149122;
+		};
+		4A6AE893080CE1CD00149122 = {
+			containerPortal = 08FB7793FE84155DC02AAC07;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 4A6AE876080CD29800149122;
+			remoteInfo = "XCode runtime cwd fix";
+		};
+		4A6AE894080CE1CD00149122 = {
+			isa = PBXTargetDependency;
+			target = 4A6AE876080CD29800149122;
+			targetProxy = 4A6AE893080CE1CD00149122;
+		};
+		4A6AE895080CE1D200149122 = {
+			containerPortal = 08FB7793FE84155DC02AAC07;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 4A6AE876080CD29800149122;
+			remoteInfo = "XCode runtime cwd fix";
+		};
+		4A6AE896080CE1D200149122 = {
+			isa = PBXTargetDependency;
+			target = 4A6AE876080CD29800149122;
+			targetProxy = 4A6AE895080CE1D200149122;
+		};
+		4A6AE897080CE1D700149122 = {
+			containerPortal = 08FB7793FE84155DC02AAC07;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 4A6AE876080CD29800149122;
+			remoteInfo = "XCode runtime cwd fix";
+		};
+		4A6AE898080CE1D700149122 = {
+			isa = PBXTargetDependency;
+			target = 4A6AE876080CD29800149122;
+			targetProxy = 4A6AE897080CE1D700149122;
+		};
+		4A6AE899080CE1DA00149122 = {
+			containerPortal = 08FB7793FE84155DC02AAC07;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 4A6AE876080CD29800149122;
+			remoteInfo = "XCode runtime cwd fix";
+		};
+		4A6AE89A080CE1DA00149122 = {
+			isa = PBXTargetDependency;
+			target = 4A6AE876080CD29800149122;
+			targetProxy = 4A6AE899080CE1DA00149122;
+		};
+		4A6AE89B080CE1DF00149122 = {
+			containerPortal = 08FB7793FE84155DC02AAC07;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 4A6AE876080CD29800149122;
+			remoteInfo = "XCode runtime cwd fix";
+		};
+		4A6AE89C080CE1DF00149122 = {
+			isa = PBXTargetDependency;
+			target = 4A6AE876080CD29800149122;
+			targetProxy = 4A6AE89B080CE1DF00149122;
+		};
+		4A6AE89D080CE1E500149122 = {
+			containerPortal = 08FB7793FE84155DC02AAC07;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 4A6AE876080CD29800149122;
+			remoteInfo = "XCode runtime cwd fix";
+		};
+		4A6AE89E080CE1E500149122 = {
+			isa = PBXTargetDependency;
+			target = 4A6AE876080CD29800149122;
+			targetProxy = 4A6AE89D080CE1E500149122;
+		};
+		4A6AE89F080CE1E900149122 = {
+			containerPortal = 08FB7793FE84155DC02AAC07;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 4A6AE876080CD29800149122;
+			remoteInfo = "XCode runtime cwd fix";
+		};
+		4A6AE8A0080CE1E900149122 = {
+			isa = PBXTargetDependency;
+			target = 4A6AE876080CD29800149122;
+			targetProxy = 4A6AE89F080CE1E900149122;
+		};
+		4A6AE8A1080CE1EE00149122 = {
+			containerPortal = 08FB7793FE84155DC02AAC07;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 4A6AE876080CD29800149122;
+			remoteInfo = "XCode runtime cwd fix";
+		};
+		4A6AE8A2080CE1EE00149122 = {
+			isa = PBXTargetDependency;
+			target = 4A6AE876080CD29800149122;
+			targetProxy = 4A6AE8A1080CE1EE00149122;
+		};
+		4A6AE8A3080CE1F300149122 = {
+			containerPortal = 08FB7793FE84155DC02AAC07;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 4A6AE876080CD29800149122;
+			remoteInfo = "XCode runtime cwd fix";
+		};
+		4A6AE8A4080CE1F300149122 = {
+			isa = PBXTargetDependency;
+			target = 4A6AE876080CD29800149122;
+			targetProxy = 4A6AE8A3080CE1F300149122;
 		};
 		4A7EF6340677F2DE000C5A8F = {
 			fileRef = 4A427D000484329800B56093;
@@ -6300,6 +6620,7 @@
 				4A94DD360756B1EB00D79CD1,
 				4A94DD370756B1EB00D79CD1,
 				4A94DD380756B1EB00D79CD1,
+				4A6AE896080CE1D200149122,
 			);
 			isa = PBXNativeTarget;
 			name = twoView;
@@ -6728,6 +7049,34 @@
 			refType = 4;
 			sourceTree = "<group>";
 		};
+		4AB1552107EA4D9300770B93 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			path = QTMovieFromURL.c;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		4AB1552207EA4D9300770B93 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = QTMovieFromURL.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		4AB1552307EA4D9300770B93 = {
+			fileRef = 4AB1552107EA4D9300770B93;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		4AB1552407EA4D9300770B93 = {
+			fileRef = 4AB1552207EA4D9300770B93;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		4AB5532706A4BA0C00FAEE19 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -6768,6 +7117,7 @@
 				4AB9FDF40651CB83003B9097,
 				4AB9FDF50651CB83003B9097,
 				4AB9FDF60651CB83003B9097,
+				4A6AE89C080CE1DF00149122,
 			);
 			isa = PBXNativeTarget;
 			name = calib_camera2;
@@ -6928,6 +7278,7 @@
 				4AB9FE5A0651CC50003B9097,
 				4AB9FE5B0651CC50003B9097,
 				4AB9FE5C0651CC50003B9097,
+				4A6AE89E080CE1E500149122,
 			);
 			isa = PBXNativeTarget;
 			name = calib_cparam;
@@ -7081,6 +7432,7 @@
 				4AB9FEFE0651CD1F003B9097,
 				4AB9FEFF0651CD1F003B9097,
 				4AB9FF000651CD1F003B9097,
+				4A6AE8A0080CE1E900149122,
 			);
 			isa = PBXNativeTarget;
 			name = calib_dist;
@@ -7234,6 +7586,7 @@
 				4AB9FF450651CD8D003B9097,
 				4AB9FF460651CD8D003B9097,
 				4AB9FF470651CD8D003B9097,
+				4A6AE8A2080CE1EE00149122,
 			);
 			isa = PBXNativeTarget;
 			name = mk_patt;

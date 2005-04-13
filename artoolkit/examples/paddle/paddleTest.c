@@ -52,9 +52,12 @@ static void   keyEvent( unsigned char key, int x, int y);
 static void   mainLoop(void);
 static void   draw( double trans1[3][4], double trans2[3][4], int mode );
 
-int main()
+int main(int argc, char **argv)
 {
 	//initialize application
+#ifdef __APPLE__
+	glutInit(&argc, argv);
+#endif
     init();
 
 	arVideoCapStart();

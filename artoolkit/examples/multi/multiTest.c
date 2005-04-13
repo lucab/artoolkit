@@ -44,6 +44,9 @@ static void   draw( double trans1[3][4], double trans2[3][4], int mode );
 
 int main(int argc, char **argv)
 {
+#ifdef __APPLE__
+	glutInit(&argc, argv);
+#endif
     init();
 
     arVideoCapStart();

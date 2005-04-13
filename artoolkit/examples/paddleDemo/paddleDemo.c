@@ -70,9 +70,12 @@ static int    drawGroundGrid( double trans[3][4], int divisions, float x, float 
 static void   findPaddlePosition(float curPaddlePos[], double card_trans[3][4],double base_trans[3][4]);
 static void drawItems(double trans[3][4],ItemList* list);
 
-int main()
+int main(int argc, char **argv)
 {
 	//initialize applications
+#ifdef __APPLE__
+	glutInit(&argc, argv);
+#endif
     init();
 
     arVideoCapStart();

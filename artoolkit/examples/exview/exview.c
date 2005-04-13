@@ -61,6 +61,9 @@ static void   getResultQuat( ARMarkerInfo *marker_info );
 
 int main(int argc, char **argv)
 {
+#ifdef __APPLE__
+	glutInit(&argc, argv);
+#endif
     if( init() < 0 ) exit(0);
 
     arVideoCapStart();
