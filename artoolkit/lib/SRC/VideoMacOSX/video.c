@@ -81,6 +81,7 @@
 #include <Carbon/Carbon.h>
 #include <QuickTime/QuickTime.h>
 #include <pthread.h>
+#include <sys/time.h>
 #include <AR/config.h>
 #include <AR/ar.h>
 #include <AR/video.h>
@@ -591,7 +592,7 @@ static OSErr vdgDecompressionSequenceBegin(  VdigGrab* pVdg,
 										   pDstScaleMatrix,		// transformation matrix
 										   srcCopy,				// transfer mode specifier
 										   (RgnHandle)NULL,		// clipping region in dest. coordinate system to use as a mask
-										   NULL,				// flags
+										   0L,					// flags
 										   codecHighQuality, //codecNormalQuality   // accuracy in decompression
 										   bestSpeedCodec)) //anyCodec  bestSpeedCodec  // compressor identifier or special identifiers ie. bestSpeedCodec
 	{
