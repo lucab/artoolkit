@@ -1,19 +1,18 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
     "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
-<html><style type="text/css"><!--a:link {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: small; color: #0000ff;}a:visited {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: small; color: #0000ff;}a:visited:hover {text-decoration: underline; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: small; color: #ff6600;}a:active {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: small; color: #ff6600;}a:hover {text-decoration: underline; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: small; color: #ff6600;}h4 {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: tiny; font-weight: bold;}body {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: 10pt;}--></style><head>
+<html><head>
     <title>Data Members</title>
-	 <meta name="generator" content="HeaderDoc">
-</head><body bgcolor="#ffffff">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+ <meta name="generator" content="HeaderDoc">
+<style type="text/css"><!--a:link {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: small; color: #0000ff;}a:visited {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: small; color: #0000ff;}a:visited:hover {text-decoration: underline; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: small; color: #ff6600;}a:active {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: small; color: #ff6600;}a:hover {text-decoration: underline; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: small; color: #ff6600;}h4 {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: tiny; font-weight: bold;}body {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: 10pt;}--></style></head><body bgcolor="#ffffff">
 <h1><font face="Geneva,Arial,Helvtica">Data Members</font></h1><br>
-<hr><!-- headerDoc=data; name=arglDrawMode --><a name="//apple_ref/c/data/arglDrawMode"></a>
-<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h2><a name="arglDrawMode">arglDrawMode</a></h2>
-</td></tr></table><hr><dl>Determines display method by which arglDispImage() transfers pixels. 
-
-</dl><blockquote><pre><pre>
-int arglDrawMode;
-</pre>
-</pre></blockquote>
-<p>The value of this variable determines the method by which
+<hr><!-- headerDoc=data;  uid=//apple_ref/c/data/arglDrawMode;  name=arglDrawMode -->
+<a name="//apple_ref/c/data/arglDrawMode"></a>
+<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h3><a name="arglDrawMode">arglDrawMode</a></h3>
+</td></tr></table><hr><dl></dl><p>Determines display method by which arglDispImage() transfers pixels. 
+</p>
+<blockquote><pre><font class="keyword">extern</font> <!-- a logicalPath="//apple_ref/c/cl/int //apple_ref/c/cl/int //apple_ref/c/tdef/int //apple_ref/c/tag/int //apple_ref/c/econst/int //apple_ref/c/struct/int //apple_ref/c/clconst/int" --><font class="type">int</font><!-- /a --> <font class="var">arglDrawMode</font>; </pre></blockquote>
+<dl><h5><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5><p>The value of this variable determines the method by which
 arglDispImage transfers pixels of an image to the display. Setting this
 variable to a value of AR_DRAW_BY_GL_DRAW_PIXELS specifies the use of OpenGL
 DrawPixels to do the transfer. Setting this variable to a value of
@@ -28,18 +27,34 @@ accelerated drawing on some implementations.
 The initial value is defined to the value of the symbolic constan DEFAULT_DRAW_MODE
 (defined in &lt;AR/config.h&gt;).
 </p>
-<dl><dt><i>availability</i></dt><dd>First appeared in ARToolKit 2.68.
+<dt><i>Availability</i></dt><dd>First appeared in ARToolKit 2.68.
  </dd>
 </dl>
-<hr><!-- headerDoc=data; name=arglTexRectangle --><a name="//apple_ref/c/data/arglTexRectangle"></a>
-<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h2><a name="arglTexRectangle">arglTexRectangle</a></h2>
-</td></tr></table><hr><dl>Determines use of rectangular TexImage2D pixel-transfer in arglDispImage().
-
-</dl><blockquote><pre><pre>
-BOOL arglTexRectangle;
-</pre>
-</pre></blockquote>
-<p>On implementations which support the OpenGL extension for rectangular textures (of
+<hr><!-- headerDoc=data;  uid=//apple_ref/c/data/arglTexmapMode;  name=arglTexmapMode -->
+<a name="//apple_ref/c/data/arglTexmapMode"></a>
+<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h3><a name="arglTexmapMode">arglTexmapMode</a></h3>
+</td></tr></table><hr><dl></dl><p>Determines use of full or half-resolution TexImage2D pixel-transfer in arglDispImage().
+</p>
+<blockquote><pre><font class="keyword">extern</font> <!-- a logicalPath="//apple_ref/c/cl/int //apple_ref/c/cl/int //apple_ref/c/tdef/int //apple_ref/c/tag/int //apple_ref/c/econst/int //apple_ref/c/struct/int //apple_ref/c/clconst/int" --><font class="type">int</font><!-- /a --> <font class="var">arglTexmapMode</font>; </pre></blockquote>
+<dl><h5><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5><p>When arglDrawMode is set to AR_DRAW_BY_TEXTURE_MAPPING, the value of this variable
+determines whether full or half-resolution data is transferred to the
+texture. A value of AR_DRAW_TEXTURE_FULL_IMAGE uses all available pixels in the
+source image data. A value of AR_DRAW_TEXTURE_HALF_IMAGE discards every second pixel
+in the source image data, defining a half-width texture which is then drawn stretched
+horizontally to double its width. The latter method offers some advantages to
+certain implentations where texture transfer is slow or costly, at the expense of
+image detail.
+</p>
+<dt><i>Availability</i></dt><dd>First appeared in ARToolKit 2.68.
+ </dd>
+</dl>
+<hr><!-- headerDoc=data;  uid=//apple_ref/c/data/arglTexRectangle;  name=arglTexRectangle -->
+<a name="//apple_ref/c/data/arglTexRectangle"></a>
+<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h3><a name="arglTexRectangle">arglTexRectangle</a></h3>
+</td></tr></table><hr><dl></dl><p>Determines use of rectangular TexImage2D pixel-transfer in arglDispImage().
+</p>
+<blockquote><pre><font class="keyword">extern</font> <!-- a logicalPath="//apple_ref/c/cl/int //apple_ref/c/cl/int //apple_ref/c/tdef/int //apple_ref/c/tag/int //apple_ref/c/econst/int //apple_ref/c/struct/int //apple_ref/c/clconst/int" --><font class="type">int</font><!-- /a --> <font class="var">arglTexRectangle</font>; </pre></blockquote>
+<dl><h5><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5><p>On implementations which support the OpenGL extension for rectangular textures (of
 non power-of-two size), and when arglDrawMode is set to AR_DRAW_BY_TEXTURE_MAPPING,
 the value of this variable determines whether rectangular textures or ordinary
 (power-of-two) textures are used by arglDispImage(). A value of TRUE specifies the
@@ -52,29 +67,9 @@ with AR_OPENGL_TEXTURE_RECTANGLE defined in &lt;AR/config.h&gt and with either
 GL_EXT_texture_rectangle or GL_NV_texture_rectangle defined in &lt;GL/glext.h&gt;
 or &lt;GL/gl.h&gt;
 </p>
-<dl><dt><i>availability</i></dt><dd>First appeared in ARToolKit 2.68.
- </dd>
-</dl>
-<hr><!-- headerDoc=data; name=arglTexmapMode --><a name="//apple_ref/c/data/arglTexmapMode"></a>
-<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h2><a name="arglTexmapMode">arglTexmapMode</a></h2>
-</td></tr></table><hr><dl>Determines use of full or half-resolution TexImage2D pixel-transfer in arglDispImage().
-
-</dl><blockquote><pre><pre>
-int arglTexmapMode;
-</pre>
-</pre></blockquote>
-<p>When arglDrawMode is set to AR_DRAW_BY_TEXTURE_MAPPING, the value of this variable
-determines whether full or half-resolution data is transferred to the
-texture. A value of AR_DRAW_TEXTURE_FULL_IMAGE uses all available pixels in the
-source image data. A value of AR_DRAW_TEXTURE_HALF_IMAGE discards every second pixel
-in the source image data, defining a half-width texture which is then drawn stretched
-horizontally to double its width. The latter method offers some advantages to
-certain implentations where texture transfer is slow or costly, at the expense of
-image detail.
-</p>
-<dl><dt><i>availability</i></dt><dd>First appeared in ARToolKit 2.68.
+<dt><i>Availability</i></dt><dd>First appeared in ARToolKit 2.68.
  </dd>
 </dl>
 <p><p>&#169; 2003-2004 Philip Lamb
- (Last Updated 07/02/2004)
+ (Last Updated August 02, 2004)
 </p></body></html>

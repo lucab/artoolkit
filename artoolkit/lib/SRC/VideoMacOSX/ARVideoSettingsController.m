@@ -128,7 +128,7 @@
 	
 	// Bring up the dialog and if the user didn't cancel
 	// save the new channel settings for later.
-	err = SGSettingsDialog(seqGrab, sgchanVideo, PanelCount, PanelListPtr, 0, NULL, NULL);
+	err = SGSettingsDialog(seqGrab, sgchanVideo, PanelCount, PanelListPtr, 0, NULL, 0L);
 	if (err == noErr) {
 		// Dispose the old settings and get the new channel settings.
 		if (mUserData) DisposeUserData(mUserData);
