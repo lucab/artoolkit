@@ -52,13 +52,6 @@
 extern "C" {
 #endif
 
-#include <Carbon/Carbon.h>
-#include <QuickTime/QuickTime.h>
-#include <pthread.h>
-
-#include <AR/config.h>
-#include <AR/ar.h>
-
 typedef struct _AR2VideoParamT AR2VideoParamT;
 
 #ifdef  __cplusplus
