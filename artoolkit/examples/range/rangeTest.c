@@ -50,9 +50,7 @@ static void   draw(double marker_trans[3][4],double range);
 int main(int argc, char **argv)
 {
 	//initialize applications
-#ifdef __APPLE__
 	glutInit(&argc, argv);
-#endif
     init();
     
 	arVideoCapStart();

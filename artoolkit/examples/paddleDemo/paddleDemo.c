@@ -73,9 +73,7 @@ static void drawItems(double trans[3][4],ItemList* list);
 int main(int argc, char **argv)
 {
 	//initialize applications
-#ifdef __APPLE__
 	glutInit(&argc, argv);
-#endif
     init();
 
     arVideoCapStart();

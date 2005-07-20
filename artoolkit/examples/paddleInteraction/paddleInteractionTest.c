@@ -78,9 +78,7 @@ static void	  findPaddlePosition(float curPaddlePos[], double card_trans[3][4],d
 int main(int argc, char **argv)
 {
 	//initialize applications
-#ifdef __APPLE__
 	glutInit(&argc, argv);
-#endif
     init();
 
 	arVideoCapStart();

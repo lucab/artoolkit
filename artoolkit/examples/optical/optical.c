@@ -69,9 +69,7 @@ static void usage( char *com )
 
 int main(int argc, char **argv)
 {
-#ifdef __APPLE__
 	glutInit(&argc, argv);
-#endif
     if( init( argc, argv ) < 0 ) exit(0);
 
     arVideoCapStart();
