@@ -121,15 +121,6 @@ void argInit( ARParam *cparam, double zoom, int fullFlag, int xwin, int ywin, in
 {
     int       i;
 
-#ifdef __APPLE__
-    {
-        static int initF = 0;
-        int        argc = 1;
-        char      *argv[1] = {"ARToolKit for MacOSX"};
-        if( initF == 0 ) { glutInit(&argc, argv); initF = 1; }
-    }
-#endif
-
     gl_hmd_flag = hmd_flag;
     gZoom  = zoom;
     gImXsize = cparam->xsize;

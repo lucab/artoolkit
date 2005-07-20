@@ -56,9 +56,7 @@ static void img_copy( ARUint8 *src, ARUint8 *dst, int size );
 
 int main(int argc, char *argv[])
 {
-#ifdef __APPLE__
 	glutInit(&argc, argv);
-#endif
     init();
 
     arVideoCapStart();

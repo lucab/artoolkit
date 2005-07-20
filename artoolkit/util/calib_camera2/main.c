@@ -125,9 +125,7 @@ static void     save_param(void)
 
 int main(int argc, char *argv[])
 {
-#ifdef __APPLE__
 	glutInit(&argc, argv);
-#endif
     init( argc, argv );
 
     glutKeyboardFunc(keyEvent);

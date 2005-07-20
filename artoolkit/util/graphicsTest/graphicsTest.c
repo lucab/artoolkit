@@ -32,9 +32,7 @@ static void   draw( void );
 
 int main(int argc, char **argv)
 {
-#ifdef __APPLE__
 	glutInit(&argc, argv);
-#endif
     init();
 
     argMainLoop( NULL, keyEvent, mainLoop );

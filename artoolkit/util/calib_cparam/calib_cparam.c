@@ -104,9 +104,7 @@ static void   dispImage2( ARUint8 *image );
 
 int main(int argc, char *argv[])
 {
-#ifdef __APPLE__
 	glutInit(&argc, argv);
-#endif
     init();
 
     glutKeyboardFunc(keyboard);
