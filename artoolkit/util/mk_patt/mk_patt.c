@@ -30,7 +30,7 @@ char            *vconf = "-mode=640x480_MONO_COLOR";
 char            *vconf = "";
 #  endif
 #elif defined(_WIN32)
-char			*vconf = "flipV,showDlg";
+char			*vconf = "WDM_camera_flipV.xml";
 #elif defined(__APPLE__)
 char			*vconf = "-width=640 -height=480";
 #else

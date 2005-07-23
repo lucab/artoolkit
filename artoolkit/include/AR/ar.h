@@ -1,6 +1,6 @@
 /*  --------------------------------------------------------------------------
-*   Copyright (C) 2004 Hitlab NZ.
-*   The distribution policy is describe on the Copyright.txt furnish 
+*   Copyright (c) 20042-2005 HIT Lab NZ.
+*   The distribution policy is described in the file COPYING.txt furnished 
 *    with this library.
 *   -------------------------------------------------------------------------*/
 /**

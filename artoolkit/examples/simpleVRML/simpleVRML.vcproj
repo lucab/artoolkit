@@ -19,7 +19,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(ProjectDir)/../../include;$(ProjectDir)/../../OpenVRML/include;$(ProjectDir)/../../OpenVRML/dependencies/include;$(NOINHERIT)"
+				AdditionalIncludeDirectories="$(ProjectDir)../../include;$(ProjectDir)../../OpenVRML/include;$(ProjectDir)../../OpenVRML/dependencies/include;$(NOINHERIT)"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;OPENVRML_ENABLE_IMAGETEXTURE_NODE;OPENVRML_ENABLE_GZIP"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -37,8 +37,8 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ws2_32.lib opengl32.lib glu32.lib glut32.lib libjpeg.lib libpng.lib zlib.lib libarvrmld.lib openvrml.lib openvrml-gl.lib antlr.lib regex.lib libARvideod.lib libARd.lib libARgsub_lited.lib"
-				OutputFile="$(ProjectDir)/../../bin/$(ProjectName)d.exe"
-				AdditionalLibraryDirectories="$(ProjectDir)/../../lib;$(ProjectDir)/../../OpenVRML/lib;$(ProjectDir)/../../OpenVRML/dependencies/lib"
+				OutputFile="$(ProjectDir)../../bin/$(ProjectName)d.exe"
+				AdditionalLibraryDirectories="$(ProjectDir)../../lib;$(ProjectDir)../../OpenVRML/lib;$(ProjectDir)../../OpenVRML/dependencies/lib"
 				IgnoreDefaultLibraryNames="libc.lib;libcd.lib;libcmt.lib;libcmtd.lib;msvcrt.lib"
 				SubSystem="1"
 				TargetMachine="1"/>
@@ -71,7 +71,7 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="$(ProjectDir)/../../include;$(ProjectDir)/../../OpenVRML/include;$(ProjectDir)/../../OpenVRML/dependencies/include;$(NOINHERIT)"
+				AdditionalIncludeDirectories="$(ProjectDir)../../include;$(ProjectDir)../../OpenVRML/include;$(ProjectDir)../../OpenVRML/dependencies/include;$(NOINHERIT)"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -81,9 +81,9 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ws2_32.lib opengl32.lib glu32.lib glut32.lib libjpeg.lib libpng.lib zlib.lib libARvrml.lib openvrml.lib openvrml-gl.lib antlr.lib regex.lib libARvideo.lib libAR.lib libARgsub_lite.lib"
-				OutputFile="$(ProjectDir)/../../bin/$(ProjectName).exe"
+				OutputFile="$(ProjectDir)../../bin/$(ProjectName).exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(ProjectDir)/../../lib;$(ProjectDir)/../../OpenVRML/lib;$(ProjectDir)/../../OpenVRML/dependencies/lib"
+				AdditionalLibraryDirectories="$(ProjectDir)../../lib;$(ProjectDir)../../OpenVRML/lib;$(ProjectDir)../../OpenVRML/dependencies/lib"
 				IgnoreDefaultLibraryNames="libc.lib;libcd.lib;libcmtd.lib,libcmt.lib;msvcrtd.lib"
 				SubSystem="1"
 				OptimizeReferences="2"

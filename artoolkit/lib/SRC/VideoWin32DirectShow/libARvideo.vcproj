@@ -19,21 +19,20 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(ProjectDir)/../../../include;$(ProjectDir)/../../../DSVideoLib/src"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)../../../include&quot;;&quot;$(ProjectDir)../../../DSVL/src&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;LIBARVIDEO_EXPORTS"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				BrowseInformation="1"
-				WarningLevel="3"
 				DebugInformationFormat="3"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="DsVideoLibd.lib comsupp.lib"
-				OutputFile="$(ProjectDir)/../../../bin/$(ProjectName)d.dll"
+				AdditionalDependencies="DSVLd.lib comsupp.lib"
+				OutputFile="$(ProjectDir)../../../bin/$(ProjectName)d.dll"
 				LinkIncremental="0"
-				AdditionalLibraryDirectories="$(ProjectDir)/../../../DsVideoLib/lib.vc70/"
+				AdditionalLibraryDirectories="&quot;$(ProjectDir)../../../DSVL/lib/&quot;"
 				GenerateDebugInformation="TRUE"
 				ImportLibrary="$(ProjectDir)..\..\$(ProjectName)d.lib"/>
 			<Tool
@@ -68,16 +67,16 @@
 				GlobalOptimizations="TRUE"
 				InlineFunctionExpansion="1"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="$(ProjectDir)/../../../include;$(ProjectDir)/../../../DSVideoLib/src"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)../../../include&quot;;&quot;$(ProjectDir)../../../DSVL/src&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBARVIDEO_EXPORTS"
 				RuntimeLibrary="2"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="DsVideoLib.lib comsupp.lib"
-				OutputFile="$(ProjectDir)/../../../bin/$(ProjectName).dll"
-				AdditionalLibraryDirectories="$(ProjectDir)/../../../DsVideoLib/lib.vc70/"
+				AdditionalDependencies="DSVL.lib comsupp.lib"
+				OutputFile="$(ProjectDir)../../../bin/$(ProjectName).dll"
+				AdditionalLibraryDirectories="&quot;$(ProjectDir)../../../DSVL/lib/&quot;"
 				ImportLibrary="$(ProjectDir)..\..\$(ProjectName).lib"/>
 			<Tool
 				Name="VCMIDLTool"/>

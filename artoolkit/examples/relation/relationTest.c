@@ -40,7 +40,7 @@ OBJECT_T   object[2] = {
 // modified by Thomas Pintaric, Vienna University of Technology
 
 #ifdef _WIN32
-char			*vconf = "flipV,showDlg"; // see video.h for a list of supported parameters
+char			*vconf = "WDM_camera_flipV.xml";
 #else
 char			*vconf = "";
 #endif

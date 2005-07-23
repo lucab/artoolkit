@@ -15,15 +15,11 @@
 #include <AR/param.h>
 #include <AR/ar.h>
 
-/*****************************************************************************/
-// modified by Thomas Pintaric, Vienna University of Technology
-
 #ifdef _WIN32
-char			*vconf = "flipV"; // see video.h for a list of supported parameters
+char			*vconf = "WDM_camera_flipV.xml";
 #else
 char			*vconf = "";
 #endif
-/*****************************************************************************/
 
 int             xsize, ysize;
 int             count = 0;

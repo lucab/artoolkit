@@ -17,7 +17,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(ProjectDir)/../../../include"
+				AdditionalIncludeDirectories="$(ProjectDir)../../../include"
 				PreprocessorDefinitions="WIN32;_DEBUG"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -59,7 +59,7 @@
 			ConfigurationType="4">
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="$(ProjectDir)/../../../include"
+				AdditionalIncludeDirectories="$(ProjectDir)../../../include"
 				PreprocessorDefinitions="WIN32;NDEBUG"
 				RuntimeLibrary="0"/>
 			<Tool

@@ -3,7 +3,8 @@
 	ProjectType="Visual C++"
 	Version="7.10"
 	Name="videoTest"
-	ProjectGUID="{401D60F6-AF80-481B-A6EB-9FB03130AB1F}">
+	ProjectGUID="{401D60F6-AF80-481B-A6EB-9FB03130AB1F}"
+	RootNamespace="videoTest">
 	<Platforms>
 		<Platform
 			Name="Win32"/>
@@ -17,11 +18,14 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(ProjectDir)/../../include"
+				AdditionalIncludeDirectories="$(ProjectDir)..\..\include"
 				PreprocessorDefinitions="WIN32;_DEBUG"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
+				ObjectFile="$(IntDir)\"
+				ProgramDataBaseFileName="$(IntDir)\vc70.pdb"
 				BrowseInformation="1"
+				BrowseInformationFile="$(IntDir)"
 				WarningLevel="3"
 				DebugInformationFormat="4"/>
 			<Tool
@@ -29,10 +33,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/DEBUG"
-				AdditionalDependencies="libARd.lib libARgsubd.lib libARvideod.lib"
-				OutputFile="$(ProjectDir)/../../bin/$(ProjectName)d.exe"
-				AdditionalLibraryDirectories="&quot;$(ProjectDir)/../../lib&quot;"
-				GenerateDebugInformation="TRUE"/>
+				AdditionalDependencies="libARd.lib libARgsubd.lib libARvideod.lib opengl32.lib glu32.lib glut32.lib"
+				OutputFile="$(ProjectDir)..\..\bin\$(ProjectName)d.exe"
+				AdditionalLibraryDirectories="&quot;$(ProjectDir)..\..\lib&quot;"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)\$(ProjectName).pdb"/>
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="_DEBUG"
@@ -69,16 +74,16 @@
 				GlobalOptimizations="TRUE"
 				InlineFunctionExpansion="1"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="$(ProjectDir)/../../include"
+				AdditionalIncludeDirectories="$(ProjectDir)..\..\include"
 				PreprocessorDefinitions="WIN32;NDEBUG"
 				RuntimeLibrary="0"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libAR.lib libARgsub.lib libARvideo.lib"
-				OutputFile="$(ProjectDir)/../../bin/$(ProjectName).exe"
-				AdditionalLibraryDirectories="&quot;$(ProjectDir)/../../lib&quot;"/>
+				AdditionalDependencies="libAR.lib libARgsub.lib libARvideo.lib opengl32.lib glu32.lib glut32.lib"
+				OutputFile="$(ProjectDir)..\..\bin\$(ProjectName).exe"
+				AdditionalLibraryDirectories="&quot;$(ProjectDir)..\..\lib&quot;"/>
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="NDEBUG"

@@ -19,7 +19,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(ProjectDir)/../../include"
+				AdditionalIncludeDirectories="$(ProjectDir)../../include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -30,10 +30,10 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libARd.lib libARgsub_lited.lib libARvideod.lib"
-				OutputFile="$(ProjectDir)/../../bin/$(ProjectName)d.exe"
+				AdditionalDependencies="libARd.lib libARgsub_lited.lib libARvideod.lib opengl32.lib glu32.lib glut32.lib"
+				OutputFile="$(ProjectDir)../../bin/$(ProjectName)d.exe"
 				LinkIncremental="0"
-				AdditionalLibraryDirectories="&quot;$(ProjectDir)/../../lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(ProjectDir)../../lib&quot;"
 				GenerateDebugInformation="TRUE"
 				TargetMachine="0"/>
 			<Tool
@@ -68,16 +68,16 @@
 				GlobalOptimizations="TRUE"
 				InlineFunctionExpansion="1"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="$(ProjectDir)/../../include"
+				AdditionalIncludeDirectories="$(ProjectDir)../../include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				RuntimeLibrary="0"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libAR.lib libARgsub_lite.lib libARvideo.lib"
-				OutputFile="$(ProjectDir)/../../bin/$(ProjectName).exe"
-				AdditionalLibraryDirectories="&quot;$(ProjectDir)/../../lib&quot;"/>
+				AdditionalDependencies="libAR.lib libARgsub_lite.lib libARvideo.lib opengl32.lib glu32.lib glut32.lib"
+				OutputFile="$(ProjectDir)../../bin/$(ProjectName).exe"
+				AdditionalLibraryDirectories="&quot;$(ProjectDir)../../lib&quot;"/>
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
