@@ -19,7 +19,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)../../../include&quot;;&quot;$(ProjectDir)../../../DSVL/src&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\..\..\include&quot;;&quot;$(ProjectDir)..\..\..\DSVL\src&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;LIBARVIDEO_EXPORTS"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -30,10 +30,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="DSVLd.lib comsupp.lib"
-				OutputFile="$(ProjectDir)../../../bin/$(ProjectName)d.dll"
+				OutputFile="$(ProjectDir)..\..\..\bin\$(ProjectName)d.dll"
 				LinkIncremental="0"
-				AdditionalLibraryDirectories="&quot;$(ProjectDir)../../../DSVL/lib/&quot;"
+				AdditionalLibraryDirectories="&quot;$(ProjectDir)..\..\..\DSVL\lib\&quot;"
 				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)\$(ProjectName).pdb"
 				ImportLibrary="$(ProjectDir)..\..\$(ProjectName)d.lib"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -67,7 +68,7 @@
 				GlobalOptimizations="TRUE"
 				InlineFunctionExpansion="1"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)../../../include&quot;;&quot;$(ProjectDir)../../../DSVL/src&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\..\..\include&quot;;&quot;$(ProjectDir)..\..\..\DSVL\src&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBARVIDEO_EXPORTS"
 				RuntimeLibrary="2"/>
 			<Tool
@@ -75,8 +76,8 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="DSVL.lib comsupp.lib"
-				OutputFile="$(ProjectDir)../../../bin/$(ProjectName).dll"
-				AdditionalLibraryDirectories="&quot;$(ProjectDir)../../../DSVL/lib/&quot;"
+				OutputFile="$(ProjectDir)..\..\..\bin\$(ProjectName).dll"
+				AdditionalLibraryDirectories="&quot;$(ProjectDir)..\..\..\DSVL\lib\&quot;"
 				ImportLibrary="$(ProjectDir)..\..\$(ProjectName).lib"/>
 			<Tool
 				Name="VCMIDLTool"/>

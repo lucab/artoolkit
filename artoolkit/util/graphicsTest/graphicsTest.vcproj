@@ -30,9 +30,10 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/DEBUG"
 				AdditionalDependencies="libARd.lib libARgsubd.lib"
-				OutputFile="$(ProjectDir)../../bin/$(ProjectName)d.exe"
-				AdditionalLibraryDirectories="&quot;$(ProjectDir)../../lib&quot;"
-				GenerateDebugInformation="TRUE"/>
+				OutputFile="$(ProjectDir)..\..\bin\$(ProjectName)d.exe"
+				AdditionalLibraryDirectories="&quot;$(ProjectDir)..\..\lib&quot;"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)\$(ProjectName).pdb"/>
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="_DEBUG"
@@ -77,8 +78,8 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="libAR.lib libARgsub.lib"
-				OutputFile="$(ProjectDir)../../bin/$(ProjectName).exe"
-				AdditionalLibraryDirectories="&quot;$(ProjectDir)../../lib&quot;"/>
+				OutputFile="$(ProjectDir)..\..\bin\$(ProjectName).exe"
+				AdditionalLibraryDirectories="&quot;$(ProjectDir)..\..\lib&quot;"/>
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="NDEBUG"
