@@ -1,7 +1,11 @@
 /* 
+ *   Revision: 5.2   Date: 2000/08/25
  *   Video capture subrutine for Linux/Video4Linux devices 
  *   author: Nakazawa,Atsushi ( nakazawa@inolab.sys.es.osaka-u.ac.jp )
-             Hirokazu Kato ( kato@sys.im.hiroshima-cu.ac.jp )
+ *           Hirokazu Kato ( kato@sys.im.hiroshima-cu.ac.jp )
+ *
+ *   Modified by Wayne Piekarski (wayne@tinmith.net) - 2005/03/29
+ *   Added support to automatically adjust camera parameters if needed
  *
  *   Revision: 5.3   Date: 2004/11/18
  *      Rev             Date            Who             Changes
@@ -110,6 +114,8 @@ int ar2VideoDispOption( void )
     printf("    specifies device file.\n");
     printf(" -channel=N\n");
     printf("    specifies source channel.\n");
+    printf(" -noadjust\n");
+    printf("    prevent adjusting the width/height/channel if not suitable.\n");
     printf(" -width=N\n");
     printf("    specifies expected width of image.\n");
     printf(" -height=N\n");
@@ -145,7 +151,8 @@ AR2VideoParamT *ar2VideoOpen( char *config )
     struct video_picture      vp;
     char                      *a, line[256];
     int                       i;
-
+    int                       adjust = 1;
+    
     arMalloc( vid, AR2VideoParamT, 1 );
     strcpy( vid->dev, DEFAULT_VIDEO_DEVICE );
     vid->channel    = DEFAULT_VIDEO_CHANNEL; 
@@ -214,6 +221,9 @@ AR2VideoParamT *ar2VideoOpen( char *config )
 		  vid->palette = VIDEO_PALETTE_YUV420P;
 		}
             }
+	    else if( strncmp ( a, "-noadjust", 9 ) == 0 ) {
+	      adjust = 0;
+	    }
             else if( strncmp( a, "-contrast=", 10 ) == 0 ) {
                 sscanf( a, "%s", line );
                 if( sscanf( &line[10], "%lf", &vid->contrast ) == 0 ) {
@@ -308,6 +318,17 @@ AR2VideoParamT *ar2VideoOpen( char *config )
         printf("  vd.minheight =   %d\n",vd.minheight);
     }
     
+    /* adjust capture size if needed */
+    if (adjust)
+      {
+	if (vid->width >= vd.maxwidth)
+	  vid->width = vd.maxwidth;
+	if (vid->height >= vd.maxheight)
+	  vid->height = vd.maxheight;
+	if (vid->debug)
+	  printf ("arVideoOpen: width/height adjusted to (%d, %d)\n", vid->width, vid->height);
+      }
+    
     /* check capture size */
     if(vd.maxwidth  < vid->width  || vid->width  < vd.minwidth ||
        vd.maxheight < vid->height || vid->height < vd.minheight ) {
@@ -315,7 +336,16 @@ AR2VideoParamT *ar2VideoOpen( char *config )
         free( vid );
         return 0;
     }
-
+    
+    /* adjust channel if needed */
+    if (adjust)
+      {
+	if (vid->channel >= vd.channels)
+	  vid->channel = 0;
+	if (vid->debug)
+	  printf ("arVideoOpen: channel adjusted to 0\n");
+      }
+    
     /* check channel */
     if(vid->channel < 0 || vid->channel >= vd.channels){
         printf("arVideoOpen: channel# is not valid. \n");
