@@ -402,7 +402,7 @@ int main(int argc, char** argv)
 		"Data/camera_para.dat";
 	char *vconf = // Camera configuration.
 #if defined(_WIN32)
-		"showDlg,flipV";
+		"WDM_camera_flipV.xml";
 #elif defined(__APPLE__)
 		"";
 #else

@@ -546,14 +546,14 @@ int main(int argc, char** argv)
 	};
 	char *vconfs[] = {					// Camera configuration.
 #if defined(_WIN32)
-		"showDlg,flipV",
-		"showDlg,flipV",
+		"WDM_camera_flipV.xml",
+		"WDM_camera_flipV.xml",
 #elif defined(__APPLE__)
 		"",
 		"",
 #else
 		"-dev=/dev/video0 -channel=0 -palette=YUV420P -width=320 -height=240",
-		"-dev=/dev/video3 -channel=0 -palette=YUV420P -width=320 -height=240",
+		"-dev=/dev/video1 -channel=0 -palette=YUV420P -width=320 -height=240",
 #endif
 	};
 	const unsigned char *patt_name  = "Data/patt.hiro";
