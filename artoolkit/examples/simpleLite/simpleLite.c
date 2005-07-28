@@ -160,7 +160,7 @@ static int demoARSetupCamera(const unsigned char *cparam_name, char *vconf)
 	
     // Find the size of the window.
     if (arVideoInqSize(&xsize, &ysize) < 0) return (FALSE);
-    fprintf(stderr, "demoARSetupCamera(): Camera image size (x,y) = (%d,%d)\n", xsize, ysize);
+    fprintf(stdout, "Camera image size (x,y) = (%d,%d)\n", xsize, ysize);
 	
 	// Load the camera parameters, resize for the window and init.
     if (arParamLoad(cparam_name, 1, &wparam) < 0) {
@@ -169,7 +169,7 @@ static int demoARSetupCamera(const unsigned char *cparam_name, char *vconf)
     }
     arParamChangeSize(&wparam, xsize, ysize, &gARTCparam);
     arInitCparam(&gARTCparam);
-    fprintf(stderr, "*** Camera Parameter ***\n");
+    fprintf(stdout, "*** Camera Parameter ***\n");
     arParamDisp(&gARTCparam);
 	
     if (arVideoCapStart() != 0) {
@@ -419,7 +419,7 @@ int main(int argc, char** argv)
 		"Data/camera_para.dat";
 	char *vconf = // Camera configuration.
 #if defined(_WIN32)
-		"WDM_camera_flipV.xml";
+		"Data\\WDM_camera_flipV.xml";
 #elif defined(__APPLE__)
 		"";
 #else

@@ -36,15 +36,14 @@ OBJECT_T   object[2] = {
              {OBJ2_PATT_NAME, -1, OBJ2_MODEL_ID, 0, OBJ2_SIZE, {0.0,0.0}}
            };
 
-/*****************************************************************************/
-// modified by Thomas Pintaric, Vienna University of Technology
+/* set up the video format globals */
 
 #ifdef _WIN32
-char			*vconf = "WDM_camera_flipV.xml";
+char			*vconf = "Data\\WDM_camera_flipV.xml";
 #else
 char			*vconf = "";
 #endif
-/*****************************************************************************/
+
 int             xsize, ysize;
 int             thresh = 100;
 int             count = 0;
