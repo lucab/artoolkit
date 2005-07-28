@@ -27,16 +27,13 @@ int             count = 0;
 char           *cparam_name    = "Data/camera_para.dat";
 ARParam         cparam;
 
-/* set video capture configuration */ 
-/*****************************************************************************/
-// modified by Thomas Pintaric, Vienna University of Technology
+/* set up the video format globals */
 
 #ifdef _WIN32
-char			*vconf = "WDM_camera_flipV.xml";
+char			*vconf = "Data\\WDM_camera_flipV.xml";
 #else
 char			*vconf = "";
 #endif
-/*****************************************************************************/
 
 char                *config_name = "Data/multi/marker.dat";
 ARMultiMarkerInfoT  *config;

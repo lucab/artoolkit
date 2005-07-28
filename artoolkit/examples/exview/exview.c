@@ -20,15 +20,13 @@
 
 
 /* set up the video format globals */
-/*****************************************************************************/
-// modified by Thomas Pintaric, Vienna University of Technology
 
 #ifdef _WIN32
-char    *vconf = "WDM_camera_flipV.xml"; // see video.h for a list of supported parameters
+char    *vconf = "Data\\WDM_camera_flipV.xml";
 #else
 char    *vconf = "";
 #endif
-/*****************************************************************************/
+
 int             xsize;
 int             ysize;
 int             thresh = 100;

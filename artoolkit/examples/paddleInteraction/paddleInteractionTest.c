@@ -24,16 +24,13 @@
 
 #include "paddle.h"
 
-/*****************************************************************************/
-// modified by Thomas Pintaric, Vienna University of Technology
+/* set up the video format globals */
 
 #ifdef _WIN32
-char			*vconf = "WDM_camera_flipV.xml";
+char			*vconf = "Data\\WDM_camera_flipV.xml";
 #else
 char			*vconf = "";
 #endif
-/*****************************************************************************/
-
 
 /* define a target struct for the objects that are to be touched */
 typedef struct {

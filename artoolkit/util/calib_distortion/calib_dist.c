@@ -36,6 +36,8 @@
 #endif
 
 
+/* set up the video format globals */
+
 #if defined(__sgi)
 char            *vconf = "-size=FULL";
 #elif defined(__linux)
@@ -51,7 +53,7 @@ char            *vconf = "-mode=640x480_MONO_COLOR";
 char            *vconf = "";
 #  endif
 #elif defined(_WIN32)
-char			*vconf = "WDM_camera_flipV.xml";
+char			*vconf = "Data\\WDM_camera_flipV.xml";
 #elif defined(__APPLE__)
 char			*vconf = "-width=640 -height=480";
 #else

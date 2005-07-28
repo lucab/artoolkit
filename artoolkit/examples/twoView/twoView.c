@@ -546,8 +546,8 @@ int main(int argc, char** argv)
 	};
 	char *vconfs[] = {					// Camera configuration.
 #if defined(_WIN32)
-		"WDM_camera_flipV.xml",
-		"WDM_camera_flipV.xml",
+		"Data\\WDM_camera_flipV.xml",
+		"Data\\WDM_camera_flipV.xml",
 #elif defined(__APPLE__)
 		"",
 		"",

@@ -30,9 +30,10 @@ int             xsize, ysize;
 int				thresh = 100;
 int             count = 0;
 
-/* set video capture configuration */
+/* set up the video format globals */
+
 #ifdef _WIN32
-char			*vconf = "WDM_camera_flipV.xml";
+char			*vconf = "Data\\WDM_camera_flipV.xml";
 #else
 char			*vconf = "";
 #endif
