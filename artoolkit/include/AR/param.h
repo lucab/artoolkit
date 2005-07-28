@@ -183,7 +183,7 @@ int    arParamSave( char *filename, int num, ARParam *param, ...);
 * \brief load the camera intrinsic parameters.
 *
 * Load camera intrinsic parameters in the ARToolkit Library from 
-* a file (itselft, a resulted output of calibration step). 
+* a file (itself, an output of the calibration step). 
 * \param filename name of the parameters file.
 * \param num number of variable arguments
 * \param param result of the loaded parameters
