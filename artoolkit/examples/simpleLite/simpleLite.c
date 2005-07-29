@@ -7,7 +7,7 @@
  *
  *  Press '?' while running for help on available key commands.
  *
- *  Copyright (c) 2001-2004 Philip Lamb (PRL) phil@eden.net.nz. All rights reserved.
+ *  Copyright (c) 2001-2005 Philip Lamb (PRL) phil@eden.net.nz. All rights reserved.
  *
  *	Rev		Date		Who		Changes
  *	1.0.0	20040302	PRL		Initial version, simple test animation using GLUT.
@@ -72,17 +72,17 @@ static int prefDepth = 32;					// Fullscreen mode bit depth.
 static int prefRefresh = 0;					// Fullscreen mode refresh rate. Set to 0 to use default rate.
 
 // ARToolKit globals.
-static long			gCallCountMarkerDetect = 0;
+static ARParam		gARTCparam;
+static ARUint8		*gARTImage = NULL;
 static int			gARTThreshhold = 100;
+static long			gCallCountMarkerDetect = 0;
+static double		gPatt_trans[3][4];
+static int			gPatt_found = FALSE;
+static ARGL_CONTEXT_SETTINGS_REF gArglSettings = NULL;
+
 static int			gPatt_id;
 static double		gPatt_width     = 80.0;
 static double		gPatt_centre[2] = {0.0, 0.0};
-
-static ARParam		gARTCparam;
-static ARUint8		*gARTImage = NULL;
-static double		gPatt_trans[3][4];
-static int			gPatt_found;
-static ARGL_CONTEXT_SETTINGS_REF gArglSettings = NULL;
 
 // Other globals.
 static int gDrawRotate = FALSE;
@@ -147,7 +147,7 @@ static void DrawCubeUpdate(float timeDelta)
 }
 
 // Sets up gARTCparam.
-static int demoARSetupCamera(const unsigned char *cparam_name, char *vconf)
+static int demoARSetupCamera(const char *cparam_name, char *vconf)
 {	
     ARParam  wparam;
 	int xsize, ysize;
@@ -180,7 +180,7 @@ static int demoARSetupCamera(const unsigned char *cparam_name, char *vconf)
 	return (TRUE);
 }
 
-static int demoARSetupMarker(const unsigned char *patt_name, int *patt_id)
+static int demoARSetupMarker(const char *patt_name, int *patt_id)
 {
 	
     if((*patt_id = arLoadPatt(patt_name)) < 0) {
@@ -228,16 +228,21 @@ static void demoARDebugReportMode(void)
 	}
 }
 
+static void Quit(void)
+{
+	arglCleanup(gArglSettings);
+	arVideoCapStop();
+	arVideoClose();
+	exit(0);
+}
+
 static void Keyboard(unsigned char key, int x, int y)
 {
 	switch (key) {
 		case 0x1B:						// Quit.
 		case 'Q':
 		case 'q':
-			arglCleanup(gArglSettings);
-			arVideoCapStop();
-			arVideoClose();
-			exit(0);
+			Quit();
 			break;
 		case ' ':
 			gDrawRotate = !gDrawRotate;
@@ -256,7 +261,6 @@ static void Keyboard(unsigned char key, int x, int y)
 			gCallCountMarkerDetect = 0;
 			arUtilTimerReset();
 			demoARDebugReportMode();
-			break;
 			break;
 #ifdef AR_OPENGL_TEXTURE_RECTANGLE
 		case 'R':
@@ -288,7 +292,7 @@ static void Idle(void)
 	int ms;
 	float s_elapsed;
 	ARUint8 *image;
-	
+
 	ARMarkerInfo    *marker_info;					// Pointer to array holding the details of detected markers.
     int             marker_num;						// Count of number of markers detected.
     int             j, k;
@@ -304,7 +308,8 @@ static void Idle(void)
 	
 	// Grab a video frame.
 	if ((image = arVideoGetImage()) != NULL) {
-		gARTImage = image;
+		gARTImage = image;	// Save the fetched image.
+		gPatt_found = FALSE;	// Invalidate any previous detected markers.
 		
 		gCallCountMarkerDetect++; // Increment ARToolKit FPS counter.
 		
@@ -331,7 +336,7 @@ static void Idle(void)
 		
 		// Tell GLUT the display has changed.
 		glutPostRedisplay();
-	}	
+	}
 }
 
 //
@@ -369,23 +374,20 @@ static void Reshape(int w, int h)
 //
 static void Display(void)
 {
-    static GLdouble *p = NULL;
-	GLdouble  m[16];
+    GLdouble p[16];
+	GLdouble m[16];
 	
-	// Context setup.
+	// Select correct buffer for this context.
 	glDrawBuffer(GL_BACK);
+
 	arglDispImage(gARTImage, &gARTCparam, 1.0, gArglSettings);	// zoom = 1.0.
-	
 	arVideoCapNext();
 				
 	if (gPatt_found) {
 		glClear(GL_DEPTH_BUFFER_BIT);	// Clear the buffers for new frame.
 		
 		// Projection transformation.
-		if (p == NULL) {
-			p = (GLdouble *)malloc(16 * (sizeof(GLdouble)));
-			arglCameraFrustum(&gARTCparam, VIEW_DISTANCE_MIN, VIEW_DISTANCE_MAX, p);
-		}
+		arglCameraFrustum(&gARTCparam, VIEW_DISTANCE_MIN, VIEW_DISTANCE_MAX, p);
 		glMatrixMode(GL_PROJECTION);
 		glLoadMatrixd(p);
 		glMatrixMode(GL_MODELVIEW);
@@ -396,14 +398,12 @@ static void Display(void)
 		// (I.e. must be specified before viewing transformations.)
 		//none
 		
-		// ARToolKit supplied distance in millimetres, but I want OpenGL to work in metres.
+		// ARToolKit supplied distance in millimetres, but I want OpenGL to work in my units.
 		arglCameraView(gPatt_trans, m, VIEW_SCALEFACTOR);
 		glLoadMatrixd(m);
 		
 		// All other lighting and geometry goes here.
 		DrawCube();
-		
-		gPatt_found = FALSE;
 	} // gPatt_found
 	
 	// Any 2D overlays go here.
@@ -415,7 +415,7 @@ static void Display(void)
 int main(int argc, char** argv)
 {
 	char glutGamemode[32];
-	const unsigned char *cparam_name = 
+	const char *cparam_name = 
 		"Data/camera_para.dat";
 	char *vconf = // Camera configuration.
 #if defined(_WIN32)
@@ -425,7 +425,7 @@ int main(int argc, char** argv)
 #else
 		"-dev=/dev/video0 -channel=0 -palette=YUV420P -width=320 -height=240";
 #endif
-	const unsigned char *patt_name  = "Data/patt.hiro";
+	const char *patt_name  = "Data/patt.hiro";
 	
 	// ----------------------------------------------------------------------------
 	// Library inits.

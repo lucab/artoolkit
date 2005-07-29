@@ -4,7 +4,7 @@
  *  Some code to demonstrate grabbing from two video sources.
  *  Press '?' while running for help.
  *
- *  Copyright (c) 2004-2004 Philip Lamb (PRL) phil@eden.net.nz. All rights reserved.
+ *  Copyright (c) 2004-2005 Philip Lamb (PRL) phil@eden.net.nz. All rights reserved.
  *
  *	Rev		Date		Who		Changes
  *	1.0.0	2004-10-27	PRL		Initial version.
@@ -70,6 +70,7 @@ typedef struct {
 	ARParam						ARTCparam;			// Camera parameter.
 	AR2VideoParamT				*ARTVideo;			// Video parameters
 	ARUint8						*ARTImage;			// Most recent image.
+	int							ARTThreshhold;		// Threshold for marker detection.
 	long						callCountMarkerDetect;	// Frames received.
 	double						patt_trans[3][4];	// Marker transformation.
 	int						patt_found;			// Whether marker transformation is valid.
@@ -87,7 +88,6 @@ int gContextsActiveCount = 0;
 
 // ARToolKit globals.
 static long			gCallCountGetImage = 0;
-static int			gARTThreshhold = 100;
 static int			gPatt_id;
 static double		gPatt_width     = 80.0;
 static double		gPatt_centre[2] = {0.0, 0.0};
@@ -190,34 +190,8 @@ static int DrawCubeFinal(void)
 	return (TRUE);	
 }
 
-// Function to clean up and then exit. Will be
-// installed by atexit() and called when program exit()s.
-static void Quit(void)
-{
-	int i;
-	
-	fprintf(stderr, "Quitting...\n");
-
-	// OpenGL per-context cleanup.
-	for (i = 0; i < gContextsActiveCount; i++) {
-		if (gContextsActive[i].apiContextIndex) {
-			glutSetWindow(gContextsActive[i].apiContextIndex);
-			arglCleanup(gContextsActive[i].arglSettings);
-			DrawCubeCleanup(i);
-			glutDestroyWindow(gContextsActive[i].apiContextIndex);
-			gContextsActive[i].apiContextIndex = 0;
-		}
-		ar2VideoCapStop(gContextsActive[i].ARTVideo);
-		ar2VideoClose(gContextsActive[i].ARTVideo);
-	}
-	gContextsActiveCount = 0;
-	
-	// Library finals (in reverse order to inits.)
-	DrawCubeFinal();
-}
-
 // Sets up fields ARTVideo, ARTCparam of gContextsActive[0] through gContextsActive[cameraCount - 1].
-static int demoARSetupCameras(const int cameraCount, const unsigned char *cparam_names[], char *vconfs[])
+static int demoARSetupCameras(const int cameraCount, const char *cparam_names[], char *vconfs[])
 {
 	int i;
 	ARParam wparam;
@@ -244,6 +218,7 @@ static int demoARSetupCameras(const int cameraCount, const unsigned char *cparam
 		arInitCparam(&(gContextsActive[i].ARTCparam));
 		fprintf(stderr, "*** Camera %d parameter ***\n", i + 1);
 		arParamDisp(&(gContextsActive[i].ARTCparam));
+		gContextsActive[i].ARTThreshhold = 100;
 		
 		// Start the video capture for this camera.
 		if (ar2VideoCapStart(gContextsActive[i].ARTVideo) != 0) {
@@ -255,7 +230,7 @@ static int demoARSetupCameras(const int cameraCount, const unsigned char *cparam
 	return (TRUE);
 }
 
-static int demoARSetupMarker(const unsigned char *patt_name, int *patt_id)
+static int demoARSetupMarker(const char *patt_name, int *patt_id)
 {
 	
     if((*patt_id = arLoadPatt(patt_name)) < 0) {
@@ -322,6 +297,32 @@ static void demoARDebugReportMode(void)
 	}
 #  endif // GL_APPLE_texture_range
 #endif // APPLE_TEXTURE_FAST_TRANSFER
+}
+
+// Function to clean up and then exit. Will be
+// installed by atexit() and called when program exit()s.
+static void Quit(void)
+{
+	int i;
+	
+	fprintf(stdout, "Quitting...\n");
+
+	// OpenGL per-context cleanup.
+	for (i = 0; i < gContextsActiveCount; i++) {
+		if (gContextsActive[i].apiContextIndex) {
+			glutSetWindow(gContextsActive[i].apiContextIndex);
+			arglCleanup(gContextsActive[i].arglSettings);
+			DrawCubeCleanup(i);
+			glutDestroyWindow(gContextsActive[i].apiContextIndex);
+			gContextsActive[i].apiContextIndex = 0;
+		}
+		ar2VideoCapStop(gContextsActive[i].ARTVideo);
+		ar2VideoClose(gContextsActive[i].ARTVideo);
+	}
+	gContextsActiveCount = 0;
+	
+	// Library finals (in reverse order to inits.)
+	DrawCubeFinal();
 }
 
 static void Keyboard(unsigned char key, int x, int y)
@@ -406,13 +407,14 @@ static void Idle(void)
 		
 		// Grab a video frame.
 		if ((image = ar2VideoGetImage(gContextsActive[i].ARTVideo)) != NULL) {
-			gContextsActive[i].ARTImage = image;
+			gContextsActive[i].ARTImage = image;	// Save the fetched image.
+			gContextsActive[i].patt_found = FALSE;	// Invalidate any previous detected markers.
 			
 			gContextsActive[i].callCountMarkerDetect++; // Increment ARToolKit FPS counter.
 			//fprintf(stderr, "Idle(): Got image #%ld from cam %d on attempt #%ld.\n", gContextsActive[i].callCountMarkerDetect, i + 1, gCallCountGetImage);
 			
 			// Detect the markers in the video frame.
-			if (arDetectMarkerLite(gContextsActive[i].ARTImage, gARTThreshhold, &marker_info, &marker_num) < 0) {
+			if (arDetectMarkerLite(gContextsActive[i].ARTImage, gContextsActive[i].ARTThreshhold, &marker_info, &marker_num) < 0) {
 				exit(-1);
 			}
 			
@@ -468,6 +470,9 @@ static void Reshape(int w, int h)
 	// Call through to anyone else who needs to know about window sizing here.
 }
 
+//
+// The function is called when a window needs redrawing.
+//
 static void DisplayPerContext(const int drawContextIndex)
 {
     GLdouble p[16];
@@ -486,8 +491,8 @@ static void DisplayPerContext(const int drawContextIndex)
 		glClear(GL_DEPTH_BUFFER_BIT);	// Clear the buffers for new frame.
 		
 		// Projection transformation.
-		glMatrixMode(GL_PROJECTION);
 		arglCameraFrustum(&(gContextsActive[drawContextIndex].ARTCparam), VIEW_DISTANCE_MIN, VIEW_DISTANCE_MAX, p);
+		glMatrixMode(GL_PROJECTION);
 		glLoadMatrixd(p);
 		glMatrixMode(GL_MODELVIEW);
 		
@@ -497,14 +502,12 @@ static void DisplayPerContext(const int drawContextIndex)
 		// (I.e. must be specified before viewing transformations.)
 		//none
 		
-		// ARToolKit supplied distance in millimetres, but I want OpenGL to work in metres.
+		// ARToolKit supplied distance in millimetres, but I want OpenGL to work in my units.
 		arglCameraView(gContextsActive[drawContextIndex].patt_trans, m, VIEW_SCALEFACTOR);
 		glLoadMatrixd(m);
 		
 		// All other lighting and geometry goes here.
 		DrawCube(drawContextIndex);
-		
-		gContextsActive[drawContextIndex].patt_found = FALSE;
 	} // patt_found
 	
 	// Any 2D overlays go here.
@@ -540,7 +543,7 @@ int main(int argc, char** argv)
 {
 	int i;
 	char windowTitle[32] = {0};
-	const unsigned char *cparam_names[] = { // Camera parameter names.
+	const char *cparam_names[] = { // Camera parameter names.
 		"Data/camera_para.dat",
 		"Data/camera_para.dat",
 	};
@@ -556,7 +559,7 @@ int main(int argc, char** argv)
 		"-dev=/dev/video1 -channel=0 -palette=YUV420P -width=320 -height=240",
 #endif
 	};
-	const unsigned char *patt_name  = "Data/patt.hiro";
+	const char *patt_name  = "Data/patt.hiro";
 	
 
 	// ----------------------------------------------------------------------------

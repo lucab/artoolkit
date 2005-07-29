@@ -7,7 +7,7 @@
  *
  *	Copyright (c) 2002 Mark Billinghurst (MB) grof@hitl.washington.edu
  *	Copyright (c) 2004 Raphael Grasset (RG) raphael.grasset@hitlabnz.org.
- *	Copyright (c) 2004 Philip Lamb (PRL) phil@eden.net.nz. 
+ *	Copyright (c) 2004-2005 Philip Lamb (PRL) phil@eden.net.nz. 
  *	
  *	Rev		Date		Who		Changes
  *	1.0.0	????-??-??	MB		Original from ARToolKit
@@ -85,15 +85,14 @@ static int prefDepth = 32;					// Fullscreen mode bit depth.
 static int prefRefresh = 0;					// Fullscreen mode refresh rate. Set to 0 to use default rate.
 
 // ARToolKit globals.
-static long			gCallCountMarkerDetect = 0;
-static int			gARTThreshhold = 100;
 static ARParam		gARTCparam;
 static ARUint8		*gARTImage = NULL;
-static int			gPatt_found;
+static int			gARTThreshhold = 100;
+static long			gCallCountMarkerDetect = 0;
+static int			gPatt_found = FALSE;
 static ARGL_CONTEXT_SETTINGS_REF gArglSettings = NULL;
 
 // Object Data.
-static char *gObjectDataFilename = "Data/object_data_vrml";
 static ObjectData_T	*gObjectData;
 static int			gObjectDataCount;
 
@@ -115,7 +114,7 @@ static int demoARSetupCamera(const char *cparam_name, char *vconf)
 	
     // Find the size of the window.
     if (arVideoInqSize(&xsize, &ysize) < 0) return (FALSE);
-    fprintf(stderr, "demoARSetupCamera(): Camera image size (x,y) = (%d,%d)\n", xsize, ysize);
+    fprintf(stdout, "Camera image size (x,y) = (%d,%d)\n", xsize, ysize);
 	
 	// Load the camera parameters, resize for the window and init.
     if (arParamLoad(cparam_name, 1, &wparam) < 0) {
@@ -124,7 +123,7 @@ static int demoARSetupCamera(const char *cparam_name, char *vconf)
     }
     arParamChangeSize(&wparam, xsize, ysize, &gARTCparam);
     arInitCparam(&gARTCparam);
-    fprintf(stderr, "*** Camera Parameter ***\n");
+    fprintf(stdout, "*** Camera Parameter ***\n");
     arParamDisp(&gARTCparam);
 	
     if (arVideoCapStart() != 0) {
@@ -135,10 +134,14 @@ static int demoARSetupCamera(const char *cparam_name, char *vconf)
 	return (TRUE);
 }
 
-static int demoARSetupMarkersObjects(void)
+static int demoARSetupMarkersObjects(char *objectDataFilename)
 {	
 	// Load in the object data - trained markers and associated bitmap files.
-    if ((gObjectData = read_VRMLdata(gObjectDataFilename, &gObjectDataCount)) == NULL) exit(0);
+    if ((gObjectData = read_VRMLdata(objectDataFilename, &gObjectDataCount)) == NULL) {
+        fprintf(stderr, "demoARSetupMarkersObjects(): read_VRMLdata returned error !!\n");
+        return (FALSE);
+    }
+
     printf("Object count = %d\n", gObjectDataCount);
 	
 	return (TRUE);
@@ -216,7 +219,6 @@ static void Keyboard(unsigned char key, int x, int y)
 			arUtilTimerReset();
 			demoARDebugReportMode();
 			break;
-			break;
 #ifdef AR_OPENGL_TEXTURE_RECTANGLE
 		case 'R':
 		case 'r':
@@ -247,7 +249,7 @@ static void Idle(void)
 	int ms;
 	float s_elapsed;
 	ARUint8 *image;
-	
+
 	ARMarkerInfo    *marker_info;					// Pointer to array holding the details of detected markers.
     int             marker_num;						// Count of number of markers detected.
     int             i, j, k;
@@ -263,7 +265,8 @@ static void Idle(void)
 	
 	// Grab a video frame.
 	if ((image = arVideoGetImage()) != NULL) {
-		gARTImage = image;
+		gARTImage = image;	// Save the fetched image.
+		gPatt_found = FALSE;	// Invalidate any previous detected markers.
 		
 		gCallCountMarkerDetect++; // Increment ARToolKit FPS counter.
 		
@@ -273,7 +276,6 @@ static void Idle(void)
 		}
 				
 		// Check for object visibility.
-		gPatt_found = FALSE; // At this stage, no patterns found.
 		
 		for (i = 0; i < gObjectDataCount; i++) {
 			
@@ -304,11 +306,11 @@ static void Idle(void)
 				gObjectData[i].visible = 1;
 				gPatt_found = TRUE;
 			}
-		}		
+		}
+		
+		// Tell GLUT to update the display.
+		glutPostRedisplay();
 	}
-	
-	// Tell GLUT to update the display.
-	glutPostRedisplay();
 }
 
 //
@@ -337,7 +339,7 @@ static void Reshape(int w, int h)
 	glLoadIdentity();
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	
+
 	// Call through to anyone else who needs to know about window sizing here.
 }
 
@@ -347,27 +349,24 @@ static void Reshape(int w, int h)
 static void Display(void)
 {
 	int i;
-    static GLdouble *p = NULL;
+    GLdouble p[16];
 	GLdouble m[16];
 	
-	// Context setup.
+	// Select correct buffer for this context.
 	glDrawBuffer(GL_BACK);
+
 	arglDispImage(gARTImage, &gARTCparam, 1.0, gArglSettings);	// zoom = 1.0.
-		
 	arVideoCapNext();
-		
+				
 	if (gPatt_found) {
 		glClear(GL_DEPTH_BUFFER_BIT);	// Clear the buffers for new frame.
 			
 		// Projection transformation.
-		if (p == NULL) {
-			p = (GLdouble *)malloc(16 * (sizeof(GLdouble)));
-			arglCameraFrustum(&gARTCparam, VIEW_DISTANCE_MIN, VIEW_DISTANCE_MAX, p);
-		}
+		arglCameraFrustum(&gARTCparam, VIEW_DISTANCE_MIN, VIEW_DISTANCE_MAX, p);
 		glMatrixMode(GL_PROJECTION);
 		glLoadMatrixd(p);
 		glMatrixMode(GL_MODELVIEW);
-			
+		
 		// Viewing transformation.
 		glLoadIdentity();
 		// Lighting and geometry that moves with the camera should go here.
@@ -385,10 +384,8 @@ static void Display(void)
 				arVrmlDraw(gObjectData[i].vrml_id);
 			}			
 		}
-		
-		gPatt_found = FALSE;
 	} // gPatt_found
-
+	
 	// Any 2D overlays go here.
 	//none
 	
@@ -408,13 +405,14 @@ int main(int argc, char** argv)
 #else
 		"-dev=/dev/video0 -channel=0 -palette=YUV420P -width=320 -height=240";
 #endif
+static char objectDataFilename[] = "Data/object_data_vrml";
 	
 	// ----------------------------------------------------------------------------
 	// Library inits.
 	//
 
 	glutInit(&argc, argv);
-	
+
 	// ----------------------------------------------------------------------------
 	// Hardware setup.
 	//
@@ -452,8 +450,9 @@ int main(int argc, char** argv)
 	}
 	arUtilTimerReset();
 
-	if (!demoARSetupMarkersObjects()) {
+	if (!demoARSetupMarkersObjects(objectDataFilename)) {
 		fprintf(stderr, "main(): Unable to set up AR objects and markers.\n");
+		Quit();
 	}
 		
 	// Register GLUT event-handling callbacks.
@@ -464,6 +463,6 @@ int main(int argc, char** argv)
 	glutKeyboardFunc(Keyboard);
 	
 	glutMainLoop();
-	
+
 	return (0);
 }
