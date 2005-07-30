@@ -65,6 +65,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 <dt><tt><a href="CompositePage.html#//apple_ref/doc/compositePage/c/func/arglDispImageStateful" target="_top">arglDispImageStateful</a></tt></dt>
 <dd>Display an ARVideo image, by drawing it using OpenGL, using and modifying current OpenGL state.
 </dd>
+<dt><tt><a href="CompositePage.html#//apple_ref/doc/compositePage/c/func/arglDistortionCompensationGet" target="_top">arglDistortionCompensationGet</a></tt></dt>
+<dd>Enquire as to the enable state of camera lens distortion compensation in arglDispImage.
+</dd>
+<dt><tt><a href="CompositePage.html#//apple_ref/doc/compositePage/c/func/arglDistortionCompensationSet" target="_top">arglDistortionCompensationSet</a></tt></dt>
+<dd>Set compensation for camera lens distortion in arglDispImage to off or on.
+</dd>
 <dt><tt><a href="CompositePage.html#//apple_ref/doc/compositePage/c/func/arglSetupForCurrentContext" target="_top">arglSetupForCurrentContext</a></tt></dt>
 <dd>Initialise the gsub_lite library for the current OpenGL context.
 </dd>
@@ -263,6 +269,63 @@ See the documentation for arglDispImage() for more information.
 <dt><i>Availability</i></dt><dd>First appeared in ARToolKit 2.68.2.
  </dd>
 </dl>
+<hr><!-- headerDoc=func;  uid=//apple_ref/doc/compositePage/c/func/arglDistortionCompensationGet;  name=arglDistortionCompensationGet -->
+<a name="//apple_ref/doc/compositePage/c/func/arglDistortionCompensationGet"></a>
+<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h3><a name="arglDistortionCompensationGet">arglDistortionCompensationGet</a></h3>
+</td></tr></table><hr><dl></dl><p>Enquire as to the enable state of camera lens distortion compensation in arglDispImage.
+</p>
+<blockquote><pre><!-- a logicalPath="//apple_ref/c/cl/int //apple_ref/c/cl/int //apple_ref/c/tdef/int //apple_ref/c/tag/int //apple_ref/c/econst/int //apple_ref/c/struct/int //apple_ref/c/clconst/int" --><font class="type">int</font><!-- /a --> <!-- a logicalPath="//apple_ref/c/instm/arglDistortionCompensationGet //apple_ref/c/clm/arglDistortionCompensationGet //apple_ref/c/intfcm/arglDistortionCompensationGet //apple_ref/c/func/arglDistortionCompensationGet //apple_ref/c/ftmplt/arglDistortionCompensationGet //apple_ref/c/defn/arglDistortionCompensationGet //apple_ref/c/macro/arglDistortionCompensationGet" --><font class="function">arglDistortionCompensationGet</font><!-- /a -->(
+    <!-- a logicalPath="//apple_ref/c/cl/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/cl/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/tdef/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/tag/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/econst/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/struct/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/clconst/ARGL_CONTEXT_SETTINGS_REF" --><font class="type">ARGL_CONTEXT_SETTINGS_REF</font><!-- /a --> <font class="param">contextSettings</font>,
+    <!-- a logicalPath="//apple_ref/c/cl/int //apple_ref/c/cl/int //apple_ref/c/tdef/int //apple_ref/c/tag/int //apple_ref/c/econst/int //apple_ref/c/struct/int //apple_ref/c/clconst/int" --><font class="type">int</font><!-- /a --> *<font class="param">enable</font>); </pre></blockquote>
+<h5><font face="Lucida Grande,Helvetica,Arial">Parameter Descriptions</font></h5>
+<blockquote>
+<dl>
+<dt><code><i>contextSettings</i></code></dt><dd>A reference to ARGL's settings for the current OpenGL
+context, as returned by arglSetupForCurrentContext() for this context.</dd>
+<dt><code><i>enable</i></code></dt><dd>Pointer to an integer value which will be set to TRUE if distortion
+compensation is enabled in the specified context, or FALSE if it is disabled.</dd>
+</dl>
+</blockquote>
+<dl><dt><i>function result</i></dt><dd>TRUE if the distortion value was set, FALSE if an error occurred.
+</dd>
+<h5><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5><p>By default, arglDispImage compensates for the distortion of the camera's
+acquired image caused by the lens when it draws. This function enquires
+as to whether arglDispImage is currently doing compensation or not.
+</p>
+<dt><i>Availability</i></dt><dd>First appeared in ARToolKit 2.71.
+ </dd>
+</dl>
+<hr><!-- headerDoc=func;  uid=//apple_ref/doc/compositePage/c/func/arglDistortionCompensationSet;  name=arglDistortionCompensationSet -->
+<a name="//apple_ref/doc/compositePage/c/func/arglDistortionCompensationSet"></a>
+<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h3><a name="arglDistortionCompensationSet">arglDistortionCompensationSet</a></h3>
+</td></tr></table><hr><dl></dl><p>Set compensation for camera lens distortion in arglDispImage to off or on.
+</p>
+<blockquote><pre><!-- a logicalPath="//apple_ref/c/cl/int //apple_ref/c/cl/int //apple_ref/c/tdef/int //apple_ref/c/tag/int //apple_ref/c/econst/int //apple_ref/c/struct/int //apple_ref/c/clconst/int" --><font class="type">int</font><!-- /a --> <!-- a logicalPath="//apple_ref/c/instm/arglDistortionCompensationSet //apple_ref/c/clm/arglDistortionCompensationSet //apple_ref/c/intfcm/arglDistortionCompensationSet //apple_ref/c/func/arglDistortionCompensationSet //apple_ref/c/ftmplt/arglDistortionCompensationSet //apple_ref/c/defn/arglDistortionCompensationSet //apple_ref/c/macro/arglDistortionCompensationSet" --><font class="function">arglDistortionCompensationSet</font><!-- /a -->(
+    <!-- a logicalPath="//apple_ref/c/cl/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/cl/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/tdef/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/tag/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/econst/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/struct/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/clconst/ARGL_CONTEXT_SETTINGS_REF" --><font class="type">ARGL_CONTEXT_SETTINGS_REF</font><!-- /a --> <font class="param">contextSettings</font>,
+    <!-- a logicalPath="//apple_ref/c/cl/int //apple_ref/c/cl/int //apple_ref/c/tdef/int //apple_ref/c/tag/int //apple_ref/c/econst/int //apple_ref/c/struct/int //apple_ref/c/clconst/int" --><font class="type">int</font><!-- /a --> <font class="param">enable</font>); </pre></blockquote>
+<h5><font face="Lucida Grande,Helvetica,Arial">Parameter Descriptions</font></h5>
+<blockquote>
+<dl>
+<dt><code><i>contextSettings</i></code></dt><dd>A reference to ARGL's settings for the current OpenGL
+context, as returned by arglSetupForCurrentContext() for this context.</dd>
+<dt><code><i>enable</i></code></dt><dd>TRUE to enabled distortion compensation, FALSE to disable it.
+The default state for new contexts is enable = TRUE.</dd>
+</dl>
+</blockquote>
+<dl><dt><i>function result</i></dt><dd>TRUE if the distortion value was set, FALSE if an error occurred.
+</dd>
+<h5><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5><p>By default, arglDispImage compensates for the distortion of the camera's
+acquired image caused by the lens when it draws. By calling this function
+with enabled = FALSE, this compensation will be disabled in the specified
+drawing context. It may be re-enabled at any time.
+This function is useful if you need to draw an image, but do not know the
+extent of the camera's lens distortion (such as during distortion calibration).
+While distortion compensation is disabled, the dist_factor[] array in a
+the camera cparam structure passed to arglDispImage is ignored.
+</p>
+<dt><i>Availability</i></dt><dd>First appeared in ARToolKit 2.71.
+</dd>
+</dl>
 <hr><!-- headerDoc=func;  uid=//apple_ref/doc/compositePage/c/func/arglSetupForCurrentContext;  name=arglSetupForCurrentContext -->
 <a name="//apple_ref/doc/compositePage/c/func/arglSetupForCurrentContext"></a>
 <table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h3><a name="arglSetupForCurrentContext">arglSetupForCurrentContext</a></h3>
@@ -383,6 +446,6 @@ or &lt;GL/gl.h&gt;
 <dt><i>Availability</i></dt><dd>First appeared in ARToolKit 2.68.
  </dd>
 </dl>
-<p><p>&#169; 2003-2004 Philip Lamb
- (Last Updated August 02, 2004)
+<p><p>&#169; 2003-2005 Philip Lamb
+ (Last Updated August 29, 2005)
 </p></body></html>

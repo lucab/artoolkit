@@ -3,7 +3,7 @@
  *
  *	Graphics Subroutines (Lite) for ARToolKit.
  *
- *	Copyright (c) 2003-2004 Philip Lamb (PRL) phil@eden.net.nz. All rights reserved.
+ *	Copyright (c) 2003-2005 Philip Lamb (PRL) phil@eden.net.nz. All rights reserved.
  *	
  *	Rev		Date		Who		Changes
  *	2.6.5	????-??-??	MB/HK	Original from ARToolKit-2.65DS gsub.c
@@ -15,6 +15,8 @@
  *	2.7.4	2004-07-14	PRL		Added gluCheckExtension hack for GLU versions pre-1.3.
  *	2.7.5	2004-07-15	PRL		Added arglDispImageStateful(); removed extraneous glPixelStorei(GL_UNPACK_IMAGE_HEIGHT,...) calls.
  *	2.7.6	2005-02-18	PRL		Go back to using int rather than BOOL, to avoid conflict with Objective-C.
+ *	2.7.7	2005-07-26	PRL		Added cleanup routines for texture stuff.
+ *	2.7.8	2005-07-29	PRL		Added distortion compensation enabling/disabling.
  *
  */
 /*
@@ -139,17 +141,21 @@
 struct _ARGL_CONTEXT_SETTINGS {
 	int		textureRectangleCapabilitiesChecked;
 	int		texturePow2CapabilitiesChecked;
-	GLuint		textureRectangle;
-	GLuint		texturePow2;
-	GLuint		listRectangle;
-	GLuint		listPow2;
+	GLuint	textureRectangle;
+	GLuint	texturePow2;
+	GLuint	listRectangle;
+	GLuint	listPow2;
 	int		initedRectangle;
-	int			initedRectangleTexmapScaleFactor;
 	int		initedPow2;
-	int			initedPow2TexmapScaleFactor;
-	GLsizei		texturePow2SizeX;
-	GLsizei		texturePow2SizeY;
-	GLenum		texturePow2WrapMode;
+	int		initPlease;		// Set to TRUE to request re-init of texture etc.
+	int		asInited_texmapScaleFactor;
+	float	asInited_zoom;
+	int		asInited_xsize;
+	int		asInited_ysize;
+	GLsizei	texturePow2SizeX;
+	GLsizei	texturePow2SizeY;
+	GLenum	texturePow2WrapMode;
+	int		disableDistortionCompensation;
 };
 typedef struct _ARGL_CONTEXT_SETTINGS ARGL_CONTEXT_SETTINGS;
 
@@ -280,7 +286,7 @@ GLboolean gluCheckExtension(const GLubyte* extName, const GLubyte *extString)
 //  is non-NULL, and is found in the current driver's list of supported extensions.
 //  Returns: TRUE If either of the tests passes, or FALSE if both fail.
 //
-static int arglGLCapabilityCheck(const unsigned short minVersion, const char *extension)
+static int arglGLCapabilityCheck(const unsigned short minVersion, const unsigned char *extension)
 {
 	const GLubyte * strRenderer;
 	const GLubyte * strVersion;
@@ -315,8 +321,8 @@ static int arglDispImageTexRectangleCapabilitiesCheck(const ARParam *cparam, ARG
 	GLint textureRectangleSizeMax;
 	GLint format;
 
-    if (!arglGLCapabilityCheck(0, "GL_NV_texture_rectangle")) {
-		if (!arglGLCapabilityCheck(0, "GL_EXT_texture_rectangle")) { // Alternate name.
+    if (!arglGLCapabilityCheck(0, (unsigned char *)"GL_NV_texture_rectangle")) {
+		if (!arglGLCapabilityCheck(0, (unsigned char *)"GL_EXT_texture_rectangle")) { // Alternate name.
 			return (FALSE);
 		}
 	}
@@ -337,9 +343,19 @@ static int arglDispImageTexRectangleCapabilitiesCheck(const ARParam *cparam, ARG
 	return (TRUE);
 }
 
+static int arglCleanupTexRectangle(ARGL_CONTEXT_SETTINGS_REF contextSettings)
+{
+	if (!contextSettings->initedRectangle) return (FALSE);
+	
+	glDeleteTextures(1, &(contextSettings->textureRectangle));
+	glDeleteLists(contextSettings->listRectangle, 1);
+	contextSettings->textureRectangleCapabilitiesChecked = FALSE;
+	contextSettings->initedRectangle = FALSE;
+	return (TRUE);
+}
+
 //
 // Blit an image to the screen using OpenGL rectangle texturing.
-// TODO: a cleanup routine to delete texture name, display list.
 //
 static void arglDispImageTexRectangle(ARUint8 *image, const ARParam *cparam, const float zoom, ARGL_CONTEXT_SETTINGS_REF contextSettings, const int texmapScaleFactor)
 {
@@ -348,13 +364,11 @@ static void arglDispImageTexRectangle(ARUint8 *image, const ARParam *cparam, con
     float	xx1, xx2, yy1, yy2;
 	int		i, j;
 	
-    if(!contextSettings->initedRectangle || (texmapScaleFactor != contextSettings->initedRectangleTexmapScaleFactor)) {
+    if(!contextSettings->initedRectangle || contextSettings->initPlease) {
 		
+		contextSettings->initPlease = FALSE;
 		// If it was texmapScaleFactor that changed, delete texture and list first.
-		if (contextSettings->initedRectangle) {
-			glDeleteTextures(1, &(contextSettings->textureRectangle));
-			glDeleteLists(contextSettings->listRectangle, 1);
-		}
+		if (contextSettings->initedRectangle) arglCleanupTexRectangle(contextSettings);
 		
 		// Check texturing capabilities.
 		if (!contextSettings->textureRectangleCapabilitiesChecked) {
@@ -406,32 +420,44 @@ static void arglDispImageTexRectangle(ARUint8 *image, const ARParam *cparam, con
 		glLoadIdentity();
 		glMatrixMode(GL_MODELVIEW);
 		
-		py_prev = 0.0f;
-		for(j = 1; j <= 20; j++) {	// Do 20 rows.
-			py = py_prev;
-			py_prev = cparam->ysize * j / 20.0f;
-
-			glBegin(GL_QUAD_STRIP);
-			for(i = 0; i <= 20; i++) {	// Draw 21 pairs of vertices per row to make 20 columns.
-				px = cparam->xsize * i / 20.0f;
-
-				arParamObserv2Ideal(cparam->dist_factor, (double)px, (double)py, &x1, &y1);
-				arParamObserv2Ideal(cparam->dist_factor, (double)px, (double)py_prev, &x2, &y2);
-
-				xx1 = (float)x1 * zoom;
-				yy1 = (cparam->ysize - (float)y1) * zoom;
-				xx2 = (float)x2 * zoom;
-				yy2 = (cparam->ysize - (float)y2) * zoom;
-
-				glTexCoord2f(px, py/texmapScaleFactor); glVertex2f(xx1, yy1);
-				glTexCoord2f(px, py_prev/texmapScaleFactor); glVertex2f(xx2, yy2);
-            }
+		if (contextSettings->disableDistortionCompensation) {
+			glBegin(GL_QUADS);
+			glTexCoord2f(0.0f, cparam->ysize/texmapScaleFactor); glVertex2f(0.0f, 0.0f);
+			glTexCoord2f(cparam->xsize, cparam->ysize/texmapScaleFactor); glVertex2f(cparam->xsize * zoom, 0.0f);
+			glTexCoord2f(cparam->xsize, 0.0f); glVertex2f(cparam->xsize * zoom, cparam->ysize * zoom);
+			glTexCoord2f(0.0f, 0.0f); glVertex2f(0.0f, cparam->ysize * zoom);
 			glEnd();
+		} else {
+			py_prev = 0.0f;
+			for(j = 1; j <= 20; j++) {	// Do 20 rows.
+				py = py_prev;
+				py_prev = cparam->ysize * j / 20.0f;
+				
+				glBegin(GL_QUAD_STRIP);
+				for(i = 0; i <= 20; i++) {	// Draw 21 pairs of vertices per row to make 20 columns.
+					px = cparam->xsize * i / 20.0f;
+					
+					arParamObserv2Ideal(cparam->dist_factor, (double)px, (double)py, &x1, &y1);
+					arParamObserv2Ideal(cparam->dist_factor, (double)px, (double)py_prev, &x2, &y2);
+					
+					xx1 = (float)x1 * zoom;
+					yy1 = (cparam->ysize - (float)y1) * zoom;
+					xx2 = (float)x2 * zoom;
+					yy2 = (cparam->ysize - (float)y2) * zoom;
+					
+					glTexCoord2f(px, py/texmapScaleFactor); glVertex2f(xx1, yy1);
+					glTexCoord2f(px, py_prev/texmapScaleFactor); glVertex2f(xx2, yy2);
+				}
+				glEnd();
+			}			
 		}
 		glDisable(GL_TEXTURE_RECTANGLE);
 		glEndList();
 
-		contextSettings->initedRectangleTexmapScaleFactor = texmapScaleFactor;
+		contextSettings->asInited_ysize = cparam->ysize;
+		contextSettings->asInited_xsize = cparam->xsize;
+		contextSettings->asInited_zoom = zoom;
+        contextSettings->asInited_texmapScaleFactor = texmapScaleFactor;
         contextSettings->initedRectangle = TRUE;
     }
 	
@@ -502,7 +528,7 @@ static int arglDispImageTexPow2CapabilitiesCheck(const ARParam *cparam, ARGL_CON
 	}
 	
 	// Decide whether we can use GL_CLAMP_TO_EDGE.
-	if (arglGLCapabilityCheck(0x0120, "GL_SGIS_texture_edge_clamp")) {
+	if (arglGLCapabilityCheck(0x0120, (unsigned char *)"GL_SGIS_texture_edge_clamp")) {
 		contextSettings->texturePow2WrapMode = GL_CLAMP_TO_EDGE;
 	} else {
 		contextSettings->texturePow2WrapMode = GL_REPEAT;
@@ -513,9 +539,19 @@ static int arglDispImageTexPow2CapabilitiesCheck(const ARParam *cparam, ARGL_CON
 	return (TRUE);
 }
 
+static int arglCleanupTexPow2(ARGL_CONTEXT_SETTINGS_REF contextSettings)
+{
+	if (!contextSettings->initedPow2) return (FALSE);
+	
+	glDeleteTextures(1, &(contextSettings->texturePow2));
+	glDeleteLists(contextSettings->listPow2, 1);
+	contextSettings->texturePow2CapabilitiesChecked = FALSE;
+	contextSettings->initedPow2 = FALSE;
+	return (TRUE);
+}
+
 //
 // Blit an image to the screen using OpenGL power-of-two texturing.
-// TODO: a cleanup routine to delete texture name, display list.
 //
 static void arglDispImageTexPow2(ARUint8 *image, const ARParam *cparam, const float zoom, ARGL_CONTEXT_SETTINGS_REF contextSettings, const int texmapScaleFactor)
 {
@@ -525,13 +561,11 @@ static void arglDispImageTexPow2(ARUint8 *image, const ARParam *cparam, const fl
     float	xx1, xx2, xx3, xx4, yy1, yy2, yy3, yy4;
     int		i, j;
 
-    if(!contextSettings->initedPow2 || (texmapScaleFactor != contextSettings->initedPow2TexmapScaleFactor)) {
+    if(!contextSettings->initedPow2 || contextSettings->initPlease) {
 
+		contextSettings->initPlease = FALSE;
 		// If it was texmapScaleFactor that changed, delete texture and list first.
-		if (contextSettings->initedPow2) {
-			glDeleteTextures(1, &(contextSettings->texturePow2));
-			glDeleteLists(contextSettings->listPow2, 1);
-		}
+		if (contextSettings->initedPow2) arglCleanupTexPow2(contextSettings);
 
 		// Check texturing capabilities.
 		if (!contextSettings->texturePow2CapabilitiesChecked) {
@@ -570,48 +604,64 @@ static void arglDispImageTexPow2(ARUint8 *image, const ARParam *cparam, const fl
 		glLoadIdentity();
 		glMatrixMode(GL_MODELVIEW);
 
-        qy = 0.0f;
-        tey = 0.0f;
-        for(j = 1; j <= 20; j++) {	// Do 20 rows.
-            py = qy;
-            tsy = tey;
-            qy = cparam->ysize * j / 20.0f;
-            tey = qy / contextSettings->texturePow2SizeY;
-
-            qx = 0.0f;
-            tex = 0.0f;
-            for(i = 1; i <= 20; i++) {	// Draw 20 columns.
-                px = qx;
-                tsx = tex;
-                qx = cparam->xsize * i / 20.0f;
-                tex = qx / contextSettings->texturePow2SizeX;
-
-                arParamObserv2Ideal(cparam->dist_factor, (double)px, (double)py, &x1, &y1);
-                arParamObserv2Ideal(cparam->dist_factor, (double)qx, (double)py, &x2, &y2);
-                arParamObserv2Ideal(cparam->dist_factor, (double)qx, (double)qy, &x3, &y3);
-                arParamObserv2Ideal(cparam->dist_factor, (double)px, (double)qy, &x4, &y4);
-
-				xx1 = (float)x1 * zoom;
-				yy1 = (cparam->ysize - (float)y1) * zoom;
-				xx2 = (float)x2 * zoom;
-				yy2 = (cparam->ysize - (float)y2) * zoom;
-				xx3 = (float)x3 * zoom;
-				yy3 = (cparam->ysize - (float)y3) * zoom;
-				xx4 = (float)x4 * zoom;
-				yy4 = (cparam->ysize - (float)y4) * zoom;
-
-                glBegin(GL_QUADS);
-                glTexCoord2f(tsx, tsy); glVertex2f(xx1, yy1);
-                glTexCoord2f(tex, tsy); glVertex2f(xx2, yy2);
-                glTexCoord2f(tex, tey); glVertex2f(xx3, yy3);
-                glTexCoord2f(tsx, tey); glVertex2f(xx4, yy4);
-                glEnd();
-            } // columns.
-        } // rows.
+		if (contextSettings->disableDistortionCompensation) {
+			glBegin(GL_QUADS);
+			glTexCoord2f(0.0f, (float)cparam->ysize/(float)contextSettings->texturePow2SizeY);
+			glVertex2f(0.0f, 0.0f);
+			glTexCoord2f((float)cparam->xsize/(float)contextSettings->texturePow2SizeX, (float)cparam->ysize/(float)contextSettings->texturePow2SizeY);
+			glVertex2f((float)cparam->xsize * zoom, 0.0f);
+			glTexCoord2f((float)cparam->xsize/(float)contextSettings->texturePow2SizeX, 0.0f);
+			glVertex2f((float)cparam->xsize * zoom, (float)cparam->ysize * zoom);
+			glTexCoord2f(0.0f, 0.0f);
+			glVertex2f(0.0f, (float)cparam->ysize * zoom);
+			glEnd();
+		} else {
+			qy = 0.0f;
+			tey = 0.0f;
+			for(j = 1; j <= 20; j++) {	// Do 20 rows.
+				py = qy;
+				tsy = tey;
+				qy = cparam->ysize * j / 20.0f;
+				tey = qy / contextSettings->texturePow2SizeY;
+				
+				qx = 0.0f;
+				tex = 0.0f;
+				for(i = 1; i <= 20; i++) {	// Draw 20 columns.
+					px = qx;
+					tsx = tex;
+					qx = cparam->xsize * i / 20.0f;
+					tex = qx / contextSettings->texturePow2SizeX;
+					
+					arParamObserv2Ideal(cparam->dist_factor, (double)px, (double)py, &x1, &y1);
+					arParamObserv2Ideal(cparam->dist_factor, (double)qx, (double)py, &x2, &y2);
+					arParamObserv2Ideal(cparam->dist_factor, (double)qx, (double)qy, &x3, &y3);
+					arParamObserv2Ideal(cparam->dist_factor, (double)px, (double)qy, &x4, &y4);
+					
+					xx1 = (float)x1 * zoom;
+					yy1 = (cparam->ysize - (float)y1) * zoom;
+					xx2 = (float)x2 * zoom;
+					yy2 = (cparam->ysize - (float)y2) * zoom;
+					xx3 = (float)x3 * zoom;
+					yy3 = (cparam->ysize - (float)y3) * zoom;
+					xx4 = (float)x4 * zoom;
+					yy4 = (cparam->ysize - (float)y4) * zoom;
+					
+					glBegin(GL_QUADS);
+					glTexCoord2f(tsx, tsy); glVertex2f(xx1, yy1);
+					glTexCoord2f(tex, tsy); glVertex2f(xx2, yy2);
+					glTexCoord2f(tex, tey); glVertex2f(xx3, yy3);
+					glTexCoord2f(tsx, tey); glVertex2f(xx4, yy4);
+					glEnd();
+				} // columns.
+			} // rows.
+		}
 		glDisable(GL_TEXTURE_2D);
         glEndList();
 
-        contextSettings->initedPow2TexmapScaleFactor = texmapScaleFactor;
+		contextSettings->asInited_ysize = cparam->ysize;
+		contextSettings->asInited_xsize = cparam->xsize;
+		contextSettings->asInited_zoom = zoom;
+        contextSettings->asInited_texmapScaleFactor = texmapScaleFactor;
 		contextSettings->initedPow2 = TRUE;
 	}
 
@@ -654,6 +704,8 @@ ARGL_CONTEXT_SETTINGS_REF arglSetupForCurrentContext(void)
 
 void arglCleanup(ARGL_CONTEXT_SETTINGS_REF contextSettings)
 {
+	arglCleanupTexRectangle(contextSettings);
+	arglCleanupTexPow2(contextSettings);
 	free(contextSettings);
 }
 
@@ -739,22 +791,48 @@ void arglDispImage(ARUint8 *image, const ARParam *cparam, const double zoom, ARG
 void arglDispImageStateful(ARUint8 *image, const ARParam *cparam, const double zoom, ARGL_CONTEXT_SETTINGS_REF contextSettings)
 {
 	float zoomf;
+	int texmapScaleFactor;
 	
 	zoomf = (float)zoom;
+	texmapScaleFactor = arglTexmapMode + 1;
 	if (arglDrawMode == AR_DRAW_BY_GL_DRAW_PIXELS) {
 		glDisable(GL_TEXTURE_2D);
 		glPixelZoom(zoomf, -zoomf);
 		glRasterPos2f(0.0f, cparam->ysize * zoomf);
 		glDrawPixels(cparam->xsize, cparam->ysize, AR_PIX_FORMAT, AR_PIX_TYPE, image);
 	} else {
+		// Check whether any settings in globals/parameters have changed.
+		// N.B. We don't check cparam->dist_factor[], but this is unlikely to change!
+		if ((texmapScaleFactor != contextSettings->asInited_texmapScaleFactor) ||
+			(zoomf != contextSettings->asInited_zoom) ||
+			(cparam->xsize != contextSettings->asInited_xsize) ||
+			(cparam->ysize != contextSettings->asInited_ysize)) {
+			contextSettings->initPlease = TRUE;
+		}
+		
 #ifdef AR_OPENGL_TEXTURE_RECTANGLE
 		if (!arglTexRectangle) {
 #endif // AR_OPENGL_TEXTURE_RECTANGLE
-			arglDispImageTexPow2(image, cparam, zoomf, contextSettings, arglTexmapMode + 1);
+			arglDispImageTexPow2(image, cparam, zoomf, contextSettings, texmapScaleFactor);
 #ifdef AR_OPENGL_TEXTURE_RECTANGLE
 		} else {
-			arglDispImageTexRectangle(image, cparam, zoomf, contextSettings, arglTexmapMode + 1);
+			arglDispImageTexRectangle(image, cparam, zoomf, contextSettings, texmapScaleFactor);
 		}
 #endif // AR_OPENGL_TEXTURE_RECTANGLE
 	}	
+}
+
+int arglDistortionCompensationSet(ARGL_CONTEXT_SETTINGS_REF contextSettings, int enable)
+{
+	if (!contextSettings) return (FALSE);
+	contextSettings->disableDistortionCompensation = !enable;
+	contextSettings->initPlease = TRUE;
+	return (TRUE);
+}
+
+int arglDistortionCompensationGet(ARGL_CONTEXT_SETTINGS_REF contextSettings, int *enable)
+{
+	if (!contextSettings) return (FALSE);
+	*enable = !contextSettings->disableDistortionCompensation;
+	return (TRUE);
 }

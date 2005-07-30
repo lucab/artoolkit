@@ -3,7 +3,7 @@
  *
  *	Graphics Subroutines (Lite) for ARToolKit.
  *
- *	Copyright (c) 2003-2004 Philip Lamb (PRL) phil@eden.net.nz. All rights reserved.
+ *	Copyright (c) 2003-2005 Philip Lamb (PRL) phil@eden.net.nz. All rights reserved.
  *	
  *	Rev		Date		Who		Changes
  *	2.6.5	????-??-??	MB/HK	Original from ARToolKit-2.65DS gsub.c
@@ -15,6 +15,8 @@
  *	2.7.4	2004-07-14	PRL		Added gluCheckExtension hack for GLU versions pre-1.3.
  *	2.7.5	2004-07-15	PRL		Added arglDispImageStateful(); removed extraneous glPixelStorei(GL_UNPACK_IMAGE_HEIGHT,...) calls.
  *	2.7.6	2005-02-18	PRL		Go back to using int rather than BOOL, to avoid conflict with Objective-C.
+ *	2.7.7	2005-07-26	PRL		Added cleanup routines for texture stuff.
+ *	2.7.8	2005-07-29	PRL		Added distortion compensation enabling/disabling.
  *
  */
 /*
@@ -78,8 +80,8 @@
 		along with ARToolKit; if not, write to the Free Software
 		Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
-	@copyright 2003-2004 Philip Lamb
-	@updated 2004-07-02
+	@copyright 2003-2005 Philip Lamb
+	@updated 2005-07-29
  */
 
 #ifndef __gsub_lite_h__
@@ -386,6 +388,43 @@ void arglDispImage(ARUint8 *image, const ARParam *cparam, const double zoom, ARG
 	@availability First appeared in ARToolKit 2.68.2.
  */
 void arglDispImageStateful(ARUint8 *image, const ARParam *cparam, const double zoom, ARGL_CONTEXT_SETTINGS_REF contextSettings);
+
+/*!
+    @function arglDistortionCompensationSet
+    @abstract Set compensation for camera lens distortion in arglDispImage to off or on.
+    @discussion
+		By default, arglDispImage compensates for the distortion of the camera's
+		acquired image caused by the lens when it draws. By calling this function
+		with enabled = FALSE, this compensation will be disabled in the specified
+		drawing context. It may be re-enabled at any time.
+		This function is useful if you need to draw an image, but do not know the
+		extent of the camera's lens distortion (such as during distortion calibration).
+		While distortion compensation is disabled, the dist_factor[] array in a
+		the camera cparam structure passed to arglDispImage is ignored.
+	@param contextSettings A reference to ARGL's settings for the current OpenGL
+		context, as returned by arglSetupForCurrentContext() for this context. 
+	@param enable TRUE to enabled distortion compensation, FALSE to disable it.
+		The default state for new contexts is enable = TRUE.
+	@result TRUE if the distortion value was set, FALSE if an error occurred.
+	@availability First appeared in ARToolKit 2.71.
+*/
+int arglDistortionCompensationSet(ARGL_CONTEXT_SETTINGS_REF contextSettings, int enable);
+
+/*!
+    @function arglDistortionCompensationGet
+	@abstract Enquire as to the enable state of camera lens distortion compensation in arglDispImage.
+	@discussion
+		By default, arglDispImage compensates for the distortion of the camera's
+		acquired image caused by the lens when it draws. This function enquires
+		as to whether arglDispImage is currently doing compensation or not.
+	@param contextSettings A reference to ARGL's settings for the current OpenGL
+		context, as returned by arglSetupForCurrentContext() for this context. 
+	@param enable Pointer to an integer value which will be set to TRUE if distortion
+		compensation is enabled in the specified context, or FALSE if it is disabled.
+	@result TRUE if the distortion value was set, FALSE if an error occurred.
+	@availability First appeared in ARToolKit 2.71.
+ */
+int arglDistortionCompensationGet(ARGL_CONTEXT_SETTINGS_REF contextSettings, int *enable);
 
 #ifdef __cplusplus
 }
