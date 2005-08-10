@@ -19,7 +19,7 @@
 #include <AR/matrix.h>
 #include "calib_camera.h"
 
-#define   USE_TEXMAP
+//#define   USE_TEXMAP
 
 #ifndef GL_ABGR
 #define GL_ABGR GL_ABGR_EXT
@@ -37,6 +37,8 @@
 #define GL_RGB GL_RGB_EXT
 #endif
 
+/* set up the video format globals */
+
 #if defined(__sgi)
 char            *vconf = "-size=FULL";
 #elif defined(__linux)
@@ -52,14 +54,14 @@ char            *vconf = "-mode=640x480_MONO_COLOR";
 char            *vconf = "";
 #  endif
 #elif defined(_WIN32)
-char			*vconf = "WDM_camera_flipV.xml";
+char			*vconf = "Data\\WDM_camera_flipV.xml";
 #elif defined(__APPLE__)
 char			*vconf = "-width=640 -height=480";
 #else
 char			*vconf = "";
 #endif
-/*****************************************************************************/
 
+static ARUint8		*gARTImage = NULL;
 
 int             win;
 int             xsize;
@@ -72,9 +74,9 @@ double          dist_factor[4];
 double          mat[3][4];
 
 int             point_num;
-int             sx, sy, ex, ey;
+int             sx, sy, ex, ey;	// x and y coordinates of start and end of mouse drag.
 
-int             status;
+int             gStatus;	// 0 = , 1 = , 2 = .
 int             check_num;
 
 #ifdef USE_TEXMAP
@@ -86,7 +88,7 @@ static void dispImageTex1( unsigned char *pimage );
 static void dispImageTex2( unsigned char *pimage );
 #endif
 
-static void     init( int argc, char *argv[] );
+static int      init( int argc, char *argv[] );
 static void     mouseEvent(int button, int state, int x, int y);
 static void     motionEvent( int x, int y );
 static void     keyEvent(unsigned char key, int x, int y);
@@ -126,23 +128,23 @@ static void     save_param(void)
 int main(int argc, char *argv[])
 {
 	glutInit(&argc, argv);
-    init( argc, argv );
+    if (!init(argc, argv)) exit(-1);
 
     glutKeyboardFunc(keyEvent);
     glutMouseFunc(mouseEvent);
     glutMotionFunc(motionEvent);
-    glutIdleFunc(dispImage);
+    glutIdleFunc(Idle);
     glutDisplayFunc(dispImage);
 
     print_comment(0);
-    status = 0;
+    gStatus = 0;
     point_num = 0;
     arVideoCapStart();
     glutMainLoop();
 	return (0);
 }
 
-static void init(int argc, char *argv[])
+static int init(int argc, char *argv[])
 {
     double  length;
     char    line[512];
@@ -153,7 +155,7 @@ static void init(int argc, char *argv[])
     patt.loop_num = 0;
     if (patt.h_num < 3 || patt.v_num < 3) exit(0);
 
-    printf("Input the length between each markers: ");
+    printf("Input the distance between each marker dot, in millimeters: ");
     scanf("%lf", &length);
 	while (getchar() != '\n');
     patt.world_coord = (CALIB_COORD_T *)malloc(sizeof(CALIB_COORD_T) * patt.h_num * patt.v_num);
@@ -163,15 +165,22 @@ static void init(int argc, char *argv[])
             patt.world_coord[j*patt.h_num+i].y_coord = length * j;
         }
     }
-
+	
+	// Add command-line arguments to vconf string.
     strcpy(line, vconf);
     for (i = 1; i < argc; i++) {
         strcat(line, " ");
         strcat(line, argv[i]);
     }
-    if (arVideoOpen(line) < 0) exit(0);
-    if (arVideoInqSize(&xsize, &ysize) < 0) exit(0);
-    printf("Image size (x,y) = (%d,%d)\n", xsize, ysize);
+	
+	// Open the video path.
+    if (arVideoOpen(line) < 0) {
+    	fprintf(stderr, "init(): Unable to open connection to camera.\n");
+    	return (FALSE);
+	}
+	// Find the size of the window.
+    if (arVideoInqSize(&xsize, &ysize) < 0) return (FALSE);
+    fprintf(stdout, "Camera image size (x,y) = (%d,%d)\n", xsize, ysize);
 
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
     glutInitWindowSize(xsize, ysize);
@@ -223,7 +232,7 @@ static void motionEvent( int x, int y )
     int             ssx, ssy, eex, eey;
     int             i, j, k;
 
-    if( status == 1 && sx != -1 && sy != -1 ) {
+    if( gStatus == 1 && sx != -1 && sy != -1 ) {
         ex = x;
         ey = y;
 
@@ -292,7 +301,7 @@ static void mouseEvent(int button, int state, int x, int y)
     int             i, j, k;
 
     if( button == GLUT_RIGHT_BUTTON  && state == GLUT_UP ) {
-        if( status == 0 ) {
+        if( gStatus == 0 ) {
             arVideoCapStop();
             arVideoClose();
 
@@ -304,7 +313,7 @@ static void mouseEvent(int button, int state, int x, int y)
                 printf("Dist Factor: %f\n", dist_factor[2]);
                 printf("Size Adjust: %f\n", dist_factor[3]);
                 printf("--------------\n");
-                status = 2;
+                gStatus = 2;
                 check_num = 0;
                 print_comment(5);
             }
@@ -313,12 +322,12 @@ static void mouseEvent(int button, int state, int x, int y)
                 exit(0);
             }
         }
-        else if( status == 1 ) {
+        else if( gStatus == 1 ) {
             if( patt.loop_num == 0 ) {printf("error!!\n"); exit(0);}
             patt.loop_num--;
             free( patt.point[patt.loop_num] );
             free( patt.savedImage[patt.loop_num] );
-            status = 0;
+            gStatus = 0;
             point_num = 0;
             arVideoCapStart();
 
@@ -328,7 +337,7 @@ static void mouseEvent(int button, int state, int x, int y)
     }
 
     if( button == GLUT_LEFT_BUTTON  && state == GLUT_DOWN ) {
-        if( status == 1 && point_num < patt.h_num*patt.v_num ) {
+        if( gStatus == 1 && point_num < patt.h_num*patt.v_num ) {
             sx = ex = x;
             sy = ey = y;
 
@@ -381,7 +390,7 @@ static void mouseEvent(int button, int state, int x, int y)
     }
 
     if( button == GLUT_LEFT_BUTTON  && state == GLUT_UP ) {
-        if( status == 0 && patt.loop_num < LOOP_MAX ) {
+        if( gStatus == 0 && patt.loop_num < LOOP_MAX ) {
             while( (p = (unsigned char *)arVideoGetImage()) == NULL ) {
                 arUtilSleep(2);
             }
@@ -400,13 +409,13 @@ static void mouseEvent(int button, int state, int x, int y)
             if( patt.point[patt.loop_num] == NULL ) exit(0);
 
             patt.loop_num++;
-            status = 1;
+            gStatus = 1;
             sx = sy = ex= ey = -1;
 
             print_comment(1);
         }
-        else if( status == 1 && point_num == patt.h_num*patt.v_num ) {
-            status = 0;
+        else if( gStatus == 1 && point_num == patt.h_num*patt.v_num ) {
+            gStatus = 0;
             point_num = 0;
             arVideoCapStart();
 
@@ -422,7 +431,7 @@ static void mouseEvent(int button, int state, int x, int y)
             if( patt.loop_num < LOOP_MAX ) print_comment(4);
              else                          print_comment(6);
         }
-        else if( status == 1 ) {
+        else if( gStatus == 1 ) {
             if( sx < ex ) { ssx = sx; eex = ex; }
              else         { ssx = ex; eex = sx; }
             if( sy < ey ) { ssy = sy; eey = ey; }
@@ -452,7 +461,7 @@ static void mouseEvent(int button, int state, int x, int y)
             printf(" # %d/%d\n", point_num, patt.h_num*patt.v_num);
             if( point_num == patt.h_num*patt.v_num ) print_comment(2);
         }
-        else if( status == 2 ) {
+        else if( gStatus == 2 ) {
             check_num++;
             if( check_num == patt.loop_num ) {
                 if(patt.loop_num >= 2) {
@@ -491,25 +500,40 @@ static void keyEvent(unsigned char key, int x, int y)
     if( thresh > 255 ) thresh = 255;
 }
 
+static void Idle(void)
+{
+	static int ms_prev;
+	int ms;
+	float s_elapsed;
+	ARUint8 *image;
+	
+	// Find out how long since Idle() last ran.
+	ms = glutGet(GLUT_ELAPSED_TIME);
+	s_elapsed = (float)(ms - ms_prev) * 0.001;
+	if (s_elapsed < 0.01f) return; // Don't update more often than 100 Hz.
+	ms_prev = ms;
+	
+	// Grab a video frame.
+	if ((image = arVideoGetImage()) != NULL) {
+		gARTImage = image;
+		// Tell GLUT the display has changed.
+		glutPostRedisplay();
+	}	
+}
+
 static void dispImage(void)
 {
-    unsigned char  *dataPtr;
     double         x, y;
     int            ssx, eex, ssy, eey;
     int            i;
 
-    if( status == 0 ) {
-        if( (dataPtr = (unsigned char *)arVideoGetImage()) == NULL ) {
-            arUtilSleep(2);
-            return;
-        }
-        dispImage2( dataPtr );
+    if( gStatus == 0 ) {
+        dispImage2(gARTImage);
         arVideoCapNext();
-    }
-
-    else if( status == 1 ) {
+    } else if( gStatus == 1 ) {
         dispImage2( patt.savedImage[patt.loop_num-1] );
 
+		// Draw red crosses on the points in the image.
         for( i = 0; i < point_num; i++ ) {
             x = patt.point[patt.loop_num-1][i].x_coord;
             y = patt.point[patt.loop_num-1][i].y_coord;
@@ -521,7 +545,8 @@ static void dispImage(void)
               glVertex2f( x, (ysize-1)-(y+10) );
             glEnd();
         }
-
+		
+		// Draw the current mouse drag clipping area.
         if( sx != -1 && sy != -1 ) {
             if( sx < ex ) { ssx = sx; eex = ex; }
              else         { ssx = ex; eex = sx; }
@@ -540,7 +565,7 @@ static void dispImage(void)
         }
     }
 
-    else if( status == 2 ) {
+    else if( gStatus == 2 ) {
         dispImage2( patt.savedImage[check_num] );
         for( i = 0; i < patt.h_num*patt.v_num; i++ ) {
             x = patt.point[check_num][i].x_coord;
@@ -788,8 +813,8 @@ static void draw_line(void)
         draw_line2( x, y, p );
     }
 
-    free( x );
-    free( y );
+    free(x);
+    free(y);
 }
 
 static void draw_line2( double *x, double *y, int num )
@@ -799,24 +824,24 @@ static void draw_line2( double *x, double *y, int num )
     double   a, b, c;
     int      i;
 
-    ev     = arVecAlloc( 2 );
-    mean   = arVecAlloc( 2 );
-    evec   = arMatrixAlloc( 2, 2 );
+    ev     = arVecAlloc(2);
+    mean   = arVecAlloc(2);
+    evec   = arMatrixAlloc(2, 2);
 
-    input  = arMatrixAlloc( num, 2 );
-    for( i = 0; i < num; i++ ) {
-        arParamObserv2Ideal( dist_factor, x[i], y[i],
-                             &(input->m[i*2+0]), &(input->m[i*2+1]) );
+    input  = arMatrixAlloc(num, 2);
+    for (i = 0; i < num; i++) {
+        arParamObserv2Ideal(dist_factor, x[i], y[i],
+                             &(input->m[i*2+0]), &(input->m[i*2+1]));
     }
-    if( arMatrixPCA(input, evec, ev, mean) < 0 ) exit(0);
+    if (arMatrixPCA(input, evec, ev, mean) < 0) exit(0);
     a =  evec->m[1];
     b = -evec->m[0];
     c = -(a*mean->v[0] + b*mean->v[1]);
 
-    arMatrixFree( input );
-    arMatrixFree( evec );
-    arVecFree( mean );
-    arVecFree( ev );
+    arMatrixFree(input);
+    arMatrixFree(evec);
+    arVecFree(mean);
+    arVecFree(ev);
 
     draw_warp_line(a, b, c);
 }
@@ -825,27 +850,25 @@ static void draw_warp_line( double a, double b , double c )
 {
     double   x, y;
     double   x1, y1;
-    // double   d; // unreferenced
     int      i;
 
     glLineWidth( 1.0 );
     glBegin(GL_LINE_STRIP);
-    if( a*a >= b*b ) {
-        for( i = -20; i <= ysize+20; i+=10 ) {
+    if (a*a >= b*b) {
+        for (i = -20; i <= ysize+20; i+=10) {
             x = -(b*i + c)/a;
             y = i;
 
-            arParamIdeal2Observ( dist_factor, x, y, &x1, &y1 );
-            glVertex2f( x1, ysize-1-y1 );
+            arParamIdeal2Observ(dist_factor, x, y, &x1, &y1);
+            glVertex2f(x1, ysize-1-y1);
         }
-    }
-    else {
-        for( i = -20; i <= xsize+20; i+=10 ) {
+    } else {
+        for(i = -20; i <= xsize+20; i+=10) {
             x = i;
             y = -(a*i + c)/b;
 
-            arParamIdeal2Observ( dist_factor, x, y, &x1, &y1 );
-            glVertex2f( x1, ysize-1-y1 );
+            arParamIdeal2Observ(dist_factor, x, y, &x1, &y1);
+            glVertex2f(x1, ysize-1-y1);
         }
     }
     glEnd();
@@ -863,17 +886,17 @@ static void     print_comment( int status )
         case 1:
            printf("Mouse Button\n");
            printf(" Left   : Rubber-bounding of feature. (%d x %d)\n", patt.h_num, patt.v_num);
-           printf(" Right  : Cansel rubber-bounding & Retry grabbing.\n");
+           printf(" Right  : Cancel rubber-bounding & retry grabbing.\n");
            break;
         case 2:
            printf("Mouse Button\n");
            printf(" Left   : Save feature position.\n");
-           printf(" Right  : Discard & Retry grabbing.\n");
+           printf(" Right  : Discard & retry grabbing.\n");
            break;
         case 4:
            printf("Mouse Button\n");
            printf(" Left   : Grab next image.\n");
-           printf(" Right  : Calc parameter.\n");
+           printf(" Right  : Calculate parameter.\n");
            break;
         case 5:
            printf("Mouse Button\n");
@@ -884,7 +907,7 @@ static void     print_comment( int status )
         case 6:
            printf("Mouse Button\n");
            printf(" Left   :\n");
-           printf(" Right  : Calc parameter.\n");
+           printf(" Right  : Calculate parameter.\n");
            printf("   %d/%d.\n", check_num+1, patt.loop_num);
            break;
     }

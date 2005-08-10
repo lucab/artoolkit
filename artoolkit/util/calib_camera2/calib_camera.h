@@ -15,12 +15,12 @@ typedef struct patt {
     unsigned char  *savedImage[LOOP_MAX];
     CALIB_COORD_T  *world_coord;
     CALIB_COORD_T  *point[LOOP_MAX];
-    int            h_num;
-    int            v_num;
-    int            loop_num;
+    int            h_num;				// Number of dots horizontally in the calibration pattern.
+    int            v_num;				// Number of dots vertically in the calibration pattern.
+    int            loop_num;			// How many images of the complete calibration patterns we have completed.
 } CALIB_PATT_T;
 
 void calc_distortion( CALIB_PATT_T *patt, int xsize, int ysize, double dist_factor[3] );
 int  calc_inp( CALIB_PATT_T *patt, double dist_factor[4], int xsize, int ysize, double mat[3][4] );
 
-#endif
+#endif // CALIB_DIST_H
