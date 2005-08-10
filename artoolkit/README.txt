@@ -1,4 +1,4 @@
-Read me for ARToolKit-2.70.1.
+Read me for ARToolKit-2.71.
 =============================
 
 
@@ -14,7 +14,7 @@ Changes in earlier releases.
 
 About this archive.
 -------------------
-This archive contains the ARToolKit libraries, utilities and examples, version 2.70.1.
+This archive contains the ARToolKit libraries, utilities and examples, version 2.71.
 
 ARToolKit is released under the GNU General Public License (GPL). Please read the file COPYING.txt.
 
@@ -26,7 +26,7 @@ This archive was assembled by:
     Philip Lamb
     HIT Lab NZ
     http://www.hitlabnz.org
-    2005-03-14
+    2005-07-27
 
 
 Building on Windows.
@@ -34,28 +34,23 @@ Building on Windows.
 
 Prerequisites:
  *  Microsoft Visual Studio .NET 2003 or Visual Studio 6.
- *  DSVideoLib-0.0.4-win32. Download from http://sf.net/projects/artoolkit.
+ *  DSVideoLib-0.0.8b-win32. Download from http://sf.net/projects/artoolkit.
  *  GLUT. Download from http://www.opengl.org/resources/libraries/glut.html.
- *  DirectX 9.0b or later SDK. If you are using VS6, you must use 9.0b as DirectX 9.0c no longer includes support for VS6. Download from http://msdn.microsoft.com/library/default.asp?url=/downloads/list/directx.asp.
- *  (DirectX 9.0c October 2004 or later only) DirectX SDK Extras package. Once downloaded and unzipped, move the "Samples" folder into the top-level of the installed SDK path.
  *  (Optional, for VRML renderer only) OpenVRML-0.14.3-win32. Download from http://sf.net/projects/artoolkit.
  
 Build steps:
 (1) Unpack the ARToolKit zip to a convenient location. This location will be referred to below as {ARToolKit}.
-(2) Unpack the DSVideoLib zip into {ARToolKit}.
-(3) Copy the files DSVideoLib.dll and DSVideoLibd.dll from {ARToolKit}\DSVideoLib\bin.vc70 into {ARToolKit}\bin.
-(4) Run the script {ARToolKit}\DSVideoLib\bin.vc70\register_filter.bat.
-(5) Install the GLUT DLL into the Windows System32 folder, and the library and headers into the VS platform SDK folders.
-(6) Run the script {ARToolKit}\Configure.win32.bat to create include/AR/config.h.
-(7) Open the ARToolKit.sln file (VS.NET) or ARToolkit.dsw file (VS6).
-(8) Open the Visual Studio search paths settings (Tools->Options->Directories for VS6, or Tools->Options->Projects->VC++ Directories for VS.NET) and add the DirectX SDK Includes\ path and the DirectX Samples\C++\DirectShow\BaseClasses\ path to the top of the search path for headers, and the DirectX SDK Lib\ path to the top of the search path for libraries.
-(9) (Optional, only if rebuilding DSVideoLib). Build the DirectShow base classes strmbase.lib and strmbasd.lib. (More information can be found at Thomas Pintarics homepage for DSVideoLib (http://www.ims.tuwien.ac.at/~thomas/dsvideolib.php)).
-(10) Build the toolkit.
+(2) Unpack the DSVideoLib zip into {ARToolKit}. Make sure that the directory is named "DSVL".
+(3) Copy the files DSVL.dll and DSVLd.dll from {ARToolKit}\DSVL\bin into {ARToolKit}\bin.
+(4) Install the GLUT DLL into the Windows System32 folder, and the library and headers into the VS platform SDK folders.
+(5) Run the script {ARToolKit}\Configure.win32.bat to create include/AR/config.h.
+(6) Open the ARToolKit.sln file (VS.NET) or ARToolkit.dsw file (VS6).
+(7) Build the toolkit.
 
 The VRML renderering library and example (libARvrml & simpleVRML) are optional builds:
-(11) Unpack the OpenVRML zip into {ARToolKit}.
-(12) Copy js32.dll from {ARToolKit}\OpenVRML\bin into {ARToolKit}\bin.
-(13) Enable the libARvrml and simpleVRML projects in the VS configuration manager and build.
+(8) Unpack the OpenVRML zip into {ARToolKit}.
+(9) Copy js32.dll from {ARToolKit}\OpenVRML\bin into {ARToolKit}\bin.
+(10) Enable the libARvrml and simpleVRML projects in the VS configuration manager and build.
 
 
 Building on Linux / SGI Irix.
@@ -65,7 +60,7 @@ Prerequisites:
  *  (Optional, for VRML renderer only) openvrml-0.14.3 and dependencies. Download from http://sf.net/projects/openvrml.
  
 Unpack the ARToolKit to a convenient location. The root of this location will be referred to below as {ARToolKit}:
-    tar zxvf ARToolKit-2.70.1.tgz
+    tar zxvf ARToolKit-2.71.tgz
 Configure and build. The Linux builds support video input using either Video4Linux, an IIDC-compliant or DV camera connected via IEEE-1394, or a Sony EyeToy camera connected via USB. You will be prompted as to which of the four Linux video drivers you wish to use at the Configure step.
     cd {ARToolKit}
     ./Configure
@@ -103,7 +98,7 @@ The VRML renderering library and example (libARvrml & simpleVRML) are optional b
 Alternately, ARToolKit can be built from the Terminal, using the Unix makefiles.
 Drop the ARToolKit into a convenient location, e.g. your Desktop, then open a Terminal window and type:
 	cd ~/Desktop
-	tar zxvf ARToolKit-2.70.1.tgz
+	tar zxvf ARToolKit-2.71.tgz
 Configure and build
 	cd ~/ARToolKit
 	./Configure
@@ -127,6 +122,8 @@ Changes in this release.
 ------------------------
 - Mac OS X video driver: QuickTime 6.4 is now required by default. (Support for earlier versions can be enabled at compile-time). 
 - Mac OS X libARgsub and binaries which call it: fix for bug "GLUT Warning: glutInit being called a second time" by moving glutInit to main so that it is called before calling arVideoOpen.
+- Linux V4L video driver: Apply patch by Wayne Piekarski to auto-adjust video resolution.
+- Windows video driver: Uses updated (0.0.8b) DSVideoLib. Install of DirectX SDK, registering of filter no longer required.
 
 Changes in earlier releases.
 ----------------------------
