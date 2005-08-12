@@ -83,7 +83,11 @@ double          theta;
 double          radius;
 double          sx, sy, ex, ey;
 
+#ifdef _WIN32
+static int      drawMode = AR_DRAW_BY_GL_DRAW_PIXELS;
+#else
 static int      drawMode = DEFAULT_DRAW_MODE;
+#endif
 static GLuint   glid[2];
 static int      tex1Xsize1 = 1;
 static int      tex1Xsize2 = 1;
