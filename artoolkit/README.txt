@@ -124,6 +124,7 @@ Changes in this release.
 - Mac OS X libARgsub and binaries which call it: fix for bug "GLUT Warning: glutInit being called a second time" by moving glutInit to main so that it is called before calling arVideoOpen.
 - Linux V4L video driver: Apply patch by Wayne Piekarski to auto-adjust video resolution.
 - Windows video driver: Uses updated (0.0.8b) DSVideoLib. Install of DirectX SDK, registering of filter no longer required.
+- gsub_lite: Added complete support for runtime selection of pixel format and rectangle/power-of-2 textures.
 
 Changes in earlier releases.
 ----------------------------

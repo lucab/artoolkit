@@ -355,7 +355,7 @@ endFunc:
 static VideoDigitizerError vdgGetDeviceNameAndFlags(VdigGrab* pVdg, char* szName, long* pBuffSize, UInt32* pVdFlags)
 {
 	VideoDigitizerError err;
-	Str255	vdName; // Pascal string (first byte is string length.
+	Str255	vdName; // Pascal string (first byte is string length).
     UInt32	vdFlags;
 	
 	if (!pBuffSize) {
@@ -375,7 +375,7 @@ static VideoDigitizerError vdgGetDeviceNameAndFlags(VdigGrab* pVdg, char* szName
 	if (szName) {
 		int copyLen = (*pBuffSize-1 < vdName[0] ? *pBuffSize-1 : vdName[0]);
 		
-		strncpy(szName, vdName+1, copyLen);
+		strncpy(szName, (char *)vdName+1, copyLen);
 		szName[copyLen] = '\0';
 		
 		*pBuffSize = copyLen + 1;
@@ -1144,7 +1144,7 @@ int ar2VideoDispOption(void)
     printf("    numeric pixel format number or a valid 4-character-code for a\n");
     printf("    pixel format. The following values are supported: \n");
     printf("    32, BGRA, RGBA, ABGR, 24, 24BG, 2vuy, yuvs.\n");
-    printf("    (See definitions in <QuickDraw.h> and QuickTime API reference IV-2862.)\n");
+    printf("    (See http://developer.apple.com/quicktime/icefloe/dispatch020.html.)\n");
     printf("\n");
 
     return (0);

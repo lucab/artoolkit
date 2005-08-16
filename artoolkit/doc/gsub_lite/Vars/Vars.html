@@ -60,12 +60,9 @@ the value of this variable determines whether rectangular textures or ordinary
 (power-of-two) textures are used by arglDispImage(). A value of TRUE specifies the
 use of rectangluar textures. A value of FALSE specifies the use of ordinary textures.
 <br><br>
-If gsub_lite was not built without support for rectangular textures, changing the
-value of this variable will have no effect, and ordinary textures will always be
-used. Support for rectangular textures is only available when gsub_lite is built
-with AR_OPENGL_TEXTURE_RECTANGLE defined in &lt;AR/config.h&gt and with either
-GL_EXT_texture_rectangle or GL_NV_texture_rectangle defined in &lt;GL/glext.h&gt;
-or &lt;GL/gl.h&gt;
+If the OpenGL driver available at runtime does not support for rectangular textures,
+changing the value of this variable to TRUE will result calls to arglDispImage
+performing no drawing.
 </p>
 <dt><i>Availability</i></dt><dd>First appeared in ARToolKit 2.68.
  </dd>

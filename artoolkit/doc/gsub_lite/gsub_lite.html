@@ -20,23 +20,42 @@ A collection of useful OpenGL routines for ARToolKit.
 Sample code for example usage of gsub_lite is included with
 ARToolKit, in the directory &lt;AR/examples/simpleLite&gt;.
 <br><br>
-gsub_lite v2.7 was designed as a replacement for the original gsub from
-ARToolKit, by Mark Billinghurst (MB) & Hirokazu Kato (HK), with the
-following functionality removed: <br>
-- GLUT event handling. <br>
-- Sub-window ("MINIWIN") and half-size drawing. <br>
-- HMD support for stereo via stencil. <br>
-and the following functionality added or improved: <br>
-+ Support for true stereo and multiple displays through removal
-of most dependencies on global variables. <br>
-+ Prepared library for thread-safety by removing global variables. <br>
-+ Optimised texturing, particularly for Mac OS X platform. <br>
-+ Added arglCameraFrustum to replace argDraw3dCamera() function. <br>
-+ Renamed argConvGlpara() to arglCameraView() to more accurately
-represent its functionality. <br>
-+ Correctly handle textures with ARGB and ABGR byte ordering. <br>
-+ Library setup and cleanup functions. <br>
-+ Version numbering. <br>
+gsub_lite is the preferred means for drawing camera video 
+images acquired from ARToolKit's video libraries. It includes
+optimized texture handling, and a variety of flexible drawing
+options.
+<br><br>
+gsub_lite also provides utility functions for setting the
+OpenGL viewing frustum and camera position based on ARToolKit-
+camera parameters and marker positions.
+<br><br>
+gsub_lite does not depend on GLUT, or indeed, any particular
+window or event handling system. It is therefore well suited
+to use in applications which have their own window and event
+handling code.
+<br><br>
+gsub_lite v2.7 is intended as a replacement for gsub from
+ARToolKit 2.65, by Mark Billinghurst (MB) & Hirokazu Kato (HK),
+with the following additional functionality:
+<ul>
+<li> Support for true stereo and multiple displays through removal
+of most dependencies on global variables.
+<li> Prepared library for thread-safety by removing global variables.
+<li> Optimised texturing, particularly for Mac OS X platform.
+<li> Added arglCameraFrustum to replace argDraw3dCamera() function.
+<li> Renamed argConvGlpara() to arglCameraView() to more accurately
+represent its functionality.
+<li> Correctly handle textures with non-RGBA handling.
+<li> Library setup and cleanup functions.
+<li> Version numbering.
+</ul>
+It does however lack the following functionality from the original gsub
+library:
+<ul>
+<li> GLUT event handling.
+<li> Sub-window ("MINIWIN") and half-size drawing.
+<li> HMD support for stereo via stencil.
+</ul>
 <br><br>
 This file is part of ARToolKit.
 <br><br>

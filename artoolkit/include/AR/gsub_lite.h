@@ -6,8 +6,7 @@
  *	Copyright (c) 2003-2005 Philip Lamb (PRL) phil@eden.net.nz. All rights reserved.
  *	
  *	Rev		Date		Who		Changes
- *	2.6.5	????-??-??	MB/HK	Original from ARToolKit-2.65DS gsub.c
- *  2.7.0   2003-08-13  PRL     Lipo'ed and whipped into shape.
+ *  2.7.0   2003-08-13  PRL     Complete rewrite to ARToolKit-2.65 gsub.c API.
  *  2.7.1   2004-03-03  PRL		Avoid defining BOOL if already defined
  *	2.7.1	2004-03-03	PRL		Don't enable lighting if it was not enabled.
  *	2.7.2	2004-04-27	PRL		Added headerdoc markup. See http://developer.apple.com/darwin/projects/headerdoc/
@@ -17,6 +16,7 @@
  *	2.7.6	2005-02-18	PRL		Go back to using int rather than BOOL, to avoid conflict with Objective-C.
  *	2.7.7	2005-07-26	PRL		Added cleanup routines for texture stuff.
  *	2.7.8	2005-07-29	PRL		Added distortion compensation enabling/disabling.
+ *	2.7.9	2005-08-15	PRL		Added complete support for runtime selection of pixel format and rectangle/power-of-2 textures.
  *
  */
 /*
@@ -46,23 +46,42 @@
 		Sample code for example usage of gsub_lite is included with
 		ARToolKit, in the directory &lt;AR/examples/simpleLite&gt;.
 		
-		gsub_lite v2.7 was designed as a replacement for the original gsub from
-		ARToolKit, by Mark Billinghurst (MB) & Hirokazu Kato (HK), with the
-		following functionality removed: <br>
-			- GLUT event handling. <br>
-			- Sub-window ("MINIWIN") and half-size drawing. <br>
-			- HMD support for stereo via stencil. <br>
-		and the following functionality added or improved: <br>
-			+ Support for true stereo and multiple displays through removal
-				of most dependencies on global variables. <br>
-			+ Prepared library for thread-safety by removing global variables. <br>
-			+ Optimised texturing, particularly for Mac OS X platform. <br>
-			+ Added arglCameraFrustum to replace argDraw3dCamera() function. <br>
-			+ Renamed argConvGlpara() to arglCameraView() to more accurately
-				represent its functionality. <br>
-			+ Correctly handle textures with ARGB and ABGR byte ordering. <br>
-			+ Library setup and cleanup functions. <br>
-			+ Version numbering. <br>
+		gsub_lite is the preferred means for drawing camera video 
+		images acquired from ARToolKit's video libraries. It includes
+		optimized texture handling, and a variety of flexible drawing
+		options.
+ 
+		gsub_lite also provides utility functions for setting the
+		OpenGL viewing frustum and camera position based on ARToolKit-
+		camera parameters and marker positions.
+ 
+		gsub_lite does not depend on GLUT, or indeed, any particular
+		window or event handling system. It is therefore well suited
+		to use in applications which have their own window and event
+		handling code.
+ 
+		gsub_lite v2.7 is intended as a replacement for gsub from
+		ARToolKit 2.65, by Mark Billinghurst (MB) & Hirokazu Kato (HK),
+		with the following additional functionality:
+		<ul>
+			<li> Support for true stereo and multiple displays through removal
+			of most dependencies on global variables.
+			<li> Prepared library for thread-safety by removing global variables.
+			<li> Optimised texturing, particularly for Mac OS X platform.
+			<li> Added arglCameraFrustum to replace argDraw3dCamera() function.
+			<li> Renamed argConvGlpara() to arglCameraView() to more accurately
+			represent its functionality.
+			<li> Correctly handle textures with non-RGBA handling.
+			<li> Library setup and cleanup functions.
+			<li> Version numbering.
+		</ul>
+		It does however lack the following functionality from the original gsub
+		library:
+		<ul>
+			<li> GLUT event handling.
+			<li> Sub-window ("MINIWIN") and half-size drawing.
+			<li> HMD support for stereo via stencil.
+		</ul>
 			
 		This file is part of ARToolKit.
 		
@@ -144,6 +163,67 @@ extern "C" {
  */
 typedef struct _ARGL_CONTEXT_SETTINGS *ARGL_CONTEXT_SETTINGS_REF;
 
+/*!
+    @typedef ARGL_PIX_FORMAT
+    @abstract ARToolKit pixel-format specifiers.
+    @discussion
+		ARToolKit functions can accept pixel data in a variety of formats.
+		This enumerations provides a set of constants you can use to request
+		data in a particular pixel format from an ARToolKit function that
+		returns data to you, or to specify that data you are providing to an
+		ARToolKit function is in a particular pixel format.
+    @constant ARGL_PIX_FORMAT_RGBA
+		Each pixel is represented by 32 bits. Eight bits per each Red, Green,
+		Blue, and Alpha component.
+	@constant ARGL_PIX_FORMAT_ABGR
+		Each pixel is represented by 32 bits. Eight bits per each Alpha, Blue,
+		Green, and Red component. This is the native 32 bit format for the SGI
+		platform.
+	@constant ARGL_PIX_FORMAT_BGRA
+		Each pixel is represented by 32 bits. Eight bits per each Blue, Green,
+		Red, and Alpha component. This is the native 32 bit format for the Win32
+		platform.
+	@constant ARGL_PIX_FORMAT_ARGB
+		Each pixel is represented by 32 bits. Eight bits per each Alpha, Red,
+		Green, and Blue component. This is the native 32 bit format for the Mac
+		platform.
+	@constant ARGL_PIX_FORMAT_RGB
+		Each pixel is represented by 24 bits. Eight bits per each Red, Green,
+		and Blue component. This is the native 24 bit format for the Mac platform.
+	@constant ARGL_PIX_FORMAT_BGR
+		Each pixel is represented by 24 bits. Eight bits per each Blue, Red, and
+		Green component. This is the native 24 bit format for the Win32 platform.
+	@constant ARGL_PIX_FORMAT_2vuy
+		8-bit 4:2:2 Component Y'CbCr format. Each 16 bit pixel is represented
+		by an unsigned eight bit luminance component and two unsigned eight bit
+		chroma components. Each pair of pixels shares a common set of chroma
+		values. The components are ordered in memory; Cb, Y0, Cr, Y1. The
+		luminance components have a range of [16, 235], while the chroma value
+		has a range of [16, 240]. This is consistent with the CCIR601 spec.
+		This format is fairly prevalent on both Mac and Win32 platforms.
+		'2vuy' is the Apple QuickTime four-character code for this pixel format.
+		The equivalent Microsoft fourCC is 'UYVY'.
+	@constant ARGL_PIX_FORMAT_yuvs
+		8-bit 4:2:2 Component Y'CbCr format. Identical to the ARGL_PIX_FORMAT_2vuy except
+		each 16 bit word has been byte swapped. This results in a component
+		ordering of; Y0, Cb, Y1, Cr.
+		This is most prevalent yuv 4:2:2 format on both Mac and Win32 platforms.
+		'yuvs' is the Apple QuickTime four-character code for this pixel format.
+		The equivalent Microsoft fourCC is 'YUY2'.
+*/
+typedef enum {
+	ARGL_PIX_FORMAT_RGBA = 1,
+	ARGL_PIX_FORMAT_ABGR = 2,
+	ARGL_PIX_FORMAT_BGRA = 3,
+	ARGL_PIX_FORMAT_ARGB = 4,
+	ARGL_PIX_FORMAT_RGB = 5,
+	ARGL_PIX_FORMAT_BGR = 6,
+	ARGL_PIX_FORMAT_2vuy = 7,
+	ARGL_PIX_FORMAT_UYVY = ARGL_PIX_FORMAT_2vuy,
+	ARGL_PIX_FORMAT_yuvs = 8,
+	ARGL_PIX_FORMAT_YUY2 = ARGL_PIX_FORMAT_yuvs,
+} ARGL_PIX_FORMAT;
+
 // ============================================================================
 //	Public globals.
 // ============================================================================
@@ -198,12 +278,9 @@ extern int arglTexmapMode;
 		(power-of-two) textures are used by arglDispImage(). A value of TRUE specifies the
 		use of rectangluar textures. A value of FALSE specifies the use of ordinary textures.
 		
-		If gsub_lite was not built without support for rectangular textures, changing the
-		value of this variable will have no effect, and ordinary textures will always be
-		used. Support for rectangular textures is only available when gsub_lite is built
-		with AR_OPENGL_TEXTURE_RECTANGLE defined in &lt;AR/config.h&gt and with either
-		GL_EXT_texture_rectangle or GL_NV_texture_rectangle defined in &lt;GL/glext.h&gt;
-		or &lt;GL/gl.h&gt;
+		If the OpenGL driver available at runtime does not support for rectangular textures,
+		changing the value of this variable to TRUE will result calls to arglDispImage
+		performing no drawing.
 	@availability First appeared in ARToolKit 2.68.
  */
 extern int arglTexRectangle;
@@ -340,14 +417,6 @@ void arglCameraView(double para[3][4], GLdouble m_modelview[16], double scale);
 		pixels of the first row, followed immediately by the pixels of the second
 		row, and so on to the last byte of the image data, which corresponds to
 		the last component of the bottom-right-most pixel.
-		
-		In the current version of gsub_lite, the format of the pixels (i.e. the
-		arrangement of components within each pixel) is fixed at the time the
-		library is built, and cannot be changed at runtime. (It is determined by
-		which of the possible AR_PIXEL_FORMAT_xxxx symbols was defined at the
-		time the library was built.) Usually, image data is passed in directly
-		from images generated by ARVideo, and so you should ensure that ARVideo
-		is generating pixels of the same format.
 	@param cparam Pointer to a set of ARToolKit camera parameters for the
 		current video source. The size of the source image is taken from the
 		fields xsize and ysize of the ARParam structure pointed to. Also, when
@@ -421,10 +490,48 @@ int arglDistortionCompensationSet(ARGL_CONTEXT_SETTINGS_REF contextSettings, int
 		context, as returned by arglSetupForCurrentContext() for this context. 
 	@param enable Pointer to an integer value which will be set to TRUE if distortion
 		compensation is enabled in the specified context, or FALSE if it is disabled.
-	@result TRUE if the distortion value was set, FALSE if an error occurred.
+	@result TRUE if the distortion value was retreived, FALSE if an error occurred.
 	@availability First appeared in ARToolKit 2.71.
  */
 int arglDistortionCompensationGet(ARGL_CONTEXT_SETTINGS_REF contextSettings, int *enable);
+
+/*!
+    @function arglPixelFormatSet
+    @abstract Set the format of pixel data which will be passed to arglDispImage*()
+    @discussion (description)
+		In gsub_lite, the format of the pixels (i.e. the arrangement of components
+		within each pixel) can be changed at runtime. Use this function to inform
+		gsub_lite the format the pixels being passed to arglDispImage*() functions
+		are in. This setting applies only to the context passed in parameter
+		contextSettings. The default format is determined by which of the possible
+		AR_PIXEL_FORMAT_xxxx symbols was defined at the time the library was built.
+		Usually, image data is passed in directly from images generated by ARVideo,
+		and so you should ensure that ARVideo is generating pixels of the same format.
+	@param contextSettings A reference to ARGL's settings for the current OpenGL
+		context, as returned by arglSetupForCurrentContext() for this context. 
+    @param format A symbolic constant for the pixel format being set. See
+		@link ARGL_PIX_FORMAT ARGL_PIX_FORMAT @/link for a list of all possible formats.
+	@result TRUE if the pixel format value was set, FALSE if an error occurred.
+	@availability First appeared in ARToolKit 2.71.
+*/
+int arglPixelFormatSet(ARGL_CONTEXT_SETTINGS_REF contextSettings, ARGL_PIX_FORMAT format);
+
+/*!
+    @function arglPixelFormatGet
+    @abstract Get the format of pixel data in which arglDispImage*() is expecting data to be passed.
+    @discussion This function enquires as to the current format of pixel data being
+		expected by the arglDispImage*() functions. The default format is determined by
+		which of the possible AR_PIXEL_FORMAT_xxxx symbols was defined at the time the
+		library was built.
+	@param contextSettings A reference to ARGL's settings for the current OpenGL
+		context, as returned by arglSetupForCurrentContext() for this context. 
+	@param format A symbolic constant for the pixel format in use. See
+		@link ARGL_PIX_FORMAT ARGL_PIX_FORMAT @/link for a list of all possible formats.
+	@param size The number of bytes of memory occupied per pixel, for the given format.
+	@result TRUE if the pixel format and size values were retreived, FALSE if an error occurred.
+	@availability First appeared in ARToolKit 2.71.
+*/
+int arglPixelFormatGet(ARGL_CONTEXT_SETTINGS_REF contextSettings, ARGL_PIX_FORMAT *format, int *size);
 
 #ifdef __cplusplus
 }
