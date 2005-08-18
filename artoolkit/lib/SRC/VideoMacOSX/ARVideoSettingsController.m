@@ -118,7 +118,7 @@
 			}
 			
 			GetComponentInfo(c, &compInfo, hName, NULL, NULL);
-			if (PLstrcmp(*hName, "\pCompression") != 0) {
+			if (PLstrcmp(*(unsigned char **)hName, "\pCompression") != 0) {
 				*cPtr++ = c;
 				PanelCount++;
 			}
