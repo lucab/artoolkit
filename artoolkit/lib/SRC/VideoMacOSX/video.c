@@ -100,6 +100,13 @@
 #define AR_VIDEO_STATUS_BIT_READY   0x01			// Clear when no new frame is ready, set when a new frame is ready.
 #define AR_VIDEO_STATUS_BIT_BUFFER  0x02			// Clear when buffer 1 is valid for writes, set when buffer 2 is valid for writes. 
 
+// Early Mac OS X implementations of pthreads failed to define PTHREAD_CANCELED.
+#ifdef PTHREAD_CANCELED
+#  define AR_PTHREAD_CANCELLED PTHREAD_CANCELED
+#else
+#  define AR_PTHREAD_CANCELLED ((void *) 1);
+#endif
+
 // ============================================================================
 //	Private types
 // ============================================================================
@@ -1668,8 +1675,8 @@ int ar2VideoCapStop(AR2VideoParamT *vid)
 			return (err_i);
 		}
 		vid->threadRunning = 0;
-		// Exit status should be ((exit_status_p == PTHREAD_CANCELED) ? 0 : *(ERROR_t *)(exit_status_p))
-		// except Apple's pthread's implementation doesn't appear to provide PTHREAD_CANCELED.
+		
+		// Exit status is ((exit_status_p == AR_PTHREAD_CANCELLED) ? 0 : *(ERROR_t *)(exit_status_p))
 	}
 	
     if (vid->pVdg) {
