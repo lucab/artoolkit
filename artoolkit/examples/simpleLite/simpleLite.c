@@ -340,7 +340,7 @@ static void Idle(void)
 }
 
 //
-//	The function is called on events when the visibility of the
+//	This function is called on events when the visibility of the
 //	GLUT window changes (including when it first becomes visible).
 //
 static void Visibility(int visible)
@@ -353,7 +353,7 @@ static void Visibility(int visible)
 }
 
 //
-//	The function is called when the
+//	This function is called when the
 //	GLUT window is resized.
 //
 static void Reshape(int w, int h)
@@ -370,7 +370,7 @@ static void Reshape(int w, int h)
 }
 
 //
-// The function is called when the window needs redrawing.
+// This function is called when the window needs redrawing.
 //
 static void Display(void)
 {
