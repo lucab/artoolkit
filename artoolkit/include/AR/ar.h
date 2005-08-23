@@ -212,7 +212,7 @@ extern int      arMatchingPCAMode;
    Initialization
 */
 
-/** \fn int arInitCparam( ARParam *param )
+/**
 * \brief initialize camera parameters.
 *
 * set the camera parameters specified in the camera parameters structure 
@@ -225,7 +225,7 @@ extern int      arMatchingPCAMode;
 */
 int arInitCparam( ARParam *param );
 
-/** \fn int arLoadPatt( char *filename )
+/**
 * \brief load markers description from a file
 *
 * load the bitmap pattern specified in the file filename into the pattern
@@ -239,7 +239,7 @@ int arLoadPatt( const char *filename );
    Detection
 */
 
-/** \fn arDetectMarker( ARUint8 *dataPtr, int thresh, ARMarkerInfo **marker_info, int *marker_num )
+/**
 * \brief main function to detect the square markers in the video input frame.
 *
 * This function proceeds to thresholding, labeling, contour extraction and line corner estimation 
@@ -259,8 +259,7 @@ int arLoadPatt( const char *filename );
 int arDetectMarker( ARUint8 *dataPtr, int thresh,
                     ARMarkerInfo **marker_info, int *marker_num );
 
-/** \fn arDetectMarkerLite( ARUint8 *dataPtr, int thresh,
-                        ARMarkerInfo **marker_info, int *marker_num )
+/**
 * \brief main function to detect rapidly the square markers in the video input frame.
 *
 * this function is a simpler version of arDetectMarker that does not have the 
@@ -280,8 +279,7 @@ int arDetectMarker( ARUint8 *dataPtr, int thresh,
 int arDetectMarkerLite( ARUint8 *dataPtr, int thresh,
                         ARMarkerInfo **marker_info, int *marker_num );
 
-/** \fn arGetTransMat( ARMarkerInfo *marker_info,
-                      double center[2], double width, double conv[3][4] )
+/**
 * \brief compute camera position in function of detected markers.
 *
 * calculate the transformation between a detected marker and the real camera,
@@ -301,8 +299,7 @@ int arDetectMarkerLite( ARUint8 *dataPtr, int thresh,
 double arGetTransMat( ARMarkerInfo *marker_info,
                       double center[2], double width, double conv[3][4] );
 
-/** \fn arGetTransMatCont( ARMarkerInfo *marker_info, double prev_conv[3][4],
-                          double center[2], double width, double conv[3][4] )
+/**
 * \brief compute camera position in function of detected marker with an history function.
 *
 * calculate the transformation between a detected marker and the real camera,
@@ -336,7 +333,7 @@ double arGetTransMat5( double rot[3][3], double ppos2d[][2],
                        double ppos3d[][3], int num, double conv[3][4],
                        double *dist_factor, double cpara[3][4] );
 
-/** \fn int arFreePatt( int patt_no )
+/**
 * \brief remove a pattern from memory.
 *
 * desactivate a pattern and remove from memory. post-condition
@@ -346,7 +343,7 @@ double arGetTransMat5( double rot[3][3], double ppos2d[][2],
 */
 int arFreePatt( int patt_no );
 
-/** \fn int arActivatePatt( int pat_no )
+/**
 * \brief activate a pattern on the recognition procedure.
 *
 * Activate a pattern to be check during the template matching
@@ -356,7 +353,7 @@ int arFreePatt( int patt_no );
 */
 int arActivatePatt( int pat_no );
 
-/** \fn int arDeactivatePatt( int pat_no )
+/**
 * \brief desactivate a pattern on the recognition procedure.
 *
 * Desactivate a pattern for not be check during the template matching
@@ -366,8 +363,7 @@ int arActivatePatt( int pat_no );
 */
 int arDeactivatePatt( int pat_no );
 
-/** \fn int arSavePatt( ARUint8 *image,
-                ARMarkerInfo *marker_info, char *filename )
+/**
 * \brief save a marker.
 *
 * used in mk_patt to save a bitmap of the pattern of the currently detected marker.
@@ -385,7 +381,7 @@ int arSavePatt( ARUint8 *image,
     Utility
 */
 
-/** \fn int arUtilMatInv( double s[3][4], double d[3][4] )
+/**
 * \brief Inverse a non-square matrix.
 *
 * Inverse a matrix in a non homogeneous format. The matrix
@@ -397,7 +393,7 @@ int arSavePatt( ARUint8 *image,
 */
 int    arUtilMatInv( double s[3][4], double d[3][4] );
 
-/** \fn int arUtilMatMul( double s1[3][4], double s2[3][4], double d[3][4] )
+/**
 * \brief Multiplication of two matrix.
 *
 * This procedure do a multiplication matrix between s1 and s2 and return
@@ -410,7 +406,7 @@ int    arUtilMatInv( double s[3][4], double d[3][4] );
 */
 int    arUtilMatMul( double s1[3][4], double s2[3][4], double d[3][4] );
 
-/** \fn int arUtilMat2QuatPos( double m[3][4], double q[4], double p[3] )
+/**
 * \brief extract a quaternion/position of matrix.
 *
 * Extract a rotation (quaternion format) and a position (vector format) 
@@ -422,7 +418,7 @@ int    arUtilMatMul( double s1[3][4], double s2[3][4], double d[3][4] );
 */
 int    arUtilMat2QuatPos( double m[3][4], double q[4], double p[3] );
 
-/** \fn int arUtilQuatPos2Mat( double q[4], double p[3], double m[3][4] )
+/**
 * \brief create a matrix with a quaternion/position.
 *
 * Create a transformation matrix from a quaternion rotation and a vector translation.
@@ -433,7 +429,7 @@ int    arUtilMat2QuatPos( double m[3][4], double q[4], double p[3] );
 */
 int    arUtilQuatPos2Mat( double q[4], double p[3], double m[3][4] );
 
-/** \fn void arUtilTimer(void)
+/**
 * \brief get the time with the ARToolkit timer.
 * 
 * Give the time elapsed since the reset of the timer.
@@ -441,7 +437,7 @@ int    arUtilQuatPos2Mat( double q[4], double p[3], double m[3][4] );
 */
 double arUtilTimer(void);
 
-/** \fn void arUtilTimerReset(void)
+/**
 * \brief reset the internal timer of ARToolkit.
 *
 * Reset the internal timer used by ARToolKit.
@@ -449,7 +445,7 @@ double arUtilTimer(void);
 */
 void   arUtilTimerReset(void);
 
-/** \fn void arUtilSleep( int msec )
+/**
 * \brief sleep the actual thread.
 *
 * Sleep the actual thread.
@@ -461,9 +457,7 @@ void   arUtilSleep( int msec );
   Internal processing
 */
 
-/** \fn ARInt16 *arLabeling( ARUint8 *image, int thresh,
-                     int *label_num, int **area, double **pos, int **clip,
-                     int **label_ref )
+/**
 * \brief extracted connected component from image.
 *
 * Labeling the input image, i.e. extracted connected component from the 
@@ -481,7 +475,7 @@ ARInt16 *arLabeling( ARUint8 *image, int thresh,
                      int *label_num, int **area, double **pos, int **clip,
                      int **label_ref );
 
-/** \fn void arGetImgFeature( int *num, int **area, int **clip, double **pos )
+/**
 * \brief  XXXBK
 *
 *  XXXBK
@@ -492,10 +486,7 @@ ARInt16 *arLabeling( ARUint8 *image, int thresh,
 */
 void arGetImgFeature( int *num, int **area, int **clip, double **pos );
 
-/** \fn ARMarkerInfo2 *arDetectMarker2( ARInt16 *limage,
-                                int label_num, int *label_ref,
-                                int *warea, double *wpos, int *wclip,
-                                int area_max, int area_min, double factor, int *marker_num )
+/**
 * \brief   XXXBK
 *
 *   XXXBK
@@ -516,8 +507,7 @@ ARMarkerInfo2 *arDetectMarker2( ARInt16 *limage,
                                 int *warea, double *wpos, int *wclip,
                                 int area_max, int area_min, double factor, int *marker_num );
 
-/** \fn ARMarkerInfo *arGetMarkerInfo( ARUint8 *image,
-                               ARMarkerInfo2 *marker_info2, int *marker_num )
+/**
 * \brief information on 
 *
 *  XXXBK
@@ -529,8 +519,7 @@ ARMarkerInfo2 *arDetectMarker2( ARInt16 *limage,
 ARMarkerInfo *arGetMarkerInfo( ARUint8 *image,
                                ARMarkerInfo2 *marker_info2, int *marker_num );
 
-/** \fn int arGetCode( ARUint8 *image, int *x_coord, int *y_coord, int *vertex,
-               int *code, int *dir, double *cf )
+/**
 * \brief  XXXBK
 *
 *  XXXBK
@@ -546,8 +535,7 @@ ARMarkerInfo *arGetMarkerInfo( ARUint8 *image,
 int arGetCode( ARUint8 *image, int *x_coord, int *y_coord, int *vertex,
                int *code, int *dir, double *cf );
 
-/** \fn int arGetPatt( ARUint8 *image, int *x_coord, int *y_coord, int *vertex,
-               ARUint8 ext_pat[AR_PATT_SIZE_Y][AR_PATT_SIZE_X][3] )
+/**
 * \brief return a normalized pattern from a video image.
 *
 * This function return a normalized pattern from a video image. The
@@ -562,8 +550,7 @@ int arGetCode( ARUint8 *image, int *x_coord, int *y_coord, int *vertex,
 int arGetPatt( ARUint8 *image, int *x_coord, int *y_coord, int *vertex,
                ARUint8 ext_pat[AR_PATT_SIZE_Y][AR_PATT_SIZE_X][3] );
 
-/** \fn int arGetLine(int x_coord[], int y_coord[], int coord_num,
-              int vertex[], double line[4][3], double v[4][2])
+/**
 * \brief estimate a line from a list of point.
 *
 * Compute a linear regression from a list of point.
@@ -578,8 +565,7 @@ int arGetPatt( ARUint8 *image, int *x_coord, int *y_coord, int *vertex,
 int arGetLine(int x_coord[], int y_coord[], int coord_num,
               int vertex[], double line[4][3], double v[4][2]);
 
-/** \fn int arGetContour( ARInt16 *limage, int *label_ref,
-                  int label, int clip[4], ARMarkerInfo2 *marker_info2 )
+/**
 * \brief  XXXBK
 *
 *  XXXBK
@@ -593,8 +579,7 @@ int arGetLine(int x_coord[], int y_coord[], int coord_num,
 int arGetContour( ARInt16 *limage, int *label_ref,
                   int label, int clip[4], ARMarkerInfo2 *marker_info2 );
 
-/** \fn double arModifyMatrix( double rot[3][3], double trans[3], double cpara[3][4],
-                             double vertex[][3], double pos2d[][2], int num )
+/**
 * \brief  XXXBK
 *
 *  XXXBK
@@ -609,7 +594,7 @@ int arGetContour( ARInt16 *limage, int *label_ref,
 double arModifyMatrix( double rot[3][3], double trans[3], double cpara[3][4],
                              double vertex[][3], double pos2d[][2], int num );
 
-/** \fn int arGetAngle( double rot[3][3], double *wa, double *wb, double *wc )
+/**
 * \brief extract euler angle from a rotation matrix.
 *
 * Based on a matrix rotation representation, furnish the cprresponding euler angles.
@@ -621,7 +606,7 @@ double arModifyMatrix( double rot[3][3], double trans[3], double cpara[3][4],
 */
 int arGetAngle( double rot[3][3], double *wa, double *wb, double *wc );
 
-/** \fn int arGetRot( double a, double b, double c, double rot[3][3] )
+/**
 * \brief create a rotation matrix with euler angle.
 *
 * Based on a euler description, furnish a rotation matrix.
@@ -633,9 +618,7 @@ int arGetAngle( double rot[3][3], double *wa, double *wb, double *wc );
 */
 int arGetRot( double a, double b, double c, double rot[3][3] );
 
-/** \fn int arGetNewMatrix( double a, double b, double c,
-                    double trans[3], double trans2[3][4],
-                    double cpara[3][4], double ret[3][4] )
+/**
 * \brief XXXBK
 *
 * XXXBK
@@ -652,7 +635,7 @@ int arGetNewMatrix( double a, double b, double c,
                     double trans[3], double trans2[3][4],
                     double cpara[3][4], double ret[3][4] );
 
-/** \fn int arGetInitRot( ARMarkerInfo *marker_info, double cpara[3][4], double rot[3][3] )
+/**
 * \brief XXXBK
 *
 * XXXBK:initial of what ?

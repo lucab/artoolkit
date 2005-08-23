@@ -99,7 +99,7 @@ typedef struct {
 //	Public functions.
 // ============================================================================
 
-/** \fn ARMultiMarkerInfoT *arMultiReadConfigFile( char *filename )
+/**
 * \brief loading multi-markers description from a file
 *
 * Load a configuration file for multi-markers tracking. The configuration
@@ -110,8 +110,7 @@ typedef struct {
 */
 ARMultiMarkerInfoT *arMultiReadConfigFile( const char *filename );
 
-/** \fn double  arMultiGetTransMat(ARMarkerInfo *marker_info, int marker_num,
-                           ARMultiMarkerInfoT *config)
+/**
 * \brief compute camera position in function of the multi-marker patterns (based on detected markers)
 * 
 * calculate the transformation between the multi-marker patterns and the real camera. Based on 
@@ -125,7 +124,7 @@ ARMultiMarkerInfoT *arMultiReadConfigFile( const char *filename );
 double  arMultiGetTransMat(ARMarkerInfo *marker_info, int marker_num,
                            ARMultiMarkerInfoT *config);
 
-/** \fn int arMultiActivate( ARMultiMarkerInfoT *config )
+/**
 * \brief activate a multi-marker pattern on the recognition procedure.
 *
 * Activate a multi-marker for be checking during the template matching
@@ -135,7 +134,7 @@ double  arMultiGetTransMat(ARMarkerInfo *marker_info, int marker_num,
 */
 int arMultiActivate( ARMultiMarkerInfoT *config );
 
-/** \fn int arMultiDeactivate( ARMultiMarkerInfoT *config )
+/**
 * \brief Desactivate a multi-marker pattern on the recognition procedure.
 *
 * Desactivate a multi-marker for not be checking during the template matching
@@ -144,7 +143,8 @@ int arMultiActivate( ARMultiMarkerInfoT *config );
 * \return 0 if success, -1 if error
 */
 int arMultiDeactivate( ARMultiMarkerInfoT *config );
-/** \fn arMultiFreeConfig( ARMultiMarkerInfoT *config )
+
+/**
 * \brief remove a multi-marker pattern from memory.
 *
 * desactivate a pattern and remove it from memory. Post-condition
