@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+    "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html><head>
+    <title>Enumerations</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+ <meta name="generator" content="HeaderDoc">
+<style type="text/css"><!--a:link {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: small; color: #0000ff;}a:visited {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: small; color: #0000ff;}a:visited:hover {text-decoration: underline; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: small; color: #ff6600;}a:active {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: small; color: #ff6600;}a:hover {text-decoration: underline; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: small; color: #ff6600;}h4 {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: tiny; font-weight: bold;}body {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: 10pt;}--></style></head><body bgcolor="#ffffff">
+<h1><font face="Geneva,Arial,Helvtica">Enumerations</font></h1><br>
+<hr><!-- headerDoc=tag;  uid=//apple_ref/c/tag/AR_PIX_RGBA;  name=AR_PIX_RGBA -->
+<a name="//apple_ref/c/tag/AR_PIX_RGBA"></a>
+<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h3><a name="AR_PIX_RGBA">AR_PIX_RGBA</a></h3>
+</td></tr></table><hr><dl></dl><p>ARToolKit pixel-format specifiers.
+</p>
+<blockquote><pre><font class="keyword">enum</font> { 
+    <font class="var">AR_PIX_RGBA</font>, 
+    <font class="var">AR_PIX_ABGR</font>, 
+    <font class="var">AR_PIX_BGRA</font>, 
+    <font class="var">AR_PIX_ARGB</font>, 
+    <font class="var">AR_PIX_RGB</font>, 
+    <font class="var">AR_PIX_BGR</font>, 
+    <font class="var">AR_PIX_2vuy</font>, 
+    <font class="var">AR_PIX_yuvs</font>, 
+}; </pre></blockquote>
+<h5><font face="Lucida Grande,Helvetica,Arial">Constants</font></h5>
+<blockquote>
+<dl>
+<dt><a name="//apple_ref/c/econst/AR_PIX_RGBA"><code>AR_PIX_RGBA</code></a></dt><dd>Each pixel is represented by 32 bits. Eight bits per each Red, Green, Blue, and Alpha component.</dd>
+<dt><a name="//apple_ref/c/econst/AR_PIX_ABGR"><code>AR_PIX_ABGR</code></a></dt><dd>Each pixel is represented by 32 bits. Eight bits per each Alpha, Blue, Green, and Red component. This is the native 32 bit format for the SGI platform.</dd>
+<dt><a name="//apple_ref/c/econst/AR_PIX_BGRA"><code>AR_PIX_BGRA</code></a></dt><dd>Each pixel is represented by 32 bits. Eight bits per each Blue, Green, Red, and Alpha component. This is the native 32 bit format for the Win32 platform.</dd>
+<dt><a name="//apple_ref/c/econst/AR_PIX_ARGB"><code>AR_PIX_ARGB</code></a></dt><dd>Each pixel is represented by 32 bits. Eight bits per each Alpha, Red, Green, and Blue component. This is the native 32 bit format for the Mac platform.</dd>
+<dt><a name="//apple_ref/c/econst/AR_PIX_RGB"><code>AR_PIX_RGB</code></a></dt><dd>Each pixel is represented by 24 bits. Eight bits per each Red, Green, and Blue component. This is the native 24 bit format for the Mac platform.</dd>
+<dt><a name="//apple_ref/c/econst/AR_PIX_BGR"><code>AR_PIX_BGR</code></a></dt><dd>Each pixel is represented by 24 bits. Eight bits per each Blue, Red, and Green component. This is the native 24 bit format for the Win32 platform.</dd>
+<dt><a name="//apple_ref/c/econst/AR_PIX_2vuy"><code>AR_PIX_2vuy</code></a></dt><dd>8-bit 4:2:2 Component Y'CbCr format. Each 16 bit pixel is represented
+by an unsigned eight bit luminance component and two unsigned eight bit
+chroma components. Each pair of pixels shares a common set of chroma
+values. The components are ordered in memory; Cb, Y0, Cr, Y1. The
+luminance components have a range of [16, 235], while the chroma value
+has a range of [16, 240]. This is consistent with the CCIR601 spec.
+This format is fairly prevalent on both Mac and Win32 platforms.
+The equivalent Microsoft fourCC is 'UYVY'.</dd>
+<dt><a name="//apple_ref/c/econst/AR_PIX_yuvs"><code>AR_PIX_yuvs</code></a></dt><dd>8-bit 4:2:2 Component Y'CbCr format. Identical to the AR_PIX_2vuy except
+each 16 bit word has been byte swapped. This results in a component
+ordering of; Y0, Cb, Y1, Cr.
+This is most prevalent yuv 4:2:2 format on both Mac and Win32 platforms.
+The equivalent Microsoft fourCC is 'YUY2'.</dd>
+</dl>
+</blockquote>
+<dl><h5><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5><p>ARToolKit functions can accept pixel data in a variety of formats.
+This enumerations provides a set of constants you can use to request
+data in a particular pixel format from an ARToolKit function that
+returns data to you, or to specify that data you are providing to an
+ARToolKit function is in a particular pixel format.
+pixel
+</p>
+</dl>
+<p><p>&#169; 2003-2005 Philip Lamb
+ (Last Updated August 29, 2005)
+</p></body></html>
