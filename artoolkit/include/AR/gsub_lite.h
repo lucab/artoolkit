@@ -39,6 +39,13 @@
  * 
  */
 
+/**
+	\file gsub_lite.h
+	\brief A collection of useful OpenGL routines for ARToolKit.
+	\cond GSUB_LITE
+	\htmlinclude gsub_lite/index.html
+*/
+
 /*!
 	@header gsub_lite
 	@abstract A collection of useful OpenGL routines for ARToolKit.
@@ -536,5 +543,9 @@ int arglPixelFormatGet(ARGL_CONTEXT_SETTINGS_REF contextSettings, ARGL_PIX_FORMA
 #ifdef __cplusplus
 }
 #endif
+
+/**
+	\endcond
+ */
 
 #endif /* !__gsub_lite_h__ */
