@@ -17,49 +17,50 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *   -------------------------------------------------------------------------*/
 /**
-*  \file video.h
-*  \brief ARToolkit video subroutines.
-*
-*  This component furnishs a multi-platform video support for ARToolkit. 
-*  It provides access to hardware video input available on different machines, OS. 
-*  For each platform a specific sub-component have been implemented, unified in the
-*  same interface (with the prefix function name arVideoXXX).
-*
-*  The actual supported platforms (and the driver/library used) are:
-*  - Windows: with DirectShow (VFW obsolete).
-*  - Linux: with V4L, IEEE1394 Library.
-*  - Macintosh: with QuickTime 6.
-*  - SGI: with VL.
-*
-*  This component have two separated interfaces according to your videos input
-*  number:
-*  - one single alone camera: used the <b>arXXX</b> functions (XXX template name).
-*  - multiple camera: used the <b>ar2XXX</b> functions (XXX template name).
-*
-*  More information are available on <a href="video.html">the video page</a>.
-*
-*  \remark 
-* the arXXX uses a global variable and wrap all calls to ar2XXX functions
-* - WINDOWS: only one camera is supported.
-*
-*  History :
-*		modified by Thomas Pintaric (pintaric@ims.tuwien.ac.at) for adding
-*       a fully transparent DirectShow Driver.
-*
-*  \author Hirokazu Kato kato@sys.im.hiroshima-cu.ac.jp
-*  \author Atsishi Nakazawa nakazawa@inolab.sys.es.osaka-u.ac.jp
-*  \author Thomas Pintaric pintaric@ims.tuwien.ac.at
-*  \version 4.3b
-*  \date 03/02/02
-*
-*
-**/
-/*  --------------------------------------------------------------------------
-*   History : 
-*   Rev		Date		Who		Changes
- *	2.6.8	2004-07-20	PRL		Rewrite for ARToolKit 2.68.2
-*
-*----------------------------------------------------------------------------*/
+ *  \file video.h
+ *  \brief ARToolkit video subroutines.
+ *
+ *  This library provides multi-platform video input support for ARToolKit. 
+ *  It abstracts access to hardware video input available on different machines and
+ *  operating systems. 
+ *
+ *  The actual supported platforms (and the driver/library used) are:
+ *  - Windows: with Microsoft DirectShow (VFW obsolete).
+ *  - Linux: with Video4Linux library, IEEE1394 camera library, and DV camera library.
+ *  - Macintosh: with QuickTime.
+ *  - SGI: with VL.
+ *
+ *  This library provides two sets of functions, depending on whether your program
+ *  needs to use only one video stream, or more than one video stream. These
+ *  two sets are functionally identical.
+ *  - one camera: use the <b>arVideo*</b> functions.
+ *  - multiple cameras: use the <b>ar2Video*</b> functions.
+ *
+ *  More information on establishing video streams is available in the ARToolKit manual.
+ *
+ *  \remark The arVideo* functions maintain the current video stream in a global variable
+ *  and internally call the ar2Video* functions.
+ *
+ *  History :
+ *		modified by Thomas Pintaric (pintaric@ims.tuwien.ac.at) to add
+ *       a fully transparent DirectShow Driver.
+ *
+ *  \author Hirokazu Kato kato@sys.im.hiroshima-cu.ac.jp
+ *  \author Atsishi Nakazawa nakazawa@inolab.sys.es.osaka-u.ac.jp
+ *  \author Thomas Pintaric pintaric@ims.tuwien.ac.at (Windows DirectShow video support).
+ *  \author Philip Lamb phil@eden.net.nz (Macintosh Quicktime video support).
+ *  \version 4.3b
+ *  \date 03/02/02
+ *
+ *
+ */
+/* --------------------------------------------------------------------------
+ * History : 
+ * Rev		Date		Who		Changes
+ * 2.6.8	2004-07-20	PRL		Rewrite for ARToolKit 2.68.2
+ *
+ *----------------------------------------------------------------------------
+ */
 
 #ifndef AR_VIDEO_H
 #define AR_VIDEO_H
@@ -123,184 +124,206 @@ extern "C" {
 // ============================================================================
 
 /*
-mono-camera
+	mono-camera
 */
-
-/** \fn int arVideoDispOption( void )
-* \brief display the video option.
-*
-* According to your platform, output in the
-* standard console the video option available.
-* \return 0
-*/
+	
+/**
+ * \brief display the video option.
+ *
+ * The video configuration options vary by operating system and platform.
+ * This function outputs to the standard output the options available
+ * on the current OS and platform.
+ * \return 0
+ */
 AR_DLL_API  int				arVideoDispOption(void);
 
-/** \fn int arVideoOpen( char *config )
-* \brief open a video source.
-* 
-* this function open a video input path with the
-* driver (and device) present on your platform. 
-* According to your operating system and the
-* hardware the initialization will be different : a
-* generic string structure is used for this issue.
-* You can find all details in this <a href="videoconfig.html">
-* webpage</a>
-* \param config string of the selected video configuration.
-* \return 0 if successful, -1 if a video path couldn’t be opened
-*/	
+/**
+ * \brief open a video source.
+ * 
+ * This function opens a video input path with the
+ * driver (and device) present on your platform. 
+ * According to your operating system and the
+ * hardware the initialization will be different : a
+ * generic string structure is used for this issue.
+ * This function prepares the video stream for capture,
+ * but capture will not actually begin until arVideoCapStart
+ * is called.
+ *  More information on establishing video streams is available in the ARToolKit manual.
+ * \param config string of the selected video configuration.
+ * \return 0 if successful, -1 if a video path couldn't be opened
+ */	
 AR_DLL_API  int				arVideoOpen(char *config);
 
-/** \fn int arVideoClose( void )
-* \brief close the video source.
-* a function that needs to be called in order to shut down the video capture
-* \return 0 if shut down successfully, otherwise –1.
-*/
+/**
+ * \brief close the video source.
+ * After your application has finished using a video stream,
+ * this function must be called to close the link to the
+ * input source, and free resources associated with the
+ * capture operation.
+ * \return 0 if shut down successfully, otherwise -1.
+ */
 AR_DLL_API  int				arVideoClose(void);
 
-/** \fn int arVideoCapStart( void )
-* \brief start the capture of video.
-*
-* This function start the video capture routine. According
-* to the architecture can start a video thread, call a specific
-* run-time function in the driver.
-* \remark this function coupled with arVideoCapStop, can
-* be call many times in your program (reduce the CPU load
-* when they stop for long and critical operations)
-* \return 0 if successful, -1 if the capture can't be start
-*/
+/**
+ * \brief start the capture of video.
+ *
+ * This function starts the video capture routine.
+ * \remark On some operating systems, capture operations
+ * may run in a separate execution thread. This call starts that thread.
+ * \remark this function coupled with arVideoCapStop, can
+ * be call many times in your program (this may reduce the CPU load
+ * when video processing is stopped or for long and critical operations).
+ * \return 0 if successful, -1 if the capture couldn't be started.
+ */
 AR_DLL_API  int				arVideoCapStart(void);
 
-/** \fn int arVideoCapStop( void )
-* \brief stop the capture of video.
-*
-* This function stop the video capture routine. According
-* to the architecture can stop a video thread, call a specific
-* run-time function in the driver.
-* \remark this function coupled with arVideoCapStart, can
-* be call many times in your program (reduce the CPU load
-* when they stop for long and critical operations)
-* \return 0 if successful, -1 if the capture can't be stop
-*/
+/**
+ * \brief stop the capture of video.
+ *
+ * This function stops the video capture routine.
+ * \remark On some operating systems, capture operations
+ * may run in a separate execution thread. This call stops that thread.
+ * \remark this function coupled with arVideoCapStart, can
+ * be call many times in your program (this may reduce the CPU load
+ * when video processing is stopped or for long and critical operations).
+ * \return 0 if successful, -1 if the capture couldn't be stopped.
+ */
 AR_DLL_API  int				arVideoCapStop(void);
 
-/** \fn int arVideoCapNext( void )
-* \brief call for the next grabbed video frame.
-*
-* According to your platform, this function can
-* be have different effects. A call to the function
-* indicates that a new frame can be grabbed. The outcome
-* is you can't use more the last video frame. You need to
-* call this function after analysis the video image and
-* display it.
-* 
-* \remark if your video grabber is multithread, this
-* function do nothing since a buffer is still available.
-* \return 0 if successful, -1 if the next grabbed frame can't be start
-*/
+/**
+ * \brief call for the next grabbed video frame.
+ *
+ * This function should be called at least once per frame.
+ * It has several purposes, depending on the operating system.
+ * It allows the video driver to perform housekeeping tasks
+ * and also signals to the video grabber that your code
+ * has finished using the most recent video frame returned by
+ * arVideoGetImage(), and that the video driver may re-use the
+ * memory occupied by the frame.
+ * The effect of this call is operating-system dependent.
+ * The best place to call this function is immediately after
+ * you have finished displaying the current video frame, i.e.
+ * after calling arglDispImage() or argDispImage().
+ * 
+ * \remark On some operating systems, this function is a no-op.
+ * \return 0 if successful, -1 if the video driver encountered an error.
+ */
 AR_DLL_API  int				arVideoCapNext(void);
 
-/** \fn ARUint8 *arVideoGetImage( void )
-* \brief get the video image.
-*
-* This function return a buffer with a captured video image.
-* XXXBK : do we need to delete the pointed area ? 
-*         is the area still available in the next call ?
-* \return a pointer to the captured video frame, or NULL if a frame isn’t captured.
-*/
+/**
+ * \brief get the video image.
+ *
+ * This function returns a buffer with a captured video image.
+ * The returned data consists of a tightly-packed array of
+ * pixels, beginning with the first component of the leftmost
+ * pixel of the topmost row, and continuing with the remaining
+ * components of that pixel, followed by the remaining pixels
+ * in the topmost row, followed by the leftmost pixel of the
+ * second row, and so on.
+ * The arrangement of components of the pixels in the buffer is
+ * determined by the configuration string passed in to the driver
+ * at the time the video stream was opened. If no pixel format
+ * was specified in the configuration string, then an operating-
+ * system dependent default, defined in <AR/config.h> is used.
+ * The memory occupied by the pixel data is owned by the video
+ * driver and should not be freed by your program.
+ * The pixels in the buffer remain valid until the next call to
+ * arVideoCapNext, or the next call to arVideoGetImage which
+ * returns a non-NULL pointer, or any call to arVideoCapStop or
+ * arVideoClose.
+ * \return A pointer to the pixel data of the captured video frame,
+ * or NULL if no new pixel data was available at the time of calling.
+ */
 AR_DLL_API  ARUint8*		arVideoGetImage(void);
 
-/** \fn int arVideoInqSize( int *x, int *y )
-* \brief get the video image size.
-*
-* a function that returns the size of the captured video frame.
-* \param x a pointer to the length of the captured image
-* \param y a pointer to the width of the captured image
-* \return 0 if the dimensions are found successfully, otherwise –1
-*/
+/**
+ * \brief get the video image size, in pixels.
+ *
+ * This function returns the size of the captured video frame, in
+ * pixels.
+ * \param x a pointer to the length of the captured image
+ * \param y a pointer to the width of the captured image
+ * \return 0 if the dimensions are found successfully, otherwise -1
+ */
 AR_DLL_API  int				arVideoInqSize(int *x, int *y);
 
 /*
-multiple cameras
-*/
+	multiple cameras
+ */
 
-/** \fn int ar2VideoDispOption ( void )
-* \brief display the video option (multiple video inputs)
-*
-* idem of arVideoDispOption for multiple video sources.
-* \return 0
-*/
+/**
+ * \brief display the video option (multiple video inputs)
+ *
+ * Companion function to arVideoDispOption, for multiple video sources.
+ */
 AR_DLL_API  int				ar2VideoDispOption(void);
 
-/** \fn AR2VideoParamT  *ar2VideoOpen ( char *config )
-* \brief open a video source (multiple video inputs)
-*
-* idem of arVideoOpen for multiple video sources (the selected
-* source in argument).
-* \param config string of the selected video configuration.
-* \return 0 if successful, -1 if a video path couldn’t be opened
-*/
+/**
+ * \brief open a video source (multiple video inputs)
+ *
+ *  Companion function to arVideoOpen for multiple video sources.
+ *  This function can be called multiple times to open multiple
+ *  video streams. The maximum number of streams is dependent on
+ *  the operating system and the performance characteristics of
+ *  the host CPU and video capture infrastructure.
+ *
+ * \param config string of the selected video configuration.
+ * \return If the video path was successfully opened, this
+ * function returns a pointer to an AR2VideoParamT structure,
+ * an opaque structure which holds information and configuration
+ * for the video stream. This paramater should then be passed
+ * to other ar2Video* functions to specify which video stream
+ * is being operated upon. If the video path was not successfully
+ * opened, NULL will be returned.
+ s*/
 AR_DLL_API  AR2VideoParamT  *ar2VideoOpen(char *config);
 
-/** \fn int ar2VideoClose ( AR2VideoParamT *vid )
-* \brief close a video source (multiple video inputs)
-*
-* idem of arVideoClose for multiple video sources (the selected
-* source in argument).
-* \param vid a video handle structure for multi-camera grabbing
-* \return 0 if shut down successfully, otherwise –1.
-*/
+/**
+ * \brief close a video source (multiple video inputs)
+ *
+ * Companion function to arVideoClose for multiple video sources.
+ * \param vid a video handle structure for multi-camera grabbing.
+ */
 AR_DLL_API  int				ar2VideoClose(AR2VideoParamT *vid);
 
-/** \fn int ar2VideoCapStart (AR2VideoParamT *vid )
-* \brief start the capture of a video source (multiple video inputs)
-*
-* idem of arVideoCapStart for multiple video sources (the selected
-* source in argument).
-* \param vid a video handle structure for multi-camera grabbing
-* \return 0 if successful, -1 if the capture can't be start
-*/
+/**
+ * \brief start the capture of a video source (multiple video inputs)
+ *
+ * Companion function to arVideoCapStart for multiple video sources.
+ * \param vid a video handle structure for multi-camera grabbing
+ */
 AR_DLL_API  int				ar2VideoCapStart(AR2VideoParamT *vid);
 
-/** \fn int ar2VideoCapNext ( AR2VideoParamT *vid )
-* \brief call for the next grabbed video frame of a video source (multiple video inputs)
-*
-* idem of arVideoCapNext for multiple video sources (the selected
-* source in argument).
-* \param vid a video handle structure for multi-camera grabbing
-* \return 0 if successful, -1 if the next grabbed frame can't be start
-*/
+/**
+ * \brief call for the next grabbed video frame of a video source (multiple video inputs)
+ *
+ * Companion function to arVideoCapNext for multiple video sources.
+ * \param vid a video handle structure for multi-camera grabbing
+ */
 AR_DLL_API  int				ar2VideoCapNext(AR2VideoParamT *vid);
 
-/** \fn int ar2VideoCapStop ( AR2VideoParamT *vid )
-* \brief stop the capture of a video source (multiple video inputs)
-*
-* idem of arVideoCapStop for multiple video sources (the selected
-* source in argument).
-* \param vid a video handle structure for multi-camera grabbing
-* \return 0 if successful, -1 if the next grabbed frame can't be stop
-*/
+/**
+ * \brief stop the capture of a video source (multiple video inputs)
+ *
+ * Companion function to arVideoCapStop for multiple video sources.
+ * \param vid a video handle structure for multi-camera grabbing
+ */
 AR_DLL_API  int				ar2VideoCapStop(AR2VideoParamT *vid);
 
-/** \fn int ar2VideoGetImage ( AR2VideoParamT *vid )
-* \brief get a video image from a video source (multiple video inputs)
-*
-* idem of arVideoGetImage for multiple video sources (the selected
-* source in argument).
-* \param vid a video handle structure for multi-camera grabbing
-* \return a pointer to the captured video frame, or NULL if a frame isn’t captured.
-*/
+/**
+ * \brief get a video image from a video source (multiple video inputs)
+ *
+ * Companion function to arVideoGetImage for multiple video sources.
+ * \param vid a video handle structure for multi-camera grabbing
+ */
 AR_DLL_API  ARUint8			*ar2VideoGetImage(AR2VideoParamT *vid);
 
-/** \fn int ar2VideoInqSize ( AR2VideoParamT *vid, int *x,int *y )
-* \brief get the video image size of a video source (multiple video inputs)
-*
-* idem of arVideoInqSize for multiple video sources (the selected
-* source in argument).
-* \param vid a video handle structure for multi-camera grabbing
-* \param x a pointer to the length of the captured image
-* \param y a pointer to the width of the captured image
-* \return 0 if the dimensions are found successfully, otherwise –1
-*/
+/**
+ * \brief get the video image size of a video source (multiple video inputs)
+ *
+ * Companion function to arVideoInqSize for multiple video sources.
+ * \param vid a video handle structure for multi-camera grabbing
+ */
 AR_DLL_API  int				ar2VideoInqSize(AR2VideoParamT *vid, int *x, int *y);
 
 // Functions added for Studierstube/OpenTracker.
