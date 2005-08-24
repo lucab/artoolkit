@@ -148,8 +148,9 @@ AR_DLL_API  int				arVideoDispOption(void);
  * This function prepares the video stream for capture,
  * but capture will not actually begin until arVideoCapStart
  * is called.
- *  More information on establishing video streams is available in the ARToolKit manual.
  * \param config string of the selected video configuration.
+ * See the <a href="video/">video configuration documentation</a>
+ * for more information on this parameter.
  * \return 0 if successful, -1 if a video path couldn't be opened
  */	
 AR_DLL_API  int				arVideoOpen(char *config);
