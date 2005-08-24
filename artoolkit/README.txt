@@ -33,7 +33,7 @@ Building on Windows.
 --------------------
 
 Prerequisites:
- *  Microsoft Visual Studio .NET 2003 or Visual Studio 6.
+ *  Microsoft Visual Studio .NET 2003 or Visual Studio 6, or a free development environment such as Cygwin.
  *  DSVideoLib-0.0.8b-win32. Download from http://sf.net/projects/artoolkit.
  *  GLUT. Download from http://www.opengl.org/resources/libraries/glut.html.
  *  (Optional, for VRML renderer only) OpenVRML-0.14.3-win32. Download from http://sf.net/projects/artoolkit.
@@ -84,12 +84,12 @@ Building on Mac OS X.
 Prerequisites:
  *  Apple's Developer Tools. http://developer.apple.com
  *  Camera driver. Mac OS X 10.3 and later include an inbuilt IIDC and DV FireWire camera driver. USB camera drivers, and Firewire camera drivers for pre-10.3 systems can be obtained from ioXperts at http://www.ioxperts.com.
- *  (Optional, for VRML renderer only) Apple X11 and Fink. Download X11 from http://www.apple.com/downloads/macosx/apple/x11formacosx.html. Download Fink (and optionally, FinkCommander) from http://fink.sf.net.
+ *  (Optional, for VRML renderer only) Apple X11 and Fink. Install X11 off the Mac OS X install CD 3 or download an install disk image from http://www.apple.com/downloads/macosx/apple/x11formacosx.html. Download Fink (and optionally, FinkCommander) from http://fink.sourceforge.net/download/.
 
 Building using the XCode IDE:
 (1) Unpack the archive to a convenient location using StuffIt Expander, and open the ARToolKit.xproj.
 (2) Builds include a script target "Configure" which enables accelerated and rectangular texturing by default. If you wish to change these defaults, manually run the ./Configure script from Terminal as for a command-line build.
-(3) Executables are built into ARToolKit/bin. This must also be the working directory when the executables are run, but by default XCode runs executables with the working directory set to Build/. In order for the binaries to be able to be run from within XCode you will need to edit the "Working directory path" of each executable's XCode settings to the full path to ARToolKit/bin on your system.
+(3) Executables are built as bundled applications into ARToolKit/bin, with the Data/ directory copied into the application bundle so that they may be moved from this location to other locations.
 
 The VRML renderering library and example (libARvrml & simpleVRML) are optional builds:
 (4) Using FinkCommander, do a binary install of mozilla-dev, followed by an install of openvrml4-dev and openvrml-gl5-dev.
@@ -123,8 +123,9 @@ Changes in this release.
 - Mac OS X video driver: QuickTime 6.4 is now required by default. (Support for earlier versions can be enabled at compile-time). 
 - Mac OS X libARgsub and binaries which call it: fix for bug "GLUT Warning: glutInit being called a second time" by moving glutInit to main so that it is called before calling arVideoOpen.
 - Linux V4L video driver: Apply patch by Wayne Piekarski to auto-adjust video resolution.
-- Windows video driver: Uses updated (0.0.8b) DSVideoLib. Install of DirectX SDK, registering of filter no longer required.
+- Windows video driver: Uses updated (0.0.8b) DSVideoLib. Install of DirectX SDK, registering of filter no longer required. Many bug fixes.
 - gsub_lite: Added complete support for runtime selection of pixel format and rectangle/power-of-2 textures.
+- Mac OS X XCode builds are now bundled applications.
 
 Changes in earlier releases.
 ----------------------------
