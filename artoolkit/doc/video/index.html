@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>ARToolKit Video Library Configuration documentation</title>
+</head>
+<body>
+<h1>ARToolKit video configuration </h1>
+<p>When using ARToolKit to open a video stream, one of the following functions / 
+  code snippets is called:</p>
+<blockquote>
+  <p><code>arVideoOpen(char *vconf);</code></p>
+</blockquote>
+<p>or</p>
+<blockquote>
+  <p><code>AR2VideoParamT vid;<br>
+    vid = ar2VideoOpen(char *vconf);</code></p>
+</blockquote>
+<p>These functions take a single parameter, vconf, which is a character string.</p>
+<p>This character string encapsulates operating-system dependent directions as
+to how to find, open and configure the video stream.
+In order to assist you in determining a set of parameters, the functions
+<code>arVideoDispOption();</code>
+or
+<code>ar2VideoDispOption();</code>
+are designed to output some help text.
+
+The text is reproduced here for your convenience.</p>
+<p>Select an operating system / driver for which you wish to view the help text</p>
+<ul>
+  <li><a href="#VideoLinux1394Cam">VideoLinux1394Cam</a></li>
+  <li><a href="#VideoLinuxDVCam">VideoLinuxDVCam</a></li>
+  <li><a href="#VideoLinuxV4L">VideoLinuxV4L</a></li>
+  <li><a href="#VideoMacOSX">VideoMacOSX</a></li>
+  <li><a href="#VideoSGI">VideoSGI</a></li>
+  <li><a href="#VideoWin32DirectShow">VideoWin32DirectShow</a></li>
+</ul>
+<p>&nbsp; </p>
+<a class="anchor" name="VideoLinux1394Cam">
+<h2>VideoLinux1394Cam</h2>
+
+<pre>
+	ARVideo may be configured using one or more of the following options,
+    separated by a space:
+
+     -node=N
+        specifies detected node ID of a FireWire camera (-1: Any).
+     -card=N
+        specifies the FireWire adaptor id number (-1: Any).
+     -mode=[320x240_YUV422|640x480_RGB|640x480_YUV411]
+        specifies input image format.
+     -rate=N
+        specifies desired framerate of a FireWire camera. 
+        (1.875, 3.75, 7.5, 15, 30, 60)
+     -[name]=N  where name is brightness, iris, shutter, gain, saturation, gamma, sharpness
+        (value must be a legal value for this parameter - use coriander to find what they are
+</pre>
+    
+
+<a class="anchor" name="VideoLinuxDV">
+<h2>VideoLinuxDV
+  
+</h2>
+<pre>
+    ARVideo may be configured using one or more of the following options,
+    separated by a space:
+
+     -mode=[PAL|NTSC]
+        specifies TV signal mode.
+</pre>
+     
+     
+<a class="anchor" name="VideoLinuxV4L">
+<h2>VideoLinuxV4L
+  
+</h2>
+<pre>
+    ARVideo may be configured using one or more of the following options,
+    separated by a space:
+
+    DEVICE CONTROLS:
+     -dev=filepath
+        specifies device file.
+     -channel=N
+        specifies source channel.
+     -noadjust
+        prevent adjusting the width/height/channel if not suitable.
+     -width=N
+        specifies expected width of image.
+     -height=N
+        specifies expected height of image.
+     -palette=[RGB|YUV420P]
+        specifies the camera palette (WARNING:all are not supported on each camera !!).
+    IMAGE CONTROLS (WARNING: every options are not supported by all camera !!):
+     -brightness=N
+        specifies brightness. (0.0 <-> 1.0)
+     -contrast=N
+        specifies contrast. (0.0 <-> 1.0)
+     -saturation=N
+        specifies saturation (color). (0.0 <-> 1.0) (for color camera only)
+     -hue=N
+        specifies hue. (0.0 <-> 1.0) (for color camera only)
+     -whiteness=N
+        specifies whiteness. (0.0 <-> 1.0) (REMARK: gamma for some drivers, otherwise for greyscale camera only)
+     -color=N
+        specifies saturation (color). (0.0 <-> 1.0) (REMARK: obsolete !! use saturation control)
+
+    OPTION CONTROLS:
+     -mode=[PAL|NTSC|SECAM]
+        specifies TV signal mode (for tv/capture card).
+</pre>
+    
+
+<a class="anchor" name="VideoMacOSX">
+<h2>VideoMacOSX
+  
+</h2>
+<pre>
+    ARVideo may be configured using one or more of the following options,
+    separated by a space:
+
+     -nodialog
+        Don't display video settings dialog.
+     -width=w
+        Scale camera native image to width w.
+     -height=h
+        Scale camera native image to height h.
+     -fps
+        Overlay camera frame counter on image.
+     -grabber=n
+        With multiple QuickTime video grabber components installed,
+	    use component n (default n=1).
+	    N.B. It is NOT necessary to use this option if you have installed
+	    more than one video input device (e.g. two cameras) as the default
+	    QuickTime grabber can manage multiple video channels.
+	 -pixelformat=cccc
+        Return images with pixels in format cccc, where cccc is either a
+        numeric pixel format number or a valid 4-character-code for a
+        pixel format. The following values are supported: 
+        32, BGRA, RGBA, ABGR, 24, 24BG, 2vuy, yuvs.
+        (See http://developer.apple.com/quicktime/icefloe/dispatch020.html.)
+</pre>
+    
+
+<a class="anchor" name="VideoSGI">
+<h2>VideoSGI
+  
+</h2>
+<pre>
+    ARVideo may be configured using one or more of the following options,
+    separated by a space:
+    
+     -size=[FULL/HALF]
+        specifies size of image.
+     -device=N
+        specifies device number.
+     -bufsize=N
+        specifies video buffer size.
+</pre>
+
+
+<a class="anchor" name="VideoWin32DirectShow">
+<h2>VideoWin32DirectShow
+  
+</h2>
+<pre>
+	parameter is a file name (e.g. 'config.XML') conforming to the DSVideoLib XML Schema (DsVideoLib.xsd).
+</pre>
+
+<p>(You will need to use an <a href="http://www.w3.org/XML/Schema">XML Schema viewer</a> to view the file &quot;DsVideoLib.xsd&quot; inside the DSVL-0.0.8b package.)</p>
+</body>
+</html>
