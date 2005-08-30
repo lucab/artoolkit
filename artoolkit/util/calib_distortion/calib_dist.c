@@ -144,7 +144,7 @@ static void init(int argc, char **argv)
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
     glutInitWindowSize(xsize, ysize);
     glutInitWindowPosition(100,100);
-    win = glutCreateWindow("Calib distotion param");
+    win = glutCreateWindow("Calib distortion param");
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -772,17 +772,17 @@ static void     print_comment( int status )
         case 1:
            printf("Mouse Button\n");
            printf(" Left   : Rubber-bounding of feature. (%d x %d)\n", patt.h_num, patt.v_num);
-           printf(" Right  : Cansel rubber-bounding & Retry grabbing.\n");
+           printf(" Right  : Cancel rubber-bounding & retry grabbing.\n");
            break;
         case 2:
            printf("Mouse Button\n");
            printf(" Left   : Save feature position.\n");
-           printf(" Right  : Discard & Retry grabbing.\n");
+           printf(" Right  : Discard & retry grabbing.\n");
            break;
         case 4:
            printf("Mouse Button\n");
            printf(" Left   : Grab next image.\n");
-           printf(" Right  : Calc parameter.\n");
+           printf(" Right  : Calculate parameter.\n");
            break;
         case 5:
            printf("Mouse Button\n");
@@ -793,7 +793,7 @@ static void     print_comment( int status )
         case 6:
            printf("Mouse Button\n");
            printf(" Left   :\n");
-           printf(" Right  : Calc parameter.\n");
+           printf(" Right  : Calculate parameter.\n");
            printf("   %d/%d.\n", check_num+1, patt.loop_num);
            break;
     }
