@@ -1620,12 +1620,20 @@ int ar2VideoCapStart(AR2VideoParamT *vid)
 #endif // AR_VIDEO_SUPPORT_OLD_QUICKTIME
 	
     vid->status = 0;
-	
-	if (err = vdgStartGrabbing(vid->pVdg, vid->scaleMatrixPtr)) {
-		fprintf(stderr, "vdgStartGrabbing err=%ld\n", err);
-		err_i = (int)err;
+	if (!vid->pVdg->isPreflighted) {
+		if (err = vdgPreflightGrabbing(vid->pVdg)) {
+			fprintf(stderr, "ar2VideoCapStart(): vdgPreflightGrabbing err=%ld\n", err);
+			err_i = (int)err;
+		}		
 	}
-
+	
+	if (err_i == 0) {
+		if (err = vdgStartGrabbing(vid->pVdg, vid->scaleMatrixPtr)) {
+			fprintf(stderr, "ar2VideoCapStart(): vdgStartGrabbing err=%ld\n", err);
+			err_i = (int)err;
+		}
+	}
+	
 #ifdef AR_VIDEO_SUPPORT_OLD_QUICKTIME
 	// Release our hold on the QuickTime toolbox.
 	if (weLocked) {
@@ -1675,6 +1683,7 @@ int ar2VideoCapStop(AR2VideoParamT *vid)
 			return (err_i);
 		}
 		vid->threadRunning = 0;
+		vid->thread = NULL;
 		
 		// Exit status is ((exit_status_p == AR_PTHREAD_CANCELLED) ? 0 : *(ERROR_t *)(exit_status_p))
 	}
@@ -1696,6 +1705,8 @@ int ar2VideoCapStop(AR2VideoParamT *vid)
 			fprintf(stderr, "vdgStopGrabbing err=%ld\n", err);
 			err_i = (int)err;
 		}
+		vid->status = 0;
+		vid->pVdg->isPreflighted = 0;
 
 #ifdef AR_VIDEO_SUPPORT_OLD_QUICKTIME
 		// Release our hold on the QuickTime toolbox.
