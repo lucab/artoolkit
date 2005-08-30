@@ -63,9 +63,9 @@ char			*vconf = "-width=640 -height=480";
 char			*vconf = "";
 #endif
 
-int             xsize;
-int             ysize;
-unsigned char   *image;
+int             gXsize;
+int             gYsize;
+unsigned char   *gImage;
 int             refresh;
 
 
@@ -135,21 +135,21 @@ static void init(void)
     printf("                        : Y = ");
     scanf("%lf", &dist_factor[1]);
     while( getchar()!='\n' );
-    printf("Input distotion retio: F = ");
+    printf("Input distortion ratio: F = ");
     scanf("%lf", &dist_factor[2]);
     while( getchar()!='\n' );
-    printf("Input Size Adjustment factor: S = ");
+    printf("Input size adjustment factor: S = ");
     scanf("%lf", &dist_factor[3]);
     while( getchar()!='\n' );
 
     initLineModel( &line_num, &loop_num, line_mode, inter_coord );
 
     if( arVideoOpen( vconf ) < 0 ) exit(0);
-    if( arVideoInqSize(&xsize, &ysize) < 0 ) exit(0);
-    printf("Image size (x,y) = (%d,%d)\n", xsize, ysize);
+    if( arVideoInqSize(&gXsize, &gYsize) < 0 ) exit(0);
+    printf("Image size (x,y) = (%d,%d)\n", gXsize, gYsize);
 
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
-    glutInitWindowSize(xsize, ysize);
+    glutInitWindowSize(gXsize, gYsize);
     glutInitWindowPosition(100,100);
     win = glutCreateWindow("Camera calibration");
 
@@ -157,8 +157,8 @@ static void init(void)
     glLoadIdentity();
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(0, xsize, 0, ysize, -1.0, 1.0);
-    glViewport(0, 0, xsize, ysize);
+    glOrtho(0, gXsize, 0, gYsize, -1.0, 1.0);
+    glViewport(0, 0, gXsize, gYsize);
 
     glPixelZoom( (GLfloat)1.0, (GLfloat)-1.0);
     glClearColor( 0.0, 0.0, 0.0, 0.0 );
@@ -166,8 +166,8 @@ static void init(void)
     glutSwapBuffers();
     glClear(GL_COLOR_BUFFER_BIT);
 
-    param.xsize = xsize;
-    param.ysize = ysize;
+    param.xsize = gXsize;
+    param.ysize = gYsize;
     param.dist_factor[0] = dist_factor[0];
     param.dist_factor[1] = dist_factor[1];
     param.dist_factor[2] = dist_factor[2];
@@ -188,23 +188,23 @@ static void init(void)
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
     glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL );
-    if( xsize > 512 ) {
+    if( gXsize > 512 ) {
         tex1Xsize1 = 512;
         tex1Xsize2 = 1;
-        while( tex1Xsize2 < xsize - tex1Xsize1 ) tex1Xsize2 *= 2;
+        while( tex1Xsize2 < gXsize - tex1Xsize1 ) tex1Xsize2 *= 2;
     }
     else {
         tex1Xsize1 = 1;
-        while( tex1Xsize1 < xsize ) tex1Xsize1 *= 2;
+        while( tex1Xsize1 < gXsize ) tex1Xsize1 *= 2;
     }
     tex1Ysize  = 1;
-    while( tex1Ysize < ysize ) tex1Ysize *= 2;
+    while( tex1Ysize < gYsize ) tex1Ysize *= 2;
 
-    image = (unsigned char *)malloc( xsize*tex1Ysize*AR_PIX_SIZE );
-    if( image == NULL ) {printf("malloc error!!\n"); exit(0);}
+    gImage = (unsigned char *)malloc( gXsize*tex1Ysize*AR_PIX_SIZE );
+    if( gImage == NULL ) {printf("malloc error!!\n"); exit(0);}
 /*
-    image = (unsigned char *)malloc( xsize*ysize*AR_PIX_SIZE );
-    if( image == NULL ) {printf("malloc error!!\n"); exit(0);}
+    gImage = (unsigned char *)malloc( gXsize*gYsize*AR_PIX_SIZE );
+    if( gImage == NULL ) {printf("malloc error!!\n"); exit(0);}
 */
 }
 
@@ -224,11 +224,11 @@ static void mouse(int button, int state, int x, int y)
         line_no = 0;
         if( line_mode[line_no] == L_HORIZONTAL ) {
             theta  = 90;
-            radius = ysize/2;
+            radius = gYsize/2;
         }
         else {
             theta  = 0;
-            radius = xsize/2;
+            radius = gXsize/2;
         }
     }
 }
@@ -262,7 +262,7 @@ static void keyboard(unsigned char key, int x, int y)
                     }
                     else {
                         theta  = 90;
-                        radius = ysize/2;
+                        radius = gYsize/2;
                     }
                 }
                 else {
@@ -271,7 +271,7 @@ static void keyboard(unsigned char key, int x, int y)
                     }
                     else {
                         theta  = 0;
-                        radius = xsize/2;
+                        radius = gXsize/2;
                     }
                 }
             }
@@ -381,13 +381,13 @@ static void dispImage( void )
             return;
         }
         p1 = dataPtr;
-        p2 = image;
-        for( i = 0; i < xsize*ysize*AR_PIX_SIZE; i++ ) *(p2++) = *(p1++);
+        p2 = gImage;
+        for( i = 0; i < gXsize*gYsize*AR_PIX_SIZE; i++ ) *(p2++) = *(p1++);
         arVideoCapNext();
 
         glClearColor( 0.0, 0.0, 0.0, 0.0 );
         glClear(GL_COLOR_BUFFER_BIT);
-        dispImage2( image );
+        dispImage2( gImage );
         glutSwapBuffers();
     }
     else {
@@ -399,7 +399,7 @@ static void dispImage( void )
 
         glClearColor( 0.0, 0.0, 0.0, 0.0 );
         glClear(GL_COLOR_BUFFER_BIT);
-        dispImage2( image );
+        dispImage2( gImage );
         drawPrevLine();
         drawNextLine();
         glutSwapBuffers();
@@ -429,7 +429,7 @@ static void drawNextLine(void)
 
     if( cos_theta != 0 ) {
         x1 = radius / cos_theta;
-        x2 = (radius - (ysize-1)*sin_theta) / cos_theta;
+        x2 = (radius - (gYsize-1)*sin_theta) / cos_theta;
     }
     else {
         x1 = x2 = -1.0;
@@ -437,48 +437,48 @@ static void drawNextLine(void)
 
     if( sin_theta != 0 ) {
         y1 = radius / sin_theta;
-        y2 = (radius - (xsize-1)*cos_theta) / sin_theta;
+        y2 = (radius - (gXsize-1)*cos_theta) / sin_theta;
     }
     else {
         y1 = y2 = -1.0;
     }
 
     ey = -1;
-    if( x1 >= 0 && x1 <= xsize-1 ) {
+    if( x1 >= 0 && x1 <= gXsize-1 ) {
          sx = x1;
          sy = 0;
-         if( x2 >= 0 && x2 <= xsize-1 ) {
+         if( x2 >= 0 && x2 <= gXsize-1 ) {
              ex = x2;
-             ey = ysize-1;
+             ey = gYsize-1;
          }
-         else if( y1 >= 0 && y1 <= ysize-1 ) {
+         else if( y1 >= 0 && y1 <= gYsize-1 ) {
              ex = 0;
              ey = y1;
          }
-         else if( y2 >= 0 && y2 <= ysize-1 ) {
-             ex = xsize-1;
+         else if( y2 >= 0 && y2 <= gYsize-1 ) {
+             ex = gXsize-1;
              ey = y2;
          }
          else printf("???\n");
     }
-    else if( y1 >= 0 && y1 <= ysize-1 ) {
+    else if( y1 >= 0 && y1 <= gYsize-1 ) {
          sx = 0;
          sy = y1;
-         if( x2 >= 0 && x2 <= xsize-1 ) {
+         if( x2 >= 0 && x2 <= gXsize-1 ) {
              ex = x2;
-             ey = ysize-1;
+             ey = gYsize-1;
          }
-         else if( y2 >= 0 && y2 <= ysize-1 ) {
-             ex = xsize-1;
+         else if( y2 >= 0 && y2 <= gYsize-1 ) {
+             ex = gXsize-1;
              ey = y2;
          }
          else printf("???\n");
     }
-    else if( x2 >= 0 && x2 <= xsize-1 ) {
+    else if( x2 >= 0 && x2 <= gXsize-1 ) {
          sx = x2;
-         sy = ysize-1;
-         if( y2 >= 0 && y2 <= ysize-1 ) {
-             ex = xsize-1;
+         sy = gYsize-1;
+         if( y2 >= 0 && y2 <= gYsize-1 ) {
+             ex = gXsize-1;
              ey = y2;
          }
          else printf("???\n");
@@ -504,21 +504,21 @@ static void draw_warp_line( double sx, double ex, double sy, double ey )
     glLineWidth( 1.0 );
     glBegin(GL_LINE_STRIP);
     if( a*a >= b*b ) {
-        for( i = -20; i <= ysize+20; i+=10 ) {
+        for( i = -20; i <= gYsize+20; i+=10 ) {
             x = -(b*i + c)/a;
             y = i;
 
             arParamIdeal2Observ( dist_factor, x, y, &x1, &y1 );
-            glVertex2f( x1, ysize-1-y1 );
+            glVertex2f( x1, gYsize-1-y1 );
         }
     }
     else {
-        for( i = -20; i <= xsize+20; i+=10 ) {
+        for( i = -20; i <= gXsize+20; i+=10 ) {
             x = i;
             y = -(a*i + c)/b;
 
             arParamIdeal2Observ( dist_factor, x, y, &x1, &y1 );
-            glVertex2f( x1, ysize-1-y1 );
+            glVertex2f( x1, gYsize-1-y1 );
         }
     }
     glEnd();
@@ -598,33 +598,33 @@ static void dispImage2( ARUint8 *pimage )
         float    sx, sy;
 
         sx = 0;
-        sy = ysize - 0.5;
+        sy = gYsize - 0.5;
         glPixelZoom( 1.0, -1.0);
         glRasterPos3i( sx, sy, 0 );
 
 #if defined(AR_PIX_FORMAT_ARGB)
-        glDrawPixels( xsize, ysize, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, pimage );
+        glDrawPixels( gXsize, gYsize, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, pimage );
 #elif defined(AR_PIX_FORMAT_ABGR)
-        glDrawPixels( xsize, ysize, GL_ABGR, GL_UNSIGNED_BYTE, pimage );
+        glDrawPixels( gXsize, gYsize, GL_ABGR, GL_UNSIGNED_BYTE, pimage );
 #elif defined(AR_PIX_FORMAT_BGRA)
-        glDrawPixels( xsize, ysize, GL_BGRA, GL_UNSIGNED_BYTE, pimage );
+        glDrawPixels( gXsize, gYsize, GL_BGRA, GL_UNSIGNED_BYTE, pimage );
 #elif defined(AR_PIX_FORMAT_BGR)
-        glDrawPixels( xsize, ysize, GL_BGR, GL_UNSIGNED_BYTE, pimage );
+        glDrawPixels( gXsize, gYsize, GL_BGR, GL_UNSIGNED_BYTE, pimage );
 #elif defined(AR_PIX_FORMAT_RGB)
-        glDrawPixels( xsize, ysize, GL_RGB, GL_UNSIGNED_BYTE, pimage );
+        glDrawPixels( gXsize, gYsize, GL_RGB, GL_UNSIGNED_BYTE, pimage );
 #elif defined(AR_PIX_FORMAT_RGBA)
-        glDrawPixels( xsize, ysize, GL_RGBA, GL_UNSIGNED_BYTE, pimage );
+        glDrawPixels( gXsize, gYsize, GL_RGBA, GL_UNSIGNED_BYTE, pimage );
 #elif defined(AR_PIX_FORMAT_2vuy)
-		glDrawPixels( xsize, ysize, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_REV_APPLE, pimage );
+		glDrawPixels( gXsize, gYsize, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_REV_APPLE, pimage );
 #elif defined(AR_PIX_FORMAT_yuvs)
-		glDrawPixels( xsize, ysize, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, pimage );
+		glDrawPixels( gXsize, gYsize, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, pimage );
 #else
 #  error Unknown pixel format defined in config.h
 #endif
     }
     else {
         glDisable( GL_DEPTH_TEST );
-        if( xsize > tex1Xsize1 ) dispImageTex1( pimage );
+        if( gXsize > tex1Xsize1 ) dispImageTex1( pimage );
          else                    dispImageTex2( pimage );
     }
 }
@@ -639,7 +639,7 @@ static void dispImageTex1( unsigned char *pimage )
     glLoadIdentity();
     glMatrixMode(GL_MODELVIEW);
 
-    glPixelStorei( GL_UNPACK_ROW_LENGTH, xsize );
+    glPixelStorei( GL_UNPACK_ROW_LENGTH, gXsize );
 
     glBindTexture( GL_TEXTURE_2D, glid[0] );
 #if defined(AR_PIX_FORMAT_ARGB)
@@ -662,11 +662,11 @@ static void dispImageTex1( unsigned char *pimage )
 #  error Unknown pixel format defined in config.h
 #endif
     tx = 1.0;
-    ty = (double)ysize / (double)tex1Ysize;
+    ty = (double)gYsize / (double)tex1Ysize;
     sx = 0;
-    sy = ysize;
+    sy = gYsize;
     ex = sx + tex1Xsize1;
-    ey = sy - ysize;
+    ey = sy - gYsize;
     z = 1.0;
     glBegin(GL_QUADS );
       glTexCoord2f( 0.0, 0.0 ); glVertex3f( sx, sy, z );
@@ -695,12 +695,12 @@ static void dispImageTex1( unsigned char *pimage )
 #else
 #  error Unknown pixel format defined in config.h
 #endif
-    tx = (double)(xsize-tex1Xsize1) / (double)tex1Xsize2;
-    ty = (double)ysize / (double)tex1Ysize;
+    tx = (double)(gXsize-tex1Xsize1) / (double)tex1Xsize2;
+    ty = (double)gYsize / (double)tex1Ysize;
     sx = tex1Xsize1;
-    sy = ysize;
+    sy = gYsize;
     ex = sx + tex1Xsize2;
-    ey = sy - ysize;
+    ey = sy - gYsize;
     z = 1.0;
     glBegin(GL_QUADS );
       glTexCoord2f( 0.0, 0.0 ); glVertex3f( sx, sy, z );
@@ -724,7 +724,7 @@ static void dispImageTex2( unsigned char *pimage )
     glLoadIdentity();
     glMatrixMode(GL_MODELVIEW);
 
-    glPixelStorei( GL_UNPACK_ROW_LENGTH, xsize );
+    glPixelStorei( GL_UNPACK_ROW_LENGTH, gXsize );
 
     glBindTexture( GL_TEXTURE_2D, glid[0] );
 #if defined(AR_PIX_FORMAT_ARGB)
@@ -746,12 +746,12 @@ static void dispImageTex2( unsigned char *pimage )
 #else
 #  error Unknown pixel format defined in config.h
 #endif
-    tx = (double)xsize / (double)tex1Xsize1;
-    ty = (double)ysize / (double)tex1Ysize;
+    tx = (double)gXsize / (double)tex1Xsize1;
+    ty = (double)gYsize / (double)tex1Ysize;
     sx = 0;
-    sy = ysize;
-    ex = sx + xsize;
-    ey = sy - ysize;
+    sy = gYsize;
+    ex = sx + gXsize;
+    ey = sy - gYsize;
     z = 1.0;
     glBegin(GL_QUADS );
       glTexCoord2f( 0.0, 0.0 ); glVertex3f( sx, sy, z );
