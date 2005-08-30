@@ -33,7 +33,12 @@ The text is reproduced here for your convenience.</p>
   <li><a href="#VideoLinuxV4L">VideoLinuxV4L</a></li>
   <li><a href="#VideoMacOSX">VideoMacOSX</a></li>
   <li><a href="#VideoSGI">VideoSGI</a></li>
-  <li><a href="#VideoWin32DirectShow">VideoWin32DirectShow</a></li>
+  <li><a href="#VideoWin32DirectShow">VideoWin32DirectShow</a>
+    <ul>
+      <li><a href="#VideoWin32DirectShow271">ARToolKit versions 2.71 and later</a></li>
+      <li><a href="#VideoWin32DirectShow265">ARToolKit versions 2.65 to 2.70.1</a></li>
+    </ul>
+  </li>
 </ul>
 <p>&nbsp; </p>
 <a class="anchor" name="VideoLinux1394Cam">
@@ -160,13 +165,128 @@ The text is reproduced here for your convenience.</p>
 
 
 <a class="anchor" name="VideoWin32DirectShow">
-<h2>VideoWin32DirectShow
-  
-</h2>
-<pre>
-	parameter is a file name (e.g. 'config.XML') conforming to the DSVideoLib XML Schema (DsVideoLib.xsd).
-</pre>
+<h2>VideoWin32DirectShow</h2>
+<a class="anchor" name="VideoWin32DirectShow271">
+<h3>ARToolKit versions 2.71 and later </h3>
+<p>In ARToolKit 2.71 and later, the video configuration is specified in an XML file, conforming to the DSVideoLib XML Schema. This schema is documented in the file &quot;DsVideoLib.xsd&quot; inside the DSVL-0.0.8b package. You can use an <a href="http://www.w3.org/XML/Schema">XML Schema viewer</a> to view the schema file, and a text editor or XML editor to edit your own configuration file.</p>
+<p>The pathname of the configuration file is then specified in the video configuration string. </p>
+<blockquote><pre>
+parameter is a file name (e.g. 'config.XML') conforming to the DSVideoLib XML Schema (DsVideoLib.xsd).
+</pre></blockquote>
+<a class="anchor" name="VideoWin32DirectShow265">
+<h3>ARToolKit versions 2.65 to 2.70.1</h3>
+<blockquote>
+  <pre>
+parameter format is either NULL or a list of tokens, separated by commas ","
 
-<p>(You will need to use an <a href="http://www.w3.org/XML/Schema">XML Schema viewer</a> to view the file &quot;DsVideoLib.xsd&quot; inside the DSVL-0.0.8b package.)</p>
+BINARY TOKENS:
+--------------
+flipH     : flip image horizontally (WARNING: non-optimal performance)
+flipV     : flip image vertically (WARNING: non-optimal performance)
+showDlg   : displays either WDM capture filter's property page or
+            MSDV decoder format dialog (depending on source media type).
+            only applies to WDM_CAP, will be ignored for AVI_FILE
+loopAVI   : continuously loops through an AVI file (applies only to AVI_FILE)
+noClock   : does not use a Reference Clock to synchronize samples;
+            use this flag for offline post-processing (applies only to AVI_FILE)
+renderSec : render secondary streams (applies only to AVI_FILE)
+            An AVI file can contain an arbitrary number of multiplexed A/V substreams,
+            usually there are at most 2 substreams (1st: video, 2nd: audio).
+            the AVI_FILE input module will only try to render stream 0x00 (assuming that
+            it's video) and ignore the remaning substreams.
+            Use this flag to force IGraphBuilder->Render(IPin*) calls on substreams 1..n
+            DO NOT SET this flag if your AVI file contains more than one video stream
+
+PARAMETRIZED TOKENS:
+--------------------
+inputDevice=? : supported parameters: 
+                "WDM_CAP"  (WDM_VIDEO_CAPTURE_FILTER) use the DirectShow WDM wrapper
+                           to obtain live video input from a streaming capture device
+                           such as a IEEE 1394 DV camera or USB webcam.
+                           OPTIONAL: set deviceName=? and/or ieee1394id=? for better
+                                     control over the choice of suitable WDM drivers
+                "AVI_FILE" (ASYNC_FILE_INPUT_FILTER) use an Asynchronous File Input
+                           Filter to read &amp; decode AVI video data
+                           NOTE: be sure to specify the input file name by pointing
+                                 fileName=? to a valid AVI file.
+
+                EXAMPLE: "inputDevive=WDM_CAP", or "inputDevice=AVI_FILE"
+                DEFAULT: "WDM_CAP" will be selected if you omit this token
+
+videoWidth=?  : preferred video width, EXAMPLE: "videoWidth=720"
+                only applies to WDM_CAP, will be ignored for AVI_FILE
+videoHeight=? : preferred video height, EXAMPLE: "videoHeight=576"
+                only applies to WDM_CAP, will be ignored for AVI_FILE
+
+pixelFormat=? : internal pixel format (see PixelFormat.h for supported types)
+                PERFORMANCE WARNING: Be sure to match your IDirect3DTexture/OpenGL texture
+                                     formats to whatever you specify here, i.e. use
+                                     PXtoOpenGL(format), PXtoD3D(format) for creating your
+                                     textures! (see PixelFormat.h for details)
+                EXAMPLE: "pixelFormat=PIXELFORMAT_RGB32"
+                NOTE: if you omit the pixelFormat=? token, the global
+                constant (default_PIXELFORMAT, usually PIXELFORMAT_RGB32)
+                will be selected.
+
+friendlyName=? : only applies to WDM_CAP, will be IGNORED if "inputDevice=WDM_CAP" is not set.
+                Used to select a preferred WDM device. WILL BE IGNORED IF deviceName=? IS SET.");
+                (WARNING: WDM "friendly  names" are locale-dependent), i.e. try to match substring &lt;?&gt;
+                with  the "friendly names" of enumerated DirectShow  WDM wrappers (ksproxy.ax).
+                EXAMPLE: "friendlyName=Microsoft DV Camera" for IEEE1394 DV devices
+                         "friendlyName=QuickCam" for Logitech QuickCam
+
+deviceName=? :  only applies to WDM_CAP, will be IGNORED if "inputDevice=WDM_CAP" is not set.
+                Used to select a preferred WDM device.  WILL ALWAYS WILL OVERRIDE friendlyName=?
+                i.e. try to match substring &lt;?&gt; with the "device  names" of enumerated DirectShow
+                WDM wrappers (ksproxy.ax).
+                Device names look like: "@device:*:{860BB310-5D01-11d0-BD3B-00A0C911CE86}
+                Use GraphEdit (part  of the DirectX SDK, under \DXSDK\bin\DxUtils\graphedt.exe)
+                to figure out your  camera's device name.
+                EXAMPLE: "deviceName=1394#unibrain&amp;fire-i_1.2#4510000061431408
+
+fileName=?    : only applies to AVI_FILE, will be IGNORED if "inputDevice=AVI_FILE" is not set.
+                input file name, if just use a file's name (without its full path), the WIN32
+                API fuction SearchPath() (Winbase.h) will be used to locate the file.
+                EXAMPLE: "fileName=C:\Some Directory\Another Directory\Video.AVI"
+                         "fileName=video.AVI" (will succeed if C:\Some Directory\Another Directory\
+                                               is:  * the application's startup directory
+                                                    * the current directory
+                                                    * listed in the PATH environment variable)
+
+ieee1394id=?  : only applies to WDM_CAP, will be IGNORED if "inputDevice=WDM_CAP" is not set.
+                Unique 64-bit device identifier, as defined by IEEE 1394.
+                Hexadecimal value expected, i.e. "ieee1394id=437d3b0201460008"
+                Use /bin/IEEE394_id.exe to determine your camera's ID.
+
+deinterlaceState=?  : supported parameters (see VFX_STATE_names[])
+                        "off"  : disable deinterlacing (DEFAULT)
+                        "on"   : force deinterlacing (even for progressive frames) 
+                        "auto" : enable deinterlacing only if 
+                                 (VIDEOINFOHEADER.dwInterlaceFlags &amp; AMINTERLACE_IsInterlaced)
+                      WARNING: EXPERIMENTAL FEATURE!
+
+deinterlaceMethod=? : deinterlacing method (see VFxDeinterlaceParam.h for supported modes)
+                      supported parameters (see DEINTERLACE_METHOD_names[]):
+                        "blend"      : blend fields (best quality)
+                        "duplicate1" : duplicate first field
+                        "duplicate2" : duplicate second field
+                      NOTE: omitting this token results in default mode (DEINTERLACE_BLEND) being used.
+                      WARNING: EXPERIMENTAL FEATURE!
+
+EXAMPLES:
+
+arVideoOpen(NULL);
+arVideoOpen("inputDevice=WDM_CAP,showDlg");
+arVideoOpen("inputDevice=WDM_CAP,flipH,flipV,showDlg");
+arVideoOpen("inputDevice=WDM_CAP,pixelFormat=PIXELFORMAT_RGB24,showDlg");
+arVideoOpen("inputDevice=WDM_CAP,showDlg,deinterlaceState=on,deinterlaceMethod=duplicate1");
+arVideoOpen("inputDevice=WDM_CAP,videoWidth=640,flipH,videoHeight=480,showDlg,deinterlaceState=auto");
+arVideoOpen("inputDevice=WDM_CAP,friendlyName=Microsoft DV Camera,videoWidth=720,videoHeight=480");
+arVideoOpen("inputDevice=WDM_CAP,friendlyName=Logitech,videoWidth=320,videoHeight=240,flipV");
+arVideoOpen("inputDevice=WDM_CAP,friendlyName=Microsoft DV Camera,ieee1394id=437d3b0201460008");
+arVideoOpen("inputDevice=AVI_FILE,fileName=C:\Some Directory\Another Directory\Video.AVI");
+arVideoOpen("inputDevice=AVI_FILE,fileName=Video.AVI,pixelFormat=PIXELFORMAT_RGB24");
+</pre>
+</blockquote>
 </body>
 </html>
