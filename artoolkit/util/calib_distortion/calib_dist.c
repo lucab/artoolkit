@@ -4,6 +4,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #ifndef __APPLE__
 #  include <GL/glut.h>
 #  ifdef GL_VERSION_1_2
