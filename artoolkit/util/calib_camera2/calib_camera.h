@@ -1,10 +1,12 @@
 #ifndef CALIB_DIST_H
 #define CALIB_DIST_H
 
+#include <AR/gsub_lite.h>
+
 #define  H_NUM        6
 #define  V_NUM        4
 #define  LOOP_MAX    20
-#define  THRESH     200
+#define  THRESH     100
 
 typedef struct {
     double   x_coord;
@@ -13,6 +15,7 @@ typedef struct {
 
 typedef struct patt {
     unsigned char  *savedImage[LOOP_MAX];
+	ARGL_CONTEXT_SETTINGS_REF arglSettings[LOOP_MAX];
     CALIB_COORD_T  *world_coord;
     CALIB_COORD_T  *point[LOOP_MAX];
     int            h_num;				// Number of dots horizontally in the calibration pattern.
