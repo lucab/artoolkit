@@ -232,19 +232,18 @@ GLboolean arglGluCheckExtension(const GLubyte* extName, const GLubyte *extString
 	const GLubyte *start;
 	GLubyte *where, *terminator;
 	
-	/* Extension names should not have spaces. */
-	where = (GLubyte *) strchr(extName, ' ');
+	// Extension names should not have spaces.
+	where = (GLubyte *)strchr((const char *)extName, ' ');
 	if (where || *extName == '\0')
 		return GL_FALSE;
-	/* It takes a bit of care to be fool-proof about parsing the
-		OpenGL extensions string. Don't be fooled by sub-strings,
-		etc. */
+	// It takes a bit of care to be fool-proof about parsing the
+	//	OpenGL extensions string. Don't be fooled by sub-strings, etc.
 	start = extString;
 	for (;;) {
-		where = (GLubyte *) strstr((const char *) start, extName);
+		where = (GLubyte *) strstr((const char *)start, (const char *)extName);
 		if (!where)
 			break;
-		terminator = where + strlen(extName);
+		terminator = where + strlen((const char *)extName);
 		if (where == start || *(where - 1) == ' ')
 			if (*terminator == ' ' || *terminator == '\0')
 				return GL_TRUE;
