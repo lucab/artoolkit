@@ -287,7 +287,7 @@ static int arglGLCapabilityCheck(const unsigned short minVersion, const unsigned
 	strExtensions = glGetString(GL_EXTENSIONS);
 	
 	if (0 < minVersion && version >= minVersion) return (TRUE);
-	if (extension && gluCheckExtension(extension, strExtensions)) return (TRUE);
+	if (extension && arglGluCheckExtension(extension, strExtensions)) return (TRUE);
 	return (FALSE);
 }
 
