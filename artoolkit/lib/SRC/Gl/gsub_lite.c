@@ -45,6 +45,7 @@
 #include <AR/gsub_lite.h>
 
 #include <stdio.h>		// fprintf(), stderr
+#include <string.h>		// strchr(), strstr(), strlen()
 #ifndef __APPLE__
 #  include <GL/glu.h>
 #  ifdef GL_VERSION_1_2
@@ -223,12 +224,10 @@ static void arglConvGLcpara(ARParam *param, double focalmin, double focalmax, do
     }
 }
 
-#ifndef GLU_VERSION_1_3
-#  include <string.h> // strchr(), strstr(), strlen()
 //
-//  Provide a gluCheckExtension() function for platforms that don't have GLU version 1.3 or later.
+//  Provide a gluCheckExtension() function, since some platforms don't have GLU version 1.3 or later.
 //
-GLboolean gluCheckExtension(const GLubyte* extName, const GLubyte *extString)
+GLboolean arglGluCheckExtension(const GLubyte* extName, const GLubyte *extString)
 {
 	const GLubyte *start;
 	GLubyte *where, *terminator;
@@ -253,7 +252,6 @@ GLboolean gluCheckExtension(const GLubyte* extName, const GLubyte *extString)
 	}
 	return GL_FALSE;
 }
-#endif // GLU_VERSION_1_3
 
 //
 //  Checks for the presence of an OpenGL capability by version or extension.
