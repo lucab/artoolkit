@@ -1,5 +1,5 @@
-#ifndef CALIB_DIST_H
-#define CALIB_DIST_H
+#ifndef CALIB_CAMERA_H
+#define CALIB_CAMERA_H
 
 #include <AR/gsub_lite.h>
 
@@ -26,4 +26,4 @@ typedef struct patt {
 void calc_distortion( CALIB_PATT_T *patt, int xsize, int ysize, double dist_factor[3] );
 int  calc_inp( CALIB_PATT_T *patt, double dist_factor[4], int xsize, int ysize, double mat[3][4] );
 
-#endif // CALIB_DIST_H
+#endif // CALIB_CAMERA_H

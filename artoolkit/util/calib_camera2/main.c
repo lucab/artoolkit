@@ -49,7 +49,7 @@
 //	Constants
 // ============================================================================
 
-#define CALIB_CAMERA2_DEBUG 1
+#define CALIB_CAMERA2_DEBUG 0
 
 // ============================================================================
 //	Global variables
@@ -90,7 +90,7 @@ static int             gYsize = 0;
 static int             gThresh = THRESH;
 static unsigned char   *gClipImage = NULL;
 
-static CALIB_PATT_T    gPatt = {0};          
+static CALIB_PATT_T    gPatt;          
 static double          dist_factor[4];
 static double          mat[3][4];
 
@@ -639,44 +639,44 @@ static void draw_line(void)
 
     i = check_num;
 
-    for( j = 0; j < gPatt.v_num; j++ ) {
-        for( k = 0; k < gPatt.h_num; k++ ) {
+    for (j = 0; j < gPatt.v_num; j++) {
+        for (k = 0; k < gPatt.h_num; k++) {
             x[k] = gPatt.point[i][j*gPatt.h_num+k].x_coord;
             y[k] = gPatt.point[i][j*gPatt.h_num+k].y_coord;
         }
-        draw_line2( x, y, gPatt.h_num );
+        draw_line2(x, y, gPatt.h_num);
     }
 
-    for( j = 0; j < gPatt.h_num; j++ ) {
-        for( k = 0; k < gPatt.v_num; k++ ) {
+    for (j = 0; j < gPatt.h_num; j++) {
+        for (k = 0; k < gPatt.v_num; k++) {
             x[k] = gPatt.point[i][k*gPatt.h_num+j].x_coord;
             y[k] = gPatt.point[i][k*gPatt.h_num+j].y_coord;
         }
-        draw_line2( x, y, gPatt.v_num );
+        draw_line2(x, y, gPatt.v_num);
     }
 
-    for( j = 3 - gPatt.v_num; j < gPatt.h_num - 2; j++ ) {
+    for (j = 3 - gPatt.v_num; j < gPatt.h_num - 2; j++) {
         p = 0;
-        for( k = 0; k < gPatt.v_num; k++ ) {
+        for (k = 0; k < gPatt.v_num; k++) {
             l = j+k;
-            if( l < 0 || l >= gPatt.h_num ) continue;
+            if (l < 0 || l >= gPatt.h_num) continue;
             x[p] = gPatt.point[i][k*gPatt.h_num+l].x_coord;
             y[p] = gPatt.point[i][k*gPatt.h_num+l].y_coord;
             p++;
         }
-        draw_line2( x, y, p );
+        draw_line2(x, y, p);
     }
 
-    for( j = 2; j < gPatt.h_num + gPatt.v_num - 3; j++ ) {
+    for (j = 2; j < gPatt.h_num + gPatt.v_num - 3; j++) {
         p = 0;
-        for( k = 0; k < gPatt.v_num; k++ ) {
+        for (k = 0; k < gPatt.v_num; k++) {
             l = j-k;
-            if( l < 0 || l >= gPatt.h_num ) continue;
+            if (l < 0 || l >= gPatt.h_num) continue;
             x[p] = gPatt.point[i][k*gPatt.h_num+l].x_coord;
             y[p] = gPatt.point[i][k*gPatt.h_num+l].y_coord;
             p++;
         }
-        draw_line2( x, y, p );
+        draw_line2(x, y, p);
     }
 
     free(x);
