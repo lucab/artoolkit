@@ -150,7 +150,11 @@ int main(int argc, char *argv[])
     glutMotionFunc(Motion);
 	
 	// Start grabbing.
-    point_num = 0;
+	if (arVideoCapStart() != 0) {
+    	fprintf(stderr, "init(): Unable to begin camera data capture.\n");
+		return (FALSE);		
+	}
+	point_num = 0;
     gStatus = 0;
     print_comment(0);
 	
@@ -189,11 +193,6 @@ static int init(int argc, char *argv[])
 	// Allocate space for a clipping image (luminance only).
 	arMalloc(gClipImage, unsigned char, gXsize * gYsize);
 	
-	if (arVideoCapStart() != 0) {
-    	fprintf(stderr, "init(): Unable to begin camera data capture.\n");
-		return (FALSE);		
-	}
-	
 	return (TRUE);
 }
 
@@ -210,14 +209,13 @@ static void grabImage(void) {
 	if (!gARTImage) return;
 	gPatt.loop_num++;
 	if ((gPatt.arglSettings[gPatt.loop_num-1] = arglSetupForCurrentContext()) == NULL) {
-		fprintf(stderr, "main(): arglSetupForCurrentContext() returned error.\n");
+		fprintf(stderr, "grabImage(): arglSetupForCurrentContext() returned error.\n");
 		exit(-1);
 	}
 	arglDistortionCompensationSet(gPatt.arglSettings[gPatt.loop_num-1], FALSE);
 	arMalloc((gPatt.savedImage)[gPatt.loop_num-1], unsigned char, gXsize*gYsize*AR_PIX_SIZE);
 	memcpy((gPatt.savedImage)[gPatt.loop_num-1], gARTImage, gXsize*gYsize*AR_PIX_SIZE);
 	printf("Grabbed image %d.\n", gPatt.loop_num);
-	arVideoCapStop();
 	arMalloc(gPatt.point[gPatt.loop_num-1], CALIB_COORD_T, gPatt.h_num*gPatt.v_num);
 }
 
@@ -297,6 +295,7 @@ static void Mouse(int button, int state, int x, int y)
 				// Begin waiting for drag for rubber-bounding of a feature.
 				grabImage();
 				gDragStartX = gDragStartY = gDragEndX = gDragEndY = -1;
+				arVideoCapStop();
 				gStatus = 1;
 				print_comment(1);				
 			} else if (gStatus == 1) {
