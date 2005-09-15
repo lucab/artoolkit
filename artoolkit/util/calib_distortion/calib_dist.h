@@ -3,7 +3,7 @@
 
 #include <AR/gsub_lite.h>
 
-#define  THRESH     150
+#define  THRESH     100
 #define  H_NUM        6
 #define  V_NUM        4
 #define  LOOP_MAX    20
