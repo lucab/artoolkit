@@ -391,18 +391,15 @@
 		784DB816089AAF5600389D33 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A934B5C086A150A00DF2FAC /* Cocoa.framework */; };
 		784DB83B089AB04500389D33 /* paddle.c in Sources */ = {isa = PBXBuildFile; fileRef = 4AC3C0B207518C7E0073D2C6 /* paddle.c */; };
 		784DB83C089AB04900389D33 /* paddleInteractionTest.c in Sources */ = {isa = PBXBuildFile; fileRef = 4AC3C0B407518C7E0073D2C6 /* paddleInteractionTest.c */; };
-		784EF19908AD634A0002821E /* Data in Resources */ = {isa = PBXBuildFile; fileRef = 782EA555089995C300A8A712 /* Data */; };
 		784EF19E08AD634A0002821E /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A3F167F064A0E270042B0D7 /* Carbon.framework */; };
 		784EF19F08AD634A0002821E /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A3F14FC064A0C510042B0D7 /* GLUT.framework */; };
 		784EF1A008AD634A0002821E /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A3F14FD064A0C510042B0D7 /* OpenGL.framework */; };
 		784EF1A108AD634A0002821E /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A3F14FE064A0C510042B0D7 /* QuickTime.framework */; };
 		784EF1A208AD634A0002821E /* libAR.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A427D120484329800B56093 /* libAR.a */; };
-		784EF1A308AD634A0002821E /* libARgsub.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A427D130484329800B56093 /* libARgsub.a */; };
 		784EF1A408AD634A0002821E /* libARvideo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A427D160484329800B56093 /* libARvideo.a */; };
 		784EF1A508AD634A0002821E /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A934B5C086A150A00DF2FAC /* Cocoa.framework */; };
 		784EF1CD08AD64C10002821E /* calib_cparam.c in Sources */ = {isa = PBXBuildFile; fileRef = 4A427C22048431FA00B56093 /* calib_cparam.c */; };
 		784EF1CE08AD64C10002821E /* calib_cparam_sub.c in Sources */ = {isa = PBXBuildFile; fileRef = 4A427C2B048431FA00B56093 /* calib_cparam_sub.c */; };
-		784EF1D708AD64F40002821E /* Data in Resources */ = {isa = PBXBuildFile; fileRef = 782EA555089995C300A8A712 /* Data */; };
 		784EF1DC08AD64F40002821E /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A3F167F064A0E270042B0D7 /* Carbon.framework */; };
 		784EF1DD08AD64F40002821E /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A3F14FC064A0C510042B0D7 /* GLUT.framework */; };
 		784EF1DE08AD64F40002821E /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A3F14FD064A0C510042B0D7 /* OpenGL.framework */; };
@@ -497,6 +494,8 @@
 		78D2540E089AA3150064B793 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A934B5C086A150A00DF2FAC /* Cocoa.framework */; };
 		78D2541F089AA3AD0064B793 /* multiTest.c in Sources */ = {isa = PBXBuildFile; fileRef = 4A427CBD0484329800B56093 /* multiTest.c */; };
 		78D25420089AA3C80064B793 /* libARMulti.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A427D150484329800B56093 /* libARMulti.a */; };
+		78DA2EFE08D8EDF900F7A5F2 /* libARgsub_lite.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A66475606598B950061DA76 /* libARgsub_lite.a */; };
+		78DA2EFF08D8EE2000F7A5F2 /* libARgsub_lite.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A66475606598B950061DA76 /* libARgsub_lite.a */; };
 		78F11FCA08AD4FBB00FD6442 /* Data in Resources */ = {isa = PBXBuildFile; fileRef = 782EA555089995C300A8A712 /* Data */; };
 		78F11FCE08AD4FBB00FD6442 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A3F167F064A0E270042B0D7 /* Carbon.framework */; };
 		78F11FCF08AD4FBB00FD6442 /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A3F14FC064A0C510042B0D7 /* GLUT.framework */; };
@@ -507,13 +506,11 @@
 		78F11FD408AD4FBB00FD6442 /* libARvideo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A427D160484329800B56093 /* libARvideo.a */; };
 		78F11FD508AD4FBB00FD6442 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A934B5C086A150A00DF2FAC /* Cocoa.framework */; };
 		78F1200508AD50DF00FD6442 /* mk_patt.c in Sources */ = {isa = PBXBuildFile; fileRef = 4A427C42048431FA00B56093 /* mk_patt.c */; };
-		78F1201008AD514F00FD6442 /* Data in Resources */ = {isa = PBXBuildFile; fileRef = 782EA555089995C300A8A712 /* Data */; };
 		78F1201408AD514F00FD6442 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A3F167F064A0E270042B0D7 /* Carbon.framework */; };
 		78F1201508AD514F00FD6442 /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A3F14FC064A0C510042B0D7 /* GLUT.framework */; };
 		78F1201608AD514F00FD6442 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A3F14FD064A0C510042B0D7 /* OpenGL.framework */; };
 		78F1201708AD514F00FD6442 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A3F14FE064A0C510042B0D7 /* QuickTime.framework */; };
 		78F1201808AD514F00FD6442 /* libAR.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A427D120484329800B56093 /* libAR.a */; };
-		78F1201908AD514F00FD6442 /* libARgsub.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A427D130484329800B56093 /* libARgsub.a */; };
 		78F1201A08AD514F00FD6442 /* libARvideo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A427D160484329800B56093 /* libARvideo.a */; };
 		78F1201B08AD514F00FD6442 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A934B5C086A150A00DF2FAC /* Cocoa.framework */; };
 		78F1204B08AD62DD00FD6442 /* calib_dist.c in Sources */ = {isa = PBXBuildFile; fileRef = 4A427C30048431FA00B56093 /* calib_dist.c */; };
@@ -1879,8 +1876,8 @@
 				784EF1A008AD634A0002821E /* OpenGL.framework in Frameworks */,
 				784EF1A108AD634A0002821E /* QuickTime.framework in Frameworks */,
 				784EF1A208AD634A0002821E /* libAR.a in Frameworks */,
-				784EF1A308AD634A0002821E /* libARgsub.a in Frameworks */,
 				784EF1A408AD634A0002821E /* libARvideo.a in Frameworks */,
+				78DA2EFE08D8EDF900F7A5F2 /* libARgsub_lite.a in Frameworks */,
 				784EF1A508AD634A0002821E /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2036,8 +2033,8 @@
 				78F1201608AD514F00FD6442 /* OpenGL.framework in Frameworks */,
 				78F1201708AD514F00FD6442 /* QuickTime.framework in Frameworks */,
 				78F1201808AD514F00FD6442 /* libAR.a in Frameworks */,
-				78F1201908AD514F00FD6442 /* libARgsub.a in Frameworks */,
 				78F1201A08AD514F00FD6442 /* libARvideo.a in Frameworks */,
+				78DA2EFF08D8EE2000F7A5F2 /* libARgsub_lite.a in Frameworks */,
 				78F1201B08AD514F00FD6442 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3723,7 +3720,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 784EF1A608AD634A0002821E /* Build configuration list for PBXNativeTarget "calib_cparam" */;
 			buildPhases = (
-				784EF19808AD634A0002821E /* Resources */,
 				784EF19A08AD634A0002821E /* Sources */,
 				784EF19D08AD634A0002821E /* Frameworks */,
 				7848BC5D08B3FF2F0068CF0B /* ShellScript */,
@@ -3788,7 +3784,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 784EF1E408AD64F40002821E /* Build configuration list for PBXNativeTarget "calib_camera2" */;
 			buildPhases = (
-				784EF1D608AD64F40002821E /* Resources */,
 				784EF1D808AD64F40002821E /* Sources */,
 				784EF1DB08AD64F40002821E /* Frameworks */,
 				7848BC5E08B3FF3A0068CF0B /* ShellScript */,
@@ -4371,7 +4366,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 78F1201C08AD514F00FD6442 /* Build configuration list for PBXNativeTarget "calib_dist" */;
 			buildPhases = (
-				78F1200F08AD514F00FD6442 /* Resources */,
 				78F1201108AD514F00FD6442 /* Sources */,
 				78F1201308AD514F00FD6442 /* Frameworks */,
 				7848BC5C08B3FF250068CF0B /* ShellScript */,
@@ -4578,22 +4572,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		784EF19808AD634A0002821E /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				784EF19908AD634A0002821E /* Data in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		784EF1D608AD64F40002821E /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				784EF1D708AD64F40002821E /* Data in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		788A85A2089AA558001AB56A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -4656,14 +4634,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				78F11FCA08AD4FBB00FD6442 /* Data in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		78F1200F08AD514F00FD6442 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				78F1201008AD514F00FD6442 /* Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
