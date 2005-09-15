@@ -1,19 +1,51 @@
+/*
+ * 
+ * This file is part of ARToolKit.
+ * 
+ * ARToolKit is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * ARToolKit is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with ARToolKit; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * 
+ */
+
+// ============================================================================
+//	Includes
+// ============================================================================
+
+#ifdef _WIN32
+#  include <windows.h>
+#endif
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#if defined(_WIN32)
-#include <windows.h>
-#endif
+#include <string.h>
 #ifndef __APPLE__
-#include <GL/gl.h>
-#include <GL/glut.h>
+#  include <GL/glut.h>
+#  ifdef GL_VERSION_1_2
+#    include <GL/glext.h>
+#  endif
 #else
-#include <OpenGL/gl.h>
-#include <GLUT/glut.h>
+#  include <GLUT/glut.h>
+#  include <OpenGL/glext.h>
 #endif
 #include <AR/gsub.h>
 #include <AR/video.h>
 #include <AR/param.h>
 #include <AR/ar.h>
+
+// ============================================================================
+//	Global variables
+// ============================================================================
 
 /* set up the video format globals */
 
