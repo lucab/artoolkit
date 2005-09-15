@@ -25,9 +25,10 @@
 #ifdef _WIN32
 #  include <windows.h>
 #endif
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
+#include <string.h>
 #ifndef __APPLE__
 #  include <GL/glut.h>
 #  ifdef GL_VERSION_1_2
@@ -44,25 +45,15 @@
 #include <AR/gsub_lite.h>
 #include "calib_cparam.h"
 
-#ifndef GL_ABGR
-#define GL_ABGR GL_ABGR_EXT
-#endif
-#ifndef GL_BGRA
-#define GL_BGRA GL_BGRA_EXT
-#endif
-#ifndef GL_BGR
-#define GL_BGR GL_BGR_EXT
-#endif
-#ifndef GL_RGBA
-#define GL_RGBA GL_RGBA_EXT
-#endif
-#ifndef GL_RGB
-#define GL_RGB GL_RGB_EXT
-#endif
+// ============================================================================
+//	Constants
+// ============================================================================
 
+#define CALIB_CPARAM_DEBUG 0
 
-ARParam         param;
-double          dist_factor[4];
+// ============================================================================
+//	Global variables
+// ============================================================================
 
 /* set up the video format globals */
 
@@ -88,11 +79,20 @@ char			*vconf = "-width=640 -height=480";
 char			*vconf = "";
 #endif
 
-int             gXsize;
-int             gYsize;
-unsigned char   *gImage;
+static ARUint8		*gARTImage = NULL;
+static ARParam		gARTCparam;
+static ARGL_CONTEXT_SETTINGS_REF gArglSettings = NULL;
+
+static int             gWin;
+static int             gXsize = 0;
+static int             gYsize = 0;
 int             refresh;
 
+static unsigned char   *gSaveARTImage = NULL;
+static ARGL_CONTEXT_SETTINGS_REF gSaveArglSettings = NULL;
+
+static ARParam         param;
+static double          dist_factor[4];
 
 int             line_num;
 int             loop_num;
@@ -100,97 +100,115 @@ int             line_mode[LINE_MAX];
 double          inter_coord[LOOP_MAX][LINE_MAX][LINE_MAX][3];
 double          line_info[LOOP_MAX][LINE_MAX][4];
 
-int             win;
 int             mode;
-int             line_no;
-int             loop_no;
+int             line_num_current;
+int             loop_num_current;
 double          theta;
 double          radius;
-double          sx, sy, ex, ey;
+double          gStartX, gStartY, gEndX, gEndY;
 
-#ifdef _WIN32
-static int      drawMode = AR_DRAW_BY_GL_DRAW_PIXELS;
-#else
-static int      drawMode = DEFAULT_DRAW_MODE;
-#endif
-static GLuint   glid[2];
-static int      tex1Xsize1 = 1;
-static int      tex1Xsize2 = 1;
-static int      tex1Ysize  = 1;
-static void dispImageTex1( unsigned char *pimage );
-static void dispImageTex2( unsigned char *pimage );
+// ============================================================================
+//	Functions
+// ============================================================================
 
-static void   init(void);
-static void   keyboard(unsigned char key, int x, int y);
-static void   special(int key, int x, int y);
-static void   mouse(int button, int state, int x, int y);
-static void   dispImage(void);
-static void   drawPrevLine(void);
-static void   drawNextLine(void);
-static void   draw_warp_line( double sx, double ex, double sy, double ey );
-static void   getCpara(void);
-static void   intersection( double line1[4], double line2[4], double *screen_coord );
-static void   dispImage2( ARUint8 *image );
+int             main(int argc, char *argv[]);
+static int      init(int argc, char *argv[]);
+static void		Keyboard(unsigned char key, int x, int y);
+static void		Special(int key, int x, int y);
+static void		Mouse(int button, int state, int x, int y);
+static void     Quit(void);
+static void     Idle(void);
+static void     Visibility(int visible);
+static void     Reshape(int w, int h);
+static void     Display(void);
+static void		drawPrevLine(void);
+static void		drawNextLine(void);
+static void		draw_warp_line(double sx, double ex, double sy, double ey);
+static void		getCpara(void);
+static void		intersection( double line1[4], double line2[4], double *screen_coord );
 
 
 int main(int argc, char *argv[])
 {
 	glutInit(&argc, argv);
-    init();
-
-    glutKeyboardFunc(keyboard);
-    glutSpecialFunc(special);
-    glutMouseFunc(mouse);
-    glutIdleFunc(dispImage);
-    glutDisplayFunc(dispImage);
-
-    mode = 0;
-    line_no = 0;
-    loop_no = 0;
-    arVideoCapStart();
-    glutMainLoop();
-	return (0);
-}
-
-static void init(void)
-{
-    printf("Input center coordinates: X = ");
-    scanf("%lf", &dist_factor[0]);
-    while( getchar()!='\n' );
-    printf("                        : Y = ");
-    scanf("%lf", &dist_factor[1]);
-    while( getchar()!='\n' );
-    printf("Input distortion ratio: F = ");
-    scanf("%lf", &dist_factor[2]);
-    while( getchar()!='\n' );
-    printf("Input size adjustment factor: S = ");
-    scanf("%lf", &dist_factor[3]);
-    while( getchar()!='\n' );
-
-    initLineModel( &line_num, &loop_num, line_mode, inter_coord );
-
-    if( arVideoOpen( vconf ) < 0 ) exit(0);
-    if( arVideoInqSize(&gXsize, &gYsize) < 0 ) exit(0);
-    printf("Image size (x,y) = (%d,%d)\n", gXsize, gYsize);
+    if (!init(argc, argv)) exit(-1);
 
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
     glutInitWindowSize(gXsize, gYsize);
     glutInitWindowPosition(100,100);
-    win = glutCreateWindow("Camera calibration");
+    gWin = glutCreateWindow("Camera calibration");
+	
+	// Setup argl library for current context.
+	// Turn off distortion compensation.. we are calibrating.
+	if ((gArglSettings = arglSetupForCurrentContext()) == NULL) {
+		fprintf(stderr, "main(): arglSetupForCurrentContext() returned error.\n");
+		exit(-1);
+	}
+	arglDistortionCompensationSet(gArglSettings, FALSE);
 
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrtho(0, gXsize, 0, gYsize, -1.0, 1.0);
-    glViewport(0, 0, gXsize, gYsize);
+	// Make a dummy camera parameter to supply when calling arglDispImage().
+	gARTCparam.xsize = gXsize;
+	gARTCparam.ysize = gYsize;
+	
+	// Setup a space to save our captured image.
+	if ((gSaveArglSettings = arglSetupForCurrentContext()) == NULL) {
+		fprintf(stderr, "grabImage(): arglSetupForCurrentContext() returned error.\n");
+		exit(-1);
+	}
+	arglDistortionCompensationSet(gSaveArglSettings, FALSE);
+	arMalloc(gSaveARTImage, unsigned char, gXsize*gYsize*AR_PIX_SIZE);
 
-    glPixelZoom( (GLfloat)1.0, (GLfloat)-1.0);
-    glClearColor( 0.0, 0.0, 0.0, 0.0 );
-    glClear(GL_COLOR_BUFFER_BIT);
-    glutSwapBuffers();
-    glClear(GL_COLOR_BUFFER_BIT);
+	// Register GLUT event-handling callbacks.
+	// NB: Idle() is registered by Visibility.
+    glutDisplayFunc(Display);
+	glutReshapeFunc(Reshape);
+	glutVisibilityFunc(Visibility);
+	glutKeyboardFunc(Keyboard);
+	glutSpecialFunc(Special);
+    glutMouseFunc(Mouse);
+	
+	if (arVideoCapStart() != 0) {
+    	fprintf(stderr, "init(): Unable to begin camera data capture.\n");
+		return (FALSE);		
+	}
+	mode = 0;
+    line_num_current = 0;
+    loop_num_current = 0;
 
+    glutMainLoop();
+	return (0);
+}
+
+static int init(int argc, char *argv[])
+{
+    printf("Input center coordinates: X = ");
+    scanf("%lf", &dist_factor[0]);
+    while (getchar() != '\n');
+    printf("                        : Y = ");
+    scanf("%lf", &dist_factor[1]);
+    while (getchar() != '\n');
+    printf("Input distortion ratio: F = ");
+    scanf("%lf", &dist_factor[2]);
+    while (getchar() != '\n');
+    printf("Input size adjustment factor: S = ");
+    scanf("%lf", &dist_factor[3]);
+    while (getchar() != '\n');
+
+    initLineModel(&line_num, &loop_num, line_mode, inter_coord);
+
+	// Open the video path.
+    if (arVideoOpen(vconf) < 0) {
+    	fprintf(stderr, "init(): Unable to open connection to camera.\n");
+    	return (FALSE);
+	}
+
+	// Find the size of the window.
+    if (arVideoInqSize(&gXsize, &gYsize) < 0) return (FALSE);
+    fprintf(stdout, "Camera image size (x,y) = (%d,%d)\n", gXsize, gYsize);
+	
+	// Allocate space for a save image.
+	arMalloc(gSaveARTImage, unsigned char, gXsize * gYsize * AR_PIX_SIZE);
+	
     param.xsize = gXsize;
     param.ysize = gYsize;
     param.dist_factor[0] = dist_factor[0];
@@ -198,67 +216,78 @@ static void init(void)
     param.dist_factor[2] = dist_factor[2];
     param.dist_factor[3] = dist_factor[3];
 
-    glGenTextures(2, glid);
-    glBindTexture( GL_TEXTURE_2D, glid[0] );
-    glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
-    glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL );
-    glBindTexture( GL_TEXTURE_2D, glid[1] );
-    glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
-    glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL );
-    if( gXsize > 512 ) {
-        tex1Xsize1 = 512;
-        tex1Xsize2 = 1;
-        while( tex1Xsize2 < gXsize - tex1Xsize1 ) tex1Xsize2 *= 2;
-    }
-    else {
-        tex1Xsize1 = 1;
-        while( tex1Xsize1 < gXsize ) tex1Xsize1 *= 2;
-    }
-    tex1Ysize  = 1;
-    while( tex1Ysize < gYsize ) tex1Ysize *= 2;
-
-    gImage = (unsigned char *)malloc( gXsize*tex1Ysize*AR_PIX_SIZE );
-    if( gImage == NULL ) {printf("malloc error!!\n"); exit(0);}
-/*
-    gImage = (unsigned char *)malloc( gXsize*gYsize*AR_PIX_SIZE );
-    if( gImage == NULL ) {printf("malloc error!!\n"); exit(0);}
-*/
+	return (TRUE);
 }
 
-static void mouse(int button, int state, int x, int y)
+static void thetaRadiusSet(void) {
+	if (line_num_current == 0) {
+		if (line_mode[line_num_current] == L_HORIZONTAL) {
+			theta  = 90;
+			radius = gYsize/2;
+		} else {
+			theta  = 0;
+			radius = gXsize/2;
+		}
+	} else {
+		if (line_mode[line_num_current] == L_HORIZONTAL) {
+			if (line_mode[line_num_current] == line_mode[line_num_current-1]) {
+				radius += 10.0;
+			} else {
+				theta  = 90;
+				radius = gYsize/2;
+			}
+		} else {
+			if (line_mode[line_num_current] == line_mode[line_num_current-1]) {
+				radius += 10.0;
+			} else {
+				theta  = 0;
+				radius = gXsize/2;
+			}
+		}
+	}
+}
+
+static void eventCancel(void) {
+	if (mode == 0) {
+		// Cancel from mode 0 should quit program.
+		arVideoCapStop();
+		arVideoClose();
+		Quit();
+	} else if (mode == 1) {
+		if (line_num_current == 0) {
+			// Cancel from mode 1, first line, should go back to mode 0.
+			arVideoCapStart();
+			mode = 0;			
+		} else {
+			// Cancel from mode 1, non-first line, should go back to first line.
+			line_num_current = 0;
+			thetaRadiusSet();
+			glutPostRedisplay();
+		}
+	}
+}
+
+static void Mouse(int button, int state, int x, int y)
 {
-    if( button == GLUT_RIGHT_BUTTON  && state == GLUT_DOWN ) {
-        if( mode == 0 ) arVideoCapStop();
-        arVideoClose();
-        glutDestroyWindow( win );
-        exit(0);
-    }
-
-    if( button == GLUT_LEFT_BUTTON  && state == GLUT_DOWN && mode == 0 ) {
-        arVideoCapStop();
-        mode = 1;
-        refresh = 1;
-        line_no = 0;
-        if( line_mode[line_no] == L_HORIZONTAL ) {
-            theta  = 90;
-            radius = gYsize/2;
-        }
-        else {
-            theta  = 0;
-            radius = gXsize/2;
-        }
-    }
+	if (state == GLUT_DOWN) {
+		if (button == GLUT_RIGHT_BUTTON) {
+			eventCancel();
+		} else if (button == GLUT_LEFT_BUTTON && mode == 0) {
+			// Processing a new image.
+			// Copy the current image to saved image buffer.
+			if (!gARTImage) return;
+			memcpy(gSaveARTImage, gARTImage, gXsize*gYsize*AR_PIX_SIZE);
+			printf("Grabbed image.\n");
+			arVideoCapStop();
+			mode = 1;
+			line_num_current = 0;
+			thetaRadiusSet();
+			glutPostRedisplay();
+		}
+	}
 }
 
-static void keyboard(unsigned char key, int x, int y)
+static void Keyboard(unsigned char key, int x, int y)
 {
     ARParam  iparam;
     double   trans[3][4];
@@ -269,74 +298,55 @@ static void keyboard(unsigned char key, int x, int y)
 
     switch( key ) {
         case 0x1B:
-            sx = -1.0;
-            sy = -1.0;
-            ex = -1.0;
-            ey = -1.0;
+            gStartX = -1.0;
+            gStartY = -1.0;
+            gEndX = -1.0;
+            gEndY = -1.0;
+			// fall through..
         case 0x0D:
-            line_info[loop_no][line_no][0] = sx;
-            line_info[loop_no][line_no][1] = sy;
-            line_info[loop_no][line_no][2] = ex;
-            line_info[loop_no][line_no][3] = ey;
-            line_no++;
-
-            if( line_no != line_num ) {
-                if( line_mode[line_no] == L_HORIZONTAL ) {
-                    if( line_mode[line_no] == line_mode[line_no-1] ) {
-                        radius += 10.0;
-                    }
-                    else {
-                        theta  = 90;
-                        radius = gYsize/2;
-                    }
-                }
-                else {
-                    if( line_mode[line_no] == line_mode[line_no-1] ) {
-                        radius += 10.0;
-                    }
-                    else {
-                        theta  = 0;
-                        radius = gXsize/2;
-                    }
-                }
-            }
-            else {
-                loop_no++;
-                if( loop_no != loop_num ) {
+            line_info[loop_num_current][line_num_current][0] = gStartX;
+            line_info[loop_num_current][line_num_current][1] = gStartY;
+            line_info[loop_num_current][line_num_current][2] = gEndX;
+            line_info[loop_num_current][line_num_current][3] = gEndY;
+            line_num_current++;
+			if (line_num_current < line_num) {
+				thetaRadiusSet();
+            } else {
+				// Completed placements for this image.
+                loop_num_current++;
+                if (loop_num_current < loop_num) {
                     arVideoCapStart();
                     mode = 0;
-                    return;
-                }
-                arVideoClose();
-                glutDestroyWindow( win );
-
-                getCpara();
-                arParamDecomp( &param, &iparam, trans );
-                arParamDisp( &iparam );
-
-                printf("Input filename: ");
-                scanf("%s", name);
-                arParamSave( name, 1, &iparam );
-
-                exit(0);
+                } else {
+					// All done. Calculate parameter, save it, and exit.
+					getCpara();
+					arParamDecomp( &param, &iparam, trans );
+					arParamDisp( &iparam );
+					
+					printf("Input filename: ");
+					scanf("%s", name);
+					arParamSave( name, 1, &iparam );
+					
+					Quit();
+				}
             }
             break;
         default:
             k = 0;
             break;
     }
-    if( k ) refresh = 1;
+    if (k) glutPostRedisplay();
 }
 
 
-static void special(int key, int x, int y)
+static void Special(int key, int x, int y)
 {
     double   mx, my;
     int      k = 1;
 
     if (mode == 0) return;
 
-    if (line_mode[line_no] == L_HORIZONTAL) {
+    if (line_mode[line_num_current] == L_HORIZONTAL) {
         switch (key) {
             case GLUT_KEY_UP:
                 radius -= 1.0;
@@ -345,15 +355,15 @@ static void special(int key, int x, int y)
                 radius += 1.0;
                 break;
             case GLUT_KEY_LEFT:
-                mx = (sx + ex)/ 2.0;
-                my = (sy + ey)/ 2.0;
+                mx = (gStartX + gEndX)/ 2.0;
+                my = (gStartY + gEndY)/ 2.0;
                 theta -= 0.25;
                 radius = cos( (double)(theta*3.141592/180.0) ) * mx
                        + sin( (double)(theta*3.141592/180.0) ) * my;
                 break;
             case GLUT_KEY_RIGHT:
-                mx = (sx + ex)/ 2.0;
-                my = (sy + ey)/ 2.0;
+                mx = (gStartX + gEndX)/ 2.0;
+                my = (gStartY + gEndY)/ 2.0;
                 theta += 0.25;
                 radius = cos( (double)(theta*3.141592/180.0) ) * mx
                        + sin( (double)(theta*3.141592/180.0) ) * my;
@@ -365,15 +375,15 @@ static void special(int key, int x, int y)
     } else {
         switch (key) {
             case GLUT_KEY_UP:
-                mx = (sx + ex)/ 2.0;
-                my = (sy + ey)/ 2.0;
+                mx = (gStartX + gEndX)/ 2.0;
+                my = (gStartY + gEndY)/ 2.0;
                 theta += 0.25;
                 radius = cos( (double)(theta*3.141592/180.0) ) * mx
                        + sin( (double)(theta*3.141592/180.0) ) * my;
                 break;
             case GLUT_KEY_DOWN:
-                mx = (sx + ex)/ 2.0;
-                my = (sy + ey)/ 2.0;
+                mx = (gStartX + gEndX)/ 2.0;
+                my = (gStartY + gEndY)/ 2.0;
                 theta -= 0.25;
                 radius = cos( (double)(theta*3.141592/180.0) ) * mx
                        + sin( (double)(theta*3.141592/180.0) ) * my;
@@ -390,55 +400,121 @@ static void special(int key, int x, int y)
         }
     }
 
-    if (k) refresh = 1;
+    if (k) glutPostRedisplay();
 }
 
-static void dispImage( void )
+static void Quit(void)
 {
-    unsigned char *dataPtr;
-    unsigned char *p1, *p2;
-    int           i;
+	if (gSaveArglSettings) arglCleanup(gSaveArglSettings);
+	if (gArglSettings) arglCleanup(gArglSettings);
+	if (gWin) glutDestroyWindow(gWin);
+	exit(0);
+}
 
-    if( mode == 0 ) {
-        if( (dataPtr = (unsigned char *)arVideoGetImage()) == NULL ) {
-            arUtilSleep(2);
-            return;
-        }
-        p1 = dataPtr;
-        p2 = gImage;
-        for( i = 0; i < gXsize*gYsize*AR_PIX_SIZE; i++ ) *(p2++) = *(p1++);
-        arVideoCapNext();
+static void Idle(void)
+{
+	static int ms_prev;
+	int ms;
+	float s_elapsed;
+	ARUint8 *image;
+	
+	// Find out how long since Idle() last ran.
+	ms = glutGet(GLUT_ELAPSED_TIME);
+	s_elapsed = (float)(ms - ms_prev) * 0.001;
+	if (s_elapsed < 0.01f) return; // Don't update more often than 100 Hz.
+	ms_prev = ms;
+	
+	// Grab a video frame.
+	if (mode == 0) {
+		if ((image = arVideoGetImage()) != NULL) {
+			gARTImage = image;
+			// Tell GLUT the display has changed.
+			glutPostRedisplay();
+		}	
+	}
+}
 
-        glClearColor( 0.0, 0.0, 0.0, 0.0 );
-        glClear(GL_COLOR_BUFFER_BIT);
-        dispImage2( gImage );
-        glutSwapBuffers();
-    }
-    else {
-        if( refresh == 0 ) {
-            arUtilSleep(10);
-            return;
-        }
-        refresh = 0;
+//
+//	This function is called on events when the visibility of the
+//	GLUT window changes (including when it first becomes visible).
+//
+static void Visibility(int visible)
+{
+	if (visible == GLUT_VISIBLE) {
+		glutIdleFunc(Idle);
+	} else {
+		glutIdleFunc(NULL);
+	}
+}
 
-        glClearColor( 0.0, 0.0, 0.0, 0.0 );
-        glClear(GL_COLOR_BUFFER_BIT);
-        dispImage2( gImage );
+//
+//	This function is called when the
+//	GLUT window is resized.
+//
+static void Reshape(int w, int h)
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glViewport(0, 0, (GLsizei) w, (GLsizei) h);
+	
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	
+	// Call through to anyone else who needs to know about window sizing here.
+}
+
+static void beginOrtho2D(void) {
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	gluOrtho2D(0.0, gXsize, 0.0, gYsize);
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();	
+}
+
+static void endOrtho2D(void) {
+	glPopMatrix();
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+}
+
+static void Display(void)
+{
+	// Select correct buffer for this context.
+	glDrawBuffer(GL_BACK);
+	glClear(GL_COLOR_BUFFER_BIT);
+    glDisable(GL_DEPTH_TEST);
+	beginOrtho2D();
+	
+    if (mode == 0) {
+		
+		arglDispImage(gARTImage, &gARTCparam, 1.0, gArglSettings);	// zoom = 1.0.
+		arVideoCapNext();
+		
+    } else if (mode == 1) {
+
+		arglDispImage(gSaveARTImage, &gARTCparam, 1.0, gSaveArglSettings);
+
         drawPrevLine();
         drawNextLine();
-        glutSwapBuffers();
-    }
+	}
+	
+	endOrtho2D();
+    glutSwapBuffers();
 }
 
-static void drawPrevLine( void )
+static void drawPrevLine(void)
 {
     int     i;
 
     glColor3f(0.0,0.0,1.0);
-    for( i = 0; i < line_no; i++ ) {
-        if( line_info[loop_no][i][0] == -1.0 ) continue;
-        draw_warp_line( line_info[loop_no][i][0], line_info[loop_no][i][2],
-                        line_info[loop_no][i][1], line_info[loop_no][i][3] );
+    for (i = 0; i < line_num_current; i++) {
+        if (line_info[loop_num_current][i][0] == -1.0) continue;
+        draw_warp_line(line_info[loop_num_current][i][0], line_info[loop_num_current][i][2],
+                       line_info[loop_num_current][i][1], line_info[loop_num_current][i][3]);
     }
 }
 
@@ -451,70 +527,66 @@ static void drawNextLine(void)
     sin_theta = sin( (double)(theta*3.141592/180.0) );
     cos_theta = cos( (double)(theta*3.141592/180.0) );
 
-    if( cos_theta != 0 ) {
+    if (cos_theta != 0) {
         x1 = radius / cos_theta;
         x2 = (radius - (gYsize-1)*sin_theta) / cos_theta;
-    }
-    else {
+    } else {
         x1 = x2 = -1.0;
     }
 
-    if( sin_theta != 0 ) {
+    if (sin_theta != 0) {
         y1 = radius / sin_theta;
         y2 = (radius - (gXsize-1)*cos_theta) / sin_theta;
-    }
-    else {
+    } else {
         y1 = y2 = -1.0;
     }
 
-    ey = -1;
-    if( x1 >= 0 && x1 <= gXsize-1 ) {
-         sx = x1;
-         sy = 0;
-         if( x2 >= 0 && x2 <= gXsize-1 ) {
-             ex = x2;
-             ey = gYsize-1;
-         }
-         else if( y1 >= 0 && y1 <= gYsize-1 ) {
-             ex = 0;
-             ey = y1;
-         }
-         else if( y2 >= 0 && y2 <= gYsize-1 ) {
-             ex = gXsize-1;
-             ey = y2;
-         }
-         else printf("???\n");
-    }
-    else if( y1 >= 0 && y1 <= gYsize-1 ) {
-         sx = 0;
-         sy = y1;
-         if( x2 >= 0 && x2 <= gXsize-1 ) {
-             ex = x2;
-             ey = gYsize-1;
-         }
-         else if( y2 >= 0 && y2 <= gYsize-1 ) {
-             ex = gXsize-1;
-             ey = y2;
-         }
-         else printf("???\n");
-    }
-    else if( x2 >= 0 && x2 <= gXsize-1 ) {
-         sx = x2;
-         sy = gYsize-1;
-         if( y2 >= 0 && y2 <= gYsize-1 ) {
-             ex = gXsize-1;
-             ey = y2;
-         }
-         else printf("???\n");
+    gEndY = -1;
+    if (x1 >= 0 && x1 <= gXsize-1) {
+         gStartX = x1;
+         gStartY = 0;
+         if (x2 >= 0 && x2 <= gXsize-1) {
+             gEndX = x2;
+             gEndY = gYsize-1;
+         } else if (y1 >= 0 && y1 <= gYsize-1) {
+             gEndX = 0;
+             gEndY = y1;
+         } else if (y2 >= 0 && y2 <= gYsize-1) {
+             gEndX = gXsize-1;
+             gEndY = y2;
+         } else {
+			 printf("???\n");
+		 }
+    } else if (y1 >= 0 && y1 <= gYsize-1) {
+         gStartX = 0;
+         gStartY = y1;
+         if (x2 >= 0 && x2 <= gXsize-1) {
+             gEndX = x2;
+             gEndY = gYsize-1;
+         } else if (y2 >= 0 && y2 <= gYsize-1) {
+             gEndX = gXsize-1;
+             gEndY = y2;
+         } else {
+			 printf("???\n");
+		 }
+    } else if (x2 >= 0 && x2 <= gXsize-1) {
+         gStartX = x2;
+         gStartY = gYsize-1;
+         if (y2 >= 0 && y2 <= gYsize-1) {
+             gEndX = gXsize-1;
+             gEndY = y2;
+         } else {
+			 printf("???\n");
+		 }
     }
 
     glColor3f(1.0,1.0,1.0);
-    if( ey != -1 ) {
-        draw_warp_line( sx, ex, sy, ey );
+    if (gEndY != -1) {
+        draw_warp_line(gStartX, gEndX, gStartY, gEndY);
     }
 }
 
-static void draw_warp_line( double sx, double ex, double sy, double ey )
+static void draw_warp_line(double sx, double ex, double sy, double ey)
 {
     double   a, b, c;
     double   x, y;
@@ -525,24 +597,23 @@ static void draw_warp_line( double sx, double ex, double sy, double ey )
     b = sx - ex;
     c = sy*ex - sx*ey;
 
-    glLineWidth( 1.0 );
+    glLineWidth(1.0f);
     glBegin(GL_LINE_STRIP);
-    if( a*a >= b*b ) {
-        for( i = -20; i <= gYsize+20; i+=10 ) {
+    if (a*a >= b*b) {
+        for (i = -20; i <= gYsize+20; i+=10) {
             x = -(b*i + c)/a;
             y = i;
 
-            arParamIdeal2Observ( dist_factor, x, y, &x1, &y1 );
-            glVertex2f( x1, gYsize-1-y1 );
+            arParamIdeal2Observ(dist_factor, x, y, &x1, &y1);
+            glVertex2f(x1, gYsize-1-y1);
         }
-    }
-    else {
-        for( i = -20; i <= gXsize+20; i+=10 ) {
+    } else {
+        for (i = -20; i <= gXsize+20; i+=10) {
             x = i;
             y = -(a*i + c)/b;
 
-            arParamIdeal2Observ( dist_factor, x, y, &x1, &y1 );
-            glVertex2f( x1, gYsize-1-y1 );
+            arParamIdeal2Observ(dist_factor, x, y, &x1, &y1);
+            glVertex2f(x1, gYsize-1-y1);
         }
     }
     glEnd();
@@ -558,47 +629,45 @@ static void getCpara(void)
     int     i, j, k;
 
     point_num = 0;
-    for( k = 0; k < loop_num; k++ ) {
-        for( i = 0; i < line_num; i++ ) {
-            for( j = 0; j < line_num; j++ ) {
-                if( inter_coord[k][i][j][0] != -10000.0 ) point_num++;
+    for (k = 0; k < loop_num; k++) {
+        for (i = 0; i < line_num; i++) {
+            for (j = 0; j < line_num; j++) {
+                if (inter_coord[k][i][j][0] != -10000.0) point_num++;
             }
         }
     }
-    world_coord = (double *)malloc( point_num * 3 * sizeof(double) );
-    if( world_coord == NULL ) {printf("malloc error!!\n"); exit(0);}
-    screen_coord = (double *)malloc( point_num * 2 * sizeof(double) );
-    if( screen_coord == NULL ) {printf("malloc error!!\n"); exit(0);}
+	arMalloc(world_coord, double, point_num * 3);
+	arMalloc(screen_coord, double, point_num * 2);
 
     point_num = 0;
-    for( k = 0; k < loop_num; k++ ) {
-        for( i = 0; i < line_num; i++ ) {
-            if( line_info[k][i][0] == -1.0 ) continue;
-            for( j = 0; j < line_num; j++ ) {
-                if( line_info[k][j][0] == -1.0 ) continue;
-                if( inter_coord[k][i][j][0] == -10000.0 ) continue;
+    for (k = 0; k < loop_num; k++) {
+        for (i = 0; i < line_num; i++) {
+            if (line_info[k][i][0] == -1.0) continue;
+            for (j = 0; j < line_num; j++) {
+                if (line_info[k][j][0] == -1.0) continue;
+                if (inter_coord[k][i][j][0] == -10000.0) continue;
 
                 world_coord[point_num*3+0] = inter_coord[k][i][j][0];
                 world_coord[point_num*3+1] = inter_coord[k][i][j][1];
                 world_coord[point_num*3+2] = inter_coord[k][i][j][2];
-                intersection( line_info[k][i], line_info[k][j],
-                              &(screen_coord[point_num*2]) );
+                intersection(line_info[k][i], line_info[k][j],
+                             &(screen_coord[point_num*2]));
 
                 point_num++;
             }
         }
     }
     printf("point_num = %d\n", point_num);
-    if( arParamGet((double (*)[3])world_coord, (double (*)[2])screen_coord, point_num, param.mat) < 0 ) {
+    if (arParamGet((double (*)[3])world_coord, (double (*)[2])screen_coord, point_num, param.mat) < 0) {
         printf("ddd error!!\n");
         exit(0);
     }
 
-    free( world_coord );
-    free( screen_coord );
+    free(world_coord);
+    free(screen_coord);
 }
 
-static void intersection( double line1[4], double line2[4], double *screen_coord )
+static void intersection(double line1[4], double line2[4], double *screen_coord)
 {
     double a, b, c, d, e, f, g;
 
@@ -610,181 +679,8 @@ static void intersection( double line1[4], double line2[4], double *screen_coord
     f = line2[0] * d + line2[1] * e;
 
     g = a*e - b*d;
-    if( g == 0.0 ) { printf("???\n"); exit(0); }
+    if (g == 0.0) { printf("???\n"); exit(0); }
 
     screen_coord[0] = (c * e - b * f) / g;
     screen_coord[1] = (a * f - c * d) / g;
-}
-
-static void dispImage2( ARUint8 *pimage )
-{
-    if( drawMode == AR_DRAW_BY_GL_DRAW_PIXELS ) {
-        float    sx, sy;
-
-        sx = 0;
-        sy = gYsize - 0.5;
-        glPixelZoom( 1.0, -1.0);
-        glRasterPos3i( sx, sy, 0 );
-
-#if defined(AR_PIX_FORMAT_ARGB)
-        glDrawPixels( gXsize, gYsize, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, pimage );
-#elif defined(AR_PIX_FORMAT_ABGR)
-        glDrawPixels( gXsize, gYsize, GL_ABGR, GL_UNSIGNED_BYTE, pimage );
-#elif defined(AR_PIX_FORMAT_BGRA)
-        glDrawPixels( gXsize, gYsize, GL_BGRA, GL_UNSIGNED_BYTE, pimage );
-#elif defined(AR_PIX_FORMAT_BGR)
-        glDrawPixels( gXsize, gYsize, GL_BGR, GL_UNSIGNED_BYTE, pimage );
-#elif defined(AR_PIX_FORMAT_RGB)
-        glDrawPixels( gXsize, gYsize, GL_RGB, GL_UNSIGNED_BYTE, pimage );
-#elif defined(AR_PIX_FORMAT_RGBA)
-        glDrawPixels( gXsize, gYsize, GL_RGBA, GL_UNSIGNED_BYTE, pimage );
-#elif defined(AR_PIX_FORMAT_2vuy)
-		glDrawPixels( gXsize, gYsize, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_REV_APPLE, pimage );
-#elif defined(AR_PIX_FORMAT_yuvs)
-		glDrawPixels( gXsize, gYsize, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, pimage );
-#else
-#  error Unknown pixel format defined in config.h
-#endif
-    }
-    else {
-        glDisable( GL_DEPTH_TEST );
-        if( gXsize > tex1Xsize1 ) dispImageTex1( pimage );
-         else                    dispImageTex2( pimage );
-    }
-}
-
-static void dispImageTex1( unsigned char *pimage )
-{
-    float    sx, sy, ex, ey, z;
-    float    tx, ty;
-
-    glEnable( GL_TEXTURE_2D );
-    glMatrixMode(GL_TEXTURE);
-    glLoadIdentity();
-    glMatrixMode(GL_MODELVIEW);
-
-    glPixelStorei( GL_UNPACK_ROW_LENGTH, gXsize );
-
-    glBindTexture( GL_TEXTURE_2D, glid[0] );
-#if defined(AR_PIX_FORMAT_ARGB)
-    glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize1, tex1Ysize, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, pimage );
-#elif defined(AR_PIX_FORMAT_ABGR)
-    glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize1, tex1Ysize, 0, GL_ABGR, GL_UNSIGNED_BYTE, pimage );
-#elif defined(AR_PIX_FORMAT_BGRA)
-    glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize1, tex1Ysize, 0, GL_BGRA, GL_UNSIGNED_BYTE, pimage );
-#elif defined(AR_PIX_FORMAT_BGR)
-    glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize1, tex1Ysize, 0, GL_BGR, GL_UNSIGNED_BYTE, pimage );
-#elif defined(AR_PIX_FORMAT_RGB)
-    glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize1, tex1Ysize, 0, GL_RGB, GL_UNSIGNED_BYTE, pimage );
-#elif defined(AR_PIX_FORMAT_RGBA)
-    glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize1, tex1Ysize, 0, GL_RGBA, GL_UNSIGNED_BYTE, pimage );
-#elif defined(AR_PIX_FORMAT_2vuy)
-	glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize1, tex1Ysize, 0, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_REV_APPLE, pimage );
-#elif defined(AR_PIX_FORMAT_yuvs)
-	glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize1, tex1Ysize, 0, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, pimage );
-#else
-#  error Unknown pixel format defined in config.h
-#endif
-    tx = 1.0;
-    ty = (double)gYsize / (double)tex1Ysize;
-    sx = 0;
-    sy = gYsize;
-    ex = sx + tex1Xsize1;
-    ey = sy - gYsize;
-    z = 1.0;
-    glBegin(GL_QUADS );
-      glTexCoord2f( 0.0, 0.0 ); glVertex3f( sx, sy, z );
-      glTexCoord2f(  tx, 0.0 ); glVertex3f( ex, sy, z );
-      glTexCoord2f(  tx,  ty ); glVertex3f( ex, ey, z );
-      glTexCoord2f( 0.0,  ty ); glVertex3f( sx, ey, z );
-    glEnd();
-
-    glBindTexture( GL_TEXTURE_2D, glid[1] );
-#if defined(AR_PIX_FORMAT_ARGB)
-    glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize2, tex1Ysize, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, pimage+tex1Xsize1*AR_PIX_SIZE );
-#elif defined(AR_PIX_FORMAT_ABGR)
-    glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize2, tex1Ysize, 0, GL_ABGR, GL_UNSIGNED_BYTE, pimage+tex1Xsize1*AR_PIX_SIZE );
-#elif defined(AR_PIX_FORMAT_BGRA)
-    glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize2, tex1Ysize, 0, GL_BGRA, GL_UNSIGNED_BYTE, pimage+tex1Xsize1*AR_PIX_SIZE );
-#elif defined(AR_PIX_FORMAT_BGR)
-    glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize2, tex1Ysize, 0, GL_BGR, GL_UNSIGNED_BYTE, pimage+tex1Xsize1*AR_PIX_SIZE );
-#elif defined(AR_PIX_FORMAT_RGB)
-    glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize2, tex1Ysize, 0, GL_RGB, GL_UNSIGNED_BYTE, pimage+tex1Xsize1*AR_PIX_SIZE );
-#elif defined(AR_PIX_FORMAT_RGBA)
-    glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize2, tex1Ysize, 0, GL_RGBA, GL_UNSIGNED_BYTE, pimage+tex1Xsize1*AR_PIX_SIZE );
-#elif defined(AR_PIX_FORMAT_2vuy)
-	glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize2, tex1Ysize, 0, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_REV_APPLE, pimage+tex1Xsize1*AR_PIX_SIZE );
-#elif defined(AR_PIX_FORMAT_yuvs)
-	glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize2, tex1Ysize, 0, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, pimage+tex1Xsize1*AR_PIX_SIZE );
-#else
-#  error Unknown pixel format defined in config.h
-#endif
-    tx = (double)(gXsize-tex1Xsize1) / (double)tex1Xsize2;
-    ty = (double)gYsize / (double)tex1Ysize;
-    sx = tex1Xsize1;
-    sy = gYsize;
-    ex = sx + tex1Xsize2;
-    ey = sy - gYsize;
-    z = 1.0;
-    glBegin(GL_QUADS );
-      glTexCoord2f( 0.0, 0.0 ); glVertex3f( sx, sy, z );
-      glTexCoord2f(  tx, 0.0 ); glVertex3f( ex, sy, z );
-      glTexCoord2f(  tx,  ty ); glVertex3f( ex, ey, z );
-      glTexCoord2f( 0.0,  ty ); glVertex3f( sx, ey, z );
-    glEnd();
-
-    glBindTexture( GL_TEXTURE_2D, 0 );
-    glDisable( GL_TEXTURE_2D );
-    glPixelStorei( GL_UNPACK_ROW_LENGTH, 0 );
-}
-
-static void dispImageTex2( unsigned char *pimage )
-{
-    float    sx, sy, ex, ey, z;
-    float    tx, ty;
-
-    glEnable( GL_TEXTURE_2D );
-    glMatrixMode(GL_TEXTURE);
-    glLoadIdentity();
-    glMatrixMode(GL_MODELVIEW);
-
-    glPixelStorei( GL_UNPACK_ROW_LENGTH, gXsize );
-
-    glBindTexture( GL_TEXTURE_2D, glid[0] );
-#if defined(AR_PIX_FORMAT_ARGB)
-    glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize1, tex1Ysize, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, pimage );
-#elif defined(AR_PIX_FORMAT_ABGR)
-    glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize1, tex1Ysize, 0, GL_ABGR, GL_UNSIGNED_BYTE, pimage );
-#elif defined(AR_PIX_FORMAT_BGRA)
-    glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize1, tex1Ysize, 0, GL_BGRA, GL_UNSIGNED_BYTE, pimage );
-#elif defined(AR_PIX_FORMAT_BGR)
-    glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize1, tex1Ysize, 0, GL_BGR, GL_UNSIGNED_BYTE, pimage );
-#elif defined(AR_PIX_FORMAT_RGB)
-    glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize1, tex1Ysize, 0, GL_RGB, GL_UNSIGNED_BYTE, pimage );
-#elif defined(AR_PIX_FORMAT_RGBA)
-    glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize1, tex1Ysize, 0, GL_RGBA, GL_UNSIGNED_BYTE, pimage );
-#elif defined(AR_PIX_FORMAT_2vuy)
-	glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize1, tex1Ysize, 0, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_REV_APPLE, pimage );
-#elif defined(AR_PIX_FORMAT_yuvs)
-	glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize1, tex1Ysize, 0, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, pimage );
-#else
-#  error Unknown pixel format defined in config.h
-#endif
-    tx = (double)gXsize / (double)tex1Xsize1;
-    ty = (double)gYsize / (double)tex1Ysize;
-    sx = 0;
-    sy = gYsize;
-    ex = sx + gXsize;
-    ey = sy - gYsize;
-    z = 1.0;
-    glBegin(GL_QUADS );
-      glTexCoord2f( 0.0, 0.0 ); glVertex3f( sx, sy, z );
-      glTexCoord2f(  tx, 0.0 ); glVertex3f( ex, sy, z );
-      glTexCoord2f(  tx,  ty ); glVertex3f( ex, ey, z );
-      glTexCoord2f( 0.0,  ty ); glVertex3f( sx, ey, z );
-    glEnd();
-
-    glBindTexture( GL_TEXTURE_2D, 0 );
-    glDisable( GL_TEXTURE_2D );
-    glPixelStorei( GL_UNPACK_ROW_LENGTH, 0 );
 }
