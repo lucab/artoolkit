@@ -253,7 +253,7 @@ typedef enum {
 		for camera lens distortion, and additionally offers greater potential for
 		accelerated drawing on some implementations.
  
-		The initial value is defined to the value of the symbolic constan DEFAULT_DRAW_MODE
+		The initial value is defined to the value of the symbolic constant DEFAULT_DRAW_MODE
 		(defined in &lt;AR/config.h&gt;).
 	@availability First appeared in ARToolKit 2.68.
  */
@@ -266,11 +266,12 @@ extern int arglDrawMode;
 		When arglDrawMode is set to AR_DRAW_BY_TEXTURE_MAPPING, the value of this variable
 		determines whether full or half-resolution data is transferred to the
 		texture. A value of AR_DRAW_TEXTURE_FULL_IMAGE uses all available pixels in the
-		source image data. A value of AR_DRAW_TEXTURE_HALF_IMAGE discards every second pixel
-		in the source image data, defining a half-width texture which is then drawn stretched
-		horizontally to double its width. The latter method offers some advantages to
-		certain implentations where texture transfer is slow or costly, at the expense of
-		image detail.
+		source image data. A value of AR_DRAW_TEXTURE_HALF_IMAGE discards every second row
+		in the source image data, defining a half-height texture which is then drawn stretched
+		vertically to double its height.
+ 
+		The latter method is well-suited to drawing interlaced images, as would be obtained 
+		from DV camera sources in interlaced mode or composite video sources.
 	@availability First appeared in ARToolKit 2.68.
  */
 extern int arglTexmapMode;
