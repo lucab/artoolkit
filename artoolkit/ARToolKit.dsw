@@ -36,7 +36,7 @@ Package=<4>
     Project_Dep_Name libAR
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name libARgsub
+    Project_Dep_Name libARgsub_lite
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name libARvideo
