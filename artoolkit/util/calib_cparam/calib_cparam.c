@@ -80,7 +80,7 @@ char			*vconf = "";
 #endif
 
 static ARUint8		*gARTImage = NULL;
-static ARParam		gARTCparam;
+static ARParam		gARTCparam; // Dummy parameter, to supply to gsub_lite.
 static ARGL_CONTEXT_SETTINGS_REF gArglSettings = NULL;
 
 static int             gWin;
@@ -251,7 +251,6 @@ static void eventCancel(void) {
 	if (mode == 0) {
 		// Cancel from mode 0 should quit program.
 		arVideoCapStop();
-		arVideoClose();
 		Quit();
 	} else if (mode == 1) {
 		if (line_num_current == 0) {
@@ -269,14 +268,18 @@ static void eventCancel(void) {
 
 static void Mouse(int button, int state, int x, int y)
 {
+	ARUint8 *image;
+	
 	if (state == GLUT_DOWN) {
 		if (button == GLUT_RIGHT_BUTTON) {
 			eventCancel();
 		} else if (button == GLUT_LEFT_BUTTON && mode == 0) {
 			// Processing a new image.
-			// Copy the current image to saved image buffer.
-			if (!gARTImage) return;
-			memcpy(gSaveARTImage, gARTImage, gXsize*gYsize*AR_PIX_SIZE);
+			// Copy an image to saved image buffer.
+			do {
+				image = arVideoGetImage();
+			} while (image == NULL);
+			memcpy(gSaveARTImage, image, gXsize*gYsize*AR_PIX_SIZE);
 			printf("Grabbed image.\n");
 			arVideoCapStop();
 			mode = 1;
@@ -408,6 +411,7 @@ static void Quit(void)
 	if (gSaveArglSettings) arglCleanup(gSaveArglSettings);
 	if (gArglSettings) arglCleanup(gArglSettings);
 	if (gWin) glutDestroyWindow(gWin);
+	arVideoClose();
 	exit(0);
 }
 
@@ -475,10 +479,10 @@ static void beginOrtho2D(void) {
 }
 
 static void endOrtho2D(void) {
-	glPopMatrix();
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
 }
 
 static void Display(void)
@@ -487,12 +491,15 @@ static void Display(void)
 	glDrawBuffer(GL_BACK);
 	glClear(GL_COLOR_BUFFER_BIT);
     glDisable(GL_DEPTH_TEST);
+	glDisable(GL_LIGHTING);
+	glDisable(GL_TEXTURE_2D);
 	beginOrtho2D();
 	
     if (mode == 0) {
 		
 		arglDispImage(gARTImage, &gARTCparam, 1.0, gArglSettings);	// zoom = 1.0.
 		arVideoCapNext();
+		gARTImage = NULL;
 		
     } else if (mode == 1) {
 

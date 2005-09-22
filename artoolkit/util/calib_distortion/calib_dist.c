@@ -112,11 +112,11 @@ static void     Idle(void);
 static void     Visibility(int visible);
 static void     Reshape(int w, int h);
 static void     Display(void);
-static void     draw_warp_line( double a, double b , double c );
+static void     draw_warp_line(double a, double b , double c);
 static void     draw_line(void);
-static void     draw_line2( double *x, double *y, int num );
-static void     draw_warp_line( double a, double b , double c );
-static void     print_comment( int status );
+static void     draw_line2(double *x, double *y, int num);
+static void     draw_warp_line(double a, double b , double c);
+static void     print_comment(int status);
 
 int main(int argc, char *argv[])
 {
@@ -192,21 +192,18 @@ static int init(int argc, char *argv[])
 	
 	// Allocate space for a clipping image (luminance only).
 	arMalloc(gClipImage, unsigned char, gXsize * gYsize);
-	
-	return (TRUE);
-}
 
-static int videoCleanup(void)
-{
-	arVideoCapStop();
-	arVideoClose();
 	return (TRUE);
 }
 
 static void grabImage(void) {
+	ARUint8 *image;
+	
 	// Processing a new image.
-	// Copy the current image to saved image buffer.
-	if (!gARTImage) return;
+	// Copy an image to saved image buffer.
+	do {
+		image = arVideoGetImage();
+	} while (image == NULL);
 	gPatt.loop_num++;
 	if ((gPatt.arglSettings[gPatt.loop_num-1] = arglSetupForCurrentContext()) == NULL) {
 		fprintf(stderr, "grabImage(): arglSetupForCurrentContext() returned error.\n");
@@ -214,7 +211,7 @@ static void grabImage(void) {
 	}
 	arglDistortionCompensationSet(gPatt.arglSettings[gPatt.loop_num-1], FALSE);
 	arMalloc((gPatt.savedImage)[gPatt.loop_num-1], unsigned char, gXsize*gYsize*AR_PIX_SIZE);
-	memcpy((gPatt.savedImage)[gPatt.loop_num-1], gARTImage, gXsize*gYsize*AR_PIX_SIZE);
+	memcpy((gPatt.savedImage)[gPatt.loop_num-1], image, gXsize*gYsize*AR_PIX_SIZE);
 	printf("Grabbed image %d.\n", gPatt.loop_num);
 	arMalloc(gPatt.point[gPatt.loop_num-1], CALIB_COORD_T, gPatt.h_num*gPatt.v_num);
 }
@@ -248,8 +245,8 @@ static void eventCancel(void) {
 	// What was cancelled?
 	if (gStatus == 0) {
 		// Cancelled grabbing.
-		// Live video will not be needed from here on, so cleanup.
-		videoCleanup();
+		// Live video will not be needed from here on.
+		arVideoCapStop();
 		if (gPatt.loop_num == 0) {
 			// No images with all features identified, so quit.
 			Quit();
@@ -285,8 +282,8 @@ static void Mouse(int button, int state, int x, int y)
     unsigned char   *p;
     int             ssx, ssy, eex, eey;
     int             i, j, k;
-	
-	if (button == GLUT_RIGHT_BUTTON) {
+
+	if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
 		eventCancel();
 	} else if (button == GLUT_LEFT_BUTTON) {
 		if (state == GLUT_DOWN) {
@@ -326,7 +323,10 @@ static void Mouse(int button, int state, int x, int y)
 				checkFit();
 			}
 		} else if (state == GLUT_UP) {
-			if (gStatus == 1 && point_num < gPatt.h_num*gPatt.v_num) {
+			if (gStatus == 1
+				&& gDragStartX != -1 && gDragStartY != -1
+				&& gDragEndX != -1 && gDragEndY != -1
+				&& point_num < gPatt.h_num*gPatt.v_num) {
 				// Drag for rubber-bounding of a feature has finished. Begin identification
 				// of center of white region in gClipImage.
 				if (gDragStartX < gDragEndX) { ssx = gDragStartX; eex = gDragEndX; }
@@ -338,15 +338,15 @@ static void Mouse(int button, int state, int x, int y)
 				gPatt.point[gPatt.loop_num-1][point_num].y_coord = 0.0;
 				p = gClipImage;
 				k = 0;
-				for( j = 0; j < (eey-ssy+1); j++ ) {
-					for( i = 0; i < (eex-ssx+1); i++ ) {
+				for (j = 0; j < (eey-ssy+1); j++) {
+					for (i = 0; i < (eex-ssx+1); i++) {
 						gPatt.point[gPatt.loop_num-1][point_num].x_coord += i * *p;
 						gPatt.point[gPatt.loop_num-1][point_num].y_coord += j * *p;
 						k += *p;
 						p++;
 					}
 				}
-				if( k != 0 ) {
+				if (k != 0) {
 					gPatt.point[gPatt.loop_num-1][point_num].x_coord /= k;
 					gPatt.point[gPatt.loop_num-1][point_num].y_coord /= k;
 					gPatt.point[gPatt.loop_num-1][point_num].x_coord += ssx;
@@ -441,8 +441,13 @@ static void Keyboard(unsigned char key, int x, int y)
 
 static void Quit(void)
 {
+	if (gClipImage) {
+		free(gClipImage);
+		gClipImage = NULL;
+	}
 	if (gArglSettings) arglCleanup(gArglSettings);
 	if (gWin) glutDestroyWindow(gWin);
+	arVideoClose();
 	exit(0);
 }
 
@@ -510,10 +515,10 @@ static void beginOrtho2D(void) {
 }
 
 static void endOrtho2D(void) {
-	glPopMatrix();
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
 }
 
 static void Display(void)
@@ -526,12 +531,15 @@ static void Display(void)
 	glDrawBuffer(GL_BACK);
 	glClear(GL_COLOR_BUFFER_BIT);
     glDisable(GL_DEPTH_TEST);
+	glDisable(GL_LIGHTING);
+	glDisable(GL_TEXTURE_2D);
 	beginOrtho2D();
 	
     if (gStatus == 0) {
 		
 		arglDispImage(gARTImage, &gARTCparam, 1.0, gArglSettings);	// zoom = 1.0.
 		arVideoCapNext();
+		gARTImage = NULL;
 		
     } else if (gStatus == 1) {
 		
@@ -540,17 +548,18 @@ static void Display(void)
         for (i = 0; i < point_num; i++) {
             x = gPatt.point[gPatt.loop_num-1][i].x_coord;
             y = gPatt.point[gPatt.loop_num-1][i].y_coord;
-            glColor3f( 1.0, 0.0, 0.0 );
+            glColor3f(1.0f, 0.0f, 0.0f);
             glBegin(GL_LINES);
-			glVertex2f( x-10, (gYsize-1)-y );
-			glVertex2f( x+10, (gYsize-1)-y );
-			glVertex2f( x, (gYsize-1)-(y-10) );
-			glVertex2f( x, (gYsize-1)-(y+10) );
+			glVertex2d(x-10.0, (GLdouble)(gYsize-1)-y);
+			glVertex2d(x+10.0, (GLdouble)(gYsize-1)-y);
+			glVertex2d(x, (GLdouble)(gYsize-1)-(y-10.0));
+			glVertex2d(x, (GLdouble)(gYsize-1)-(y+10.0));
             glEnd();
         }
 		
 		// Draw the current mouse drag clipping area.
-        if (gDragStartX != -1 && gDragStartY != -1) {
+        if (gDragStartX != -1 && gDragStartY != -1
+			&& gDragEndX != -1 && gDragEndY != -1) {
 			if (gDragStartX < gDragEndX) { ssx = gDragStartX; eex = gDragEndX; }
 			else         { ssx = gDragEndX; eex = gDragStartX; }
 			if (gDragStartY < gDragEndY) { ssy = gDragStartY; eey = gDragEndY; }
@@ -558,16 +567,17 @@ static void Display(void)
 #if 1
 			if (gClipImage) {
 				glPixelZoom(1.0f, -1.0f);	// ARToolKit bitmap 0.0 is at upper-left, OpenGL bitmap 0.0 is at lower-left.
-				glRasterPos2f((GLfloat)ssx, (GLfloat)gYsize-1-ssy);
+				glRasterPos2f((GLfloat)(ssx), (GLfloat)(gYsize-1-ssy));
+				glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 				glDrawPixels(eex-ssx+1, eey-ssy+1, GL_LUMINANCE, GL_UNSIGNED_BYTE, gClipImage);
 			}
 #else
             glColor3f(0.0f, 0.0f, 1.0f);
             glBegin(GL_LINE_LOOP);
-			glVertex2f(gDragStartX, (gYsize-1)-gDragStartY);
-			glVertex2f(gDragEndX, (gYsize-1)-gDragStartY);
-			glVertex2f(gDragEndX, (gYsize-1)-gDragEndY);
-			glVertex2f(gDragStartX, (gYsize-1)-gDragEndY);
+			glVertex2i(gDragStartX, (gYsize-1)-gDragStartY);
+			glVertex2i(gDragEndX, (gYsize-1)-gDragStartY);
+			glVertex2i(gDragEndX, (gYsize-1)-gDragEndY);
+			glVertex2i(gDragStartX, (gYsize-1)-gDragEndY);
             glEnd();
 #endif
         }
@@ -578,12 +588,12 @@ static void Display(void)
         for (i = 0; i < gPatt.h_num*gPatt.v_num; i++) {
             x = gPatt.point[check_num][i].x_coord;
             y = gPatt.point[check_num][i].y_coord;
-            glColor3f( 1.0, 0.0, 0.0 );
+            glColor3f(1.0f, 0.0f, 0.0f);
             glBegin(GL_LINES);
-			glVertex2f( x-10, (gYsize-1)-y );
-			glVertex2f( x+10, (gYsize-1)-y );
-			glVertex2f( x, (gYsize-1)-(y-10) );
-			glVertex2f( x, (gYsize-1)-(y+10) );
+			glVertex2d(x-10.0, (GLdouble)(gYsize-1)-y);
+			glVertex2d(x+10.0, (GLdouble)(gYsize-1)-y);
+			glVertex2d(x, (GLdouble)(gYsize-1)-(y-10.0));
+			glVertex2d(x, (GLdouble)(gYsize-1)-(y+10.0));
             glEnd();
         }
         draw_line();
@@ -715,22 +725,22 @@ static void print_comment(int status)
     switch(status) {
         case 0:
 			printf("Press mouse button to grab first image,\n");
-			printf("or press [esc] to quit.\n");
+			printf("or press right mouse button or [esc] to quit.\n");
 			break;
         case 1:
 			printf("Press mouse button and drag mouse to rubber-bound features (%d x %d),\n", gPatt.h_num, gPatt.v_num);
-			printf("or press [esc] to cancel rubber-bounding & retry grabbing.\n");
+			printf("or press right mouse button or [esc] to cancel rubber-bounding & retry grabbing.\n");
 			break;
         case 2:
 			printf("Press mouse button to save feature positions,\n");
-			printf("or press [esc] to discard feature positions & retry grabbing.\n");
+			printf("or press right mouse button or [esc] to discard feature positions & retry grabbing.\n");
 			break;
         case 4:
 			printf("Press mouse button to grab next image,\n");
-			printf("or press [esc] to calculate distortion parameter.\n");
+			printf("or press right mouse button or [esc] to calculate distortion parameter.\n");
 			break;
         case 5:
-			printf("Press [esc] to calculate distortion parameter.\n");
+			printf("Press right mouse button or [esc] to calculate distortion parameter.\n");
 			break;
     }
 }
