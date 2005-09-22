@@ -205,7 +205,10 @@ int ar2VideoCapStop(AR2VideoParamT *vid)
 
 	vid->graphManager->CheckinMemoryBuffer(vid->g_Handle, true);
 
-	if(FAILED(vid->graphManager->Stop())) return (-1);
+	// PRL 2005-09-21: Commented out due to issue where stopping the
+	// media stream cuts off glut's periodic tasks, including functions
+	// registered with glutIdleFunc() and glutDisplayFunc();
+	//if(FAILED(vid->graphManager->Stop())) return (-1);
 
 	return (0);
 }
