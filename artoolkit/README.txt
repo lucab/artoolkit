@@ -20,13 +20,13 @@ ARToolKit is released under the GNU General Public License (GPL). Please read th
 
 The latest version of ARToolKit is available from http://sf.net/projects/artoolkit.
 
-ARToolKit is designed to build on Windows, Linux, SGI Irix, and Macintosh OS X platforms.
+ARToolKit is designed to build on Linux, Windows, Macintosh OS X, and SGI Irix platforms.
 
 This archive was assembled by:
     Philip Lamb
     HIT Lab NZ
     http://www.hitlabnz.org
-    2005-07-27
+    2005-09-21
 
 
 Building on Windows.
@@ -35,15 +35,15 @@ Building on Windows.
 Prerequisites:
  *  Microsoft Visual Studio .NET 2003 or Visual Studio 6, or a free development environment such as Cygwin.
  *  DSVideoLib-0.0.8b-win32. Download from http://sf.net/projects/artoolkit.
- *  GLUT. Download from http://www.opengl.org/resources/libraries/glut.html.
+ *  GLUT. Download from http://www.xmission.com/~nate/glut/glut-3.7.6-bin.zip.
  *  (Optional, for VRML renderer only) OpenVRML-0.14.3-win32. Download from http://sf.net/projects/artoolkit.
  
 Build steps:
 (1) Unpack the ARToolKit zip to a convenient location. This location will be referred to below as {ARToolKit}.
 (2) Unpack the DSVideoLib zip into {ARToolKit}. Make sure that the directory is named "DSVL".
 (3) Copy the files DSVL.dll and DSVLd.dll from {ARToolKit}\DSVL\bin into {ARToolKit}\bin.
-(4) Install the GLUT DLL into the Windows System32 folder, and the library and headers into the VS platform SDK folders.
-(5) Run the script {ARToolKit}\Configure.win32.bat to create include/AR/config.h.
+(4) Install GLUT, following the instructions in the README.win file inside the GLUT zip. See http://www.hitlabnz.org/forum/showpost.php?p=332&postcount=12 for more detail on how to install GLUT on Windows.
+(5) Run the script {ARToolKit}\Configure.win32.bat to create include\AR\config.h.
 (6) Open the ARToolKit.sln file (VS.NET) or ARToolkit.dsw file (VS6).
 (7) Build the toolkit.
 
@@ -89,7 +89,7 @@ Prerequisites:
 Building using the XCode IDE:
 (1) Unpack the archive to a convenient location using StuffIt Expander, and open the ARToolKit.xproj.
 (2) Builds include a script target "Configure" which enables accelerated and rectangular texturing by default. If you wish to change these defaults, manually run the ./Configure script from Terminal as for a command-line build.
-(3) Executables are built as bundled applications into ARToolKit/bin, with the Data/ directory copied into the application bundle so that they may be moved from this location to other locations.
+(3) Mac OS X XCode builds now build the examples as bundled applications. The contents of the "Data" directory are copied into the application bundle at build time. The applications can thus be moved from their build locations. The utilities are still (mostly) built as command-line tools.
 
 The VRML renderering library and example (libARvrml & simpleVRML) are optional builds:
 (4) Using FinkCommander, do a binary install of mozilla-dev, followed by an install of openvrml4-dev and openvrml-gl5-dev.
@@ -120,12 +120,13 @@ The VRML renderering library and example (libARvrml & simpleVRML) are optional b
 
 Changes in this release.
 ------------------------
-- Mac OS X video driver: QuickTime 6.4 is now required by default. (Support for earlier versions can be enabled at compile-time). 
+- Mac OS X video driver: QuickTime 6.4 is now required by default. (Support for  versions back to 4.0 can be enabled at compile-time if required). 
 - Mac OS X libARgsub and binaries which call it: fix for bug "GLUT Warning: glutInit being called a second time" by moving glutInit to main so that it is called before calling arVideoOpen.
 - Linux V4L video driver: Apply patch by Wayne Piekarski to auto-adjust video resolution.
-- Windows video driver: Uses updated (0.0.8b) DSVideoLib. Install of DirectX SDK, registering of filter no longer required. Many bug fixes.
-- gsub_lite: Added complete support for runtime selection of pixel format and rectangle/power-of-2 textures.
-- Mac OS X XCode builds are now bundled applications.
+- Windows video driver: Uses updated (0.0.8b) DSVideoLib. Building ARToolKit on Windows no longer requires installation of DirectX SDK, or registering of DS filters. It also includes many bug fixes.
+- gsub_lite: Added complete support for runtime specification of pixel format and rectangle/power-of-2 textures.
+- Mac OS X XCode builds now build the examples as bundled applications. The contents of the "Data" directory are copied into the application bundle at build time. The applications can thus be moved from their build locations. The utilities are still (mostly) built as command-line tools.
+- The calibration utilties have been rewritten to use gsub_lite. They should now run much more reliably across different platforms.
 
 Changes in earlier releases.
 ----------------------------
