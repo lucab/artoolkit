@@ -381,8 +381,8 @@ static void arglDispImageTexRectangle(ARUint8 *image, const ARParam *cparam, con
 		
 		// Specify the texture to OpenGL.
 		if (texmapScaleFactor == 2) {
-			// If arglTexmapMode is non-zero, pretend lines in the source image are
-			// twice as long as they are, so that glTexImage2D will read only the first
+			// If texmapScaleFactor is 2, pretend lines in the source image are
+			// twice as long as they are; glTexImage2D will read only the first
 			// half of each line, effectively discarding every second line in the source image.
 			glPixelStorei(GL_UNPACK_ROW_LENGTH, cparam->xsize*texmapScaleFactor);
 		}
@@ -659,8 +659,8 @@ static void arglDispImageTexPow2(ARUint8 *image, const ARParam *cparam, const fl
 	glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, FALSE);
 #endif // APPLE_TEXTURE_FAST_TRANSFER
 	if (texmapScaleFactor == 2) {
-		// If arglTexmapMode is non-zero, pretend lines in the source image are
-		// twice as long as they are, so that glTexImage2D will read only the first
+		// If texmapScaleFactor is 2, pretend lines in the source image are
+		// twice as long as they are; glTexImage2D will read only the first
 		// half of each line, effectively discarding every second line in the source image.
 		glPixelStorei(GL_UNPACK_ROW_LENGTH, cparam->xsize*texmapScaleFactor);
 	}
@@ -757,11 +757,11 @@ void arglDispImage(ARUint8 *image, const ARParam *cparam, const double zoom, ARG
 
 	// Prepare an orthographic projection, set camera position for 2D drawing, and save GL state.
 	glGetTexEnviv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, &texEnvModeSave); // Save GL texture environment mode.
-	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 	glGetBooleanv(GL_LIGHTING, &lightingSave);			// Save enabled state of lighting.
-	if (lightingSave) glDisable(GL_LIGHTING);
 	glGetBooleanv(GL_DEPTH_TEST, &depthTestSave);		// Save enabled state of depth test.
-	if (depthTestSave) glDisable(GL_DEPTH_TEST);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	if (lightingSave == GL_TRUE) glDisable(GL_LIGHTING);
+	if (depthTestSave == GL_TRUE) glDisable(GL_DEPTH_TEST);
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
@@ -777,9 +777,8 @@ void arglDispImage(ARUint8 *image, const ARParam *cparam, const double zoom, ARG
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
-	glEnable(GL_DEPTH_TEST);
-	if (depthTestSave) glEnable(GL_DEPTH_TEST);			// Restore enabled state of depth test.
-	if (lightingSave) glEnable(GL_LIGHTING);			// Restore enabled state of lighting.
+	if (lightingSave == GL_TRUE) glEnable(GL_DEPTH_TEST);			// Restore enabled state of depth test.
+	if (depthTestSave == GL_TRUE) glEnable(GL_LIGHTING);			// Restore enabled state of lighting.
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, texEnvModeSave); // Restore GL texture environment mode.
 	
 #ifdef ARGL_DEBUG
@@ -803,6 +802,7 @@ void arglDispImageStateful(ARUint8 *image, const ARParam *cparam, const double z
 		glDisable(GL_TEXTURE_2D);
 		glPixelZoom(zoomf, -zoomf);
 		glRasterPos2f(0.0f, cparam->ysize * zoomf);
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 		glDrawPixels(cparam->xsize, cparam->ysize, contextSettings->pixFormat, contextSettings->pixType, image);
 	} else {
 		// Check whether any settings in globals/parameters have changed.
