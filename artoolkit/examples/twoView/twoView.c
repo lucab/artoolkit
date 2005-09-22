@@ -480,6 +480,7 @@ static void DisplayPerContext(const int drawContextIndex)
 
 	// Select correct buffer for this context.
 	glDrawBuffer(GL_BACK);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	// Clear the buffers for new frame.
 	
 	arglDispImage(gContextsActive[drawContextIndex].ARTImage,
 				  &(gContextsActive[drawContextIndex].ARTCparam),
@@ -489,7 +490,6 @@ static void DisplayPerContext(const int drawContextIndex)
 	gContextsActive[drawContextIndex].ARTImage = NULL; // Image data is no longer valid after calling ar2VideoCapNext().
 	
 	if (gContextsActive[drawContextIndex].patt_found) {
-		glClear(GL_DEPTH_BUFFER_BIT);	// Clear the buffers for new frame.
 		
 		// Projection transformation.
 		arglCameraFrustum(&(gContextsActive[drawContextIndex].ARTCparam), VIEW_DISTANCE_MIN, VIEW_DISTANCE_MAX, p);
@@ -625,6 +625,7 @@ int main(int argc, char** argv)
 			fprintf(stderr, "main(): arglSetupForCurrentContext() returned error.\n");
 			exit(-1);
 		}
+		glEnable(GL_DEPTH_TEST);
 	}
 	arUtilTimerReset();
 
