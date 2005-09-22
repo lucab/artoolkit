@@ -118,7 +118,7 @@ static void DrawCube(void)
 				glColor3f (cube_vertex_colors[cube_faces[f][i]][0], cube_vertex_colors[cube_faces[f][i]][1], cube_vertex_colors[cube_faces[f][i]][2]);
 				glVertex3f(cube_vertices[cube_faces[f][i]][0] * fSize, cube_vertices[cube_faces[f][i]][1] * fSize, cube_vertices[cube_faces[f][i]][2] * fSize);
 			}
-				glEnd ();
+		glEnd ();
 		glColor3f (0.0, 0.0, 0.0);
 		for (f = 0; f < cube_num_faces; f++) {
 			glBegin (GL_LINE_LOOP);
@@ -379,14 +379,13 @@ static void Display(void)
 	
 	// Select correct buffer for this context.
 	glDrawBuffer(GL_BACK);
-
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear the buffers for new frame.
+	
 	arglDispImage(gARTImage, &gARTCparam, 1.0, gArglSettings);	// zoom = 1.0.
 	arVideoCapNext();
 	gARTImage = NULL; // Image data is no longer valid after calling arVideoCapNext().
 				
 	if (gPatt_found) {
-		glClear(GL_DEPTH_BUFFER_BIT);	// Clear the buffers for new frame.
-		
 		// Projection transformation.
 		arglCameraFrustum(&gARTCparam, VIEW_DISTANCE_MIN, VIEW_DISTANCE_MAX, p);
 		glMatrixMode(GL_PROJECTION);
@@ -469,6 +468,7 @@ int main(int argc, char** argv)
 		fprintf(stderr, "main(): arglSetupForCurrentContext() returned error.\n");
 		exit(-1);
 	}
+	glEnable(GL_DEPTH_TEST);
 	arUtilTimerReset();
 		
 	// Register GLUT event-handling callbacks.
