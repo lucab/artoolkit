@@ -757,10 +757,10 @@ void arglDispImage(ARUint8 *image, const ARParam *cparam, const double zoom, ARG
 
 	// Prepare an orthographic projection, set camera position for 2D drawing, and save GL state.
 	glGetTexEnviv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, &texEnvModeSave); // Save GL texture environment mode.
-	glGetBooleanv(GL_LIGHTING, &lightingSave);			// Save enabled state of lighting.
-	glGetBooleanv(GL_DEPTH_TEST, &depthTestSave);		// Save enabled state of depth test.
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	lightingSave = glIsEnabled(GL_LIGHTING);			// Save enabled state of lighting.
 	if (lightingSave == GL_TRUE) glDisable(GL_LIGHTING);
+	depthTestSave = glIsEnabled(GL_DEPTH_TEST);		// Save enabled state of depth test.
 	if (depthTestSave == GL_TRUE) glDisable(GL_DEPTH_TEST);
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
@@ -777,8 +777,8 @@ void arglDispImage(ARUint8 *image, const ARParam *cparam, const double zoom, ARG
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
-	if (lightingSave == GL_TRUE) glEnable(GL_DEPTH_TEST);			// Restore enabled state of depth test.
-	if (depthTestSave == GL_TRUE) glEnable(GL_LIGHTING);			// Restore enabled state of lighting.
+	if (depthTestSave == GL_TRUE) glEnable(GL_DEPTH_TEST);			// Restore enabled state of depth test.
+	if (lightingSave == GL_TRUE) glEnable(GL_LIGHTING);			// Restore enabled state of lighting.
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, texEnvModeSave); // Restore GL texture environment mode.
 	
 #ifdef ARGL_DEBUG
