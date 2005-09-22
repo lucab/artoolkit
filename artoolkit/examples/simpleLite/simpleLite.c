@@ -382,6 +382,7 @@ static void Display(void)
 
 	arglDispImage(gARTImage, &gARTCparam, 1.0, gArglSettings);	// zoom = 1.0.
 	arVideoCapNext();
+	gARTImage = NULL; // Image data is no longer valid after calling arVideoCapNext().
 				
 	if (gPatt_found) {
 		glClear(GL_DEPTH_BUFFER_BIT);	// Clear the buffers for new frame.

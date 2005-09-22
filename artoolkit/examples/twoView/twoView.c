@@ -486,6 +486,7 @@ static void DisplayPerContext(const int drawContextIndex)
 				  1.0,
 				  gContextsActive[drawContextIndex].arglSettings);	// zoom = 1.0.
 	ar2VideoCapNext(gContextsActive[drawContextIndex].ARTVideo);
+	gContextsActive[drawContextIndex].ARTImage = NULL; // Image data is no longer valid after calling ar2VideoCapNext().
 	
 	if (gContextsActive[drawContextIndex].patt_found) {
 		glClear(GL_DEPTH_BUFFER_BIT);	// Clear the buffers for new frame.
