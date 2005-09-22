@@ -64,7 +64,7 @@ static const bool		FLIPPED_defined =  true;		// deprecated
 #else
 static const bool		FLIPPED_defined =  false;		// deprecated
 #endif
-const long				frame_timeout_ms = INFINITE;	// set to INFINITE if arVideoGetImage()
+const long				frame_timeout_ms = 0L;	// set to INFINITE if arVideoGetImage()
 														// is called from a separate worker thread
 
 // -----------------------------------------------------------------------------------------------------------------
