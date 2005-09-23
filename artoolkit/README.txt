@@ -1,4 +1,4 @@
-Read me for ARToolKit-2.71.
+Read me for ARToolKit-2.71.1.
 =============================
 
 
@@ -14,7 +14,7 @@ Changes in earlier releases.
 
 About this archive.
 -------------------
-This archive contains the ARToolKit libraries, utilities and examples, version 2.71.
+This archive contains the ARToolKit libraries, utilities and examples, version 2.71.1.
 
 ARToolKit is released under the GNU General Public License (GPL). Please read the file COPYING.txt.
 
@@ -26,7 +26,7 @@ This archive was assembled by:
     Philip Lamb
     HIT Lab NZ
     http://www.hitlabnz.org
-    2005-09-21
+    2005-09-22
 
 
 Building on Windows.
@@ -60,7 +60,7 @@ Prerequisites:
  *  (Optional, for VRML renderer only) openvrml-0.14.3 and dependencies. Download from http://sf.net/projects/openvrml.
  
 Unpack the ARToolKit to a convenient location. The root of this location will be referred to below as {ARToolKit}:
-    tar zxvf ARToolKit-2.71.tgz
+    tar zxvf ARToolKit-2.71.1.tgz
 Configure and build. The Linux builds support video input using either Video4Linux, an IIDC-compliant or DV camera connected via IEEE-1394, or a Sony EyeToy camera connected via USB. You will be prompted as to which of the four Linux video drivers you wish to use at the Configure step.
     cd {ARToolKit}
     ./Configure
@@ -98,7 +98,7 @@ The VRML renderering library and example (libARvrml & simpleVRML) are optional b
 Alternately, ARToolKit can be built from the Terminal, using the Unix makefiles.
 Drop the ARToolKit into a convenient location, e.g. your Desktop, then open a Terminal window and type:
 	cd ~/Desktop
-	tar zxvf ARToolKit-2.71.tgz
+	tar zxvf ARToolKit-2.71.1.tgz
 Configure and build
 	cd ~/ARToolKit
 	./Configure
@@ -120,6 +120,14 @@ The VRML renderering library and example (libARvrml & simpleVRML) are optional b
 
 Changes in this release.
 ------------------------
+- Mac OS X XCode builds: An outdated version of the project file slipped into the 2.71 release. This has been corrected.
+- Mac OS X XCode builds: Version 2.1 of XCode is required. The obsolete XCode 2.0 .xcode project file has been removed. Users running on Mac OS X versions prior to 10.4 can still build using the command-line Makefiles.
+- A bug in libARgsub_lite incorrectly restored OpenGL state. Fixed. Also corrected for this fix in simpleLite and twoView examples.
+- Builds of calib_cparam now correctly link against libARgsub_lite.
+
+
+Changes in version 2.71 (2005-09-21).
+-------------------------------------
 - Mac OS X video driver: QuickTime 6.4 is now required by default. (Support for  versions back to 4.0 can be enabled at compile-time if required). 
 - Mac OS X libARgsub and binaries which call it: fix for bug "GLUT Warning: glutInit being called a second time" by moving glutInit to main so that it is called before calling arVideoOpen.
 - Linux V4L video driver: Apply patch by Wayne Piekarski to auto-adjust video resolution.
@@ -127,6 +135,7 @@ Changes in this release.
 - gsub_lite: Added complete support for runtime specification of pixel format and rectangle/power-of-2 textures.
 - Mac OS X XCode builds now build the examples as bundled applications. The contents of the "Data" directory are copied into the application bundle at build time. The applications can thus be moved from their build locations. The utilities are still (mostly) built as command-line tools.
 - The calibration utilties have been rewritten to use gsub_lite. They should now run much more reliably across different platforms.
+
 
 Changes in earlier releases.
 ----------------------------

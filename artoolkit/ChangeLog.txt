@@ -2,6 +2,25 @@ ARToolKit ChangeLog.
 ====================
 
 
+Changes in version 2.71.1 (2005-09-22).
+---------------------------------------
+- Mac OS X XCode builds: An outdated version of the project file slipped into the 2.71 release. This has been corrected.
+- Mac OS X XCode builds: Version 2.1 of XCode is required. The obsolete XCode 2.0 .xcode project file has been removed. Users running on Mac OS X versions prior to 10.4 can still build using the command-line Makefiles.
+- A bug in libARgsub_lite incorrectly restored OpenGL state. Fixed. Also corrected for this fix in simpleLite and twoView examples.
+- Builds of calib_cparam now correctly link against libARgsub_lite.
+
+
+Changes in version 2.71 (2005-09-21).
+-------------------------------------
+- Mac OS X video driver: QuickTime 6.4 is now required by default. (Support for  versions back to 4.0 can be enabled at compile-time if required). 
+- Mac OS X libARgsub and binaries which call it: fix for bug "GLUT Warning: glutInit being called a second time" by moving glutInit to main so that it is called before calling arVideoOpen.
+- Linux V4L video driver: Apply patch by Wayne Piekarski to auto-adjust video resolution.
+- Windows video driver: Uses updated (0.0.8b) DSVideoLib. Building ARToolKit on Windows no longer requires installation of DirectX SDK, or registering of DS filters. It also includes many bug fixes.
+- gsub_lite: Added complete support for runtime specification of pixel format and rectangle/power-of-2 textures.
+- Mac OS X XCode builds now build the examples as bundled applications. The contents of the "Data" directory are copied into the application bundle at build time. The applications can thus be moved from their build locations. The utilities are still (mostly) built as command-line tools.
+- The calibration utilties have been rewritten to use gsub_lite. They should now run much more reliably across different platforms.
+
+
 Changes in version 2.70.1 (2005-03-14).
 ---------------------------------------
 - Mac OS X video driver: support added for runtime specification of pixel format.
