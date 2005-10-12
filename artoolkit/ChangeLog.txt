@@ -2,6 +2,11 @@ ARToolKit ChangeLog.
 ====================
 
 
+Changes in this release (2005-10-11).
+-------------------------------------
+- Fixed line endings in MS Visual Studio 6 workspace (.dsw) file.
+
+
 Changes in version 2.71.1 (2005-09-22).
 ---------------------------------------
 - Mac OS X XCode builds: An outdated version of the project file slipped into the 2.71 release. This has been corrected.
