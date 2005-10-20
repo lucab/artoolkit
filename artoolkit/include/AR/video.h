@@ -1,5 +1,5 @@
 /*  --------------------------------------------------------------------------
- *	Copyright (c) 2004-2004 Philip Lamb (PRL) phil@eden.net.nz. All rights reserved.
+ *	Copyright (c) 2004-2005 Philip Lamb (PRL) phil@eden.net.nz. All rights reserved.
  * This file is part of ARToolKit.
  * 
  * ARToolKit is free software; you can redistribute it and/or modify
