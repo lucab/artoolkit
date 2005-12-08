@@ -1682,6 +1682,7 @@
 		788C83F0089AB8B1003E3825 /* simpleVRML-Info.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = "simpleVRML-Info.plist"; sourceTree = "<group>"; };
 		78A519D1089ABA58005197A0 /* twoView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = twoView.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		78A519E4089ABB07005197A0 /* twoView-Info.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = "twoView-Info.plist"; sourceTree = "<group>"; };
+		78C7675D091AF110004CF1D8 /* config.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
 		78D25397089AA0640064B793 /* loadMultiple.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = loadMultiple.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		78D253B8089AA1380064B793 /* loadMultiple-Info.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = "loadMultiple-Info.plist"; sourceTree = "<group>"; };
 		78D253E0089AA1D10064B793 /* modeTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = modeTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2322,6 +2323,7 @@
 			children = (
 				4A427D000484329800B56093 /* ar.h */,
 				4A427D010484329800B56093 /* arMulti.h */,
+				78C7675D091AF110004CF1D8 /* config.h */,
 				4A427D030484329800B56093 /* config.h.in */,
 				4A8EA5AF0658754A00ADDDD1 /* gsub_lite.h */,
 				4A427D040484329800B56093 /* gsub.h */,
@@ -6043,7 +6045,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				HEADER_SEARCH_PATHS = include;
-				INFOPLIST_FILE = "collideTest-Info.plist";
+				INFOPLIST_FILE = "examples/collide/collideTest-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
 				LIBRARY_SEARCH_PATHS = (
 					lib,
@@ -6889,6 +6891,7 @@
 				7872EF4C08E3186800DB266E /* Deployment */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Development;
 		};
 		7872EF6408E318C900DB266E /* Build configuration list for PBXNativeTarget "calib_cparam" */ = {
 			isa = XCConfigurationList;
@@ -6897,6 +6900,7 @@
 				7872EF6608E318C900DB266E /* Deployment */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Development;
 		};
 		7872EF7E08E3192200DB266E /* Build configuration list for PBXNativeTarget "calib_dist" */ = {
 			isa = XCConfigurationList;
@@ -6905,6 +6909,7 @@
 				7872EF8008E3192200DB266E /* Deployment */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Development;
 		};
 		7872EF9708E3196B00DB266E /* Build configuration list for PBXNativeTarget "mk_patt" */ = {
 			isa = XCConfigurationList;
@@ -6913,6 +6918,7 @@
 				7872EF9908E3196B00DB266E /* Deployment */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Development;
 		};
 		788A85B1089AA558001AB56A /* Build configuration list for PBXNativeTarget "optical" */ = {
 			isa = XCConfigurationList;
