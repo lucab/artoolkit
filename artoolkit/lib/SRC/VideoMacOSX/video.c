@@ -82,6 +82,7 @@
 #include <QuickTime/QuickTime.h>
 #include <pthread.h>
 #include <sys/time.h>
+#include <unistd.h>		// usleep()
 #include <AR/config.h>
 #include <AR/ar.h>
 #include <AR/video.h>
@@ -93,6 +94,7 @@
 
 #define AR_VIDEO_DEBUG_BUFFERCOPY					// Uncomment to have ar2VideoGetImage() return a copy of video pixel data.
 //#define AR_VIDEO_SUPPORT_OLD_QUICKTIME		// Uncomment to allow use of non-thread safe QuickTime (pre-6.4).
+//#define AR_VIDEO_DEBUG_FIX_DUAL_PROCESSOR_RACE
 
 #define AR_VIDEO_IDLE_INTERVAL_MILLISECONDS_MIN		20L
 #define AR_VIDEO_IDLE_INTERVAL_MILLISECONDS_MAX		100L
@@ -262,7 +264,11 @@ static ComponentResult MakeSequenceGrabChannel(SeqGrabComponent seqGrab, SGChann
     ComponentResult err = noErr;
     
     if ((err = SGNewChannel(seqGrab, VideoMediaType, psgchanVideo))) {
-		fprintf(stderr, "MakeSequenceGrabChannel(): SGNewChannel err=%ld\n", err);
+		if (err == couldntGetRequiredComponent) {
+			printf("ERROR: No camera connected. Please connect a camera and re-try.\n");
+		} else {
+			fprintf(stderr, "MakeSequenceGrabChannel(): SGNewChannel err=%ld\n", err);
+		}
 		goto endFunc;
 	}
 	
@@ -332,7 +338,7 @@ VdigGrabRef vdgAllocAndInit(const int grabber)
 	}
 	
 	if ((err = MakeSequenceGrabChannel(pVdg->seqGrab, &pVdg->sgchanVideo))) {
-		fprintf(stderr, "MakeSequenceGrabChannel err=%d.\n", err); 
+		if (err != couldntGetRequiredComponent) fprintf(stderr, "MakeSequenceGrabChannel err=%d.\n", err); 
 		free(pVdg);
 		return (NULL);
 	}
@@ -1025,13 +1031,15 @@ static void *ar2VideoInternalThread(void *arg)
 	
 	while (keepAlive && vdgIsGrabbing(vid->pVdg)) {
 		
+#ifndef AR_VIDEO_DEBUG_FIX_DUAL_PROCESSOR_RACE		
 		gettimeofday(&tv, NULL);
 		ts.tv_sec = tv.tv_sec;
-		ts.tv_nsec = tv.tv_usec * 1000 + vid->milliSecPerTimer * 1E6;
-		if (ts.tv_nsec >= 1E9) {
-			ts.tv_nsec -= 1E9;
+		ts.tv_nsec = tv.tv_usec * 1000 + vid->milliSecPerTimer * 1000000;
+		if (ts.tv_nsec >= 1000000000) {
+			ts.tv_nsec -= 1000000000;
 			ts.tv_sec += 1;
 		}
+#endif // AR_VIDEO_DEBUG_FIX_DUAL_PROCESSOR_RACE
 #ifdef AR_VIDEO_SUPPORT_OLD_QUICKTIME
 		// Get a lock to access QuickTime (for SGIdle()), but only if more than one thread is running.
 		if (gVidCount > 1) {
@@ -1109,13 +1117,22 @@ static void *ar2VideoInternalThread(void *arg)
 			// Mark status to indicate we have a frame available.
 			vid->status |= AR_VIDEO_STATUS_BIT_READY;			
 		}
-		
+#ifndef AR_VIDEO_DEBUG_FIX_DUAL_PROCESSOR_RACE		
 		err_i = pthread_cond_timedwait(&(vid->condition), &(vid->bufMutex), &ts);
 		if (err_i != 0 && err_i != ETIMEDOUT) {
 			fprintf(stderr, "ar2VideoInternalThread(): Error %d waiting for condition.\n", err_i);
 			keepAlive = 0;
 			break;
 		}
+#else
+		ar2VideoInternalUnlock(&(vid->bufMutex));
+		usleep(vid->milliSecPerTimer * 1000);
+		if (!ar2VideoInternalLock(&(vid->bufMutex))) {
+			fprintf(stderr, "ar2VideoInternalThread(): Unable to lock mutex, exiting.\n");
+			keepAlive = 0;
+			break;
+		}
+#endif // AR_VIDEO_DEBUG_FIX_DUAL_PROCESSOR_RACE
 		
 		pthread_testcancel();
 	}
@@ -1338,17 +1355,17 @@ AR2VideoParamT *ar2VideoOpen(char *config)
 	vid->grabber		= grabber;
 
 	if(!(vid->pVdg = vdgAllocAndInit(grabber))) {
-		fprintf(stderr, "ar2VideoOpen(): vdgAllocAndInit err=%ld\n", err);
+		fprintf(stderr, "ar2VideoOpen(): vdgAllocAndInit returned error.\n");
 		goto out1;
 	}
 	
 	if (err = vdgRequestSettings(vid->pVdg, showDialog, gVidCount)) {
-		fprintf(stderr, "ar2VideoOpen(): vdgRequestSettings err=%ld\n", err);
+		fprintf(stderr, "ar2VideoOpen(): vdgRequestSettings err=%ld.\n", err);
 		goto out2;
 	}
 	
 	if (err = vdgPreflightGrabbing(vid->pVdg)) {
-		fprintf(stderr, "ar2VideoOpen(): vdgPreflightGrabbing err=%ld\n", err);
+		fprintf(stderr, "ar2VideoOpen(): vdgPreflightGrabbing err=%ld.\n", err);
 		goto out2;
 	}
 	
@@ -1358,7 +1375,7 @@ AR2VideoParamT *ar2VideoOpen(char *config)
 								&vid->milliSecPerFrame,
 								&vid->frameRate,
 								&vid->bytesPerSecond)) {
-		fprintf(stderr, "ar2VideoOpen(): vdgGetDataRate err=%ld\n", err);
+		fprintf(stderr, "ar2VideoOpen(): vdgGetDataRate err=%ld.\n", err);
 		//goto out2; 
 	}
 	if (err == noErr) {
@@ -1388,7 +1405,7 @@ AR2VideoParamT *ar2VideoOpen(char *config)
 	}
 	
 	// Report video size and compression type.
-	fprintf(stdout, "Video cType is %c%c%c%c, size is %dx%d.\n",
+	printf("Video cType is %c%c%c%c, size is %dx%d.\n",
 			(char)(((*(vid->vdImageDesc))->cType >> 24) & 0xFF),
 			(char)(((*(vid->vdImageDesc))->cType >> 16) & 0xFF),
 			(char)(((*(vid->vdImageDesc))->cType >>  8) & 0xFF),
@@ -1745,17 +1762,17 @@ ARUint8 *ar2VideoGetImage(AR2VideoParamT *vid)
 {
 	ARUint8 *pix = NULL;
 
-	// Need lock to guarantee this thread exclusive access to vid.
-	if (!ar2VideoInternalLock(&(vid->bufMutex))) {
-		fprintf(stderr, "ar2VideoGetImage(): Unable to lock mutex.\n");
-		return (NULL);
-	}
-	
 	// ar2VideoGetImage() used to block waiting for a frame.
 	// This locked the OpenGL frame rate to the camera frame rate.
 	// Now, if no frame is currently available then we won't wait around for one.
 	// So, do we have a new frame from the sequence grabber?	
 	if (vid->status & AR_VIDEO_STATUS_BIT_READY) {
+		
+		// Need lock to guarantee this thread exclusive access to vid.
+		if (!ar2VideoInternalLock(&(vid->bufMutex))) {
+			fprintf(stderr, "ar2VideoGetImage(): Unable to lock mutex.\n");
+			return (NULL);
+		}
 		
 		//fprintf(stderr, "For vid @ %p got frame %ld.\n", vid, vid->frameCount);
 		
@@ -1782,11 +1799,12 @@ ARUint8 *ar2VideoGetImage(AR2VideoParamT *vid)
 #endif // AR_VIDEO_DEBUG_BUFFERCOPY
 
 		vid->status &= ~AR_VIDEO_STATUS_BIT_READY; // Clear ready bit.
+		
+		if (!ar2VideoInternalUnlock(&(vid->bufMutex))) {
+			fprintf(stderr, "ar2VideoGetImage(): Unable to unlock mutex.\n");
+			return (NULL);
+		}
 	}
 	
-	if (!ar2VideoInternalUnlock(&(vid->bufMutex))) {
-		fprintf(stderr, "ar2VideoGetImage(): Unable to unlock mutex.\n");
-		return (NULL);
-	}
 	return (pix);
 }
