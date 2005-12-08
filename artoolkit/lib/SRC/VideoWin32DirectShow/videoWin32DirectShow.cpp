@@ -34,8 +34,8 @@
  *	Copyright (c) 2004-2005 Philip Lamb (PRL) phil@eden.net.nz. All rights reserved.
  *	
  *	Rev		Date		Who		Changes
- *	2.6.8	2004-07-20	PRL		Rewrite for ARToolKit 2.68.2
- *	2.8.0	2004-07-20	PRL		Incorporate DSVL-0.0.8b
+ *	2.68.2	2004-07-20	PRL		Rewrite for ARToolKit 2.68.2
+ *	2.71.0	2005-08-05	PRL		Incorporate DSVL-0.0.8b
  *
  */
 

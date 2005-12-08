@@ -38,19 +38,20 @@
 #ifndef AR_VIDEO_WIN32_DIRECTSHOW_H
 #define AR_VIDEO_WIN32_DIRECTSHOW_H
 
-#ifdef  __cplusplus
-extern "C" {
-#endif
-
 #include <AR/config.h>
 #include <AR/ar.h>
 
 #include <stdio.h>
 #include <string.h>
 
+#define AR_VIDEO_WIN32_DIRECTSHOW_2_71
+
+#ifdef  __cplusplus
+extern "C" {
+#endif
+	
 typedef struct _AR2VideoBufferT AR2VideoBufferT;
 typedef struct _AR2VideoParamT AR2VideoParamT;
-
 
 #ifdef  __cplusplus
 }
