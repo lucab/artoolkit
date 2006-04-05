@@ -117,7 +117,7 @@ static void init( void )
 
     if( arVideoOpen(vconf) < 0 ) exit(0);
     if( arVideoInqSize(&xsize, &ysize) < 0 ) exit(0);
-    arMalloc( image, ARUint8, xsize*ysize*AR_PIX_SIZE );
+    arMalloc( image, ARUint8, xsize*ysize*AR_PIX_SIZE_DEFAULT );
     printf("Image size (x,y) = (%d,%d)\n", xsize, ysize);
 
     arParamChangeSize( &wparam, xsize, ysize, &param );
@@ -189,7 +189,7 @@ static void mainLoop(void)
         arUtilSleep(2);
         return;
     }
-    img_copy( dataPtr, image, xsize*ysize*AR_PIX_SIZE );
+    img_copy( dataPtr, image, xsize*ysize*AR_PIX_SIZE_DEFAULT );
     arVideoCapNext();
 
     if( arDetectMarker(image, thresh, &marker_info, &marker_num) < 0 ) {

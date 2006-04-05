@@ -1247,21 +1247,21 @@ AR2VideoParamT *ar2VideoOpen(char *config)
 	// If no pixel format was specified in command-line options,
 	// assign the one specified at compile-time as the default.
 	if (!pixFormat) {
-#if defined(AR_PIX_FORMAT_2vuy)
+#if (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_2vuy)
 		pixFormat = k2vuyPixelFormat;		// k422YpCbCr8CodecType, k422YpCbCr8PixelFormat
-#elif defined(AR_PIX_FORMAT_yuvs)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_yuvs)
 		pixFormat = kYUVSPixelFormat;		// kComponentVideoUnsigned
-#elif defined(AR_PIX_FORMAT_RGB)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGB)
 		pixFormat = k24RGBPixelFormat;
-#elif defined(AR_PIX_FORMAT_BGR)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGR)
 		pixFormat = k24BGRPixelFormat;
-#elif defined(AR_PIX_FORMAT_ARGB)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ARGB)
 		pixFormat = k32ARGBPixelFormat;
-#elif defined(AR_PIX_FORMAT_RGBA)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGBA)
 		pixFormat = k32RGBAPixelFormat;
-#elif defined(AR_PIX_FORMAT_ABGR)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ABGR)
 		pixFormat = k32ABGRPixelFormat;
-#elif defined(AR_PIX_FORMAT_BGRA)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGRA)
 		pixFormat = k32BGRAPixelFormat;
 #else
 #  error Unsupported default pixel format specified in config.h.

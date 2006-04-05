@@ -456,7 +456,7 @@ AR2VideoParamT *ar2VideoOpen( char *config )
         fprintf( stderr, "unable to set camera trigger mode (ignored)\n");
     }
   
-    arMalloc( vid->image, ARUint8, (vid->camera.frame_width * vid->camera.frame_height * AR_PIX_SIZE) );
+    arMalloc( vid->image, ARUint8, (vid->camera.frame_width * vid->camera.frame_height * AR_PIX_SIZE_DEFAULT) );
 
     return vid;
 }

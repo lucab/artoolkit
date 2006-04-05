@@ -17,6 +17,7 @@
  *	2.7.7	2005-07-26	PRL		Added cleanup routines for texture stuff.
  *	2.7.8	2005-07-29	PRL		Added distortion compensation enabling/disabling.
  *	2.7.9	2005-08-15	PRL		Added complete support for runtime selection of pixel format and rectangle/power-of-2 textures.
+ *	2.8.0	2006-04-04	PRL		Move pixel format constants into toolkit global namespace (in config.h).
  *
  */
 /*
@@ -684,25 +685,11 @@ ARGL_CONTEXT_SETTINGS_REF arglSetupForCurrentContext(void)
 	
 	contextSettings = (ARGL_CONTEXT_SETTINGS_REF)calloc(1, sizeof(ARGL_CONTEXT_SETTINGS));
 	// Use default pixel format handed to us by <AR/config.h>.
-#if defined(AR_PIX_FORMAT_RGBA)
-	arglPixelFormatSet(contextSettings, ARGL_PIX_FORMAT_RGBA);
-#elif defined(AR_PIX_FORMAT_ABGR)
-	arglPixelFormatSet(contextSettings, ARGL_PIX_FORMAT_ABGR);
-#elif defined(AR_PIX_FORMAT_BGRA)
-	arglPixelFormatSet(contextSettings, ARGL_PIX_FORMAT_BGRA);
-#elif defined(AR_PIX_FORMAT_ARGB)
-	arglPixelFormatSet(contextSettings, ARGL_PIX_FORMAT_ARGB);
-#elif defined(AR_PIX_FORMAT_RGB)
-	arglPixelFormatSet(contextSettings, ARGL_PIX_FORMAT_RGB);
-#elif defined(AR_PIX_FORMAT_BGR)
-	arglPixelFormatSet(contextSettings, ARGL_PIX_FORMAT_BGR);
-#elif defined(AR_PIX_FORMAT_2vuy)
-	arglPixelFormatSet(contextSettings, ARGL_PIX_FORMAT_2vuy);
-#elif defined(AR_PIX_FORMAT_yuvs)
-	arglPixelFormatSet(contextSettings, ARGL_PIX_FORMAT_yuvs);
-#else
-#  error Unknown pixel format defined in config.h.
-#endif
+	fprintf(stderr, "pix fmt is %d \n", AR_PIXEL_FORMAT_DEFAULT);
+	if (!arglPixelFormatSet(contextSettings, AR_PIXEL_FORMAT_DEFAULT)) {
+		fprintf(stderr, "Unknown default pixel format defined in config.h.\n");
+		return (NULL);
+	}
 	return (contextSettings);
 }
 
@@ -837,53 +824,53 @@ int arglDistortionCompensationGet(ARGL_CONTEXT_SETTINGS_REF contextSettings, int
 	return (TRUE);
 }
 
-int arglPixelFormatSet(ARGL_CONTEXT_SETTINGS_REF contextSettings, ARGL_PIX_FORMAT format)
+int arglPixelFormatSet(ARGL_CONTEXT_SETTINGS_REF contextSettings, AR_PIXEL_FORMAT format)
 {
 	if (!contextSettings) return (FALSE);
 	switch (format) {
-		case ARGL_PIX_FORMAT_RGBA:
+		case AR_PIXEL_FORMAT_RGBA:
 			contextSettings->pixIntFormat = GL_RGBA;
 			contextSettings->pixFormat = GL_RGBA;
 			contextSettings->pixType = GL_UNSIGNED_BYTE;
 			contextSettings->pixSize = 4;
 			break;
-		case ARGL_PIX_FORMAT_ABGR:	// SGI.
+		case AR_PIXEL_FORMAT_ABGR:	// SGI.
 			contextSettings->pixIntFormat = GL_RGBA;
 			contextSettings->pixFormat = GL_ABGR_EXT;
 			contextSettings->pixType = GL_UNSIGNED_BYTE;
 			contextSettings->pixSize = 4;
 			break;
-		case ARGL_PIX_FORMAT_BGRA:	// Windows.
+		case AR_PIXEL_FORMAT_BGRA:	// Windows.
 			contextSettings->pixIntFormat = GL_RGBA;
 			contextSettings->pixFormat = GL_BGRA;
 			contextSettings->pixType = GL_UNSIGNED_BYTE;
 			contextSettings->pixSize = 4;
 			break;
-		case ARGL_PIX_FORMAT_ARGB:	// Mac.
+		case AR_PIXEL_FORMAT_ARGB:	// Mac.
 			contextSettings->pixIntFormat = GL_RGBA;
 			contextSettings->pixFormat = GL_BGRA;
 			contextSettings->pixType = GL_UNSIGNED_INT_8_8_8_8_REV;
 			contextSettings->pixSize = 4;
 			break;
-		case ARGL_PIX_FORMAT_RGB:
+		case AR_PIXEL_FORMAT_RGB:
 			contextSettings->pixIntFormat = GL_RGB;
 			contextSettings->pixFormat = GL_RGB;
 			contextSettings->pixType = GL_UNSIGNED_BYTE;
 			contextSettings->pixSize = 3;
 			break;
-		case ARGL_PIX_FORMAT_BGR:
+		case AR_PIXEL_FORMAT_BGR:
 			contextSettings->pixIntFormat = GL_RGB;
 			contextSettings->pixFormat = GL_BGR;
 			contextSettings->pixType = GL_UNSIGNED_BYTE;
 			contextSettings->pixSize = 3;
 			break;
-		case ARGL_PIX_FORMAT_2vuy:
+		case AR_PIXEL_FORMAT_2vuy:
 			contextSettings->pixIntFormat = GL_RGB;
 			contextSettings->pixFormat = GL_YCBCR_422_APPLE;
 			contextSettings->pixType = GL_UNSIGNED_SHORT_8_8_REV_APPLE;
 			contextSettings->pixSize = 2;
 			break;
-		case ARGL_PIX_FORMAT_yuvs:
+		case AR_PIXEL_FORMAT_yuvs:
 			contextSettings->pixIntFormat = GL_RGB;
 			contextSettings->pixFormat = GL_YCBCR_422_APPLE;
 			contextSettings->pixType = GL_UNSIGNED_SHORT_8_8_APPLE;
@@ -897,34 +884,34 @@ int arglPixelFormatSet(ARGL_CONTEXT_SETTINGS_REF contextSettings, ARGL_PIX_FORMA
 	return (TRUE);
 }
 
-int arglPixelFormatGet(ARGL_CONTEXT_SETTINGS_REF contextSettings, ARGL_PIX_FORMAT *format, int *size)
+int arglPixelFormatGet(ARGL_CONTEXT_SETTINGS_REF contextSettings, AR_PIXEL_FORMAT *format, int *size)
 {
 	if (!contextSettings) return (FALSE);
 	switch (contextSettings->pixFormat) {
 		case GL_RGBA:
-			*format = ARGL_PIX_FORMAT_RGBA;
+			*format = AR_PIXEL_FORMAT_RGBA;
 			*size = 4;
 			break;
 		case GL_ABGR_EXT:
-			*format = ARGL_PIX_FORMAT_ABGR;
+			*format = AR_PIXEL_FORMAT_ABGR;
 			*size = 4;
 			break;
 		case GL_BGRA:
-			if (contextSettings->pixType == GL_UNSIGNED_BYTE) *format = ARGL_PIX_FORMAT_BGRA;
-			else *format = ARGL_PIX_FORMAT_ARGB;
+			if (contextSettings->pixType == GL_UNSIGNED_BYTE) *format = AR_PIXEL_FORMAT_BGRA;
+			else *format = AR_PIXEL_FORMAT_ARGB;
 			*size = 4;
 			break;
 		case GL_RGB:
-			*format = ARGL_PIX_FORMAT_RGB;
+			*format = AR_PIXEL_FORMAT_RGB;
 			*size = 3;
 			break;
 		case GL_BGR:
-			*format = ARGL_PIX_FORMAT_BGR;
+			*format = AR_PIXEL_FORMAT_BGR;
 			*size = 3;
 			break;
 		case GL_YCBCR_422_APPLE:
-			if (contextSettings->pixType == GL_UNSIGNED_SHORT_8_8_REV_APPLE) *format = ARGL_PIX_FORMAT_2vuy;
-			else *format = ARGL_PIX_FORMAT_yuvs;
+			if (contextSettings->pixType == GL_UNSIGNED_SHORT_8_8_REV_APPLE) *format = AR_PIXEL_FORMAT_2vuy;
+			else *format = AR_PIXEL_FORMAT_yuvs;
 			*size = 2;
 			break;
 		default:

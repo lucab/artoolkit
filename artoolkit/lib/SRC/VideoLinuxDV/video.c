@@ -23,12 +23,12 @@ static AR2VideoParamT   *gVid = NULL;
 
 static void ar2VideoCapture(AR2VideoParamT *vid);
 static int ar2VideoRawISOHandler(raw1394handle_t handle, int channel, size_t length, quadlet_t *data);
-static int ar2VideBusResetHandler(raw1394handle_t handle, unsigned int generation);
+static int ar2VideoBusResetHandler(raw1394handle_t handle, unsigned int generation);
 static int ar2VideoBufferInit(AR2VideoBufferT *buffer, int size);
 static int ar2VideoBufferClose(AR2VideoBufferT *buffer);
-static int ar2VideoBufferRaed(AR2VideoBufferT *buffer, ARUint8 *dest, int size, int flag);
+static int ar2VideoBufferRead(AR2VideoBufferT *buffer, ARUint8 *dest, int size, int flag);
 static int ar2VideoBufferWrite(AR2VideoBufferT *buffer, ARUint8 *src, int size, int flag);
-static ARUint8 *ar2VideoBufferRaedDv(AR2VideoParamT *vid);
+static ARUint8 *ar2VideoBufferReadDV(AR2VideoParamT *vid);
 
 int arVideoDispOption( void )
 {
@@ -237,7 +237,7 @@ int ar2VideoClose( AR2VideoParamT *vid )
 static void ar2VideoCapture(AR2VideoParamT *vid)
 { 
     raw1394_set_userdata(vid->handle, vid);
-    raw1394_set_bus_reset_handler(vid->handle, ar2VideBusResetHandler);
+    raw1394_set_bus_reset_handler(vid->handle, ar2VideoBusResetHandler);
     raw1394_set_iso_handler(vid->handle, 63, ar2VideoRawISOHandler);
     if( raw1394_start_iso_rcv(vid->handle, 63) < 0 ) {
         perror("raw1394 - couldn't start iso receive");
@@ -299,7 +299,7 @@ static int ar2VideoRawISOHandler(raw1394handle_t handle, int channel, size_t len
     return len;
 }
 
-static int ar2VideBusResetHandler(raw1394handle_t handle, unsigned int generation)
+static int ar2VideoBusResetHandler(raw1394handle_t handle, unsigned int generation)
 {
     static int       i = 0;
     AR2VideoParamT  *vid = (AR2VideoParamT *)raw1394_get_userdata(handle);
@@ -315,10 +315,10 @@ static int ar2VideBusResetHandler(raw1394handle_t handle, unsigned int generatio
 
 ARUint8 *ar2VideoGetImage( AR2VideoParamT *vid )
 {
-    return ar2VideoBufferRaedDv( vid );
+    return ar2VideoBufferReadDV( vid );
 }
 
-static ARUint8 *ar2VideoBufferRaedDv(AR2VideoParamT *vid)
+static ARUint8 *ar2VideoBufferReadDV(AR2VideoParamT *vid)
 {
     static int     f = 1;
     ARUint8       *tmp;
@@ -361,12 +361,12 @@ static ARUint8 *ar2VideoBufferRaedDv(AR2VideoParamT *vid)
         f = 0;
     }
 
-    pitches[0] = 720*AR_PIX_SIZE;
+    pitches[0] = 720*AR_PIX_SIZE_DEFAULT;
     pixels[0] =  vid->image;
-#ifdef AR_PIX_FORMAT_RGB
+#ifdef AR_PIXEL_FORMAT_DEFAULT_RGB
     dv_decode_full_frame(vid->dv_decoder, vid->buffer->buff_out, e_dv_color_rgb, pixels, pitches );
 #endif
-#ifdef AR_PIX_FORMAT_BGRA
+#ifdef AR_PIXEL_FORMAT_DEFAULT_BGRA
     dv_decode_full_frame(vid->dv_decoder, vid->buffer->buff_out, e_dv_color_bgr0, pixels, pitches );
 #endif
 
@@ -433,7 +433,7 @@ static int ar2VideoBufferClose(AR2VideoBufferT *buffer)
     return 0;
 }
 
-static int ar2VideoBufferRaed(AR2VideoBufferT *buffer, ARUint8 *dest, int size, int flag)
+static int ar2VideoBufferRead(AR2VideoBufferT *buffer, ARUint8 *dest, int size, int flag)
 {
     ARUint8   *tmp;
     int        read_size;

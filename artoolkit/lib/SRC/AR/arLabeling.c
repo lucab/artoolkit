@@ -220,33 +220,33 @@ static ARInt16 *labeling2( ARUint8 *image, int thresh,
     wk_max = 0;
     pnt2 = &(l_image[lxsize+1]);
     if( arImageProcMode == AR_IMAGE_PROC_IN_HALF ) {
-        pnt = &(image[(arImXsize*2+2)*AR_PIX_SIZE]);
-        poff = AR_PIX_SIZE*2;
+        pnt = &(image[(arImXsize*2+2)*AR_PIX_SIZE_DEFAULT]);
+        poff = AR_PIX_SIZE_DEFAULT*2;
     }
     else {
-        pnt = &(image[(arImXsize+1)*AR_PIX_SIZE]);
-        poff = AR_PIX_SIZE;
+        pnt = &(image[(arImXsize+1)*AR_PIX_SIZE_DEFAULT]);
+        poff = AR_PIX_SIZE_DEFAULT;
     }
     for(j = 1; j < lysize-1; j++, pnt+=poff*2, pnt2+=2) {
         for(i = 1; i < lxsize-1; i++, pnt+=poff, pnt2++) {
-#if defined(AR_PIX_FORMAT_ARGB)
+#if (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ARGB)
             if( *(pnt+1) + *(pnt+2) + *(pnt+3) <= thresh ) {
-#elif defined(AR_PIX_FORMAT_ABGR)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ABGR)
             if( *(pnt+1) + *(pnt+2) + *(pnt+3) <= thresh ) {
-#elif defined(AR_PIX_FORMAT_BGRA)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGRA)
             if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresh ) {
-#elif defined(AR_PIX_FORMAT_BGR)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGR)
             if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresh ) {
-#elif defined(AR_PIX_FORMAT_RGBA)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGBA)
             if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresh ) {
-#elif defined(AR_PIX_FORMAT_RGB)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGB)
             if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresh ) {
-#elif defined(AR_PIX_FORMAT_2vuy)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_2vuy)
 			if( *(pnt+1) * 3 <= thresh ) {
-#elif defined(AR_PIX_FORMAT_yuvs)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_yuvs)
 			if( *(pnt+0) * 3 <= thresh ) {
 #else
-#  error Unknown pixel format defined in config.h
+#  error Unknown default pixel format defined in config.h
 #endif
                 pnt1 = &(pnt2[-lxsize]);
                 if( *pnt1 > 0 ) {
@@ -421,7 +421,7 @@ static ARInt16 *labeling2( ARUint8 *image, int thresh,
                 *pnt2 = 0;
             }
         }
-        if( arImageProcMode == AR_IMAGE_PROC_IN_HALF ) pnt += arImXsize*AR_PIX_SIZE;
+        if( arImageProcMode == AR_IMAGE_PROC_IN_HALF ) pnt += arImXsize*AR_PIX_SIZE_DEFAULT;
     }
 
     j = 1;
@@ -510,11 +510,11 @@ static ARInt16 *labeling3( ARUint8 *image, int thresh,
             while( texXsize < arImXsize ) texXsize *= 2;
             if( texXsize > 512 ) texXsize = 512;
             while( texYsize < arImYsize ) texYsize *= 2;
-            arMalloc( arImageL, ARUint8, texXsize*texYsize*AR_PIX_SIZE );
+            arMalloc( arImageL, ARUint8, texXsize*texYsize*AR_PIX_SIZE_DEFAULT );
 #else
-            arMalloc( arImageL, ARUint8, arImXsize*arImYsize*AR_PIX_SIZE );
+            arMalloc( arImageL, ARUint8, arImXsize*arImYsize*AR_PIX_SIZE_DEFAULT );
 #endif
-            put_zero( arImageL, lxsize*lysize*AR_PIX_SIZE );
+            put_zero( arImageL, lxsize*lysize*AR_PIX_SIZE_DEFAULT );
             arImage = arImageL;
         }
     }
@@ -533,11 +533,11 @@ static ARInt16 *labeling3( ARUint8 *image, int thresh,
             while( texXsize < arImXsize ) texXsize *= 2;
             if( texXsize > 512 ) texXsize = 512;
             while( texYsize < arImYsize ) texYsize *= 2;
-            arMalloc( arImageR, ARUint8, texXsize*texYsize*AR_PIX_SIZE );
+            arMalloc( arImageR, ARUint8, texXsize*texYsize*AR_PIX_SIZE_DEFAULT );
 #else
-            arMalloc( arImageR, ARUint8, arImXsize*arImYsize*AR_PIX_SIZE );
+            arMalloc( arImageR, ARUint8, arImXsize*arImYsize*AR_PIX_SIZE_DEFAULT );
 #endif
-            put_zero( arImageR, lxsize*lysize*AR_PIX_SIZE );
+            put_zero( arImageR, lxsize*lysize*AR_PIX_SIZE_DEFAULT );
         }
     }
 
@@ -557,44 +557,44 @@ static ARInt16 *labeling3( ARUint8 *image, int thresh,
 
     wk_max = 0;
     pnt2 = &(l_image[lxsize+1]);
-    if( LorR ) dpnt = &(arImageL[(lxsize+1)*AR_PIX_SIZE]);
-    else       dpnt = &(arImageR[(lxsize+1)*AR_PIX_SIZE]);
+    if( LorR ) dpnt = &(arImageL[(lxsize+1)*AR_PIX_SIZE_DEFAULT]);
+    else       dpnt = &(arImageR[(lxsize+1)*AR_PIX_SIZE_DEFAULT]);
     if( arImageProcMode == AR_IMAGE_PROC_IN_HALF ) {
-        pnt = &(image[(arImXsize*2+2)*AR_PIX_SIZE]);
-        poff = AR_PIX_SIZE*2;
+        pnt = &(image[(arImXsize*2+2)*AR_PIX_SIZE_DEFAULT]);
+        poff = AR_PIX_SIZE_DEFAULT*2;
     }
     else {
-        pnt = &(image[(arImXsize+1)*AR_PIX_SIZE]);
-        poff = AR_PIX_SIZE;
+        pnt = &(image[(arImXsize+1)*AR_PIX_SIZE_DEFAULT]);
+        poff = AR_PIX_SIZE_DEFAULT;
     }
-    for(j = 1; j < lysize-1; j++, pnt+=poff*2, pnt2+=2, dpnt+=AR_PIX_SIZE*2) {
-        for(i = 1; i < lxsize-1; i++, pnt+=poff, pnt2++, dpnt+=AR_PIX_SIZE) {
-#if defined(AR_PIX_FORMAT_ARGB)
+    for(j = 1; j < lysize-1; j++, pnt+=poff*2, pnt2+=2, dpnt+=AR_PIX_SIZE_DEFAULT*2) {
+        for(i = 1; i < lxsize-1; i++, pnt+=poff, pnt2++, dpnt+=AR_PIX_SIZE_DEFAULT) {
+#if (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ARGB)
             if( *(pnt+1) + *(pnt+2) + *(pnt+3) <= thresh ) {
                 *(dpnt+1) = *(dpnt+2) = *(dpnt+3) = 255;
-#elif defined(AR_PIX_FORMAT_ABGR)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ABGR)
             if( *(pnt+1) + *(pnt+2) + *(pnt+3) <= thresh ) {
                 *(dpnt+1) = *(dpnt+2) = *(dpnt+3) = 255;
-#elif defined(AR_PIX_FORMAT_BGRA)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGRA)
             if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresh ) {
                 *(dpnt+0) = *(dpnt+1) = *(dpnt+2) = 255;
-#elif defined(AR_PIX_FORMAT_BGR)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGR)
             if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresh ) {
                 *(dpnt+0) = *(dpnt+1) = *(dpnt+2) = 255;
-#elif defined(AR_PIX_FORMAT_RGBA)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGBA)
             if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresh ) {
                 *(dpnt+0) = *(dpnt+1) = *(dpnt+2) = 255;
-#elif defined(AR_PIX_FORMAT_RGB)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGB)
             if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresh ) {
                 *(dpnt+0) = *(dpnt+1) = *(dpnt+2) = 255;
-#elif defined(AR_PIX_FORMAT_2vuy)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_2vuy)
 			if( *(pnt+1) * 3 <= thresh ) {
 				*(dpnt+1) = 255;
-#elif defined(AR_PIX_FORMAT_yuvs)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_yuvs)
 			if( *(pnt+0) * 3 <= thresh ) {
 				*(dpnt+0) = 255;
 #else
-#  error Unknown pixel format defined in config.h
+#  error Unknown default pixel format defined in config.h
 #endif
 						pnt1 = &(pnt2[-lxsize]);
                 if( *pnt1 > 0 ) {
@@ -695,28 +695,28 @@ static ARInt16 *labeling3( ARUint8 *image, int thresh,
             }
             else {
                 *pnt2 = 0;
-#if defined(AR_PIX_FORMAT_ARGB)
+#if (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ARGB)
                 *(dpnt+1) = *(dpnt+2) = *(dpnt+3) = 0;
-#elif defined(AR_PIX_FORMAT_ABGR)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ABGR)
                 *(dpnt+1) = *(dpnt+2) = *(dpnt+3) = 0;
-#elif defined(AR_PIX_FORMAT_BGRA)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGRA)
                 *(dpnt+0) = *(dpnt+1) = *(dpnt+2) = 0;
-#elif defined(AR_PIX_FORMAT_BGR)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGR)
                 *(dpnt+0) = *(dpnt+1) = *(dpnt+2) = 0;
-#elif defined(AR_PIX_FORMAT_RGBA)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGBA)
                 *(dpnt+0) = *(dpnt+1) = *(dpnt+2) = 0;
-#elif defined(AR_PIX_FORMAT_RGB)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGB)
                 *(dpnt+0) = *(dpnt+1) = *(dpnt+2) = 0;
-#elif defined(AR_PIX_FORMAT_2vuy)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_2vuy)
                 *(dpnt+1) = 0;
-#elif defined(AR_PIX_FORMAT_yuvs)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_yuvs)
                 *(dpnt+0) = 0;
 #else
-#  error Unknown pixel format defined in config.h
+#  error Unknown default pixel format defined in config.h
 #endif
             }
         }
-        if( arImageProcMode == AR_IMAGE_PROC_IN_HALF ) pnt += arImXsize*AR_PIX_SIZE;
+        if( arImageProcMode == AR_IMAGE_PROC_IN_HALF ) pnt += arImXsize*AR_PIX_SIZE_DEFAULT;
     }
 
     j = 1;

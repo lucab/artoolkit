@@ -210,8 +210,8 @@ static void grabImage(void) {
 		exit(-1);
 	}
 	arglDistortionCompensationSet(gPatt.arglSettings[gPatt.loop_num-1], FALSE);
-	arMalloc((gPatt.savedImage)[gPatt.loop_num-1], unsigned char, gXsize*gYsize*AR_PIX_SIZE);
-	memcpy((gPatt.savedImage)[gPatt.loop_num-1], image, gXsize*gYsize*AR_PIX_SIZE);
+	arMalloc((gPatt.savedImage)[gPatt.loop_num-1], unsigned char, gXsize*gYsize*AR_PIX_SIZE_DEFAULT);
+	memcpy((gPatt.savedImage)[gPatt.loop_num-1], image, gXsize*gYsize*AR_PIX_SIZE_DEFAULT);
 	printf("Grabbed image %d.\n", gPatt.loop_num);
 	arMalloc(gPatt.point[gPatt.loop_num-1], CALIB_COORD_T, gPatt.h_num*gPatt.v_num);
 }
@@ -384,28 +384,28 @@ static void Motion(int x, int y)
 		// Threshold clipping area, copy it into gClipImage.
         p1 = gClipImage;
         for (j = ssy; j <= eey; j++) {
-            p = &(gPatt.savedImage[gPatt.loop_num-1][(j*gXsize+ssx)*AR_PIX_SIZE]);
+            p = &(gPatt.savedImage[gPatt.loop_num-1][(j*gXsize+ssx)*AR_PIX_SIZE_DEFAULT]);
             for (i = ssx; i <= eex; i++) {
-#if defined(AR_PIX_FORMAT_BGRA)
+#if (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGRA)
                 *p1 = (((255*3 - (*(p+0) + *(p+1) + *(p+2))) / 3) < gThresh ? 0 : 255);
-#elif defined(AR_PIX_FORMAT_ABGR)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ABGR)
                 *p1 = (((255*3 - (*(p+1) + *(p+2) + *(p+3))) / 3) < gThresh ? 0 : 255);
-#elif defined(AR_PIX_FORMAT_ARGB)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ARGB)
                 *p1 = (((255*3 - (*(p+1) + *(p+2) + *(p+3))) / 3) < gThresh ? 0 : 255);
-#elif defined(AR_PIX_FORMAT_BGR)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGR)
                 *p1 = (((255*3 - (*(p+0) + *(p+1) + *(p+2))) / 3) < gThresh ? 0 : 255);
-#elif defined(AR_PIX_FORMAT_RGBA)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGBA)
                 *p1 = (((255*3 - (*(p+0) + *(p+1) + *(p+2))) / 3) < gThresh ? 0 : 255);
-#elif defined(AR_PIX_FORMAT_RGB)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGB)
                 *p1 = (((255*3 - (*(p+0) + *(p+1) + *(p+2))) / 3) < gThresh ? 0 : 255);
-#elif defined(AR_PIX_FORMAT_2vuy)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_2vuy)
                 *p1 = ((255 - *(p+1)) < gThresh ? 0 : 255);
-#elif defined(AR_PIX_FORMAT_yuvs)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_yuvs)
                 *p1 = ((255 - *(p+0)) < gThresh ? 0 : 255);
 #else
-#  error Unknown pixel format defined in config.h
+#  error Unknown default pixel format defined in config.h
 #endif
-                p  += AR_PIX_SIZE;
+                p  += AR_PIX_SIZE_DEFAULT;
                 p1++;
             }
         }

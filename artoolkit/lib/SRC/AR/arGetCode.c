@@ -262,41 +262,41 @@ printf("%3d(%f), %3d(%f)\n", xdiv2, sqrt(lx1), ydiv2, sqrt(ly1));
             if( xc >= 0 && xc < arImXsize && yc >= 0 && yc < arImYsize ) {
 				ext_pat2_y_index = j/ydiv;
 				ext_pat2_x_index = i/xdiv;
-				image_index = (yc*arImXsize+xc)*AR_PIX_SIZE;
-#if defined(AR_PIX_FORMAT_ARGB)
+				image_index = (yc*arImXsize+xc)*AR_PIX_SIZE_DEFAULT;
+#if (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ARGB)
                 ext_pat2[ext_pat2_y_index][ext_pat2_x_index][0] += image[image_index+3];
                 ext_pat2[ext_pat2_y_index][ext_pat2_x_index][1] += image[image_index+2];
                 ext_pat2[ext_pat2_y_index][ext_pat2_x_index][2] += image[image_index+1];
-#elif defined(AR_PIX_FORMAT_ABGR)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ABGR)
                 ext_pat2[ext_pat2_y_index][ext_pat2_x_index][0] += image[image_index+1];
                 ext_pat2[ext_pat2_y_index][ext_pat2_x_index][1] += image[image_index+2];
                 ext_pat2[ext_pat2_y_index][ext_pat2_x_index][2] += image[image_index+3];
-#elif defined(AR_PIX_FORMAT_BGRA)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGRA)
                 ext_pat2[ext_pat2_y_index][ext_pat2_x_index][0] += image[image_index+0];
                 ext_pat2[ext_pat2_y_index][ext_pat2_x_index][1] += image[image_index+1];
                 ext_pat2[ext_pat2_y_index][ext_pat2_x_index][2] += image[image_index+2];
-#elif defined(AR_PIX_FORMAT_BGR)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGR)
                 ext_pat2[ext_pat2_y_index][ext_pat2_x_index][0] += image[image_index+0];
                 ext_pat2[ext_pat2_y_index][ext_pat2_x_index][1] += image[image_index+1];
                 ext_pat2[ext_pat2_y_index][ext_pat2_x_index][2] += image[image_index+2];
-#elif defined(AR_PIX_FORMAT_RGBA)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGBA)
                 ext_pat2[ext_pat2_y_index][ext_pat2_x_index][0] += image[image_index+2];
                 ext_pat2[ext_pat2_y_index][ext_pat2_x_index][1] += image[image_index+1];
                 ext_pat2[ext_pat2_y_index][ext_pat2_x_index][2] += image[image_index+0];
-#elif defined(AR_PIX_FORMAT_RGB)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGB)
                 ext_pat2[ext_pat2_y_index][ext_pat2_x_index][0] += image[image_index+2];
                 ext_pat2[ext_pat2_y_index][ext_pat2_x_index][1] += image[image_index+1];
                 ext_pat2[ext_pat2_y_index][ext_pat2_x_index][2] += image[image_index+0];
-#elif defined(AR_PIX_FORMAT_2vuy)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_2vuy)
                 ext_pat2[ext_pat2_y_index][ext_pat2_x_index][0] += image[image_index+1];
                 ext_pat2[ext_pat2_y_index][ext_pat2_x_index][1] += image[image_index+1];
                 ext_pat2[ext_pat2_y_index][ext_pat2_x_index][2] += image[image_index+1];
-#elif defined(AR_PIX_FORMAT_yuvs)
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_yuvs)
                 ext_pat2[ext_pat2_y_index][ext_pat2_x_index][0] += image[image_index+0];
                 ext_pat2[ext_pat2_y_index][ext_pat2_x_index][1] += image[image_index+0];
                 ext_pat2[ext_pat2_y_index][ext_pat2_x_index][2] += image[image_index+0];
 #else
-#  error Unknown pixel format defined in config.h
+#  error Unknown default pixel format defined in config.h
 #endif
             }
         }
@@ -352,112 +352,112 @@ int arGetPatt( ARUint8 *image, int *x_coord, int *y_coord, int *vertex,
                 yc = ((yc+1)/2)*2;
             }
             if( xc >= 0 && xc < arImXsize && yc >= 0 && yc < arImYsize ) {
-#if defined(AR_PIX_FORMAT_ARGB)
-                k1 = image[(yc*arImXsize+xc)*AR_PIX_SIZE+3];
+#if (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ARGB)
+                k1 = image[(yc*arImXsize+xc)*AR_PIX_SIZE_DEFAULT+3];
                 k1 = ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][0]
 					+ k1*(AR_PATT_SIZE_Y*AR_PATT_SIZE_X)/(AR_PATT_SAMPLE_NUM*AR_PATT_SAMPLE_NUM);
                 ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][0] = (k1 > 255)? 255: k1;
-                k2 = image[(yc*arImXsize+xc)*AR_PIX_SIZE+2];
+                k2 = image[(yc*arImXsize+xc)*AR_PIX_SIZE_DEFAULT+2];
                 k2 = ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][1]
 					+ k2*(AR_PATT_SIZE_Y*AR_PATT_SIZE_X)/(AR_PATT_SAMPLE_NUM*AR_PATT_SAMPLE_NUM);
                 ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][1] = (k2 > 255)? 255: k2;
-                k3 = image[(yc*arImXsize+xc)*AR_PIX_SIZE+1];
+                k3 = image[(yc*arImXsize+xc)*AR_PIX_SIZE_DEFAULT+1];
                 k3 = ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][2]
 					+ k3*(AR_PATT_SIZE_Y*AR_PATT_SIZE_X)/(AR_PATT_SAMPLE_NUM*AR_PATT_SAMPLE_NUM);
                 ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][2] = (k3 > 255)? 255: k3;
-#elif defined(AR_PIX_FORMAT_ABGR)
-                k1 = image[(yc*arImXsize+xc)*AR_PIX_SIZE+1];
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ABGR)
+                k1 = image[(yc*arImXsize+xc)*AR_PIX_SIZE_DEFAULT+1];
                 k1 = ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][0]
                    + k1*(AR_PATT_SIZE_Y*AR_PATT_SIZE_X)/(AR_PATT_SAMPLE_NUM*AR_PATT_SAMPLE_NUM);
                 ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][0] = (k1 > 255)? 255: k1;
-                k2 = image[(yc*arImXsize+xc)*AR_PIX_SIZE+2];
+                k2 = image[(yc*arImXsize+xc)*AR_PIX_SIZE_DEFAULT+2];
                 k2 = ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][1]
                    + k2*(AR_PATT_SIZE_Y*AR_PATT_SIZE_X)/(AR_PATT_SAMPLE_NUM*AR_PATT_SAMPLE_NUM);
                 ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][1] = (k2 > 255)? 255: k2;
-                k3 = image[(yc*arImXsize+xc)*AR_PIX_SIZE+3];
+                k3 = image[(yc*arImXsize+xc)*AR_PIX_SIZE_DEFAULT+3];
                 k3 = ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][2]
                    + k3*(AR_PATT_SIZE_Y*AR_PATT_SIZE_X)/(AR_PATT_SAMPLE_NUM*AR_PATT_SAMPLE_NUM);
                 ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][2] = (k3 > 255)? 255: k3;
-#elif defined(AR_PIX_FORMAT_BGRA)
-                k1 = image[(yc*arImXsize+xc)*AR_PIX_SIZE+0];
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGRA)
+                k1 = image[(yc*arImXsize+xc)*AR_PIX_SIZE_DEFAULT+0];
                 k1 = ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][0]
                    + k1*(AR_PATT_SIZE_Y*AR_PATT_SIZE_X)/(AR_PATT_SAMPLE_NUM*AR_PATT_SAMPLE_NUM);
                 ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][0] = (k1 > 255)? 255: k1;
-                k2 = image[(yc*arImXsize+xc)*AR_PIX_SIZE+1];
+                k2 = image[(yc*arImXsize+xc)*AR_PIX_SIZE_DEFAULT+1];
                 k2 = ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][1]
                    + k2*(AR_PATT_SIZE_Y*AR_PATT_SIZE_X)/(AR_PATT_SAMPLE_NUM*AR_PATT_SAMPLE_NUM);
                 ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][1] = (k2 > 255)? 255: k2;
-                k3 = image[(yc*arImXsize+xc)*AR_PIX_SIZE+2];
+                k3 = image[(yc*arImXsize+xc)*AR_PIX_SIZE_DEFAULT+2];
                 k3 = ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][2]
                    + k3*(AR_PATT_SIZE_Y*AR_PATT_SIZE_X)/(AR_PATT_SAMPLE_NUM*AR_PATT_SAMPLE_NUM);
                 ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][2] = (k3 > 255)? 255: k3;
-#elif defined(AR_PIX_FORMAT_BGR)
-                k1 = image[(yc*arImXsize+xc)*AR_PIX_SIZE+0];
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGR)
+                k1 = image[(yc*arImXsize+xc)*AR_PIX_SIZE_DEFAULT+0];
                 k1 = ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][0]
                    + k1*(AR_PATT_SIZE_Y*AR_PATT_SIZE_X)/(AR_PATT_SAMPLE_NUM*AR_PATT_SAMPLE_NUM);
                 ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][0] = (k1 > 255)? 255: k1;
-                k2 = image[(yc*arImXsize+xc)*AR_PIX_SIZE+1];
+                k2 = image[(yc*arImXsize+xc)*AR_PIX_SIZE_DEFAULT+1];
                 k2 = ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][1]
                    + k2*(AR_PATT_SIZE_Y*AR_PATT_SIZE_X)/(AR_PATT_SAMPLE_NUM*AR_PATT_SAMPLE_NUM);
                 ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][1] = (k2 > 255)? 255: k2;
-                k3 = image[(yc*arImXsize+xc)*AR_PIX_SIZE+2];
+                k3 = image[(yc*arImXsize+xc)*AR_PIX_SIZE_DEFAULT+2];
                 k3 = ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][2]
                    + k3*(AR_PATT_SIZE_Y*AR_PATT_SIZE_X)/(AR_PATT_SAMPLE_NUM*AR_PATT_SAMPLE_NUM);
                 ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][2] = (k3 > 255)? 255: k3;
-#elif defined(AR_PIX_FORMAT_RGBA)
-                k1 = image[(yc*arImXsize+xc)*AR_PIX_SIZE+2];
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGBA)
+                k1 = image[(yc*arImXsize+xc)*AR_PIX_SIZE_DEFAULT+2];
                 k1 = ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][0]
                    + k1*(AR_PATT_SIZE_Y*AR_PATT_SIZE_X)/(AR_PATT_SAMPLE_NUM*AR_PATT_SAMPLE_NUM);
                 ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][0] = (k1 > 255)? 255: k1;
-                k2 = image[(yc*arImXsize+xc)*AR_PIX_SIZE+1];
+                k2 = image[(yc*arImXsize+xc)*AR_PIX_SIZE_DEFAULT+1];
                 k2 = ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][1]
                    + k2*(AR_PATT_SIZE_Y*AR_PATT_SIZE_X)/(AR_PATT_SAMPLE_NUM*AR_PATT_SAMPLE_NUM);
                 ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][1] = (k2 > 255)? 255: k2;
-                k3 = image[(yc*arImXsize+xc)*AR_PIX_SIZE+0];
+                k3 = image[(yc*arImXsize+xc)*AR_PIX_SIZE_DEFAULT+0];
                 k3 = ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][2]
                    + k3*(AR_PATT_SIZE_Y*AR_PATT_SIZE_X)/(AR_PATT_SAMPLE_NUM*AR_PATT_SAMPLE_NUM);
                 ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][2] = (k3 > 255)? 255: k3;
-#elif defined(AR_PIX_FORMAT_RGB)
-                k1 = image[(yc*arImXsize+xc)*AR_PIX_SIZE+2];
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGB)
+                k1 = image[(yc*arImXsize+xc)*AR_PIX_SIZE_DEFAULT+2];
                 k1 = ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][0]
                    + k1*(AR_PATT_SIZE_Y*AR_PATT_SIZE_X)/(AR_PATT_SAMPLE_NUM*AR_PATT_SAMPLE_NUM);
                 ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][0] = (k1 > 255)? 255: k1;
-                k2 = image[(yc*arImXsize+xc)*AR_PIX_SIZE+1];
+                k2 = image[(yc*arImXsize+xc)*AR_PIX_SIZE_DEFAULT+1];
                 k2 = ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][1]
                    + k2*(AR_PATT_SIZE_Y*AR_PATT_SIZE_X)/(AR_PATT_SAMPLE_NUM*AR_PATT_SAMPLE_NUM);
                 ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][1] = (k2 > 255)? 255: k2;
-                k3 = image[(yc*arImXsize+xc)*AR_PIX_SIZE+0];
+                k3 = image[(yc*arImXsize+xc)*AR_PIX_SIZE_DEFAULT+0];
                 k3 = ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][2]
                    + k3*(AR_PATT_SIZE_Y*AR_PATT_SIZE_X)/(AR_PATT_SAMPLE_NUM*AR_PATT_SAMPLE_NUM);
                 ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][2] = (k3 > 255)? 255: k3;
-#elif defined(AR_PIX_FORMAT_2vuy)
-                k1 = image[(yc*arImXsize+xc)*AR_PIX_SIZE+1];
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_2vuy)
+                k1 = image[(yc*arImXsize+xc)*AR_PIX_SIZE_DEFAULT+1];
                 k1 = ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][0]
 					+ k1*(AR_PATT_SIZE_Y*AR_PATT_SIZE_X)/(AR_PATT_SAMPLE_NUM*AR_PATT_SAMPLE_NUM);
                 ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][0] = (k1 > 255)? 255: k1;
-                k2 = image[(yc*arImXsize+xc)*AR_PIX_SIZE+1];
+                k2 = image[(yc*arImXsize+xc)*AR_PIX_SIZE_DEFAULT+1];
                 k2 = ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][1]
 					+ k2*(AR_PATT_SIZE_Y*AR_PATT_SIZE_X)/(AR_PATT_SAMPLE_NUM*AR_PATT_SAMPLE_NUM);
                 ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][1] = (k2 > 255)? 255: k2;
-                k3 = image[(yc*arImXsize+xc)*AR_PIX_SIZE+1];
+                k3 = image[(yc*arImXsize+xc)*AR_PIX_SIZE_DEFAULT+1];
                 k3 = ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][2]
 					+ k3*(AR_PATT_SIZE_Y*AR_PATT_SIZE_X)/(AR_PATT_SAMPLE_NUM*AR_PATT_SAMPLE_NUM);
                 ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][2] = (k3 > 255)? 255: k3;
-#elif defined(AR_PIX_FORMAT_yuvs)
-                k1 = image[(yc*arImXsize+xc)*AR_PIX_SIZE+0];
+#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_yuvs)
+                k1 = image[(yc*arImXsize+xc)*AR_PIX_SIZE_DEFAULT+0];
                 k1 = ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][0]
 					+ k1*(AR_PATT_SIZE_Y*AR_PATT_SIZE_X)/(AR_PATT_SAMPLE_NUM*AR_PATT_SAMPLE_NUM);
                 ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][0] = (k1 > 255)? 255: k1;
-                k2 = image[(yc*arImXsize+xc)*AR_PIX_SIZE+0];
+                k2 = image[(yc*arImXsize+xc)*AR_PIX_SIZE_DEFAULT+0];
                 k2 = ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][1]
 					+ k2*(AR_PATT_SIZE_Y*AR_PATT_SIZE_X)/(AR_PATT_SAMPLE_NUM*AR_PATT_SAMPLE_NUM);
                 ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][1] = (k2 > 255)? 255: k2;
-                k3 = image[(yc*arImXsize+xc)*AR_PIX_SIZE+0];
+                k3 = image[(yc*arImXsize+xc)*AR_PIX_SIZE_DEFAULT+0];
                 k3 = ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][2]
 					+ k3*(AR_PATT_SIZE_Y*AR_PATT_SIZE_X)/(AR_PATT_SAMPLE_NUM*AR_PATT_SAMPLE_NUM);
                 ext_pat[j*AR_PATT_SIZE_Y/AR_PATT_SAMPLE_NUM][i*AR_PATT_SIZE_X/AR_PATT_SAMPLE_NUM][2] = (k3 > 255)? 255: k3;
 #else
-#  error Unknown pixel format defined in config.h
+#  error Unknown default pixel format defined in config.h
 #endif
             }
         }

@@ -54,10 +54,10 @@ extern "C" {
 /** \def arMalloc(V,T,S)
 * \brief allocation macro function
 *
-* allocate S element of type T.
+* allocate S elements of type T.
 * \param V returned allocated area pointer
 * \param T type of element
-* \param S number of element
+* \param S number of elements
 */
 #define arMalloc(V,T,S)  \
 { if( ((V) = (T *)malloc( sizeof(T) * (S) )) == 0 ) \
@@ -70,6 +70,56 @@ typedef int               ARInt32;
 typedef unsigned char     ARUint8;
 typedef unsigned short    ARUint16;
 typedef unsigned int      ARUint32;
+
+/** \typedef AR_PIXEL_FORMAT
+	\brief ARToolKit pixel-format specifiers.
+	
+	ARToolKit functions can accept pixel data in a variety of formats.
+	This enumerations provides a set of constants you can use to request
+	data in a particular pixel format from an ARToolKit function that
+	returns data to you, or to specify that data you are providing to an
+	ARToolKit function is in a particular pixel format.
+	
+	\var AR_PIXEL_FORMAT_RGB
+	Each pixel is represented by 24 bits. Eight bits per each Red, Green,
+	and Blue component. This is the native 24 bit format for the Mac platform.
+	\var AR_PIXEL_FORMAT_BGR
+	Each pixel is represented by 24 bits. Eight bits per each Blue, Red, and
+	Green component. This is the native 24 bit format for the Win32 platform.
+	\var AR_PIXEL_FORMAT_RGBA
+	Each pixel is represented by 32 bits. Eight bits per each Red, Green,
+	Blue, and Alpha component.
+	\var AR_PIXEL_FORMAT_BGRA
+	Each pixel is represented by 32 bits. Eight bits per each Blue, Green,
+	Red, and Alpha component. This is the native 32 bit format for the Win32
+	platform.
+	\var AR_PIXEL_FORMAT_ABGR
+	Each pixel is represented by 32 bits. Eight bits per each Alpha, Blue,
+	Green, and Red component. This is the native 32 bit format for the SGI
+	platform.
+	\var AR_PIXEL_FORMAT_ARGB
+	Each pixel is represented by 32 bits. Eight bits per each Alpha, Red,
+	Green, and Blue component. This is the native 32 bit format for the Mac
+	platform.
+	\var AR_PIXEL_FORMAT_2vuy
+	8-bit 4:2:2 Component Y'CbCr format. Each 16 bit pixel is represented
+	by an unsigned eight bit luminance component and two unsigned eight bit
+	chroma components. Each pair of pixels shares a common set of chroma
+	values. The components are ordered in memory; Cb, Y0, Cr, Y1. The
+	luminance components have a range of [16, 235], while the chroma value
+	has a range of [16, 240]. This is consistent with the CCIR601 spec.
+	This format is fairly prevalent on both Mac and Win32 platforms.
+	'2vuy' is the Apple QuickTime four-character code for this pixel format.
+	The equivalent Microsoft fourCC is 'UYVY'.
+	\var AR_PIXEL_FORMAT_yuvs
+	8-bit 4:2:2 Component Y'CbCr format. Identical to the AR_PIXEL_FORMAT_2vuy except
+	each 16 bit word has been byte swapped. This results in a component
+	ordering of; Y0, Cb, Y1, Cr.
+	This is most prevalent yuv 4:2:2 format on both Mac and Win32 platforms.
+	'yuvs' is the Apple QuickTime four-character code for this pixel format.
+	The equivalent Microsoft fourCC is 'YUY2'.
+ */
+typedef int AR_PIXEL_FORMAT;
 
 /** \struct ARMarkerInfo
 * \brief main structure for detected marker.

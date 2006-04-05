@@ -2,7 +2,14 @@ ARToolKit ChangeLog.
 ====================
 
 
-Changes in this release (2005-10-11).
+Changes in this release (2006-??-??).
+-------------------------------------
+- Removed XCode project file for versions prior to XCode 2.1.
+- Fixed line endings in MS Visual Studio 6 project files calib_distortion.dsp and calib_camera2.dsp.
+- Cleaned up pixel format specification in config.h, borrowing code from gsub_lite.
+
+
+Changes in version 2.71.2 (2005-10-11).
 -------------------------------------
 - Fixed line endings in MS Visual Studio 6 workspace (.dsw) file.
 

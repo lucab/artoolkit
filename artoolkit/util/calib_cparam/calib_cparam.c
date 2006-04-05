@@ -156,7 +156,7 @@ int main(int argc, char *argv[])
 		exit(-1);
 	}
 	arglDistortionCompensationSet(gSaveArglSettings, FALSE);
-	arMalloc(gSaveARTImage, unsigned char, gXsize*gYsize*AR_PIX_SIZE);
+	arMalloc(gSaveARTImage, unsigned char, gXsize*gYsize*AR_PIX_SIZE_DEFAULT);
 
 	// Register GLUT event-handling callbacks.
 	// NB: Idle() is registered by Visibility.
@@ -207,7 +207,7 @@ static int init(int argc, char *argv[])
     fprintf(stdout, "Camera image size (x,y) = (%d,%d)\n", gXsize, gYsize);
 	
 	// Allocate space for a save image.
-	arMalloc(gSaveARTImage, unsigned char, gXsize * gYsize * AR_PIX_SIZE);
+	arMalloc(gSaveARTImage, unsigned char, gXsize * gYsize * AR_PIX_SIZE_DEFAULT);
 	
     param.xsize = gXsize;
     param.ysize = gYsize;
@@ -279,7 +279,7 @@ static void Mouse(int button, int state, int x, int y)
 			do {
 				image = arVideoGetImage();
 			} while (image == NULL);
-			memcpy(gSaveARTImage, image, gXsize*gYsize*AR_PIX_SIZE);
+			memcpy(gSaveARTImage, image, gXsize*gYsize*AR_PIX_SIZE_DEFAULT);
 			printf("Grabbed image.\n");
 			arVideoCapStop();
 			mode = 1;

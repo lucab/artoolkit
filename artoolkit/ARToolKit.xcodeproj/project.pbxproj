@@ -4541,10 +4541,10 @@
 			files = (
 			);
 			inputPaths = (
-				$SRCROOT/include/AR/config.h.in,
+				"$(SRCROOT)/include/AR/config.h.in",
 			);
 			outputPaths = (
-				$SRCROOT/include/AR/config.h,
+				"$(SRCROOT)/include/AR/config.h",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/csh;
