@@ -18,6 +18,7 @@
  *	2.7.8	2005-07-29	PRL		Added distortion compensation enabling/disabling.
  *	2.7.9	2005-08-15	PRL		Added complete support for runtime selection of pixel format and rectangle/power-of-2 textures.
  *	2.8.0	2006-04-04	PRL		Move pixel format constants into toolkit global namespace (in config.h).
+ *	2.8.1	2006-04-06	PRL		Move arglDrawMode, arglTexmapMode, arglTexRectangle out of global variables.
  *
  */
 /*
@@ -133,6 +134,9 @@ struct _ARGL_CONTEXT_SETTINGS {
 	GLenum	pixFormat;
 	GLenum	pixType;
 	GLenum	pixSize;
+	int	arglDrawMode;
+	int	arglTexmapMode;
+	int arglTexRectangle;	
 };
 typedef struct _ARGL_CONTEXT_SETTINGS ARGL_CONTEXT_SETTINGS;
 
@@ -141,14 +145,6 @@ typedef struct _ARGL_CONTEXT_SETTINGS ARGL_CONTEXT_SETTINGS;
 // ============================================================================
 
 // It'd be nice if we could wrap these in accessor functions!
-int	arglDrawMode   = DEFAULT_DRAW_MODE;
-int	arglTexmapMode = DEFAULT_DRAW_TEXTURE_IMAGE;
-#ifdef AR_OPENGL_TEXTURE_RECTANGLE
-int arglTexRectangle = TRUE;
-#else
-int arglTexRectangle = FALSE;
-#endif // AR_OPENGL_TEXTURE_RECTANGLE
-
 // These items relate to Apple's fast texture transfer support.
 //#define ARGL_USE_TEXTURE_RANGE	// Commented out due to conflicts with GL_APPLE_ycbcr_422 extension.
 #if defined(__APPLE__) && defined(APPLE_TEXTURE_FAST_TRANSFER)
@@ -685,11 +681,18 @@ ARGL_CONTEXT_SETTINGS_REF arglSetupForCurrentContext(void)
 	
 	contextSettings = (ARGL_CONTEXT_SETTINGS_REF)calloc(1, sizeof(ARGL_CONTEXT_SETTINGS));
 	// Use default pixel format handed to us by <AR/config.h>.
-	fprintf(stderr, "pix fmt is %d \n", AR_PIXEL_FORMAT_DEFAULT);
 	if (!arglPixelFormatSet(contextSettings, AR_PIXEL_FORMAT_DEFAULT)) {
 		fprintf(stderr, "Unknown default pixel format defined in config.h.\n");
 		return (NULL);
 	}
+	arglDrawModeSet(contextSettings, AR_DRAW_BY_TEXTURE_MAPPING);
+	arglTexmapModeSet(contextSettings, AR_DRAW_TEXTURE_FULL_IMAGE);
+#ifdef AR_OPENGL_TEXTURE_RECTANGLE
+	arglTexRectangleSet(contextSettings, TRUE);
+#else
+	arglTexRectangleSet(contextSettings, FALSE);
+#endif // AR_OPENGL_TEXTURE_RECTANGLE
+
 	return (contextSettings);
 }
 
@@ -784,8 +787,8 @@ void arglDispImageStateful(ARUint8 *image, const ARParam *cparam, const double z
 	int texmapScaleFactor;
 	
 	zoomf = (float)zoom;
-	texmapScaleFactor = arglTexmapMode + 1;
-	if (arglDrawMode == AR_DRAW_BY_GL_DRAW_PIXELS) {
+	texmapScaleFactor = contextSettings->arglTexmapMode + 1;
+	if (contextSettings->arglDrawMode == AR_DRAW_BY_GL_DRAW_PIXELS) {
 		glDisable(GL_TEXTURE_2D);
 		glPixelZoom(zoomf, -zoomf);
 		glRasterPos2f(0.0f, cparam->ysize * zoomf);
@@ -801,7 +804,7 @@ void arglDispImageStateful(ARUint8 *image, const ARParam *cparam, const double z
 			contextSettings->initPlease = TRUE;
 		}
 		
-		if (arglTexRectangle) {
+		if (contextSettings->arglTexRectangle) {
 			arglDispImageTexRectangle(image, cparam, zoomf, contextSettings, texmapScaleFactor);
 		} else {
 			arglDispImageTexPow2(image, cparam, zoomf, contextSettings, texmapScaleFactor);
@@ -920,3 +923,40 @@ int arglPixelFormatGet(ARGL_CONTEXT_SETTINGS_REF contextSettings, AR_PIXEL_FORMA
 	}
 	return (TRUE);
 }
+
+void arglDrawModeSet(ARGL_CONTEXT_SETTINGS_REF contextSettings, const int mode)
+{
+	if (!contextSettings || mode < 0 || mode > 1) return; // Sanity check.
+	contextSettings->arglDrawMode = mode;
+}
+
+int arglDrawModeGet(ARGL_CONTEXT_SETTINGS_REF contextSettings)
+{
+	if (!contextSettings) return (-1); // Sanity check.
+	return (contextSettings->arglDrawMode);
+}
+
+void arglTexmapModeSet(ARGL_CONTEXT_SETTINGS_REF contextSettings, const int mode)
+{
+	if (!contextSettings || mode < 0 || mode > 1) return; // Sanity check.
+	contextSettings->arglTexmapMode = mode;
+}
+
+int arglTexmapModeGet(ARGL_CONTEXT_SETTINGS_REF contextSettings)
+{
+	if (!contextSettings) return (-1); // Sanity check.
+	return (contextSettings->arglTexmapMode);
+}
+
+void arglTexRectangleSet(ARGL_CONTEXT_SETTINGS_REF contextSettings, const int state)
+{
+	if (!contextSettings) return; // Sanity check.
+	contextSettings->arglTexRectangle = state;
+}
+
+int arglTexRectangleGet(ARGL_CONTEXT_SETTINGS_REF contextSettings)
+{
+	if (!contextSettings) return (-1); // Sanity check.
+	return (contextSettings->arglTexRectangle);
+}
+

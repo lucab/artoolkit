@@ -243,35 +243,35 @@ static int demoARSetupMarker(const char *patt_name, int *patt_id)
 
 // Report state of ARToolKit global variables arFittingMode,
 // arImageProcMode, arglDrawMode, arTemplateMatchingMode, arMatchingPCAMode.
-static void demoARDebugReportMode(void)
+static void demoARDebugReportMode(ARGL_CONTEXT_SETTINGS_REF	arglSettings)
 {
-	if(arFittingMode == AR_FITTING_TO_INPUT ) {
+	if (arFittingMode == AR_FITTING_TO_INPUT) {
 		fprintf(stderr, "FittingMode (Z): INPUT IMAGE\n");
 	} else {
 		fprintf(stderr, "FittingMode (Z): COMPENSATED IMAGE\n");
 	}
 	
-	if( arImageProcMode == AR_IMAGE_PROC_IN_FULL ) {
+	if (arImageProcMode == AR_IMAGE_PROC_IN_FULL) {
 		fprintf(stderr, "ProcMode (X)   : FULL IMAGE\n");
 	} else {
 		fprintf(stderr, "ProcMode (X)   : HALF IMAGE\n");
 	}
 	
-	if( arglDrawMode == AR_DRAW_BY_GL_DRAW_PIXELS ) {
+	if (arglDrawModeGet(arglSettings) == AR_DRAW_BY_GL_DRAW_PIXELS) {
 		fprintf(stderr, "DrawMode (C)   : GL_DRAW_PIXELS\n");
-	} else if( arglTexmapMode == AR_DRAW_TEXTURE_FULL_IMAGE ) {
+	} else if (arglTexmapModeGet(arglSettings) == AR_DRAW_TEXTURE_FULL_IMAGE) {
 		fprintf(stderr, "DrawMode (C)   : TEXTURE MAPPING (FULL RESOLUTION)\n");
 	} else {
 		fprintf(stderr, "DrawMode (C)   : TEXTURE MAPPING (HALF RESOLUTION)\n");
 	}
 	
-	if( arTemplateMatchingMode == AR_TEMPLATE_MATCHING_COLOR ) {
+	if (arTemplateMatchingMode == AR_TEMPLATE_MATCHING_COLOR) {
 		fprintf(stderr, "TemplateMatchingMode (M)   : Color Template\n");
 	} else {
 		fprintf(stderr, "TemplateMatchingMode (M)   : BW Template\n");
 	}
 	
-	if( arMatchingPCAMode == AR_MATCHING_WITHOUT_PCA ) {
+	if (arMatchingPCAMode == AR_MATCHING_WITHOUT_PCA) {
 		fprintf(stderr, "MatchingPCAMode (P)   : Without PCA\n");
 	} else {
 		fprintf(stderr, "MatchingPCAMode (P)   : With PCA\n");
@@ -328,6 +328,7 @@ static void Quit(void)
 static void Keyboard(unsigned char key, int x, int y)
 {
 	int i;
+	int mode;
 	
 	switch (key) {
 		case 0x1B:						// Quit.
@@ -340,37 +341,28 @@ static void Keyboard(unsigned char key, int x, int y)
 			break;
 		case 'C':
 		case 'c':
-			if( arglDrawMode == AR_DRAW_BY_GL_DRAW_PIXELS ) {
-				arglDrawMode  = AR_DRAW_BY_TEXTURE_MAPPING;
-				arglTexmapMode = AR_DRAW_TEXTURE_FULL_IMAGE;
-			} else if( arglTexmapMode == AR_DRAW_TEXTURE_FULL_IMAGE ) {
-				arglTexmapMode = AR_DRAW_TEXTURE_HALF_IMAGE;
-			} else {
-				arglDrawMode  = AR_DRAW_BY_GL_DRAW_PIXELS;
-			}
 			for (i = 0; i < gContextsActiveCount; i++) {
+				mode = arglDrawModeGet(gContextsActive[i].arglSettings);
+				if (mode == AR_DRAW_BY_GL_DRAW_PIXELS) {
+					arglDrawModeSet(gContextsActive[i].arglSettings, AR_DRAW_BY_TEXTURE_MAPPING);
+					arglTexmapModeSet(gContextsActive[i].arglSettings, AR_DRAW_TEXTURE_FULL_IMAGE);
+				} else {
+					mode = arglTexmapModeGet(gContextsActive[i].arglSettings);
+					if (mode == AR_DRAW_TEXTURE_FULL_IMAGE)	arglTexmapModeSet(gContextsActive[i].arglSettings, AR_DRAW_TEXTURE_HALF_IMAGE);
+					else arglDrawModeSet(gContextsActive[i].arglSettings, AR_DRAW_BY_GL_DRAW_PIXELS);
+				}				
 				fprintf(stderr, "*** Camera %2d - %f (frame/sec)\n", i + 1, (double)(gContextsActive[i].callCountMarkerDetect)/arUtilTimer());
 				gContextsActive[i].callCountMarkerDetect = 0;
+				demoARDebugReportMode(gContextsActive[i].arglSettings);
 			}
 			arUtilTimerReset();
 			gCallCountGetImage = 0;
-			demoARDebugReportMode();
 			break;
-#ifdef AR_OPENGL_TEXTURE_RECTANGLE
-		case 'R':
-		case 'r':
-			arglTexRectangle = !arglTexRectangle;
-			fprintf(stderr, "Toggled arglTexRectangle to %d.\n", arglTexRectangle);
-			break;
-#endif // AR_OPENGL_TEXTURE_RECTANGLE
 		case '?':
 		case '/':
 			printf("Keys:\n");
 			printf(" q or [esc]    Quit demo.\n");
 			printf(" c             Change arglDrawMode and arglTexmapMode.\n");
-#ifdef AR_OPENGL_TEXTURE_RECTANGLE
-			printf(" r             Toggle arglTexRectangle.\n");
-#endif // AR_OPENGL_TEXTURE_RECTANGLE
 			printf(" ? or /        Show this help.\n");
 			printf("\nAdditionally, the ARVideo library supplied the following help text:\n");
 			arVideoDispOption();
@@ -592,7 +584,7 @@ int main(int argc, char** argv)
 		exit(-1);
 	}
 	gContextsActiveCount = CONTEXTSACTIVECOUNT;
-	demoARDebugReportMode();
+	for (i = 0; i < gContextsActiveCount; i++) demoARDebugReportMode(gContextsActive[i].arglSettings);
 	if (!demoARSetupMarker(patt_name, &gPatt_id)) {
 		fprintf(stderr, "main(): Unable to set up AR marker.\n");
 		exit(-1);

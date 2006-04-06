@@ -207,14 +207,14 @@ static void demoARDebugReportMode(void)
 		fprintf(stderr, "ProcMode (X)   : HALF IMAGE\n");
 	}
 	
-	if( arglDrawMode == AR_DRAW_BY_GL_DRAW_PIXELS ) {
+	if (arglDrawModeGet(gArglSettings) == AR_DRAW_BY_GL_DRAW_PIXELS) {
 		fprintf(stderr, "DrawMode (C)   : GL_DRAW_PIXELS\n");
-	} else if( arglTexmapMode == AR_DRAW_TEXTURE_FULL_IMAGE ) {
+	} else if (arglTexmapModeGet(gArglSettings) == AR_DRAW_TEXTURE_FULL_IMAGE) {
 		fprintf(stderr, "DrawMode (C)   : TEXTURE MAPPING (FULL RESOLUTION)\n");
 	} else {
 		fprintf(stderr, "DrawMode (C)   : TEXTURE MAPPING (HALF RESOLUTION)\n");
 	}
-	
+		
 	if( arTemplateMatchingMode == AR_TEMPLATE_MATCHING_COLOR ) {
 		fprintf(stderr, "TemplateMatchingMode (M)   : Color Template\n");
 	} else {
@@ -238,6 +238,7 @@ static void Quit(void)
 
 static void Keyboard(unsigned char key, int x, int y)
 {
+	int mode;
 	switch (key) {
 		case 0x1B:						// Quit.
 		case 'Q':
@@ -249,34 +250,25 @@ static void Keyboard(unsigned char key, int x, int y)
 			break;
 		case 'C':
 		case 'c':
-			if( arglDrawMode == AR_DRAW_BY_GL_DRAW_PIXELS ) {
-				arglDrawMode  = AR_DRAW_BY_TEXTURE_MAPPING;
-				arglTexmapMode = AR_DRAW_TEXTURE_FULL_IMAGE;
-			} else if( arglTexmapMode == AR_DRAW_TEXTURE_FULL_IMAGE ) {
-				arglTexmapMode = AR_DRAW_TEXTURE_HALF_IMAGE;
+			mode = arglDrawModeGet(gArglSettings);
+			if (mode == AR_DRAW_BY_GL_DRAW_PIXELS) {
+				arglDrawModeSet(gArglSettings, AR_DRAW_BY_TEXTURE_MAPPING);
+				arglTexmapModeSet(gArglSettings, AR_DRAW_TEXTURE_FULL_IMAGE);
 			} else {
-				arglDrawMode  = AR_DRAW_BY_GL_DRAW_PIXELS;
+				mode = arglTexmapModeGet(gArglSettings);
+				if (mode == AR_DRAW_TEXTURE_FULL_IMAGE)	arglTexmapModeSet(gArglSettings, AR_DRAW_TEXTURE_HALF_IMAGE);
+				else arglDrawModeSet(gArglSettings, AR_DRAW_BY_GL_DRAW_PIXELS);
 			}
 			fprintf(stderr, "*** Camera - %f (frame/sec)\n", (double)gCallCountMarkerDetect/arUtilTimer());
 			gCallCountMarkerDetect = 0;
 			arUtilTimerReset();
 			demoARDebugReportMode();
 			break;
-#ifdef AR_OPENGL_TEXTURE_RECTANGLE
-		case 'R':
-		case 'r':
-			arglTexRectangle = !arglTexRectangle;
-			fprintf(stderr, "Toggled arglTexRectangle to %d.\n", arglTexRectangle);
-			break;
-#endif // AR_OPENGL_TEXTURE_RECTANGLE
 		case '?':
 		case '/':
 			printf("Keys:\n");
 			printf(" q or [esc]    Quit demo.\n");
 			printf(" c             Change arglDrawMode and arglTexmapMode.\n");
-#ifdef AR_OPENGL_TEXTURE_RECTANGLE
-			printf(" r             Toggle arglTexRectangle.\n");
-#endif // AR_OPENGL_TEXTURE_RECTANGLE
 			printf(" ? or /        Show this help.\n");
 			printf("\nAdditionally, the ARVideo library supplied the following help text:\n");
 			arVideoDispOption();

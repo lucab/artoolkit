@@ -18,6 +18,7 @@
  *	2.7.8	2005-07-29	PRL		Added distortion compensation enabling/disabling.
  *	2.7.9	2005-08-15	PRL		Added complete support for runtime selection of pixel format and rectangle/power-of-2 textures.
  *	2.8.0	2006-04-04	PRL		Move pixel format constants into toolkit global namespace (in config.h).
+ *	2.8.1	2006-04-06	PRL		Move arglDrawMode, arglTexmapMode, arglTexRectangle out of global variables.
  *
  */
 /*
@@ -175,74 +176,16 @@ typedef struct _ARGL_CONTEXT_SETTINGS *ARGL_CONTEXT_SETTINGS_REF;
 //	Public globals.
 // ============================================================================
 
-// It'd be nicer if these were wrapped in accessor functions.
-
-/*!
-    @var arglDrawMode
-	@abstract Determines display method by which arglDispImage() transfers pixels. 
-    @discussion
-		The value of this variable determines the method by which
-		arglDispImage transfers pixels of an image to the display. Setting this
-		variable to a value of AR_DRAW_BY_GL_DRAW_PIXELS specifies the use of OpenGL
-		DrawPixels to do the transfer. Setting this variable to a value of
-		AR_DRAW_BY_TEXTURE_MAPPING specifies the use of OpenGL TexImage2D to do the
-		transfer. The DrawPixels method is guaranteed to be available on all
-		implementations, but arglDispImage does not correct the image
-		for camera lens distortion under this method. In contrast, TexImage2D is only
-		available on some implementations, but allows arglDispImage() to apply a correction
-		for camera lens distortion, and additionally offers greater potential for
-		accelerated drawing on some implementations.
- 
-		The initial value is defined to the value of the symbolic constant DEFAULT_DRAW_MODE
-		(defined in &lt;AR/config.h&gt;).
-	@availability First appeared in ARToolKit 2.68.
- */
-extern int arglDrawMode;
-
-/*!
-    @var arglTexmapMode
-	@abstract Determines use of full or half-resolution TexImage2D pixel-transfer in arglDispImage().
-	@discussion
-		When arglDrawMode is set to AR_DRAW_BY_TEXTURE_MAPPING, the value of this variable
-		determines whether full or half-resolution data is transferred to the
-		texture. A value of AR_DRAW_TEXTURE_FULL_IMAGE uses all available pixels in the
-		source image data. A value of AR_DRAW_TEXTURE_HALF_IMAGE discards every second row
-		in the source image data, defining a half-height texture which is then drawn stretched
-		vertically to double its height.
- 
-		The latter method is well-suited to drawing interlaced images, as would be obtained 
-		from DV camera sources in interlaced mode or composite video sources.
-	@availability First appeared in ARToolKit 2.68.
- */
-extern int arglTexmapMode;
-
-/*!
-    @var arglTexRectangle
-	@abstract Determines use of rectangular TexImage2D pixel-transfer in arglDispImage().
-	@discussion
-		On implementations which support the OpenGL extension for rectangular textures (of
-		non power-of-two size), and when arglDrawMode is set to AR_DRAW_BY_TEXTURE_MAPPING,
-		the value of this variable determines whether rectangular textures or ordinary
-		(power-of-two) textures are used by arglDispImage(). A value of TRUE specifies the
-		use of rectangluar textures. A value of FALSE specifies the use of ordinary textures.
-		
-		If the OpenGL driver available at runtime does not support for rectangular textures,
-		changing the value of this variable to TRUE will result calls to arglDispImage
-		performing no drawing.
-	@availability First appeared in ARToolKit 2.68.
- */
-extern int arglTexRectangle;
-
 #if defined(__APPLE__) && defined(APPLE_TEXTURE_FAST_TRANSFER)
 extern int arglAppleClientStorage;
 extern int arglAppleTextureRange;
 extern GLuint arglAppleTextureRangeStorageHint;
 #endif // __APPLE__ && APPLE_TEXTURE_FAST_TRANSFER
-
+	
 // ============================================================================
 //	Public functions.
 // ============================================================================
-
+	
 /*!
     @function arglSetupForCurrentContext
     @abstract Initialise the gsub_lite library for the current OpenGL context.
@@ -458,7 +401,7 @@ int arglDistortionCompensationGet(ARGL_CONTEXT_SETTINGS_REF contextSettings, int
 	@param contextSettings A reference to ARGL's settings for the current OpenGL
 		context, as returned by arglSetupForCurrentContext() for this context. 
     @param format A symbolic constant for the pixel format being set. See
-		@link ARGL_PIX_FORMAT ARGL_PIX_FORMAT @/link for a list of all possible formats.
+		@link AR_PIXEL_FORMAT AR_PIXEL_FORMAT @/link for a list of all possible formats.
 	@result TRUE if the pixel format value was set, FALSE if an error occurred.
 	@availability First appeared in ARToolKit 2.71.
 */
@@ -473,12 +416,72 @@ int arglPixelFormatSet(ARGL_CONTEXT_SETTINGS_REF contextSettings, AR_PIXEL_FORMA
 	@param contextSettings A reference to ARGL's settings for the current OpenGL
 		context, as returned by arglSetupForCurrentContext() for this context. 
 	@param format A symbolic constant for the pixel format in use. See
-		@link ARGL_PIX_FORMAT ARGL_PIX_FORMAT @/link for a list of all possible formats.
+		@link AR_PIXEL_FORMAT AR_PIXEL_FORMAT @/link for a list of all possible formats.
 	@param size The number of bytes of memory occupied per pixel, for the given format.
 	@result TRUE if the pixel format and size values were retreived, FALSE if an error occurred.
 	@availability First appeared in ARToolKit 2.71.
 */
 int arglPixelFormatGet(ARGL_CONTEXT_SETTINGS_REF contextSettings, AR_PIXEL_FORMAT *format, int *size);
+
+/*!
+    @function 
+	@abstract Set method by which arglDispImage() transfers pixels. 
+	@discussion
+		The value of this setting determines the method by which
+		arglDispImage transfers pixels of an image to the display. Setting this
+		variable to a value of AR_DRAW_BY_GL_DRAW_PIXELS specifies the use of OpenGL
+		DrawPixels to do the transfer. Setting this variable to a value of
+		AR_DRAW_BY_TEXTURE_MAPPING specifies the use of OpenGL TexImage2D to do the
+		transfer. The DrawPixels method is guaranteed to be available on all
+		implementations, but arglDispImage does not correct the image
+		for camera lens distortion under this method. In contrast, TexImage2D is only
+		available on some implementations, but allows arglDispImage() to apply a correction
+		for camera lens distortion, and additionally offers greater potential for
+		accelerated drawing on some implementations.
+
+		The initial value is AR_DRAW_BY_TEXTURE_MAPPING.
+	@availability First appeared in ARToolKit 2.68.
+ */
+void arglDrawModeSet(ARGL_CONTEXT_SETTINGS_REF contextSettings, const int mode);
+int arglDrawModeGet(ARGL_CONTEXT_SETTINGS_REF contextSettings);
+
+/*!
+    @function
+	@abstract Determines use of full or half-resolution TexImage2D pixel-transfer in arglDispImage().
+	@discussion
+		When arglDrawModeSet(AR_DRAW_BY_TEXTURE_MAPPING) has been called, the value of this setting
+		determines whether full or half-resolution data is transferred to the
+		texture. A value of AR_DRAW_TEXTURE_FULL_IMAGE uses all available pixels in the
+		source image data. A value of AR_DRAW_TEXTURE_HALF_IMAGE discards every second row
+		in the source image data, defining a half-height texture which is then drawn stretched
+		vertically to double its height.
+ 
+		The latter method is well-suited to drawing interlaced images, as would be obtained 
+		from DV camera sources in interlaced mode or composite video sources.
+ 
+		The initial value is AR_DRAW_TEXTURE_FULL_IMAGE.
+	@availability First appeared in ARToolKit 2.68.
+ */
+void arglTexmapModeSet(ARGL_CONTEXT_SETTINGS_REF contextSettings, const int mode);
+int arglTexmapModeGet(ARGL_CONTEXT_SETTINGS_REF contextSettings);
+
+/*!
+    @function
+	@abstract Determines use of rectangular TexImage2D pixel-transfer in arglDispImage().
+	@discussion
+		On implementations which support the OpenGL extension for rectangular textures (of
+		non power-of-two size), and when arglDrawMode is set to AR_DRAW_BY_TEXTURE_MAPPING,
+		the value of this variable determines whether rectangular textures or ordinary
+		(power-of-two) textures are used by arglDispImage(). A value of TRUE specifies the
+		use of rectangluar textures. A value of FALSE specifies the use of ordinary textures.
+ 
+		If the OpenGL driver available at runtime does not support for rectangular textures,
+		changing the value of this variable to TRUE will result calls to arglDispImage
+		performing no drawing.
+	@availability First appeared in ARToolKit 2.68.
+ */
+void arglTexRectangleSet(ARGL_CONTEXT_SETTINGS_REF contextSettings, const int state);
+int arglTexRectangleGet(ARGL_CONTEXT_SETTINGS_REF contextSettings);
 
 #ifdef __cplusplus
 }
