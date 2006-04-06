@@ -270,7 +270,11 @@ void arglCameraFrustum(const ARParam *cparam, const double focalmin, const doubl
 		is specified in column major order.
 	@param scale Specifies a scaling between ARToolKit's
 		units (usually millimeters) and OpenGL's coordinate system units.
-	@availability First appeared in ARToolKit 2.68.
+		What you pass for the scalefactor parameter depends on what units you
+		want to do your OpenGL drawing in. If you use a scalefactor of 1.0, then
+		1.0 OpenGL unit will equal 1.0 millimetre (ARToolKit's default units).
+		To use different OpenGL units, e.g. metres, then you would pass 0.001.
+ 	@availability First appeared in ARToolKit 2.68.
 */
 void arglCameraView(double para[3][4], GLdouble m_modelview[16], double scale);
 
