@@ -4576,7 +4576,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/csh;
-			shellScript = "#!/bin/csh\nif (-X doxygen) then\ncd \"${SRCROOT}/doc\"\nrm -f *.html doxygen.css\ndoxygen doxygen_config.dox\nsed -E -i \".bak\" 's/gsub__lite_8h\\.html(#[^\\\"]*)?/gsub_lite\\/index\\.html/' *.html\nrm -f *.bak gsub__lite_8h.html\nrm -f doxygen.png\nendif\n";
+			shellScript = "#!/bin/csh\nif (-X doxygen) then\ncd \"${SRCROOT}/doc\"\nmv header.html header.html.tmp\nmv footer.html footer.html.tmp\nrm -f *.html doxygen.css\ndoxygen doxygen_config.dox\nsed -E -i \".bak\" 's/gsub__lite_8h\\.html(#[^\\\"]*)?/gsub_lite\\/index\\.html/' *.html\nrm -f *.bak gsub__lite_8h.html\nrm -f doxygen.png\nendif\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
