@@ -147,14 +147,14 @@ static void DrawCubeUpdate(float timeDelta)
 }
 
 // Sets up gARTCparam.
-static int demoARSetupCamera(const char *cparam_name, char *vconf)
+static int setupCamera(const char *cparam_name, char *vconf)
 {	
     ARParam  wparam;
 	int xsize, ysize;
 
     // Open the video path.
     if (arVideoOpen(vconf) < 0) {
-    	fprintf(stderr, "demoARSetupCamera(): Unable to open connection to camera.\n");
+    	fprintf(stderr, "setupCamera(): Unable to open connection to camera.\n");
     	return (FALSE);
 	}
 	
@@ -164,7 +164,7 @@ static int demoARSetupCamera(const char *cparam_name, char *vconf)
 	
 	// Load the camera parameters, resize for the window and init.
     if (arParamLoad(cparam_name, 1, &wparam) < 0) {
-		fprintf(stderr, "demoARSetupCamera(): Error loading parameter file %s for camera.\n", cparam_name);
+		fprintf(stderr, "setupCamera(): Error loading parameter file %s for camera.\n", cparam_name);
         return (FALSE);
     }
     arParamChangeSize(&wparam, xsize, ysize, &gARTCparam);
@@ -173,18 +173,18 @@ static int demoARSetupCamera(const char *cparam_name, char *vconf)
     arParamDisp(&gARTCparam);
 	
     if (arVideoCapStart() != 0) {
-    	fprintf(stderr, "demoARSetupCamera(): Unable to begin camera data capture.\n");
+    	fprintf(stderr, "setupCamera(): Unable to begin camera data capture.\n");
 		return (FALSE);		
 	}
 	
 	return (TRUE);
 }
 
-static int demoARSetupMarker(const char *patt_name, int *patt_id)
+static int setupMarker(const char *patt_name, int *patt_id)
 {
 	
     if((*patt_id = arLoadPatt(patt_name)) < 0) {
-        fprintf(stderr, "demoARSetupMarker(): pattern load error !!\n");
+        fprintf(stderr, "setupMarker(): pattern load error !!\n");
         return (FALSE);
     }
 	
@@ -193,7 +193,7 @@ static int demoARSetupMarker(const char *patt_name, int *patt_id)
 
 // Report state of ARToolKit global variables arFittingMode,
 // arImageProcMode, arglDrawMode, arTemplateMatchingMode, arMatchingPCAMode.
-static void demoARDebugReportMode(void)
+static void debugReportMode(void)
 {
 	if(arFittingMode == AR_FITTING_TO_INPUT ) {
 		fprintf(stderr, "FittingMode (Z): INPUT IMAGE\n");
@@ -262,7 +262,7 @@ static void Keyboard(unsigned char key, int x, int y)
 			fprintf(stderr, "*** Camera - %f (frame/sec)\n", (double)gCallCountMarkerDetect/arUtilTimer());
 			gCallCountMarkerDetect = 0;
 			arUtilTimerReset();
-			demoARDebugReportMode();
+			debugReportMode();
 			break;
 		case '?':
 		case '/':
@@ -429,12 +429,12 @@ int main(int argc, char** argv)
 	// Hardware setup.
 	//
 
-	if (!demoARSetupCamera(cparam_name, vconf)) {
+	if (!setupCamera(cparam_name, vconf)) {
 		fprintf(stderr, "main(): Unable to set up AR camera.\n");
 		exit(-1);
 	}
-	demoARDebugReportMode();
-	if (!demoARSetupMarker(patt_name, &gPatt_id)) {
+	debugReportMode();
+	if (!setupMarker(patt_name, &gPatt_id)) {
 		fprintf(stderr, "main(): Unable to set up AR marker.\n");
 		exit(-1);
 	}

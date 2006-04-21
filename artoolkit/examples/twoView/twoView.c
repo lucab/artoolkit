@@ -191,7 +191,7 @@ static int DrawCubeFinal(void)
 }
 
 // Sets up fields ARTVideo, ARTCparam of gContextsActive[0] through gContextsActive[cameraCount - 1].
-static int demoARSetupCameras(const int cameraCount, const char *cparam_names[], char *vconfs[])
+static int setupCameras(const int cameraCount, const char *cparam_names[], char *vconfs[])
 {
 	int i;
 	ARParam wparam;
@@ -201,17 +201,17 @@ static int demoARSetupCameras(const int cameraCount, const char *cparam_names[],
 		
 		// Open the video path.
 		if ((gContextsActive[i].ARTVideo = ar2VideoOpen(vconfs[i])) == NULL) {
-			fprintf(stderr, "demoARSetupCameras(): Unable to open connection to camera %d.\n", i + 1);
+			fprintf(stderr, "setupCameras(): Unable to open connection to camera %d.\n", i + 1);
 			return (FALSE);
 		}
 		
 		// Find the size of the window.
 		if (ar2VideoInqSize(gContextsActive[i].ARTVideo, &xsize, &ysize) < 0) return (FALSE);
-		fprintf(stderr, "demoARSetupCameras(): Camera %d image size (x,y) = (%d,%d)\n", i + 1, xsize, ysize);
+		fprintf(stderr, "setupCameras(): Camera %d image size (x,y) = (%d,%d)\n", i + 1, xsize, ysize);
 
 		// Load the camera parameters, resize for the window and init.
 		if (arParamLoad(cparam_names[i], 1, &wparam) < 0) {
-			fprintf(stderr, "demoARSetupCameras(): Error loading parameter file %s for camera %d.\n", cparam_names[i], i + 1);
+			fprintf(stderr, "setupCameras(): Error loading parameter file %s for camera %d.\n", cparam_names[i], i + 1);
 			return (FALSE);
 		}
 		arParamChangeSize(&wparam, xsize, ysize, &(gContextsActive[i].ARTCparam));
@@ -222,7 +222,7 @@ static int demoARSetupCameras(const int cameraCount, const char *cparam_names[],
 		
 		// Start the video capture for this camera.
 		if (ar2VideoCapStart(gContextsActive[i].ARTVideo) != 0) {
-			fprintf(stderr, "demoARSetupCameras(): Unable to begin camera data capture for camera %d.\n", i + 1);
+			fprintf(stderr, "setupCameras(): Unable to begin camera data capture for camera %d.\n", i + 1);
 			return (FALSE);		
 		}
 		
@@ -230,11 +230,11 @@ static int demoARSetupCameras(const int cameraCount, const char *cparam_names[],
 	return (TRUE);
 }
 
-static int demoARSetupMarker(const char *patt_name, int *patt_id)
+static int setupMarker(const char *patt_name, int *patt_id)
 {
 	
     if((*patt_id = arLoadPatt(patt_name)) < 0) {
-        fprintf(stderr, "demoARSetupMarker(): pattern load error !!\n");
+        fprintf(stderr, "setupMarker(): pattern load error !!\n");
         return (FALSE);
     }
 	
@@ -243,7 +243,7 @@ static int demoARSetupMarker(const char *patt_name, int *patt_id)
 
 // Report state of ARToolKit global variables arFittingMode,
 // arImageProcMode, arglDrawMode, arTemplateMatchingMode, arMatchingPCAMode.
-static void demoARDebugReportMode(ARGL_CONTEXT_SETTINGS_REF	arglSettings)
+static void debugReportMode(ARGL_CONTEXT_SETTINGS_REF	arglSettings)
 {
 	if (arFittingMode == AR_FITTING_TO_INPUT) {
 		fprintf(stderr, "FittingMode (Z): INPUT IMAGE\n");
@@ -353,7 +353,7 @@ static void Keyboard(unsigned char key, int x, int y)
 				}				
 				fprintf(stderr, "*** Camera %2d - %f (frame/sec)\n", i + 1, (double)(gContextsActive[i].callCountMarkerDetect)/arUtilTimer());
 				gContextsActive[i].callCountMarkerDetect = 0;
-				demoARDebugReportMode(gContextsActive[i].arglSettings);
+				debugReportMode(gContextsActive[i].arglSettings);
 			}
 			arUtilTimerReset();
 			gCallCountGetImage = 0;
@@ -579,13 +579,13 @@ int main(int argc, char** argv)
 	//
 
 	if ((gContextsActive = (CONTEXT_INFO *)calloc(CONTEXTSACTIVECOUNTMAX, sizeof(CONTEXT_INFO))) == NULL) exit(-1);
-	if (!demoARSetupCameras(CONTEXTSACTIVECOUNT, cparam_names, vconfs)) {
+	if (!setupCameras(CONTEXTSACTIVECOUNT, cparam_names, vconfs)) {
 		fprintf(stderr, "main(): Unable to set up %d AR cameras.\n", CONTEXTSACTIVECOUNT);
 		exit(-1);
 	}
 	gContextsActiveCount = CONTEXTSACTIVECOUNT;
-	for (i = 0; i < gContextsActiveCount; i++) demoARDebugReportMode(gContextsActive[i].arglSettings);
-	if (!demoARSetupMarker(patt_name, &gPatt_id)) {
+	for (i = 0; i < gContextsActiveCount; i++) debugReportMode(gContextsActive[i].arglSettings);
+	if (!setupMarker(patt_name, &gPatt_id)) {
 		fprintf(stderr, "main(): Unable to set up AR marker.\n");
 		exit(-1);
 	}
