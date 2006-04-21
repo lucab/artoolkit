@@ -349,6 +349,8 @@ static void arglDispImageTexRectangle(ARUint8 *image, const ARParam *cparam, con
 			contextSettings->textureRectangleCapabilitiesChecked = TRUE;
 			if (!arglDispImageTexRectangleCapabilitiesCheck(cparam, contextSettings)) {
 				fprintf(stderr, "argl error: Your OpenGL implementation and/or hardware's texturing capabilities are insufficient to support rectangle textures.\n");
+				// Fall back to power of 2 texturing.
+				contextSettings->arglTexRectangle = FALSE;
 				return;
 			}
 		} else {
@@ -574,9 +576,18 @@ static void arglDispImageTexPow2(ARUint8 *image, const ARParam *cparam, const fl
 #endif // APPLE_TEXTURE_FAST_TRANSFER
 
 		// Request OpenGL allocate memory for a power-of-two texture of the appropriate size.
+		if (texmapScaleFactor == 2) {
+			// If texmapScaleFactor is 2, pretend lines in the source image are
+			// twice as long as they are; glTexImage2D will read only the first
+			// half of each line, effectively discarding every second line in the source image.
+			glPixelStorei(GL_UNPACK_ROW_LENGTH, cparam->xsize*texmapScaleFactor);
+		}
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-		glTexImage2D(GL_TEXTURE_2D, 0, contextSettings->pixIntFormat, contextSettings->texturePow2SizeX, contextSettings->texturePow2SizeY, 0, contextSettings->pixFormat, contextSettings->pixType, NULL);
-				
+		glTexImage2D(GL_TEXTURE_2D, 0, contextSettings->pixIntFormat, contextSettings->texturePow2SizeX, contextSettings->texturePow2SizeY/texmapScaleFactor, 0, contextSettings->pixFormat, contextSettings->pixType, NULL);
+		if (texmapScaleFactor == 2) {
+			glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+		}
+		
 		// Set up the surface which we will texture upon.
 		contextSettings->listPow2 = glGenLists(1);
 		glNewList(contextSettings->listPow2, GL_COMPILE); // NB Texture not specified yet so don't execute.
@@ -681,17 +692,13 @@ ARGL_CONTEXT_SETTINGS_REF arglSetupForCurrentContext(void)
 	
 	contextSettings = (ARGL_CONTEXT_SETTINGS_REF)calloc(1, sizeof(ARGL_CONTEXT_SETTINGS));
 	// Use default pixel format handed to us by <AR/config.h>.
-	if (!arglPixelFormatSet(contextSettings, AR_PIXEL_FORMAT_DEFAULT)) {
+	if (!arglPixelFormatSet(contextSettings, AR_DEFAULT_PIXEL_FORMAT)) {
 		fprintf(stderr, "Unknown default pixel format defined in config.h.\n");
 		return (NULL);
 	}
 	arglDrawModeSet(contextSettings, AR_DRAW_BY_TEXTURE_MAPPING);
 	arglTexmapModeSet(contextSettings, AR_DRAW_TEXTURE_FULL_IMAGE);
-#ifdef AR_OPENGL_TEXTURE_RECTANGLE
 	arglTexRectangleSet(contextSettings, TRUE);
-#else
-	arglTexRectangleSet(contextSettings, FALSE);
-#endif // AR_OPENGL_TEXTURE_RECTANGLE
 
 	return (contextSettings);
 }

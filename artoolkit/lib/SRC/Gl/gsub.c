@@ -418,21 +418,21 @@ static void argDispImageDrawPixels( ARUint8 *image, int xwin, int ywin )
     glPixelZoom( zoom, -zoom);
     glRasterPos3f( sx, sy, -1.0 );
 
-#if (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ARGB)
+#if (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ARGB)
     glDrawPixels( gImXsize, gImYsize, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ABGR)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ABGR)
     glDrawPixels( gImXsize, gImYsize, GL_ABGR, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGRA)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGRA)
     glDrawPixels( gImXsize, gImYsize, GL_BGRA, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGR)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGR)
     glDrawPixels( gImXsize, gImYsize, GL_BGR, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGBA)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGBA)
     glDrawPixels( gImXsize, gImYsize, GL_RGBA, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGB)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGB)
     glDrawPixels( gImXsize, gImYsize, GL_RGB, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_2vuy)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_2vuy)
     glDrawPixels( gImXsize, gImYsize, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_REV_APPLE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_yuvs)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_yuvs)
     glDrawPixels( gImXsize, gImYsize, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, image );
 #else
 #  error Unknown default pixel format defined in config.h
@@ -494,42 +494,42 @@ static void argDispImageTexRectangle( ARUint8 *image, int xwin, int ywin, int mo
 #endif
     glPixelStorei( GL_UNPACK_ROW_LENGTH, gImXsize*size_adjust_factor );
     if( size_adjust_factor == old_size_adjust_factor ) {
-#if (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ARGB)
+#if (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ARGB)
         glTexSubImage2D( AR_TEXTURE_RECTANGLE, 0, 0, 0, gImXsize, gImYsize/size_adjust_factor, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ABGR)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ABGR)
         glTexSubImage2D( AR_TEXTURE_RECTANGLE, 0, 0, 0, gImXsize, gImYsize/size_adjust_factor, GL_ABGR, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGRA)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGRA)
         glTexSubImage2D( AR_TEXTURE_RECTANGLE, 0, 0, 0, gImXsize, gImYsize/size_adjust_factor, GL_BGRA, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGR)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGR)
         glTexSubImage2D( AR_TEXTURE_RECTANGLE, 0, 0, 0, gImXsize, gImYsize/size_adjust_factor, GL_BGR, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGBA)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGBA)
         glTexSubImage2D( AR_TEXTURE_RECTANGLE, 0, 0, 0, gImXsize, gImYsize/size_adjust_factor, GL_RGBA, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGB)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGB)
         glTexSubImage2D( AR_TEXTURE_RECTANGLE, 0, 0, 0, gImXsize, gImYsize/size_adjust_factor, GL_RGB, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_2vuy)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_2vuy)
         glTexSubImage2D( AR_TEXTURE_RECTANGLE, 0, 0, 0, gImXsize, gImYsize/size_adjust_factor, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_REV_APPLE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_yuvs)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_yuvs)
         glTexSubImage2D( AR_TEXTURE_RECTANGLE, 0, 0, 0, gImXsize, gImYsize/size_adjust_factor, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, image );
 #else
 #  error Unknown default pixel format defined in config.h
 #endif
     }
     else {
-#if (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ARGB)
+#if (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ARGB)
         glTexImage2D( AR_TEXTURE_RECTANGLE, 0, 3, gImXsize, gImYsize/size_adjust_factor, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ABGR)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ABGR)
         glTexImage2D( AR_TEXTURE_RECTANGLE, 0, 3, gImXsize, gImYsize/size_adjust_factor, 0, GL_ABGR, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGRA)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGRA)
         glTexImage2D( AR_TEXTURE_RECTANGLE, 0, 3, gImXsize, gImYsize/size_adjust_factor, 0, GL_BGRA, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGR)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGR)
         glTexImage2D( AR_TEXTURE_RECTANGLE, 0, 3, gImXsize, gImYsize/size_adjust_factor, 0, GL_BGR, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGBA)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGBA)
         glTexImage2D( AR_TEXTURE_RECTANGLE, 0, 3, gImXsize, gImYsize/size_adjust_factor, 0, GL_RGBA, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGB)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGB)
         glTexImage2D( AR_TEXTURE_RECTANGLE, 0, 3, gImXsize, gImYsize/size_adjust_factor, 0, GL_RGB, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_2vuy)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_2vuy)
         glTexImage2D( AR_TEXTURE_RECTANGLE, 0, 3, gImXsize, gImYsize/size_adjust_factor, 0, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_REV_APPLE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_yuvs)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_yuvs)
         glTexImage2D( AR_TEXTURE_RECTANGLE, 0, 3, gImXsize, gImYsize/size_adjust_factor, 0, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, image );
 #else
 #  error Unknown default pixel format defined in config.h
@@ -660,42 +660,42 @@ static void argDispImageTex4( ARUint8 *wimage, int xwin, int ywin, int mode )
     glPixelStorei( GL_UNPACK_ROW_LENGTH, gImXsize*size_adjust_factor );
 
     if( size_adjust_factor == old_size_adjust_factor ) {
-#if (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ARGB)
+#if (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ARGB)
         glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, tex1Xsize1, tex1Ysize/size_adjust_factor, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ABGR)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ABGR)
         glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, tex1Xsize1, tex1Ysize/size_adjust_factor, GL_ABGR, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGRA)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGRA)
         glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, tex1Xsize1, tex1Ysize/size_adjust_factor, GL_BGRA, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGR)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGR)
         glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, tex1Xsize1, tex1Ysize/size_adjust_factor, GL_BGR, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGBA)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGBA)
         glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, tex1Xsize1, tex1Ysize/size_adjust_factor, GL_RGBA, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGB)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGB)
         glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, tex1Xsize1, tex1Ysize/size_adjust_factor, GL_RGB, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_2vuy)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_2vuy)
         glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, tex1Xsize1, tex1Ysize/size_adjust_factor, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_REV_APPLE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_yuvs)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_yuvs)
         glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, tex1Xsize1, tex1Ysize/size_adjust_factor, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, image );
 #else
 #  error Unknown default pixel format defined in config.h
 #endif
     }
     else {
-#if (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ARGB)
+#if (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ARGB)
         glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize1, tex1Ysize/size_adjust_factor, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ABGR)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ABGR)
         glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize1, tex1Ysize/size_adjust_factor, 0, GL_ABGR, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGRA)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGRA)
         glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize1, tex1Ysize/size_adjust_factor, 0, GL_BGRA, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGR)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGR)
         glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize1, tex1Ysize/size_adjust_factor, 0, GL_BGR, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGBA)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGBA)
         glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize1, tex1Ysize/size_adjust_factor, 0, GL_RGBA, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGB)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGB)
         glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize1, tex1Ysize/size_adjust_factor, 0, GL_RGB, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_2vuy)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_2vuy)
         glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize1, tex1Ysize/size_adjust_factor, 0, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_REV_APPLE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_yuvs)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_yuvs)
         glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize1, tex1Ysize/size_adjust_factor, 0, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, image );
 #else
 #  error Unknown default pixel format defined in config.h
@@ -849,42 +849,42 @@ static void argDispImageTex3( ARUint8 *wimage, int xwin, int ywin, int mode )
     glPixelStorei( GL_UNPACK_ROW_LENGTH, gImXsize*size_adjust_factor );
 
     if( size_adjust_factor == old_size_adjust_factor ) {
-#if (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ARGB)
+#if (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ARGB)
         glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, tex1Xsize1, tex1Ysize/size_adjust_factor, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ABGR)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ABGR)
         glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, tex1Xsize1, tex1Ysize/size_adjust_factor, GL_ABGR, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGRA)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGRA)
         glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, tex1Xsize1, tex1Ysize/size_adjust_factor, GL_BGRA, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGR)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGR)
         glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, tex1Xsize1, tex1Ysize/size_adjust_factor, GL_BGR, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGBA)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGBA)
         glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, tex1Xsize1, tex1Ysize/size_adjust_factor, GL_RGBA, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGB)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGB)
         glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, tex1Xsize1, tex1Ysize/size_adjust_factor, GL_RGB, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_2vuy)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_2vuy)
         glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, tex1Xsize1, tex1Ysize/size_adjust_factor, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_REV_APPLE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_yuvs)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_yuvs)
         glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, tex1Xsize1, tex1Ysize/size_adjust_factor, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, image );
 #else
 #  error Unknown default pixel format defined in config.h
 #endif
     }
     else {
-#if (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ARGB)
+#if (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ARGB)
         glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize1, tex1Ysize/size_adjust_factor, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ABGR)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ABGR)
         glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize1, tex1Ysize/size_adjust_factor, 0, GL_ABGR, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGRA)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGRA)
         glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize1, tex1Ysize/size_adjust_factor, 0, GL_BGRA, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGR)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGR)
         glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize1, tex1Ysize/size_adjust_factor, 0, GL_BGR, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGBA)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGBA)
         glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize1, tex1Ysize/size_adjust_factor, 0, GL_RGBA, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGB)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGB)
         glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize1, tex1Ysize/size_adjust_factor, 0, GL_RGB, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_2vuy)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_2vuy)
         glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize1, tex1Ysize/size_adjust_factor, 0, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_REV_APPLE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_yuvs)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_yuvs)
         glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize1, tex1Ysize/size_adjust_factor, 0, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, image );
 #else
 #  error Unknown default pixel format defined in config.h
@@ -978,42 +978,42 @@ static void argDispImageTex3( ARUint8 *wimage, int xwin, int ywin, int mode )
 #endif
 
     if( size_adjust_factor == old_size_adjust_factor ) {
-#if (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ARGB)
+#if (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ARGB)
         glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, tex1Xsize2, tex1Ysize/size_adjust_factor, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, image+tex1Xsize1*AR_PIX_SIZE_DEFAULT );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ABGR)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ABGR)
         glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, tex1Xsize2, tex1Ysize/size_adjust_factor, GL_ABGR, GL_UNSIGNED_BYTE, image+tex1Xsize1*AR_PIX_SIZE_DEFAULT );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGRA)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGRA)
         glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, tex1Xsize2, tex1Ysize/size_adjust_factor, GL_BGRA, GL_UNSIGNED_BYTE, image+tex1Xsize1*AR_PIX_SIZE_DEFAULT );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGR)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGR)
         glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, tex1Xsize2, tex1Ysize/size_adjust_factor, GL_BGR, GL_UNSIGNED_BYTE, image+tex1Xsize1*AR_PIX_SIZE_DEFAULT );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGBA)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGBA)
         glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, tex1Xsize2, tex1Ysize/size_adjust_factor, GL_RGBA, GL_UNSIGNED_BYTE, image+tex1Xsize1*AR_PIX_SIZE_DEFAULT );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGB)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGB)
         glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, tex1Xsize2, tex1Ysize/size_adjust_factor, GL_RGB, GL_UNSIGNED_BYTE, image+tex1Xsize1*AR_PIX_SIZE_DEFAULT );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_2vuy)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_2vuy)
         glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, tex1Xsize2, tex1Ysize/size_adjust_factor, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_REV_APPLE, image+tex1Xsize1*AR_PIX_SIZE_DEFAULT );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_yuvs)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_yuvs)
         glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, tex1Xsize2, tex1Ysize/size_adjust_factor, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, image+tex1Xsize1*AR_PIX_SIZE_DEFAULT );
 #else
 #  error Unknown default pixel format defined in config.h
 #endif
     }
     else {
-#if (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ARGB)
+#if (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ARGB)
         glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize2, tex1Ysize/size_adjust_factor, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, image+tex1Xsize1*AR_PIX_SIZE_DEFAULT );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ABGR)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ABGR)
         glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize2, tex1Ysize/size_adjust_factor, 0, GL_ABGR, GL_UNSIGNED_BYTE, image+tex1Xsize1*AR_PIX_SIZE_DEFAULT );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGRA)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGRA)
         glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize2, tex1Ysize/size_adjust_factor, 0, GL_BGRA, GL_UNSIGNED_BYTE, image+tex1Xsize1*AR_PIX_SIZE_DEFAULT );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGR)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGR)
         glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize2, tex1Ysize/size_adjust_factor, 0, GL_BGR, GL_UNSIGNED_BYTE, image+tex1Xsize1*AR_PIX_SIZE_DEFAULT );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGBA)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGBA)
         glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize2, tex1Ysize/size_adjust_factor, 0, GL_RGBA, GL_UNSIGNED_BYTE, image+tex1Xsize1*AR_PIX_SIZE_DEFAULT );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGB)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGB)
         glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize2, tex1Ysize/size_adjust_factor, 0, GL_RGB, GL_UNSIGNED_BYTE, image+tex1Xsize1*AR_PIX_SIZE_DEFAULT );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_2vuy)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_2vuy)
         glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize2, tex1Ysize/size_adjust_factor, 0, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_REV_APPLE, image+tex1Xsize1*AR_PIX_SIZE_DEFAULT );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_yuvs)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_yuvs)
         glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1Xsize2, tex1Ysize/size_adjust_factor, 0, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, image+tex1Xsize1*AR_PIX_SIZE_DEFAULT );
 #else
 #  error Unknown default pixel format defined in config.h
@@ -1150,21 +1150,21 @@ static void argDispHalfImageDrawPixels( ARUint8 *image, int xwin, int ywin )
     glPixelZoom( zoom, -zoom);
     glRasterPos3f( sx, sy, -1.0 );
 
-#if (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ARGB)
+#if (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ARGB)
     glDrawPixels( gImXsize/2, gImYsize/2, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ABGR)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ABGR)
     glDrawPixels( gImXsize/2, gImYsize/2, GL_ABGR, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGRA)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGRA)
     glDrawPixels( gImXsize/2, gImYsize/2, GL_BGRA, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGR)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGR)
     glDrawPixels( gImXsize/2, gImYsize/2, GL_BGR, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGBA)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGBA)
     glDrawPixels( gImXsize/2, gImYsize/2, GL_RGBA, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGB)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGB)
     glDrawPixels( gImXsize/2, gImYsize/2, GL_RGB, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_2vuy)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_2vuy)
 	glDrawPixels( gImXsize/2, gImYsize/2, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_REV_APPLE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_yuvs)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_yuvs)
 	glDrawPixels( gImXsize/2, gImYsize/2, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, image );
 #else
 #  error Unknown default pixel format defined in config.h
@@ -1229,42 +1229,42 @@ static void argDispHalfImageTex( ARUint8 *wimage, int xwin, int ywin, int mode )
     glPixelStorei( GL_UNPACK_ROW_LENGTH, gImXsize/2 );
 
     if( initf == 0 ) {
-#if (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ARGB)
+#if (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ARGB)
         glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, tex2Xsize, tex2Ysize, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ABGR)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ABGR)
         glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, tex2Xsize, tex2Ysize, GL_ABGR, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGRA)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGRA)
         glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, tex2Xsize, tex2Ysize, GL_BGRA, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGR)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGR)
         glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, tex2Xsize, tex2Ysize, GL_BGR, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGBA)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGBA)
         glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, tex2Xsize, tex2Ysize, GL_RGBA, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGB)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGB)
         glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, tex2Xsize, tex2Ysize, GL_RGB, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_2vuy)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_2vuy)
         glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, tex2Xsize, tex2Ysize, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_REV_APPLE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_yuvs)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_yuvs)
         glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, tex2Xsize, tex2Ysize, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, image );
 #else
 #  error Unknown default pixel format defined in config.h
 #endif
     }
     else {
-#if (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ARGB)
+#if (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ARGB)
         glTexImage2D( GL_TEXTURE_2D, 0, 3, tex2Xsize, tex2Ysize, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ABGR)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ABGR)
         glTexImage2D( GL_TEXTURE_2D, 0, 3, tex2Xsize, tex2Ysize, 0, GL_ABGR, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGRA)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGRA)
         glTexImage2D( GL_TEXTURE_2D, 0, 3, tex2Xsize, tex2Ysize, 0, GL_BGRA, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGR)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGR)
         glTexImage2D( GL_TEXTURE_2D, 0, 3, tex2Xsize, tex2Ysize, 0, GL_BGR, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGBA)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGBA)
         glTexImage2D( GL_TEXTURE_2D, 0, 3, tex2Xsize, tex2Ysize, 0, GL_RGBA, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGB)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGB)
         glTexImage2D( GL_TEXTURE_2D, 0, 3, tex2Xsize, tex2Ysize, 0, GL_RGB, GL_UNSIGNED_BYTE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_2vuy)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_2vuy)
         glTexImage2D( GL_TEXTURE_2D, 0, 3, tex2Xsize, tex2Ysize, 0, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_REV_APPLE, image );
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_yuvs)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_yuvs)
         glTexImage2D( GL_TEXTURE_2D, 0, 3, tex2Xsize, tex2Ysize, 0, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, image );
 #else
 #  error Unknown default pixel format defined in config.h

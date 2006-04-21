@@ -413,21 +413,21 @@ static void Motion(int x, int y)
         for (j = ssy; j <= eey; j++) {
             p = &(gPatt.savedImage[gPatt.loop_num-1][(j*gXsize+ssx)*AR_PIX_SIZE_DEFAULT]);
             for (i = ssx; i <= eex; i++) {
-#if (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGRA)
+#if (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGRA)
                 *p1 = (((255*3 - (*(p+0) + *(p+1) + *(p+2))) / 3) < gThresh ? 0 : 255);
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ABGR)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ABGR)
                 *p1 = (((255*3 - (*(p+1) + *(p+2) + *(p+3))) / 3) < gThresh ? 0 : 255);
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ARGB)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ARGB)
                 *p1 = (((255*3 - (*(p+1) + *(p+2) + *(p+3))) / 3) < gThresh ? 0 : 255);
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGR)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGR)
                 *p1 = (((255*3 - (*(p+0) + *(p+1) + *(p+2))) / 3) < gThresh ? 0 : 255);
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGBA)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGBA)
                 *p1 = (((255*3 - (*(p+0) + *(p+1) + *(p+2))) / 3) < gThresh ? 0 : 255);
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGB)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGB)
                 *p1 = (((255*3 - (*(p+0) + *(p+1) + *(p+2))) / 3) < gThresh ? 0 : 255);
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_2vuy)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_2vuy)
                 *p1 = ((255 - *(p+1)) < gThresh ? 0 : 255);
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_yuvs)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_yuvs)
                 *p1 = ((255 - *(p+0)) < gThresh ? 0 : 255);
 #else
 #  error Unknown default pixel format defined in config.h

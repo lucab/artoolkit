@@ -158,9 +158,9 @@ AR2VideoParamT *ar2VideoOpen( char *config )
     vid->channel    = DEFAULT_VIDEO_CHANNEL; 
     vid->width      = DEFAULT_VIDEO_WIDTH;
     vid->height     = DEFAULT_VIDEO_HEIGHT;
-#if (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGRA)
+#if (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGRA)
     vid->palette = VIDEO_PALETTE_RGB32;     /* palette format */
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGR) || (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGB)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGR) || (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGB)
     vid->palette = VIDEO_PALETTE_RGB24;     /* palette format */
 #endif
     vid->contrast   = -1.;
@@ -211,9 +211,9 @@ AR2VideoParamT *ar2VideoOpen( char *config )
             }
             else if( strncmp( a, "-palette=", 9 ) == 0 ) {
                 if( strncmp( &a[9], "RGB", 3) == 0 ) {
-#if (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGRA)
+#if (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGRA)
 		  vid->palette = VIDEO_PALETTE_RGB32;     /* palette format */
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGR)|| (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGB)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGR)|| (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGB)
 		  vid->palette = VIDEO_PALETTE_RGB24;     /* palette format */
 #endif
 		}

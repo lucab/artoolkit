@@ -229,21 +229,21 @@ static ARInt16 *labeling2( ARUint8 *image, int thresh,
     }
     for(j = 1; j < lysize-1; j++, pnt+=poff*2, pnt2+=2) {
         for(i = 1; i < lxsize-1; i++, pnt+=poff, pnt2++) {
-#if (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ARGB)
+#if (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ARGB)
             if( *(pnt+1) + *(pnt+2) + *(pnt+3) <= thresh ) {
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ABGR)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ABGR)
             if( *(pnt+1) + *(pnt+2) + *(pnt+3) <= thresh ) {
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGRA)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGRA)
             if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresh ) {
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGR)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGR)
             if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresh ) {
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGBA)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGBA)
             if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresh ) {
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGB)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGB)
             if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresh ) {
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_2vuy)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_2vuy)
 			if( *(pnt+1) * 3 <= thresh ) {
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_yuvs)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_yuvs)
 			if( *(pnt+0) * 3 <= thresh ) {
 #else
 #  error Unknown default pixel format defined in config.h
@@ -569,28 +569,28 @@ static ARInt16 *labeling3( ARUint8 *image, int thresh,
     }
     for(j = 1; j < lysize-1; j++, pnt+=poff*2, pnt2+=2, dpnt+=AR_PIX_SIZE_DEFAULT*2) {
         for(i = 1; i < lxsize-1; i++, pnt+=poff, pnt2++, dpnt+=AR_PIX_SIZE_DEFAULT) {
-#if (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ARGB)
+#if (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ARGB)
             if( *(pnt+1) + *(pnt+2) + *(pnt+3) <= thresh ) {
                 *(dpnt+1) = *(dpnt+2) = *(dpnt+3) = 255;
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ABGR)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ABGR)
             if( *(pnt+1) + *(pnt+2) + *(pnt+3) <= thresh ) {
                 *(dpnt+1) = *(dpnt+2) = *(dpnt+3) = 255;
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGRA)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGRA)
             if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresh ) {
                 *(dpnt+0) = *(dpnt+1) = *(dpnt+2) = 255;
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGR)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGR)
             if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresh ) {
                 *(dpnt+0) = *(dpnt+1) = *(dpnt+2) = 255;
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGBA)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGBA)
             if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresh ) {
                 *(dpnt+0) = *(dpnt+1) = *(dpnt+2) = 255;
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGB)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGB)
             if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresh ) {
                 *(dpnt+0) = *(dpnt+1) = *(dpnt+2) = 255;
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_2vuy)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_2vuy)
 			if( *(pnt+1) * 3 <= thresh ) {
 				*(dpnt+1) = 255;
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_yuvs)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_yuvs)
 			if( *(pnt+0) * 3 <= thresh ) {
 				*(dpnt+0) = 255;
 #else
@@ -695,21 +695,21 @@ static ARInt16 *labeling3( ARUint8 *image, int thresh,
             }
             else {
                 *pnt2 = 0;
-#if (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ARGB)
+#if (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ARGB)
                 *(dpnt+1) = *(dpnt+2) = *(dpnt+3) = 0;
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_ABGR)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ABGR)
                 *(dpnt+1) = *(dpnt+2) = *(dpnt+3) = 0;
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGRA)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGRA)
                 *(dpnt+0) = *(dpnt+1) = *(dpnt+2) = 0;
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_BGR)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGR)
                 *(dpnt+0) = *(dpnt+1) = *(dpnt+2) = 0;
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGBA)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGBA)
                 *(dpnt+0) = *(dpnt+1) = *(dpnt+2) = 0;
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_RGB)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGB)
                 *(dpnt+0) = *(dpnt+1) = *(dpnt+2) = 0;
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_2vuy)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_2vuy)
                 *(dpnt+1) = 0;
-#elif (AR_PIXEL_FORMAT_DEFAULT == AR_PIXEL_FORMAT_yuvs)
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_yuvs)
                 *(dpnt+0) = 0;
 #else
 #  error Unknown default pixel format defined in config.h
