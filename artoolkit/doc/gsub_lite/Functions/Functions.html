@@ -29,6 +29,9 @@
 <dt><tt><a href="Functions.html#//apple_ref/c/func/arglDistortionCompensationSet" target="doc">arglDistortionCompensationSet</a></tt></dt>
 <dd>Set compensation for camera lens distortion in arglDispImage to off or on.
 </dd>
+<dt><tt><a href="Functions.html#//apple_ref/c/func/arglDrawModeSet" target="doc">arglDrawModeSet</a></tt></dt>
+<dd>Set method by which arglDispImage() transfers pixels. 
+</dd>
 <dt><tt><a href="Functions.html#//apple_ref/c/func/arglPixelFormatGet" target="doc">arglPixelFormatGet</a></tt></dt>
 <dd>Get the format of pixel data in which arglDispImage*() is expecting data to be passed.
 </dd>
@@ -37,6 +40,12 @@
 </dd>
 <dt><tt><a href="Functions.html#//apple_ref/c/func/arglSetupForCurrentContext" target="doc">arglSetupForCurrentContext</a></tt></dt>
 <dd>Initialise the gsub_lite library for the current OpenGL context.
+</dd>
+<dt><tt><a href="Functions.html#//apple_ref/c/func/arglTexmapModeSet" target="doc">arglTexmapModeSet</a></tt></dt>
+<dd>Determines use of full or half-resolution TexImage2D pixel-transfer in arglDispImage().
+</dd>
+<dt><tt><a href="Functions.html#//apple_ref/c/func/arglTexRectangleSet" target="doc">arglTexRectangleSet</a></tt></dt>
+<dd>Determines use of rectangular TexImage2D pixel-transfer in arglDispImage().
 </dd>
 </dl>
 <hr><!-- headerDoc=func;  uid=//apple_ref/c/func/arglCameraFrustum;  name=arglCameraFrustum -->
@@ -101,7 +110,10 @@ position of an ARToolKit marker, as returned by arGetTransMat().</dd>
 out with a modelview matrix suitable for passing to OpenGL. The matrix
 is specified in column major order.</dd>
 <dt><code><i>scale</i></code></dt><dd>Specifies a scaling between ARToolKit's
-units (usually millimeters) and OpenGL's coordinate system units.</dd>
+units (usually millimeters) and OpenGL's coordinate system units.
+What you pass for the scalefactor parameter depends on what units you
+want to do your OpenGL drawing in. If you use a scalefactor of 1.0, then<br>
+To use different OpenGL units, e.g. metres, then you would pass 0.001.</li></ol></dd>
 </dl>
 </blockquote>
 <dl><h5><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5><p>Use this function to create a matrix suitable for passing to OpenGL
@@ -282,6 +294,31 @@ the camera cparam structure passed to arglDispImage is ignored.
 <dt><i>Availability</i></dt><dd>First appeared in ARToolKit 2.71.
 </dd>
 </dl>
+<hr><!-- headerDoc=func;  uid=//apple_ref/c/func/arglDrawModeSet;  name=arglDrawModeSet -->
+<a name="//apple_ref/c/func/arglDrawModeSet"></a>
+<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h3><a name="arglDrawModeSet">arglDrawModeSet</a></h3>
+</td></tr></table><hr><dl></dl><p>Set method by which arglDispImage() transfers pixels. 
+</p>
+<blockquote><pre><!-- a logicalPath="//apple_ref/c/cl/void //apple_ref/c/cl/void //apple_ref/c/tdef/void //apple_ref/c/tag/void //apple_ref/c/econst/void //apple_ref/c/struct/void //apple_ref/c/clconst/void" --><font class="type">void</font><!-- /a --> <!-- a logicalPath="//apple_ref/c/instm/arglDrawModeSet //apple_ref/c/clm/arglDrawModeSet //apple_ref/c/intfcm/arglDrawModeSet //apple_ref/c/func/arglDrawModeSet //apple_ref/c/ftmplt/arglDrawModeSet //apple_ref/c/defn/arglDrawModeSet //apple_ref/c/macro/arglDrawModeSet" --><font class="function">arglDrawModeSet</font><!-- /a -->(
+    <!-- a logicalPath="//apple_ref/c/cl/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/cl/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/tdef/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/tag/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/econst/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/struct/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/clconst/ARGL_CONTEXT_SETTINGS_REF" --><font class="type">ARGL_CONTEXT_SETTINGS_REF</font><!-- /a --> <font class="param">contextSettings</font>,
+    <font class="keyword">const</font> <!-- a logicalPath="//apple_ref/c/cl/int //apple_ref/c/cl/int //apple_ref/c/tdef/int //apple_ref/c/tag/int //apple_ref/c/econst/int //apple_ref/c/struct/int //apple_ref/c/clconst/int" --><font class="type">int</font><!-- /a --> <font class="param">mode</font>); </pre></blockquote>
+<dl><h5><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5><p>The value of this setting determines the method by which
+arglDispImage transfers pixels of an image to the display. Setting this
+variable to a value of AR_DRAW_BY_GL_DRAW_PIXELS specifies the use of OpenGL
+DrawPixels to do the transfer. Setting this variable to a value of
+AR_DRAW_BY_TEXTURE_MAPPING specifies the use of OpenGL TexImage2D to do the
+transfer. The DrawPixels method is guaranteed to be available on all
+implementations, but arglDispImage does not correct the image
+for camera lens distortion under this method. In contrast, TexImage2D is only
+available on some implementations, but allows arglDispImage() to apply a correction
+for camera lens distortion, and additionally offers greater potential for
+accelerated drawing on some implementations.
+<br><br>
+The initial value is AR_DRAW_BY_TEXTURE_MAPPING.
+</p>
+<dt><i>Availability</i></dt><dd>First appeared in ARToolKit 2.68.
+ </dd>
+</dl>
 <hr><!-- headerDoc=func;  uid=//apple_ref/c/func/arglPixelFormatGet;  name=arglPixelFormatGet -->
 <a name="//apple_ref/c/func/arglPixelFormatGet"></a>
 <table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h3><a name="arglPixelFormatGet">arglPixelFormatGet</a></h3>
@@ -289,7 +326,7 @@ the camera cparam structure passed to arglDispImage is ignored.
 </p>
 <blockquote><pre><!-- a logicalPath="//apple_ref/c/cl/int //apple_ref/c/cl/int //apple_ref/c/tdef/int //apple_ref/c/tag/int //apple_ref/c/econst/int //apple_ref/c/struct/int //apple_ref/c/clconst/int" --><font class="type">int</font><!-- /a --> <!-- a logicalPath="//apple_ref/c/instm/arglPixelFormatGet //apple_ref/c/clm/arglPixelFormatGet //apple_ref/c/intfcm/arglPixelFormatGet //apple_ref/c/func/arglPixelFormatGet //apple_ref/c/ftmplt/arglPixelFormatGet //apple_ref/c/defn/arglPixelFormatGet //apple_ref/c/macro/arglPixelFormatGet" --><font class="function">arglPixelFormatGet</font><!-- /a -->(
     <!-- a logicalPath="//apple_ref/c/cl/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/cl/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/tdef/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/tag/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/econst/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/struct/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/clconst/ARGL_CONTEXT_SETTINGS_REF" --><font class="type">ARGL_CONTEXT_SETTINGS_REF</font><!-- /a --> <font class="param">contextSettings</font>,
-    <!-- a logicalPath="//apple_ref/c/cl/ARGL_PIX_FORMAT //apple_ref/c/cl/ARGL_PIX_FORMAT //apple_ref/c/tdef/ARGL_PIX_FORMAT //apple_ref/c/tag/ARGL_PIX_FORMAT //apple_ref/c/econst/ARGL_PIX_FORMAT //apple_ref/c/struct/ARGL_PIX_FORMAT //apple_ref/c/clconst/ARGL_PIX_FORMAT" --><font class="type">ARGL_PIX_FORMAT</font><!-- /a --> *<font class="param">format</font>,
+    <!-- a logicalPath="//apple_ref/c/cl/AR_PIXEL_FORMAT //apple_ref/c/cl/AR_PIXEL_FORMAT //apple_ref/c/tdef/AR_PIXEL_FORMAT //apple_ref/c/tag/AR_PIXEL_FORMAT //apple_ref/c/econst/AR_PIXEL_FORMAT //apple_ref/c/struct/AR_PIXEL_FORMAT //apple_ref/c/clconst/AR_PIXEL_FORMAT" --><font class="type">AR_PIXEL_FORMAT</font><!-- /a --> *<font class="param">format</font>,
     <!-- a logicalPath="//apple_ref/c/cl/int //apple_ref/c/cl/int //apple_ref/c/tdef/int //apple_ref/c/tag/int //apple_ref/c/econst/int //apple_ref/c/struct/int //apple_ref/c/clconst/int" --><font class="type">int</font><!-- /a --> *<font class="param">size</font>); </pre></blockquote>
 <h5><font face="Lucida Grande,Helvetica,Arial">Parameter Descriptions</font></h5>
 <blockquote>
@@ -297,7 +334,7 @@ the camera cparam structure passed to arglDispImage is ignored.
 <dt><code><i>contextSettings</i></code></dt><dd>A reference to ARGL's settings for the current OpenGL
 context, as returned by arglSetupForCurrentContext() for this context.</dd>
 <dt><code><i>format</i></code></dt><dd>A symbolic constant for the pixel format in use. See
-<!-- a logicalPath="//apple_ref/c/tdef/ARGL_PIX_FORMAT" -->ARGL_PIX_FORMAT <!-- /a --> for a list of all possible formats.</dd>
+<!-- a logicalPath="" -->AR_PIXEL_FORMAT <!-- /a --> for a list of all possible formats.</dd>
 <dt><code><i>size</i></code></dt><dd>The number of bytes of memory occupied per pixel, for the given format.</dd>
 </dl>
 </blockquote>
@@ -305,8 +342,7 @@ context, as returned by arglSetupForCurrentContext() for this context.</dd>
 </dd>
 <h5><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5><p>This function enquires as to the current format of pixel data being
 expected by the arglDispImage*() functions. The default format is determined by
-which of the possible AR_PIXEL_FORMAT_xxxx symbols was defined at the time the
-library was built.
+the value of AR_DEFAULT_PIXEL_FORMAT at the time the library was built.
 </p>
 <dt><i>Availability</i></dt><dd>First appeared in ARToolKit 2.71.
 </dd>
@@ -318,14 +354,14 @@ library was built.
 </p>
 <blockquote><pre><!-- a logicalPath="//apple_ref/c/cl/int //apple_ref/c/cl/int //apple_ref/c/tdef/int //apple_ref/c/tag/int //apple_ref/c/econst/int //apple_ref/c/struct/int //apple_ref/c/clconst/int" --><font class="type">int</font><!-- /a --> <!-- a logicalPath="//apple_ref/c/instm/arglPixelFormatSet //apple_ref/c/clm/arglPixelFormatSet //apple_ref/c/intfcm/arglPixelFormatSet //apple_ref/c/func/arglPixelFormatSet //apple_ref/c/ftmplt/arglPixelFormatSet //apple_ref/c/defn/arglPixelFormatSet //apple_ref/c/macro/arglPixelFormatSet" --><font class="function">arglPixelFormatSet</font><!-- /a -->(
     <!-- a logicalPath="//apple_ref/c/cl/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/cl/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/tdef/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/tag/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/econst/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/struct/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/clconst/ARGL_CONTEXT_SETTINGS_REF" --><font class="type">ARGL_CONTEXT_SETTINGS_REF</font><!-- /a --> <font class="param">contextSettings</font>,
-    <!-- a logicalPath="//apple_ref/c/cl/ARGL_PIX_FORMAT //apple_ref/c/cl/ARGL_PIX_FORMAT //apple_ref/c/tdef/ARGL_PIX_FORMAT //apple_ref/c/tag/ARGL_PIX_FORMAT //apple_ref/c/econst/ARGL_PIX_FORMAT //apple_ref/c/struct/ARGL_PIX_FORMAT //apple_ref/c/clconst/ARGL_PIX_FORMAT" --><font class="type">ARGL_PIX_FORMAT</font><!-- /a --> <font class="param">format</font>); </pre></blockquote>
+    <!-- a logicalPath="//apple_ref/c/cl/AR_PIXEL_FORMAT //apple_ref/c/cl/AR_PIXEL_FORMAT //apple_ref/c/tdef/AR_PIXEL_FORMAT //apple_ref/c/tag/AR_PIXEL_FORMAT //apple_ref/c/econst/AR_PIXEL_FORMAT //apple_ref/c/struct/AR_PIXEL_FORMAT //apple_ref/c/clconst/AR_PIXEL_FORMAT" --><font class="type">AR_PIXEL_FORMAT</font><!-- /a --> <font class="param">format</font>); </pre></blockquote>
 <h5><font face="Lucida Grande,Helvetica,Arial">Parameter Descriptions</font></h5>
 <blockquote>
 <dl>
 <dt><code><i>contextSettings</i></code></dt><dd>A reference to ARGL's settings for the current OpenGL
 context, as returned by arglSetupForCurrentContext() for this context.</dd>
 <dt><code><i>format</i></code></dt><dd>A symbolic constant for the pixel format being set. See
-<!-- a logicalPath="//apple_ref/c/tdef/ARGL_PIX_FORMAT" -->ARGL_PIX_FORMAT <!-- /a --> for a list of all possible formats.</dd>
+<!-- a logicalPath="" -->AR_PIXEL_FORMAT <!-- /a --> for a list of all possible formats.</dd>
 </dl>
 </blockquote>
 <dl><dt><i>function result</i></dt><dd>TRUE if the pixel format value was set, FALSE if an error occurred.
@@ -335,8 +371,8 @@ In gsub_lite, the format of the pixels (i.e. the arrangement of components
 within each pixel) can be changed at runtime. Use this function to inform
 gsub_lite the format the pixels being passed to arglDispImage*() functions
 are in. This setting applies only to the context passed in parameter
-contextSettings. The default format is determined by which of the possible
-AR_PIXEL_FORMAT_xxxx symbols was defined at the time the library was built.
+contextSettings. The default format is determined by
+the value of AR_DEFAULT_PIXEL_FORMAT at the time the library was built.
 Usually, image data is passed in directly from images generated by ARVideo,
 and so you should ensure that ARVideo is generating pixels of the same format.
 </p>
@@ -369,6 +405,50 @@ when you have finished with the library for this context.
 </p>
 <dt><i>Availability</i></dt><dd>First appeared in ARToolKit 2.68.
 </dd>
+</dl>
+<hr><!-- headerDoc=func;  uid=//apple_ref/c/func/arglTexmapModeSet;  name=arglTexmapModeSet -->
+<a name="//apple_ref/c/func/arglTexmapModeSet"></a>
+<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h3><a name="arglTexmapModeSet">arglTexmapModeSet</a></h3>
+</td></tr></table><hr><dl></dl><p>Determines use of full or half-resolution TexImage2D pixel-transfer in arglDispImage().
+</p>
+<blockquote><pre><!-- a logicalPath="//apple_ref/c/cl/void //apple_ref/c/cl/void //apple_ref/c/tdef/void //apple_ref/c/tag/void //apple_ref/c/econst/void //apple_ref/c/struct/void //apple_ref/c/clconst/void" --><font class="type">void</font><!-- /a --> <!-- a logicalPath="//apple_ref/c/instm/arglTexmapModeSet //apple_ref/c/clm/arglTexmapModeSet //apple_ref/c/intfcm/arglTexmapModeSet //apple_ref/c/func/arglTexmapModeSet //apple_ref/c/ftmplt/arglTexmapModeSet //apple_ref/c/defn/arglTexmapModeSet //apple_ref/c/macro/arglTexmapModeSet" --><font class="function">arglTexmapModeSet</font><!-- /a -->(
+    <!-- a logicalPath="//apple_ref/c/cl/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/cl/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/tdef/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/tag/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/econst/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/struct/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/clconst/ARGL_CONTEXT_SETTINGS_REF" --><font class="type">ARGL_CONTEXT_SETTINGS_REF</font><!-- /a --> <font class="param">contextSettings</font>,
+    <font class="keyword">const</font> <!-- a logicalPath="//apple_ref/c/cl/int //apple_ref/c/cl/int //apple_ref/c/tdef/int //apple_ref/c/tag/int //apple_ref/c/econst/int //apple_ref/c/struct/int //apple_ref/c/clconst/int" --><font class="type">int</font><!-- /a --> <font class="param">mode</font>); </pre></blockquote>
+<dl><h5><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5><p>When arglDrawModeSet(AR_DRAW_BY_TEXTURE_MAPPING) has been called, the value of this setting
+determines whether full or half-resolution data is transferred to the
+texture. A value of AR_DRAW_TEXTURE_FULL_IMAGE uses all available pixels in the
+source image data. A value of AR_DRAW_TEXTURE_HALF_IMAGE discards every second row
+in the source image data, defining a half-height texture which is then drawn stretched
+vertically to double its height.
+<br><br>
+The latter method is well-suited to drawing interlaced images, as would be obtained 
+from DV camera sources in interlaced mode or composite video sources.
+<br><br>
+The initial value is AR_DRAW_TEXTURE_FULL_IMAGE.
+</p>
+<dt><i>Availability</i></dt><dd>First appeared in ARToolKit 2.68.
+ </dd>
+</dl>
+<hr><!-- headerDoc=func;  uid=//apple_ref/c/func/arglTexRectangleSet;  name=arglTexRectangleSet -->
+<a name="//apple_ref/c/func/arglTexRectangleSet"></a>
+<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h3><a name="arglTexRectangleSet">arglTexRectangleSet</a></h3>
+</td></tr></table><hr><dl></dl><p>Determines use of rectangular TexImage2D pixel-transfer in arglDispImage().
+</p>
+<blockquote><pre><!-- a logicalPath="//apple_ref/c/cl/void //apple_ref/c/cl/void //apple_ref/c/tdef/void //apple_ref/c/tag/void //apple_ref/c/econst/void //apple_ref/c/struct/void //apple_ref/c/clconst/void" --><font class="type">void</font><!-- /a --> <!-- a logicalPath="//apple_ref/c/instm/arglTexRectangleSet //apple_ref/c/clm/arglTexRectangleSet //apple_ref/c/intfcm/arglTexRectangleSet //apple_ref/c/func/arglTexRectangleSet //apple_ref/c/ftmplt/arglTexRectangleSet //apple_ref/c/defn/arglTexRectangleSet //apple_ref/c/macro/arglTexRectangleSet" --><font class="function">arglTexRectangleSet</font><!-- /a -->(
+    <!-- a logicalPath="//apple_ref/c/cl/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/cl/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/tdef/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/tag/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/econst/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/struct/ARGL_CONTEXT_SETTINGS_REF //apple_ref/c/clconst/ARGL_CONTEXT_SETTINGS_REF" --><font class="type">ARGL_CONTEXT_SETTINGS_REF</font><!-- /a --> <font class="param">contextSettings</font>,
+    <font class="keyword">const</font> <!-- a logicalPath="//apple_ref/c/cl/int //apple_ref/c/cl/int //apple_ref/c/tdef/int //apple_ref/c/tag/int //apple_ref/c/econst/int //apple_ref/c/struct/int //apple_ref/c/clconst/int" --><font class="type">int</font><!-- /a --> <font class="param">state</font>); </pre></blockquote>
+<dl><h5><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5><p>On implementations which support the OpenGL extension for rectangular textures (of
+non power-of-two size), and when arglDrawMode is set to AR_DRAW_BY_TEXTURE_MAPPING,
+the value of this variable determines whether rectangular textures or ordinary
+(power-of-two) textures are used by arglDispImage(). A value of TRUE specifies the
+use of rectangluar textures. A value of FALSE specifies the use of ordinary textures.
+<br><br>
+If the OpenGL driver available at runtime does not support for rectangular textures,
+changing the value of this variable to TRUE will result calls to arglDispImage
+performing no drawing.
+</p>
+<dt><i>Availability</i></dt><dd>First appeared in ARToolKit 2.68.
+ </dd>
 </dl>
 <p><p>&#169; 2003-2005 Philip Lamb
  (Last Updated August 29, 2005)

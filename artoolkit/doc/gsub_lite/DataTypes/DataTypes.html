@@ -33,65 +33,6 @@ memory used by the settings structure.
 <dt><i>Availability</i></dt><dd>First appeared in ARToolKit 2.68.
  </dd>
 </dl>
-<hr><!-- headerDoc=tdef;  uid=//apple_ref/c/tdef/ARGL_PIX_FORMAT;  name=ARGL_PIX_FORMAT -->
-<a name="//apple_ref/c/tdef/ARGL_PIX_FORMAT"></a>
-<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h3><a name="ARGL_PIX_FORMAT">ARGL_PIX_FORMAT</a></h3>
-</td></tr></table><hr><dl></dl><p>ARToolKit pixel-format specifiers.
-</p>
-<blockquote><pre><font class="keyword">typedef</font> <font class="keyword">enum</font> { 
-    <!-- a logicalPath="//apple_ref/c/cl/ARGL_PIX_FORMAT_RGBA //apple_ref/c/cl/ARGL_PIX_FORMAT_RGBA //apple_ref/c/tdef/ARGL_PIX_FORMAT_RGBA //apple_ref/c/tag/ARGL_PIX_FORMAT_RGBA //apple_ref/c/econst/ARGL_PIX_FORMAT_RGBA //apple_ref/c/struct/ARGL_PIX_FORMAT_RGBA //apple_ref/c/clconst/ARGL_PIX_FORMAT_RGBA" --><font class="type">ARGL_PIX_FORMAT_RGBA</font><!-- /a --> = <font class="number">1</font>, 
-    <!-- a logicalPath="//apple_ref/c/cl/ARGL_PIX_FORMAT_ABGR //apple_ref/c/cl/ARGL_PIX_FORMAT_ABGR //apple_ref/c/tdef/ARGL_PIX_FORMAT_ABGR //apple_ref/c/tag/ARGL_PIX_FORMAT_ABGR //apple_ref/c/econst/ARGL_PIX_FORMAT_ABGR //apple_ref/c/struct/ARGL_PIX_FORMAT_ABGR //apple_ref/c/clconst/ARGL_PIX_FORMAT_ABGR" --><font class="type">ARGL_PIX_FORMAT_ABGR</font><!-- /a --> = <font class="number">2</font>, 
-    <!-- a logicalPath="//apple_ref/c/cl/ARGL_PIX_FORMAT_BGRA //apple_ref/c/cl/ARGL_PIX_FORMAT_BGRA //apple_ref/c/tdef/ARGL_PIX_FORMAT_BGRA //apple_ref/c/tag/ARGL_PIX_FORMAT_BGRA //apple_ref/c/econst/ARGL_PIX_FORMAT_BGRA //apple_ref/c/struct/ARGL_PIX_FORMAT_BGRA //apple_ref/c/clconst/ARGL_PIX_FORMAT_BGRA" --><font class="type">ARGL_PIX_FORMAT_BGRA</font><!-- /a --> = <font class="number">3</font>, 
-    <!-- a logicalPath="//apple_ref/c/cl/ARGL_PIX_FORMAT_ARGB //apple_ref/c/cl/ARGL_PIX_FORMAT_ARGB //apple_ref/c/tdef/ARGL_PIX_FORMAT_ARGB //apple_ref/c/tag/ARGL_PIX_FORMAT_ARGB //apple_ref/c/econst/ARGL_PIX_FORMAT_ARGB //apple_ref/c/struct/ARGL_PIX_FORMAT_ARGB //apple_ref/c/clconst/ARGL_PIX_FORMAT_ARGB" --><font class="type">ARGL_PIX_FORMAT_ARGB</font><!-- /a --> = <font class="number">4</font>, 
-    <!-- a logicalPath="//apple_ref/c/cl/ARGL_PIX_FORMAT_RGB //apple_ref/c/cl/ARGL_PIX_FORMAT_RGB //apple_ref/c/tdef/ARGL_PIX_FORMAT_RGB //apple_ref/c/tag/ARGL_PIX_FORMAT_RGB //apple_ref/c/econst/ARGL_PIX_FORMAT_RGB //apple_ref/c/struct/ARGL_PIX_FORMAT_RGB //apple_ref/c/clconst/ARGL_PIX_FORMAT_RGB" --><font class="type">ARGL_PIX_FORMAT_RGB</font><!-- /a --> = <font class="number">5</font>, 
-    <!-- a logicalPath="//apple_ref/c/cl/ARGL_PIX_FORMAT_BGR //apple_ref/c/cl/ARGL_PIX_FORMAT_BGR //apple_ref/c/tdef/ARGL_PIX_FORMAT_BGR //apple_ref/c/tag/ARGL_PIX_FORMAT_BGR //apple_ref/c/econst/ARGL_PIX_FORMAT_BGR //apple_ref/c/struct/ARGL_PIX_FORMAT_BGR //apple_ref/c/clconst/ARGL_PIX_FORMAT_BGR" --><font class="type">ARGL_PIX_FORMAT_BGR</font><!-- /a --> = <font class="number">6</font>, 
-    <!-- a logicalPath="//apple_ref/c/cl/ARGL_PIX_FORMAT_2vuy //apple_ref/c/cl/ARGL_PIX_FORMAT_2vuy //apple_ref/c/tdef/ARGL_PIX_FORMAT_2vuy //apple_ref/c/tag/ARGL_PIX_FORMAT_2vuy //apple_ref/c/econst/ARGL_PIX_FORMAT_2vuy //apple_ref/c/struct/ARGL_PIX_FORMAT_2vuy //apple_ref/c/clconst/ARGL_PIX_FORMAT_2vuy" --><font class="type">ARGL_PIX_FORMAT_2vuy</font><!-- /a --> = <font class="number">7</font>, 
-    <!-- a logicalPath="//apple_ref/c/cl/ARGL_PIX_FORMAT_UYVY //apple_ref/c/cl/ARGL_PIX_FORMAT_UYVY //apple_ref/c/tdef/ARGL_PIX_FORMAT_UYVY //apple_ref/c/tag/ARGL_PIX_FORMAT_UYVY //apple_ref/c/econst/ARGL_PIX_FORMAT_UYVY //apple_ref/c/struct/ARGL_PIX_FORMAT_UYVY //apple_ref/c/clconst/ARGL_PIX_FORMAT_UYVY" --><font class="type">ARGL_PIX_FORMAT_UYVY</font><!-- /a --> = <font class="var">ARGL_PIX_FORMAT_2vuy</font>, 
-    <!-- a logicalPath="//apple_ref/c/cl/ARGL_PIX_FORMAT_yuvs //apple_ref/c/cl/ARGL_PIX_FORMAT_yuvs //apple_ref/c/tdef/ARGL_PIX_FORMAT_yuvs //apple_ref/c/tag/ARGL_PIX_FORMAT_yuvs //apple_ref/c/econst/ARGL_PIX_FORMAT_yuvs //apple_ref/c/struct/ARGL_PIX_FORMAT_yuvs //apple_ref/c/clconst/ARGL_PIX_FORMAT_yuvs" --><font class="type">ARGL_PIX_FORMAT_yuvs</font><!-- /a --> = <font class="number">8</font>, 
-    <!-- a logicalPath="//apple_ref/c/cl/ARGL_PIX_FORMAT_YUY2 //apple_ref/c/cl/ARGL_PIX_FORMAT_YUY2 //apple_ref/c/tdef/ARGL_PIX_FORMAT_YUY2 //apple_ref/c/tag/ARGL_PIX_FORMAT_YUY2 //apple_ref/c/econst/ARGL_PIX_FORMAT_YUY2 //apple_ref/c/struct/ARGL_PIX_FORMAT_YUY2 //apple_ref/c/clconst/ARGL_PIX_FORMAT_YUY2" --><font class="type">ARGL_PIX_FORMAT_YUY2</font><!-- /a --> = <font class="var">ARGL_PIX_FORMAT_yuvs</font>, 
-} <font class="var">ARGL_PIX_FORMAT</font>; </pre></blockquote>
-<h5><font face="Lucida Grande,Helvetica,Arial">Constants</font></h5>
-<blockquote>
-<dl>
-<dt><a name="//apple_ref/c/econst/ARGL_PIX_FORMAT_RGBA"><code>ARGL_PIX_FORMAT_RGBA</code></a></dt><dd>Each pixel is represented by 32 bits. Eight bits per each Red, Green,
-Blue, and Alpha component.</dd>
-<dt><a name="//apple_ref/c/econst/ARGL_PIX_FORMAT_ABGR"><code>ARGL_PIX_FORMAT_ABGR</code></a></dt><dd>Each pixel is represented by 32 bits. Eight bits per each Alpha, Blue,
-Green, and Red component. This is the native 32 bit format for the SGI
-platform.</dd>
-<dt><a name="//apple_ref/c/econst/ARGL_PIX_FORMAT_BGRA"><code>ARGL_PIX_FORMAT_BGRA</code></a></dt><dd>Each pixel is represented by 32 bits. Eight bits per each Blue, Green,
-Red, and Alpha component. This is the native 32 bit format for the Win32
-platform.</dd>
-<dt><a name="//apple_ref/c/econst/ARGL_PIX_FORMAT_ARGB"><code>ARGL_PIX_FORMAT_ARGB</code></a></dt><dd>Each pixel is represented by 32 bits. Eight bits per each Alpha, Red,
-Green, and Blue component. This is the native 32 bit format for the Mac
-platform.</dd>
-<dt><a name="//apple_ref/c/econst/ARGL_PIX_FORMAT_RGB"><code>ARGL_PIX_FORMAT_RGB</code></a></dt><dd>Each pixel is represented by 24 bits. Eight bits per each Red, Green,
-and Blue component. This is the native 24 bit format for the Mac platform.</dd>
-<dt><a name="//apple_ref/c/econst/ARGL_PIX_FORMAT_BGR"><code>ARGL_PIX_FORMAT_BGR</code></a></dt><dd>Each pixel is represented by 24 bits. Eight bits per each Blue, Red, and
-Green component. This is the native 24 bit format for the Win32 platform.</dd>
-<dt><a name="//apple_ref/c/econst/ARGL_PIX_FORMAT_2vuy"><code>ARGL_PIX_FORMAT_2vuy</code></a></dt><dd>8-bit 4:2:2 Component Y'CbCr format. Each 16 bit pixel is represented
-by an unsigned eight bit luminance component and two unsigned eight bit
-chroma components. Each pair of pixels shares a common set of chroma
-values. The components are ordered in memory; Cb, Y0, Cr, Y1. The
-luminance components have a range of [16, 235], while the chroma value
-has a range of [16, 240]. This is consistent with the CCIR601 spec.
-This format is fairly prevalent on both Mac and Win32 platforms.
-'2vuy' is the Apple QuickTime four-character code for this pixel format.
-The equivalent Microsoft fourCC is 'UYVY'.</dd>
-<dt><a name="//apple_ref/c/econst/ARGL_PIX_FORMAT_yuvs"><code>ARGL_PIX_FORMAT_yuvs</code></a></dt><dd>8-bit 4:2:2 Component Y'CbCr format. Identical to the ARGL_PIX_FORMAT_2vuy except
-each 16 bit word has been byte swapped. This results in a component
-ordering of; Y0, Cb, Y1, Cr.
-This is most prevalent yuv 4:2:2 format on both Mac and Win32 platforms.
-'yuvs' is the Apple QuickTime four-character code for this pixel format.
-The equivalent Microsoft fourCC is 'YUY2'.</dd>
-</dl>
-</blockquote>
-<dl><h5><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5><p>ARToolKit functions can accept pixel data in a variety of formats.
-This enumerations provides a set of constants you can use to request
-data in a particular pixel format from an ARToolKit function that
-returns data to you, or to specify that data you are providing to an
-ARToolKit function is in a particular pixel format.
-</p>
-</dl>
 <p><p>&#169; 2003-2005 Philip Lamb
  (Last Updated August 29, 2005)
 </p></body></html>
