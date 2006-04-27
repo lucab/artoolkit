@@ -4576,7 +4576,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/csh;
-			shellScript = "#!/bin/csh\nif (-X doxygen) then\ncd \"${SRCROOT}/doc\"\nmv header.html header.html.tmp\nmv footer.html footer.html.tmp\nrm -f *.html doxygen.css\ndoxygen doxygen_config.dox\nsed -E -i \".bak\" 's/gsub__lite_8h\\.html(#[^\\\"]*)?/gsub_lite\\/index\\.html/' *.html\nrm -f *.bak gsub__lite_8h.html\nrm -f doxygen.png\nendif\n";
+			shellScript = "#!/bin/csh\nif (-X doxygen) then\ncd \"${SRCROOT}/doc\"\nmv header.html header.html.tmp\nmv footer.html footer.html.tmp\nrm -f *.html doxygen.css\nmv header.html.tmp header.html\nmv footer.html.tmp footer.html\ndoxygen doxygen_config.dox\nsed -E -i \".bak\" 's/gsub__lite_8h\\.html(#[^\\\"]*)?/gsub_lite\\/index\\.html/' *.html\nrm -f *.bak gsub__lite_8h.html\nrm -f doxygen.png\nendif\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -5490,6 +5490,10 @@
 		4A7E90B2085904A2001E80E8 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				COPY_PHASE_STRIP = NO;
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = /;
@@ -5510,6 +5514,10 @@
 		4A7E90B3085904A2001E80E8 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				COPY_PHASE_STRIP = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = /;
@@ -5528,6 +5536,10 @@
 		4A7E90B6085904A2001E80E8 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				COPY_PHASE_STRIP = NO;
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = /;
@@ -5548,6 +5560,10 @@
 		4A7E90B7085904A2001E80E8 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				COPY_PHASE_STRIP = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = /;
@@ -5566,6 +5582,10 @@
 		4A7E90BA085904A2001E80E8 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				COPY_PHASE_STRIP = NO;
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = /;
@@ -5586,6 +5606,10 @@
 		4A7E90BB085904A2001E80E8 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				COPY_PHASE_STRIP = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = /;
@@ -5604,6 +5628,10 @@
 		4A7E90BE085904A2001E80E8 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				COPY_PHASE_STRIP = NO;
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = /;
@@ -5624,6 +5652,10 @@
 		4A7E90BF085904A2001E80E8 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				COPY_PHASE_STRIP = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = /;
@@ -5642,6 +5674,10 @@
 		4A7E90C2085904A2001E80E8 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				COPY_PHASE_STRIP = NO;
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = /;
@@ -5662,6 +5698,10 @@
 		4A7E90C3085904A2001E80E8 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				COPY_PHASE_STRIP = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = /;
@@ -5680,6 +5720,10 @@
 		4A7E90C6085904A2001E80E8 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				COPY_PHASE_STRIP = NO;
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = /;
@@ -5700,6 +5744,10 @@
 		4A7E90C7085904A2001E80E8 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				COPY_PHASE_STRIP = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = /;
@@ -5918,6 +5966,10 @@
 		4A7E9132085904A2001E80E8 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				COPY_PHASE_STRIP = NO;
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = /;
@@ -5942,6 +5994,10 @@
 		4A7E9133085904A2001E80E8 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				COPY_PHASE_STRIP = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = /;
@@ -6030,6 +6086,10 @@
 		782EA3A908998E3700A8A712 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "examples/collide/collideTest-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6044,6 +6104,10 @@
 		782EA3AA08998E3700A8A712 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "examples/collide/collideTest-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6058,6 +6122,10 @@
 		782EA5B40899A56500A8A712 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "examples/exview/exview-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6072,6 +6140,10 @@
 		782EA5B50899A56500A8A712 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "examples/exview/exview-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6086,6 +6158,10 @@
 		7839751D089AB10700D36F53 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "examples/range/rangeTest-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6100,6 +6176,10 @@
 		7839751E089AB10700D36F53 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "examples/range/rangeTest-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6114,6 +6194,10 @@
 		78397546089AB28B00D36F53 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "examples/relation/relationTest-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6128,6 +6212,10 @@
 		78397547089AB28B00D36F53 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "examples/relation/relationTest-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6142,6 +6230,10 @@
 		78397574089AB36800D36F53 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "examples/simple/simpleTest-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6156,6 +6248,10 @@
 		78397575089AB36800D36F53 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "examples/simple/simpleTest-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6170,6 +6266,10 @@
 		783975A6089AB47800D36F53 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "examples/simple2/simpleTest2-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6184,6 +6284,10 @@
 		783975A7089AB47800D36F53 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "examples/simple2/simpleTest2-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6198,6 +6302,10 @@
 		7842436E089ABBE400142306 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "util/videoTest/videoTest-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6212,6 +6320,10 @@
 		7842436F089ABBE400142306 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "util/videoTest/videoTest-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6226,6 +6338,10 @@
 		784243AE089AC00100142306 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "util/graphicsTest/graphicsTest-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6240,6 +6356,10 @@
 		784243AF089AC00100142306 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "util/graphicsTest/graphicsTest-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6254,6 +6374,10 @@
 		784DB7AA089AA70200389D33 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "examples/paddle/paddleTest-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6268,6 +6392,10 @@
 		784DB7AB089AA70200389D33 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "examples/paddle/paddleTest-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6282,6 +6410,10 @@
 		784DB7E3089AAE4100389D33 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "examples/paddleDemo/paddleDemo-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6296,6 +6428,10 @@
 		784DB7E4089AAE4100389D33 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "examples/paddleDemo/paddleDemo-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6310,6 +6446,10 @@
 		784DB818089AAF5600389D33 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "examples/paddleInteraction/paddleInteractionTest-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6324,6 +6464,10 @@
 		784DB819089AAF5600389D33 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "examples/paddleInteraction/paddleInteractionTest-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6338,6 +6482,10 @@
 		7872EF4B08E3186800DB266E /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "util/calib_camera2/calib_camera2-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6352,6 +6500,10 @@
 		7872EF4C08E3186800DB266E /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "util/calib_camera2/calib_camera2-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6366,6 +6518,10 @@
 		7872EF6508E318C900DB266E /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "util/calib_cparam/calib_cparam-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6380,6 +6536,10 @@
 		7872EF6608E318C900DB266E /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "util/calib_cparam/calib_cparam-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6394,6 +6554,10 @@
 		7872EF7F08E3192200DB266E /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "util/calib_distortion/calib_dist-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6408,6 +6572,10 @@
 		7872EF8008E3192200DB266E /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "util/calib_distortion/calib_dist-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6422,6 +6590,10 @@
 		7872EF9808E3196B00DB266E /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "util/mk_patt/mk_patt-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6436,6 +6608,10 @@
 		7872EF9908E3196B00DB266E /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "util/mk_patt/mk_patt-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6450,6 +6626,10 @@
 		788A85B2089AA558001AB56A /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "examples/optical/optical-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6464,6 +6644,10 @@
 		788A85B3089AA558001AB56A /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "examples/optical/optical-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6478,6 +6662,10 @@
 		788C838A089AB5B9003E3825 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "examples/simpleLite/simpleLite-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6492,6 +6680,10 @@
 		788C838B089AB5B9003E3825 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "examples/simpleLite/simpleLite-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6506,6 +6698,10 @@
 		788C83C3089AB6AE003E3825 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "examples/simpleVRML/simpleVRML-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6522,6 +6718,10 @@
 		788C83C4089AB6AE003E3825 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "examples/simpleVRML/simpleVRML-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6538,6 +6738,10 @@
 		78A519CF089ABA58005197A0 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "examples/twoView/twoView-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6552,6 +6756,10 @@
 		78A519D0089ABA58005197A0 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "examples/twoView/twoView-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6566,6 +6774,10 @@
 		78D25395089AA0640064B793 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "examples/loadMultiple/loadMultiple-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6580,6 +6792,10 @@
 		78D25396089AA0640064B793 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "examples/loadMultiple/loadMultiple-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6594,6 +6810,10 @@
 		78D253DE089AA1D10064B793 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "examples/modeTest/modeTest-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6608,6 +6828,10 @@
 		78D253DF089AA1D10064B793 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "examples/modeTest/modeTest-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6622,6 +6846,10 @@
 		78D25410089AA3150064B793 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "examples/multi/multiTest-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6636,6 +6864,10 @@
 		78D25411089AA3150064B793 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "examples/multi/multiTest-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";

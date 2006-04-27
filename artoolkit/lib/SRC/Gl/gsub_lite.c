@@ -78,6 +78,7 @@
 #    define GL_BGRA							0x80E1
 #  endif
 #  ifndef GL_APPLE_packed_pixels
+#    define GL_UNSIGNED_INT_8_8_8_8			0x8035
 #    define GL_UNSIGNED_INT_8_8_8_8_REV		0x8367
 #  endif
 #  if GL_SGIS_texture_edge_clamp
@@ -859,7 +860,11 @@ int arglPixelFormatSet(ARGL_CONTEXT_SETTINGS_REF contextSettings, AR_PIXEL_FORMA
 		case AR_PIXEL_FORMAT_ARGB:	// Mac.
 			contextSettings->pixIntFormat = GL_RGBA;
 			contextSettings->pixFormat = GL_BGRA;
+#ifdef AR_BIG_ENDIAN
 			contextSettings->pixType = GL_UNSIGNED_INT_8_8_8_8_REV;
+#else
+			contextSettings->pixType = GL_UNSIGNED_INT_8_8_8_8;
+#endif
 			contextSettings->pixSize = 4;
 			break;
 		case AR_PIXEL_FORMAT_RGB:
@@ -877,13 +882,21 @@ int arglPixelFormatSet(ARGL_CONTEXT_SETTINGS_REF contextSettings, AR_PIXEL_FORMA
 		case AR_PIXEL_FORMAT_2vuy:
 			contextSettings->pixIntFormat = GL_RGB;
 			contextSettings->pixFormat = GL_YCBCR_422_APPLE;
+#ifdef AR_BIG_ENDIAN
 			contextSettings->pixType = GL_UNSIGNED_SHORT_8_8_REV_APPLE;
+#else
+			contextSettings->pixType = GL_UNSIGNED_SHORT_8_8_APPLE;
+#endif
 			contextSettings->pixSize = 2;
 			break;
 		case AR_PIXEL_FORMAT_yuvs:
 			contextSettings->pixIntFormat = GL_RGB;
 			contextSettings->pixFormat = GL_YCBCR_422_APPLE;
+#ifdef AR_BIG_ENDIAN
 			contextSettings->pixType = GL_UNSIGNED_SHORT_8_8_APPLE;
+#else
+			contextSettings->pixType = GL_UNSIGNED_SHORT_8_8_REV_APPLE;
+#endif
 			contextSettings->pixSize = 2;
 			break;
 		default:
@@ -908,7 +921,12 @@ int arglPixelFormatGet(ARGL_CONTEXT_SETTINGS_REF contextSettings, AR_PIXEL_FORMA
 			break;
 		case GL_BGRA:
 			if (contextSettings->pixType == GL_UNSIGNED_BYTE) *format = AR_PIXEL_FORMAT_BGRA;
-			else *format = AR_PIXEL_FORMAT_ARGB;
+#ifdef AR_BIG_ENDIAN
+			else if (contextSettings->pixType == GL_UNSIGNED_INT_8_8_8_8_REV) *format = AR_PIXEL_FORMAT_ARGB;
+#else
+			else if (contextSettings->pixType == GL_UNSIGNED_INT_8_8_8_8) *format = AR_PIXEL_FORMAT_ARGB;
+#endif
+			else  return (FALSE);
 			*size = 4;
 			break;
 		case GL_RGB:
@@ -920,8 +938,14 @@ int arglPixelFormatGet(ARGL_CONTEXT_SETTINGS_REF contextSettings, AR_PIXEL_FORMA
 			*size = 3;
 			break;
 		case GL_YCBCR_422_APPLE:
+#ifdef AR_BIG_ENDIAN
 			if (contextSettings->pixType == GL_UNSIGNED_SHORT_8_8_REV_APPLE) *format = AR_PIXEL_FORMAT_2vuy;
-			else *format = AR_PIXEL_FORMAT_yuvs;
+			else if (contextSettings->pixType == GL_UNSIGNED_SHORT_8_8_APPLE) *format = AR_PIXEL_FORMAT_yuvs;
+#else
+			if (contextSettings->pixType == GL_UNSIGNED_SHORT_8_8_APPLE) *format = AR_PIXEL_FORMAT_2vuy;
+			else if (contextSettings->pixType == GL_UNSIGNED_SHORT_8_8_REV_APPLE) *format = AR_PIXEL_FORMAT_yuvs;
+#endif
+			else return (FALSE);
 			*size = 2;
 			break;
 		default:
