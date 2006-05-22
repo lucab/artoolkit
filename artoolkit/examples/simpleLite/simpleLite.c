@@ -7,7 +7,7 @@
  *
  *  Press '?' while running for help on available key commands.
  *
- *  Copyright (c) 2001-2005 Philip Lamb (PRL) phil@eden.net.nz. All rights reserved.
+ *  Copyright (c) 2001-2006 Philip Lamb (PRL) phil@eden.net.nz. All rights reserved.
  *
  *	Rev		Date		Who		Changes
  *	1.0.0	20040302	PRL		Initial version, simple test animation using GLUT.

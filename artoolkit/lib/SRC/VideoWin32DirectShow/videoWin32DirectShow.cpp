@@ -31,7 +31,7 @@
 	========================================================================
  */
 /*
- *	Copyright (c) 2004-2005 Philip Lamb (PRL) phil@eden.net.nz. All rights reserved.
+ *	Copyright (c) 2004-2006 Philip Lamb (PRL) phil@eden.net.nz. All rights reserved.
  *	
  *	Rev		Date		Who		Changes
  *	2.68.2	2004-07-20	PRL		Rewrite for ARToolKit 2.68.2

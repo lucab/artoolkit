@@ -7,7 +7,7 @@
  *
  *	Copyright (c) 2002 Mark Billinghurst (MB) grof@hitl.washington.edu
  *	Copyright (c) 2004 Raphael Grasset (RG) raphael.grasset@hitlabnz.org.
- *	Copyright (c) 2004-2005 Philip Lamb (PRL) phil@eden.net.nz. 
+ *	Copyright (c) 2004-2006 Philip Lamb (PRL) phil@eden.net.nz. 
  *	
  *	Rev		Date		Who		Changes
  *	1.0.0	????-??-??	MB		Original from ARToolKit

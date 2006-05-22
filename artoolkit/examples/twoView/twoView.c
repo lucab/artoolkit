@@ -4,7 +4,7 @@
  *  Some code to demonstrate grabbing from two video sources.
  *  Press '?' while running for help.
  *
- *  Copyright (c) 2004-2005 Philip Lamb (PRL) phil@eden.net.nz. All rights reserved.
+ *  Copyright (c) 2004-2006 Philip Lamb (PRL) phil@eden.net.nz. All rights reserved.
  *
  *	Rev		Date		Who		Changes
  *	1.0.0	2004-10-27	PRL		Initial version.

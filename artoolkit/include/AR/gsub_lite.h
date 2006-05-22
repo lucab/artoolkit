@@ -3,7 +3,7 @@
  *
  *	Graphics Subroutines (Lite) for ARToolKit.
  *
- *	Copyright (c) 2003-2005 Philip Lamb (PRL) phil@eden.net.nz. All rights reserved.
+ *	Copyright (c) 2003-2006 Philip Lamb (PRL) phil@eden.net.nz. All rights reserved.
  *	
  *	Rev		Date		Who		Changes
  *  2.7.0   2003-08-13  PRL     Complete rewrite to ARToolKit-2.65 gsub.c API.
@@ -108,8 +108,8 @@
 		along with ARToolKit; if not, write to the Free Software
 		Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
-	@copyright 2003-2005 Philip Lamb
-	@updated 2005-07-29
+	@copyright 2003-2006 Philip Lamb
+	@updated 2006-05-23
  */
 
 #ifndef __gsub_lite_h__
@@ -132,7 +132,7 @@ extern "C" {
 #  include <GL/gl.h>
 #endif
 #include <AR/config.h>
-#include <AR/ar.h>		// ARUint8
+#include <AR/ar.h>		// ARUint8, AR_PIXEL_FORMAT
 #include <AR/param.h>	// ARParam, arParamDecompMat(), arParamObserv2Ideal()
 
 // ============================================================================
@@ -187,7 +187,7 @@ extern GLuint arglAppleTextureRangeStorageHint;
 // ============================================================================
 	
 /*!
-    @function arglSetupForCurrentContext
+    @function
     @abstract Initialise the gsub_lite library for the current OpenGL context.
     @discussion
 		This function performs required setup of the gsub_lite library
@@ -210,7 +210,7 @@ extern GLuint arglAppleTextureRangeStorageHint;
 ARGL_CONTEXT_SETTINGS_REF arglSetupForCurrentContext(void);
 
 /*!
-    @function arglCleanup
+    @function
     @abstract Free memory used by gsub_lite associated with the specified context.
     @discussion
 		Should be called after no more argl* functions are needed, in order
@@ -225,7 +225,7 @@ ARGL_CONTEXT_SETTINGS_REF arglSetupForCurrentContext(void);
 void arglCleanup(ARGL_CONTEXT_SETTINGS_REF contextSettings);
 
 /*!
-    @function arglCameraFrustum
+    @function
     @abstract Create an OpenGL perspective projection matrix.
     @discussion
 		Use this function to create a matrix suitable for passing to OpenGL
@@ -258,7 +258,7 @@ void arglCleanup(ARGL_CONTEXT_SETTINGS_REF contextSettings);
 void arglCameraFrustum(const ARParam *cparam, const double focalmin, const double focalmax, GLdouble m_projection[16]);
 
 /*!
-    @function arglCameraView
+    @function
     @abstract Create an OpenGL viewing transformation matrix.
 	@discussion
 		Use this function to create a matrix suitable for passing to OpenGL
@@ -279,7 +279,7 @@ void arglCameraFrustum(const ARParam *cparam, const double focalmin, const doubl
 void arglCameraView(double para[3][4], GLdouble m_modelview[16], double scale);
 
 /*!
-    @function arglDispImage
+    @function
     @abstract Display an ARVideo image, by drawing it using OpenGL.
     @discussion
 		This function draws an image from an ARVideo source to the current
@@ -332,7 +332,7 @@ void arglCameraView(double para[3][4], GLdouble m_modelview[16], double scale);
 void arglDispImage(ARUint8 *image, const ARParam *cparam, const double zoom, ARGL_CONTEXT_SETTINGS_REF contextSettings);
 
 /*!
-	@function arglDispImageStateful
+	@function
     @abstract Display an ARVideo image, by drawing it using OpenGL, using and modifying current OpenGL state.
     @discussion
 		This function is identical to arglDispImage except that whereas
@@ -354,7 +354,7 @@ void arglDispImage(ARUint8 *image, const ARParam *cparam, const double zoom, ARG
 void arglDispImageStateful(ARUint8 *image, const ARParam *cparam, const double zoom, ARGL_CONTEXT_SETTINGS_REF contextSettings);
 
 /*!
-    @function arglDistortionCompensationSet
+    @function
     @abstract Set compensation for camera lens distortion in arglDispImage to off or on.
     @discussion
 		By default, arglDispImage compensates for the distortion of the camera's
@@ -375,7 +375,7 @@ void arglDispImageStateful(ARUint8 *image, const ARParam *cparam, const double z
 int arglDistortionCompensationSet(ARGL_CONTEXT_SETTINGS_REF contextSettings, int enable);
 
 /*!
-    @function arglDistortionCompensationGet
+    @function
 	@abstract Enquire as to the enable state of camera lens distortion compensation in arglDispImage.
 	@discussion
 		By default, arglDispImage compensates for the distortion of the camera's
@@ -391,7 +391,7 @@ int arglDistortionCompensationSet(ARGL_CONTEXT_SETTINGS_REF contextSettings, int
 int arglDistortionCompensationGet(ARGL_CONTEXT_SETTINGS_REF contextSettings, int *enable);
 
 /*!
-    @function arglPixelFormatSet
+    @function
     @abstract Set the format of pixel data which will be passed to arglDispImage*()
     @discussion (description)
 		In gsub_lite, the format of the pixels (i.e. the arrangement of components
@@ -405,14 +405,14 @@ int arglDistortionCompensationGet(ARGL_CONTEXT_SETTINGS_REF contextSettings, int
 	@param contextSettings A reference to ARGL's settings for the current OpenGL
 		context, as returned by arglSetupForCurrentContext() for this context. 
     @param format A symbolic constant for the pixel format being set. See
-		@link AR_PIXEL_FORMAT AR_PIXEL_FORMAT @/link for a list of all possible formats.
+		AR_PIXEL_FORMAT in ar.h for a list of all possible formats.
 	@result TRUE if the pixel format value was set, FALSE if an error occurred.
 	@availability First appeared in ARToolKit 2.71.
 */
 int arglPixelFormatSet(ARGL_CONTEXT_SETTINGS_REF contextSettings, AR_PIXEL_FORMAT format);
 
 /*!
-    @function arglPixelFormatGet
+    @function
     @abstract Get the format of pixel data in which arglDispImage*() is expecting data to be passed.
     @discussion This function enquires as to the current format of pixel data being
 		expected by the arglDispImage*() functions. The default format is determined by
@@ -420,7 +420,7 @@ int arglPixelFormatSet(ARGL_CONTEXT_SETTINGS_REF contextSettings, AR_PIXEL_FORMA
 	@param contextSettings A reference to ARGL's settings for the current OpenGL
 		context, as returned by arglSetupForCurrentContext() for this context. 
 	@param format A symbolic constant for the pixel format in use. See
-		@link AR_PIXEL_FORMAT AR_PIXEL_FORMAT @/link for a list of all possible formats.
+		AR_PIXEL_FORMAT in ar.h for a list of all possible formats.
 	@param size The number of bytes of memory occupied per pixel, for the given format.
 	@result TRUE if the pixel format and size values were retreived, FALSE if an error occurred.
 	@availability First appeared in ARToolKit 2.71.
@@ -429,13 +429,13 @@ int arglPixelFormatGet(ARGL_CONTEXT_SETTINGS_REF contextSettings, AR_PIXEL_FORMA
 
 /*!
     @function 
-	@abstract Set method by which arglDispImage() transfers pixels. 
+	@abstract Set method by which arglDispImage() will transfer pixels. 
 	@discussion
-		The value of this setting determines the method by which
-		arglDispImage transfers pixels of an image to the display. Setting this
-		variable to a value of AR_DRAW_BY_GL_DRAW_PIXELS specifies the use of OpenGL
-		DrawPixels to do the transfer. Setting this variable to a value of
-		AR_DRAW_BY_TEXTURE_MAPPING specifies the use of OpenGL TexImage2D to do the
+		This setting determines the method by which arglDispImage transfers pixels
+		of an image to OpenGL for display. Setting this
+		variable to a value of AR_DRAW_BY_GL_DRAW_PIXELS specifies the use of the
+		OpenGL DrawPixels functions to do the transfer. Setting this variable to a value of
+		AR_DRAW_BY_TEXTURE_MAPPING specifies the use of OpenGL TexImage2D functions to do the
 		transfer. The DrawPixels method is guaranteed to be available on all
 		implementations, but arglDispImage does not correct the image
 		for camera lens distortion under this method. In contrast, TexImage2D is only
@@ -444,19 +444,30 @@ int arglPixelFormatGet(ARGL_CONTEXT_SETTINGS_REF contextSettings, AR_PIXEL_FORMA
 		accelerated drawing on some implementations.
 
 		The initial value is AR_DRAW_BY_TEXTURE_MAPPING.
-	@availability First appeared in ARToolKit 2.68.
+	@availability First appeared in ARToolKit 2.72.
  */
 void arglDrawModeSet(ARGL_CONTEXT_SETTINGS_REF contextSettings, const int mode);
+
+/*!
+    @function 
+	@abstract Get method by which arglDispImage() is transfering pixels. 
+	@discussion
+		Enquires as to the current method by which arglDispImage() is
+		transferring pixels to OpenGL for display. See arglDrawModeSet() for
+		more information.
+	@availability First appeared in ARToolKit 2.72.
+ */
 int arglDrawModeGet(ARGL_CONTEXT_SETTINGS_REF contextSettings);
 
 /*!
     @function
 	@abstract Determines use of full or half-resolution TexImage2D pixel-transfer in arglDispImage().
 	@discussion
-		When arglDrawModeSet(AR_DRAW_BY_TEXTURE_MAPPING) has been called, the value of this setting
-		determines whether full or half-resolution data is transferred to the
-		texture. A value of AR_DRAW_TEXTURE_FULL_IMAGE uses all available pixels in the
-		source image data. A value of AR_DRAW_TEXTURE_HALF_IMAGE discards every second row
+		When arglDrawModeSet(AR_DRAW_BY_TEXTURE_MAPPING) has been called, the value of this
+		setting determines whether full or half-resolution data is transferred to the
+		texture. Calling this function with a mode value of AR_DRAW_TEXTURE_FULL_IMAGE
+		uses all available pixels in the source image data. A value of
+		AR_DRAW_TEXTURE_HALF_IMAGE discards every second row
 		in the source image data, defining a half-height texture which is then drawn stretched
 		vertically to double its height.
  
@@ -464,9 +475,18 @@ int arglDrawModeGet(ARGL_CONTEXT_SETTINGS_REF contextSettings);
 		from DV camera sources in interlaced mode or composite video sources.
  
 		The initial value is AR_DRAW_TEXTURE_FULL_IMAGE.
-	@availability First appeared in ARToolKit 2.68.
+	@availability First appeared in ARToolKit 2.72.
  */
 void arglTexmapModeSet(ARGL_CONTEXT_SETTINGS_REF contextSettings, const int mode);
+
+/*!
+    @function
+	@abstract Enquire whether full or half-resolution TexImage2D pixel-transfer is being used in arglDispImage().
+	@discussion
+		Enquires as to the current value of the TexmapMode setting. See arglTexmapModeSet()
+		for more info.
+	@availability First appeared in ARToolKit 2.72.
+ */
 int arglTexmapModeGet(ARGL_CONTEXT_SETTINGS_REF contextSettings);
 
 /*!
@@ -480,11 +500,20 @@ int arglTexmapModeGet(ARGL_CONTEXT_SETTINGS_REF contextSettings);
 		use of rectangluar textures. A value of FALSE specifies the use of ordinary textures.
  
 		If the OpenGL driver available at runtime does not support for rectangular textures,
-		changing the value of this variable to TRUE will result calls to arglDispImage
+		changing the value of this setting to TRUE will result calls to arglDispImage
 		performing no drawing.
-	@availability First appeared in ARToolKit 2.68.
+	@availability First appeared in ARToolKit 2.72.
  */
 void arglTexRectangleSet(ARGL_CONTEXT_SETTINGS_REF contextSettings, const int state);
+
+/*!
+    @function
+	@abstract Enquire as to use of rectangular TexImage2D pixel-transfer in arglDispImage().
+	@discussion
+		Enquires as to the current value of the TexRectangle setting. See arglTexRectangleSet()
+		for more info.
+	@availability First appeared in ARToolKit 2.72.
+ */
 int arglTexRectangleGet(ARGL_CONTEXT_SETTINGS_REF contextSettings);
 
 #ifdef __cplusplus

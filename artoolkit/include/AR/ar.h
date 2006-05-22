@@ -1,5 +1,5 @@
 /*  --------------------------------------------------------------------------
-*   Copyright (c) 20042-2005 HIT Lab NZ.
+*   Copyright (c) 20042-2006 HIT Lab NZ.
 *   The distribution policy is described in the file COPYING.txt furnished 
 *    with this library.
 *   -------------------------------------------------------------------------*/
@@ -80,28 +80,34 @@ typedef unsigned int      ARUint32;
 	returns data to you, or to specify that data you are providing to an
 	ARToolKit function is in a particular pixel format.
 	
-	\var AR_PIXEL_FORMAT_RGB
+	AR_PIXEL_FORMAT_RGB
 	Each pixel is represented by 24 bits. Eight bits per each Red, Green,
 	and Blue component. This is the native 24 bit format for the Mac platform.
-	\var AR_PIXEL_FORMAT_BGR
+	
+	AR_PIXEL_FORMAT_BGR
 	Each pixel is represented by 24 bits. Eight bits per each Blue, Red, and
 	Green component. This is the native 24 bit format for the Win32 platform.
-	\var AR_PIXEL_FORMAT_RGBA
+	
+	AR_PIXEL_FORMAT_RGBA
 	Each pixel is represented by 32 bits. Eight bits per each Red, Green,
 	Blue, and Alpha component.
-	\var AR_PIXEL_FORMAT_BGRA
+	
+	AR_PIXEL_FORMAT_BGRA
 	Each pixel is represented by 32 bits. Eight bits per each Blue, Green,
 	Red, and Alpha component. This is the native 32 bit format for the Win32
 	platform.
-	\var AR_PIXEL_FORMAT_ABGR
+	
+	AR_PIXEL_FORMAT_ABGR
 	Each pixel is represented by 32 bits. Eight bits per each Alpha, Blue,
 	Green, and Red component. This is the native 32 bit format for the SGI
 	platform.
-	\var AR_PIXEL_FORMAT_ARGB
+	
+	AR_PIXEL_FORMAT_ARGB
 	Each pixel is represented by 32 bits. Eight bits per each Alpha, Red,
 	Green, and Blue component. This is the native 32 bit format for the Mac
 	platform.
-	\var AR_PIXEL_FORMAT_2vuy
+	
+	AR_PIXEL_FORMAT_2vuy
 	8-bit 4:2:2 Component Y'CbCr format. Each 16 bit pixel is represented
 	by an unsigned eight bit luminance component and two unsigned eight bit
 	chroma components. Each pair of pixels shares a common set of chroma
@@ -111,7 +117,8 @@ typedef unsigned int      ARUint32;
 	This format is fairly prevalent on both Mac and Win32 platforms.
 	'2vuy' is the Apple QuickTime four-character code for this pixel format.
 	The equivalent Microsoft fourCC is 'UYVY'.
-	\var AR_PIXEL_FORMAT_yuvs
+	
+	AR_PIXEL_FORMAT_yuvs
 	8-bit 4:2:2 Component Y'CbCr format. Identical to the AR_PIXEL_FORMAT_2vuy except
 	each 16 bit word has been byte swapped. This results in a component
 	ordering of; Y0, Cb, Y1, Cr.
