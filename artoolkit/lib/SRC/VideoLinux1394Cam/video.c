@@ -465,7 +465,7 @@ int ar2VideoClose( AR2VideoParamT *vid )
 {
     int     i;
 
-    if( vid->status > 0 ) ar2VideoCapStop( vid );
+    if (vid->status == 1 || vid->status == 2) ar2VideoCapStop(vid);
 
 #if 0
     dc1394_dma_release_camera(arV1394.handle, &(vid->camera));
