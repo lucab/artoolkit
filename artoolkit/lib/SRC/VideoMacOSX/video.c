@@ -94,7 +94,7 @@
 
 #define AR_VIDEO_DEBUG_BUFFERCOPY					// Uncomment to have ar2VideoGetImage() return a copy of video pixel data.
 //#define AR_VIDEO_SUPPORT_OLD_QUICKTIME		// Uncomment to allow use of non-thread safe QuickTime (pre-6.4).
-//#define AR_VIDEO_DEBUG_FIX_DUAL_PROCESSOR_RACE
+#define AR_VIDEO_DEBUG_FIX_DUAL_PROCESSOR_RACE
 
 #define AR_VIDEO_IDLE_INTERVAL_MILLISECONDS_MIN		20L
 #define AR_VIDEO_IDLE_INTERVAL_MILLISECONDS_MAX		100L
@@ -992,19 +992,14 @@ static void *ar2VideoInternalThread(void *arg)
 #endif // !AR_VIDEO_SUPPORT_OLD_QUICKTIME
 	AR2VideoParamT		*vid;
 	int					keepAlive = 1;
+
+#ifndef AR_VIDEO_DEBUG_FIX_DUAL_PROCESSOR_RACE
 	struct timeval		tv;  // Seconds and microseconds since Jan 1, 1970.
 	struct timespec		ts;  // Seconds and nanoseconds since Jan 1, 1970.
-	ComponentResult		err;
 	int					err_i;
+#endif // !AR_VIDEO_DEBUG_FIX_DUAL_PROCESSOR_RACE
+	ComponentResult		err;
 	int					isUpdated = 0;
-
-	// Variables for fps counter.
-	//float				fps = 0;
-	//float				averagefps = 0;
-	char				status[64];
-	Str255				theString;
-	CGrafPtr			theSavedPort;
-	GDHandle			theSavedDevice;
 
 	
 #ifndef AR_VIDEO_SUPPORT_OLD_QUICKTIME
@@ -1031,7 +1026,7 @@ static void *ar2VideoInternalThread(void *arg)
 	
 	while (keepAlive && vdgIsGrabbing(vid->pVdg)) {
 		
-#ifndef AR_VIDEO_DEBUG_FIX_DUAL_PROCESSOR_RACE		
+#ifndef AR_VIDEO_DEBUG_FIX_DUAL_PROCESSOR_RACE
 		gettimeofday(&tv, NULL);
 		ts.tv_sec = tv.tv_sec;
 		ts.tv_nsec = tv.tv_usec * 1000 + vid->milliSecPerTimer * 1000000;
@@ -1083,6 +1078,12 @@ static void *ar2VideoInternalThread(void *arg)
 		if (isUpdated) {
 			// Write status information onto the frame if so desired.
 			if (vid->showFPS) {
+				
+				// Variables for fps counter.
+				//float				fps = 0;
+				//float				averagefps = 0;
+				char				status[64];
+				
 				// Reset frame and time counters after a stop/start.
 				/*
 				 if (vid->lastTime > time) {
@@ -1099,18 +1100,32 @@ static void *ar2VideoInternalThread(void *arg)
 					}
 				}
 				*/
+				//fps = (float)vid->timeScale / (float)(time - vid->lastTime);
+				//averagefps = (float)vid->frameCount * (float)vid->timeScale / (float)time;
+				//sprintf(status, "time: %ld, fps:%5.1f avg fps:%5.1f", time, fps, averagefps);
+				sprintf(status, "frame: %ld", vid->frameCount);
+#if 0
+				Str255 theString;
+				CGrafPtr theSavedPort;
+				GDHandle theSavedDevice;
 				GetGWorld(&theSavedPort, &theSavedDevice);
 				SetGWorld(vid->pGWorld, NULL);
 				TextSize(12);
 				TextMode(srcCopy);
 				MoveTo(vid->theRect.left + 10, vid->theRect.bottom - 14);
-				//fps = (float)vid->timeScale / (float)(time - vid->lastTime);
-				//averagefps = (float)vid->frameCount * (float)vid->timeScale / (float)time;
-				//sprintf(status, "time: %ld, fps:%5.1f avg fps:%5.1f", time, fps, averagefps);
-				sprintf(status, "frame: %ld", vid->frameCount);
 				CopyCStringToPascal(status, theString);
 				DrawString(theString);
 				SetGWorld(theSavedPort, theSavedDevice);
+#else
+				CGContextRef ctx;
+				QDBeginCGContext(vid->pGWorld, &ctx);
+				CFStringRef str = CFStringCreateWithCString(NULL, status, kCFStringEncodingMacRoman);
+				CGContextSelectFont(ctx, "Monaco", 12, kCGEncodingMacRoman);
+				CGContextSetTextDrawingMode(ctx, kCGTextFillStroke);
+				CGContextShowTextAtPoint(ctx, 10, 10, status, strlen(status));
+				CFRelease(str);
+				QDEndCGContext(vid->pGWorld, &ctx);
+#endif
 				//vid->lastTime = time;
 			}
 			
@@ -1201,47 +1216,41 @@ AR2VideoParamT *ar2VideoOpen(char *config)
 	// Process configuration options.
 	a = config;
     if (a) {
-        for(;;) {
+		err_i = 0;
+        for (;;) {
             while (*a == ' ' || *a == '\t') a++; // Skip whitespace.
             if (*a == '\0') break;
 
             if (strncmp(a, "-width=", 7) == 0) {
                 sscanf(a, "%s", line);
-                if (sscanf( &line[7], "%d", &width) == 0 ) {
-                    ar2VideoDispOption();
-                    return(NULL);
-                }
+                if (strlen(line) <= 7 || sscanf(&line[7], "%d", &width) == 0) err_i = 1;
             } else if (strncmp(a, "-height=", 8) == 0) {
                 sscanf(a, "%s", line);
-                if (sscanf(&line[8], "%d", &height) == 0) {
-                    ar2VideoDispOption();
-                    return (NULL);
-                }
+                if (strlen(line) <= 8 || sscanf(&line[8], "%d", &height) == 0) err_i = 1;
             } else if (strncmp(a, "-grabber=", 9) == 0) {
                 sscanf(a, "%s", line);
-                if (sscanf(&line[9], "%d", &grabber) == 0) {
-                    ar2VideoDispOption();
-                    return (NULL);
-                }
+                if (strlen(line) <= 9 || sscanf(&line[9], "%d", &grabber) == 0) err_i = 1;
             } else if (strncmp(a, "-pixelformat=", 13) == 0) {
                 sscanf(a, "%s", line);
-                if (sscanf(&line[13], "%c%c%c%c", (char *)&pixFormat, ((char *)&pixFormat) + 1,
-						   ((char *)&pixFormat) + 2, ((char *)&pixFormat) + 3) < 4) { // Try 4-cc first.
-					if (sscanf(&line[13], "%li", (long *)&pixFormat) < 1) { // Fall back to integer.
-						ar2VideoDispOption();
-						return (NULL);
-					}
-                }
+				if (strlen(line) <= 13) err_i = 1;
+				else {
+					if (strlen(line) == 17) err_i = (sscanf(&line[13], "%4c", (char *)&pixFormat) < 1);
+					else err_i = (sscanf(&line[13], "%li", (long *)&pixFormat) < 1); // Integer.
+				}
             } else if (strncmp(a, "-fps", 4) == 0) {
                 showFPS = 1;
             } else if (strncmp(a, "-nodialog", 9) == 0) {
                 showDialog = 0;
             } else {
-                ar2VideoDispOption();
-                return (NULL);
+                err_i = 1;
             }
-
-            while (*a != ' ' && *a != '\t' && *a != '\0') a++; // Skip non-whitespace.
+			
+			if (err_i) {
+				ar2VideoDispOption();
+				return (NULL);
+			}
+            
+			while (*a != ' ' && *a != '\t' && *a != '\0') a++; // Skip to next whitespace.
         }
     }
 	// If no pixel format was specified in command-line options,
@@ -1290,7 +1299,7 @@ AR2VideoParamT *ar2VideoOpen(char *config)
 	}
 	
 	// Once only, initialize for Carbon.
-    if(initF == 0) {
+    if (initF == 0) {
         InitCursor();
         initF = 1;
     }
@@ -1466,12 +1475,20 @@ AR2VideoParamT *ar2VideoOpen(char *config)
 	}
 	
 	// Erase to black.
+#if 0
+	QDBeginCGContext(vid->pGWorld, &ctx);
+	CGContextSetRGBFillColor(ctx, 1, 1, 1, 1);               
+	CGContextFillRect(ctx, CGRectMake(0, 0, (vid->theRect).left - (vid->theRect).right, (vid->theRect).top - (vid->theRect).bottom));
+	CGContextFlush(ctx);
+	QDEndCGContext (vid->pGWorld, &ctx);
+#else
     GetGWorld(&theSavedPort, &theSavedDevice);    
     SetGWorld(vid->pGWorld, NULL);
     BackColor(blackColor);
     ForeColor(whiteColor);
     EraseRect(&(vid->theRect));
     SetGWorld(theSavedPort, theSavedDevice);
+#endif
 	
 	// Set the decompression destination to the offscreen GWorld.
 	if (err_s = vdgSetDestination(vid->pVdg, vid->pGWorld)) {
