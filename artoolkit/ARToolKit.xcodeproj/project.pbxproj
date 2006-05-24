@@ -4556,10 +4556,10 @@
 			files = (
 			);
 			inputPaths = (
-				$SRCROOT/include/AR/gsub_lite.h,
+				"$(SRCROOT)/include/AR/gsub_lite.h",
 			);
 			outputPaths = (
-				$SRCROOT/doc/gsub_lite/CompositePage.html,
+				"$(SRCROOT)/doc/gsub_lite/CompositePage.html",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/tcsh;
@@ -4576,7 +4576,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/csh;
-			shellScript = "#!/bin/csh\nif (-X doxygen) then\ncd \"${SRCROOT}/doc\"\nmv header.html header.html.tmp\nmv footer.html footer.html.tmp\nrm -f *.html doxygen.css\nmv header.html.tmp header.html\nmv footer.html.tmp footer.html\ndoxygen doxygen_config.dox\nsed -E -i \".bak\" 's/gsub__lite_8h\\.html(#[^\\\"]*)?/gsub_lite\\/index\\.html/' *.html\nrm -f *.bak gsub__lite_8h.html\nrm -f doxygen.png\nendif\n";
+			shellScript = "#!/bin/csh\nif (-x /sw/bin/doxygen) then\ncd \"${SRCROOT}/doc\"\nmv header.html header.html.tmp\nmv footer.html footer.html.tmp\nrm -f *.html doxygen.css\nmv header.html.tmp header.html\nmv footer.html.tmp footer.html\n/sw/bin/doxygen doxygen_config.dox\nsed -E -i \".bak\" 's/gsub__lite_8h\\.html(#[^\\\"]*)?/gsub_lite\\/index\\.html/' *.html\nrm -f *.bak gsub__lite_8h.html\nrm -f doxygen.png\nendif\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -6064,8 +6064,10 @@
 				DSTROOT = /;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 				WARNING_CFLAGS = "-Wmost";
 				ZERO_LINK = NO;
 			};
@@ -6079,6 +6081,7 @@
 				DSTROOT = /;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 				WARNING_CFLAGS = "-Wmost";
 			};
 			name = Deployment;
