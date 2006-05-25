@@ -21,18 +21,18 @@ ARMarkerInfo *arGetMarkerInfo( ARUint8 *image,
     double         cf;
     int            i, j;
 
-    for( i = j = 0; i < *marker_num; i++ ) {
+    for (i = j = 0; i < *marker_num; i++) {
         marker_infoL[j].area   = marker_info2[i].area;
         marker_infoL[j].pos[0] = marker_info2[i].pos[0];
         marker_infoL[j].pos[1] = marker_info2[i].pos[1];
 
-        if( arGetLine(marker_info2[i].x_coord, marker_info2[i].y_coord,
+        if (arGetLine(marker_info2[i].x_coord, marker_info2[i].y_coord,
                       marker_info2[i].coord_num, marker_info2[i].vertex,
                       marker_infoL[j].line, marker_infoL[j].vertex) < 0 ) continue;
 
-        arGetCode( image,
-                   marker_info2[i].x_coord, marker_info2[i].y_coord,
-                   marker_info2[i].vertex, &id, &dir, &cf );
+        arGetCode(image,
+                  marker_info2[i].x_coord, marker_info2[i].y_coord,
+                  marker_info2[i].vertex, &id, &dir, &cf );
 
         marker_infoL[j].id  = id;
         marker_infoL[j].dir = dir;
@@ -42,7 +42,7 @@ ARMarkerInfo *arGetMarkerInfo( ARUint8 *image,
     }
     *marker_num = j;
 
-    return( marker_infoL );
+    return (marker_infoL);
 }
 
 ARMarkerInfo *arsGetMarkerInfo( ARUint8 *image,
@@ -53,21 +53,21 @@ ARMarkerInfo *arsGetMarkerInfo( ARUint8 *image,
     double         cf;
     int            i, j;
 
-    if( LorR ) info = &marker_infoL[0];
-     else      info = &marker_infoR[0];
+    if (LorR) info = &marker_infoL[0];
+	else      info = &marker_infoR[0];
 
-    for( i = j = 0; i < *marker_num; i++ ) {
+    for (i = j = 0; i < *marker_num; i++) {
         info[j].area   = marker_info2[i].area;
         info[j].pos[0] = marker_info2[i].pos[0];
         info[j].pos[1] = marker_info2[i].pos[1];
 
-        if( arsGetLine(marker_info2[i].x_coord, marker_info2[i].y_coord,
+        if (arsGetLine(marker_info2[i].x_coord, marker_info2[i].y_coord,
                        marker_info2[i].coord_num, marker_info2[i].vertex,
                        info[j].line, info[j].vertex, LorR) < 0 ) continue;
 
-        arGetCode( image,
-                   marker_info2[i].x_coord, marker_info2[i].y_coord,
-                   marker_info2[i].vertex, &id, &dir, &cf );
+        arGetCode(image,
+                  marker_info2[i].x_coord, marker_info2[i].y_coord,
+                  marker_info2[i].vertex, &id, &dir, &cf );
 
         info[j].id  = id;
         info[j].dir = dir;
@@ -77,6 +77,6 @@ ARMarkerInfo *arsGetMarkerInfo( ARUint8 *image,
     }
     *marker_num = j;
 
-    return( info );
+    return (info);
 }
 

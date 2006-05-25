@@ -515,18 +515,18 @@ void   arUtilSleep( int msec );
 */
 
 /**
-* \brief extracted connected component from image.
+* \brief extract connected components from image.
 *
-* Labeling the input image, i.e. extracted connected component from the 
-* inptu video image.
-* \param image input image
+* Label the input image, i.e. extract connected components from the 
+* input video image.
+* \param image input image, as returned by arVideoGetImage()
 * \param thresh lighting threshold
-* \param label_num number of detected components
-* \param area XXXBK
-* \param pos XXXBK
-* \param clip XXXBK
-* \param label_ref XXXBK
-* \return XXXBK
+* \param label_num Ouput- number of detected components
+* \param area On return, if label_num > 0, points to an array of ints, one for each detected component.
+* \param pos On return, if label_num > 0, points to an array of doubles, one for each detected component.
+* \param clip On return, if label_num > 0, points to an array of ints, one for each detected component.
+* \param label_ref On return, if label_num > 0, points to an array of ints, one for each detected component.
+* \return returns a pointer to the labeled output image, ready for passing onto the next stage of processing.
 */
 ARInt16 *arLabeling( ARUint8 *image, int thresh,
                      int *label_num, int **area, double **pos, int **clip,

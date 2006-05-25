@@ -81,8 +81,7 @@ ARInt16 *arLabeling( ARUint8 *image, int thresh,
     if( arDebug ) {
         return( labeling3(image, thresh, label_num,
                           area, pos, clip, label_ref, 1) );
-    }
-    else {
+    } else {
         return( labeling2(image, thresh, label_num,
                           area, pos, clip, label_ref, 1) );
     }
@@ -90,13 +89,12 @@ ARInt16 *arLabeling( ARUint8 *image, int thresh,
 
 void arsGetImgFeature( int *num, int **area, int **clip, double **pos, int LorR )
 {
-    if( LorR ) {
+    if (LorR) {
         *num  = wlabel_numL;
         *area = wareaL;
         *clip = wclipL;
         *pos  = wposL;
-    }
-    else {
+    } else {
         *num  = wlabel_numR;
         *area = wareaR;
         *clip = wclipR;
@@ -113,8 +111,7 @@ ARInt16 *arsLabeling( ARUint8 *image, int thresh,
     if( arDebug ) {
         return( labeling3(image, thresh, label_num,
                           area, pos, clip, label_ref, LorR) );
-    }
-    else {
+    } else {
         return( labeling2(image, thresh, label_num,
                           area, pos, clip, label_ref, LorR) );
     }
@@ -141,8 +138,9 @@ static ARInt16 *labeling2( ARUint8 *image, int thresh,
 #ifdef USE_OPTIMIZATIONS
 	int		  pnt2_index;   // [tp]
 #endif
+	int		  thresht3 = thresh * 3;
 
-	if( LorR ) {
+	if (LorR) {
         l_image = &l_imageL[0];
         work    = &workL[0];
         work2   = &work2L[0];
@@ -150,8 +148,7 @@ static ARInt16 *labeling2( ARUint8 *image, int thresh,
         warea   = &wareaL[0];
         wclip   = &wclipL[0];
         wpos    = &wposL[0];
-    }
-    else {
+    } else {
         l_image = &l_imageR[0];
         work    = &workR[0];
         work2   = &work2R[0];
@@ -161,18 +158,16 @@ static ARInt16 *labeling2( ARUint8 *image, int thresh,
         wpos    = &wposR[0];
     }
 
-    thresh *= 3;
-    if( arImageProcMode == AR_IMAGE_PROC_IN_HALF ) {
+    if (arImageProcMode == AR_IMAGE_PROC_IN_HALF) {
         lxsize = arImXsize / 2;
         lysize = arImYsize / 2;
-    }
-    else {
+    } else {
         lxsize = arImXsize;
         lysize = arImYsize;
     }
 
-    pnt1 = &l_image[0];
-    pnt2 = &l_image[(lysize-1)*lxsize];
+    pnt1 = &l_image[0]; // Leftmost pixel of top row of image.
+    pnt2 = &l_image[(lysize - 1)*lxsize]; // Leftmost pixel of bottom row of image.
 
 #ifndef USE_OPTIMIZATIONS
 	for(i = 0; i < lxsize; i++) {
@@ -180,15 +175,15 @@ static ARInt16 *labeling2( ARUint8 *image, int thresh,
     }
 #else
 // 4x loop unrolling
-	for(i = 0; i < lxsize-(lxsize%4); i+=4) {
+	for (i = 0; i < lxsize - (lxsize%4); i += 4) {
         *(pnt1++) = *(pnt2++) = 0;
         *(pnt1++) = *(pnt2++) = 0;
         *(pnt1++) = *(pnt2++) = 0;
         *(pnt1++) = *(pnt2++) = 0;
     }
 #endif
-    pnt1 = &l_image[0];
-    pnt2 = &l_image[lxsize-1];
+    pnt1 = &l_image[0]; // Leftmost pixel of top row of image.
+    pnt2 = &l_image[lxsize - 1]; // Rightmost pixel of top row of image.
 
 #ifndef USE_OPTIMIZATIONS
     for(i = 0; i < lysize; i++) {
@@ -198,7 +193,7 @@ static ARInt16 *labeling2( ARUint8 *image, int thresh,
     }
 #else
 // 4x loop unrolling
-    for(i = 0; i < lysize-(lysize%4); i+=4) {
+    for (i = 0; i < lysize - (lysize%4); i += 4) {
 		*pnt1 = *pnt2 = 0;
         pnt1 += lxsize;
         pnt2 += lxsize;
@@ -219,32 +214,31 @@ static ARInt16 *labeling2( ARUint8 *image, int thresh,
 
     wk_max = 0;
     pnt2 = &(l_image[lxsize+1]);
-    if( arImageProcMode == AR_IMAGE_PROC_IN_HALF ) {
+    if (arImageProcMode == AR_IMAGE_PROC_IN_HALF) {
         pnt = &(image[(arImXsize*2+2)*AR_PIX_SIZE_DEFAULT]);
         poff = AR_PIX_SIZE_DEFAULT*2;
-    }
-    else {
+    } else {
         pnt = &(image[(arImXsize+1)*AR_PIX_SIZE_DEFAULT]);
         poff = AR_PIX_SIZE_DEFAULT;
     }
-    for(j = 1; j < lysize-1; j++, pnt+=poff*2, pnt2+=2) {
+    for (j = 1; j < lysize - 1; j++, pnt += poff*2, pnt2 += 2) {
         for(i = 1; i < lxsize-1; i++, pnt+=poff, pnt2++) {
 #if (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ARGB)
-            if( *(pnt+1) + *(pnt+2) + *(pnt+3) <= thresh ) {
+            if( *(pnt+1) + *(pnt+2) + *(pnt+3) <= thresht3 ) {
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ABGR)
-            if( *(pnt+1) + *(pnt+2) + *(pnt+3) <= thresh ) {
+            if( *(pnt+1) + *(pnt+2) + *(pnt+3) <= thresht3 ) {
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGRA)
-            if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresh ) {
+            if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresht3 ) {
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGR)
-            if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresh ) {
+            if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresht3 ) {
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGBA)
-            if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresh ) {
+            if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresht3 ) {
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGB)
-            if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresh ) {
+            if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresht3 ) {
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_2vuy)
-			if( *(pnt+1) * 3 <= thresh ) {
+			if( *(pnt+1) <= thresh ) {
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_yuvs)
-			if( *(pnt+0) * 3 <= thresh ) {
+			if( *(pnt+0) <= thresh ) {
 #else
 #  error Unknown default pixel format defined in config.h
 #endif
@@ -421,7 +415,7 @@ static ARInt16 *labeling2( ARUint8 *image, int thresh,
                 *pnt2 = 0;
             }
         }
-        if( arImageProcMode == AR_IMAGE_PROC_IN_HALF ) pnt += arImXsize*AR_PIX_SIZE_DEFAULT;
+        if (arImageProcMode == AR_IMAGE_PROC_IN_HALF) pnt += arImXsize*AR_PIX_SIZE_DEFAULT;
     }
 
     j = 1;
@@ -462,7 +456,7 @@ static ARInt16 *labeling2( ARUint8 *image, int thresh,
     *area      = warea;
     *pos       = wpos;
     *clip      = wclip;
-    return( l_image );
+    return (l_image);
 }
 
 static ARInt16 *labeling3( ARUint8 *image, int thresh,
@@ -484,8 +478,8 @@ static ARInt16 *labeling3( ARUint8 *image, int thresh,
     int       *warea;
     int       *wclip;
     double    *wpos;
+	int		  thresht3 = thresh * 3;
 
-    thresh *= 3;
     if( arImageProcMode == AR_IMAGE_PROC_IN_HALF ) {
         lxsize = arImXsize / 2;
         lysize = arImYsize / 2;
@@ -570,28 +564,28 @@ static ARInt16 *labeling3( ARUint8 *image, int thresh,
     for(j = 1; j < lysize-1; j++, pnt+=poff*2, pnt2+=2, dpnt+=AR_PIX_SIZE_DEFAULT*2) {
         for(i = 1; i < lxsize-1; i++, pnt+=poff, pnt2++, dpnt+=AR_PIX_SIZE_DEFAULT) {
 #if (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ARGB)
-            if( *(pnt+1) + *(pnt+2) + *(pnt+3) <= thresh ) {
+            if( *(pnt+1) + *(pnt+2) + *(pnt+3) <= thresht3 ) {
                 *(dpnt+1) = *(dpnt+2) = *(dpnt+3) = 255;
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ABGR)
-            if( *(pnt+1) + *(pnt+2) + *(pnt+3) <= thresh ) {
+            if( *(pnt+1) + *(pnt+2) + *(pnt+3) <= thresht3 ) {
                 *(dpnt+1) = *(dpnt+2) = *(dpnt+3) = 255;
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGRA)
-            if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresh ) {
+            if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresht3 ) {
                 *(dpnt+0) = *(dpnt+1) = *(dpnt+2) = 255;
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGR)
-            if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresh ) {
+            if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresht3 ) {
                 *(dpnt+0) = *(dpnt+1) = *(dpnt+2) = 255;
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGBA)
-            if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresh ) {
+            if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresht3 ) {
                 *(dpnt+0) = *(dpnt+1) = *(dpnt+2) = 255;
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGB)
-            if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresh ) {
+            if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresht3 ) {
                 *(dpnt+0) = *(dpnt+1) = *(dpnt+2) = 255;
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_2vuy)
-			if( *(pnt+1) * 3 <= thresh ) {
+			if( *(pnt+1) <= thresh ) {
 				*(dpnt+1) = 255;
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_yuvs)
-			if( *(pnt+0) * 3 <= thresh ) {
+			if( *(pnt+0) <= thresh ) {
 				*(dpnt+0) = 255;
 #else
 #  error Unknown default pixel format defined in config.h
@@ -716,7 +710,7 @@ static ARInt16 *labeling3( ARUint8 *image, int thresh,
 #endif
             }
         }
-        if( arImageProcMode == AR_IMAGE_PROC_IN_HALF ) pnt += arImXsize*AR_PIX_SIZE_DEFAULT;
+        if (arImageProcMode == AR_IMAGE_PROC_IN_HALF) pnt += arImXsize*AR_PIX_SIZE_DEFAULT;
     }
 
     j = 1;
