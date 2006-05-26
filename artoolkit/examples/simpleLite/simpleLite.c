@@ -146,8 +146,7 @@ static void DrawCubeUpdate(float timeDelta)
 	}
 }
 
-// Sets up gARTCparam.
-static int setupCamera(const char *cparam_name, char *vconf)
+static int setupCamera(const char *cparam_name, char *vconf, ARParam *cparam)
 {	
     ARParam  wparam;
 	int xsize, ysize;
@@ -167,10 +166,10 @@ static int setupCamera(const char *cparam_name, char *vconf)
 		fprintf(stderr, "setupCamera(): Error loading parameter file %s for camera.\n", cparam_name);
         return (FALSE);
     }
-    arParamChangeSize(&wparam, xsize, ysize, &gARTCparam);
-    arInitCparam(&gARTCparam);
+    arParamChangeSize(&wparam, xsize, ysize, cparam);
+    arInitCparam(cparam);
     fprintf(stdout, "*** Camera Parameter ***\n");
-    arParamDisp(&gARTCparam);
+    arParamDisp(cparam);
 	
     if (arVideoCapStart() != 0) {
     	fprintf(stderr, "setupCamera(): Unable to begin camera data capture.\n");
@@ -429,7 +428,7 @@ int main(int argc, char** argv)
 	// Hardware setup.
 	//
 
-	if (!setupCamera(cparam_name, vconf)) {
+	if (!setupCamera(cparam_name, vconf, &gARTCparam)) {
 		fprintf(stderr, "main(): Unable to set up AR camera.\n");
 		exit(-1);
 	}
