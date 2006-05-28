@@ -71,20 +71,23 @@ static int prefHeight = 480;				// Fullscreen mode height.
 static int prefDepth = 32;					// Fullscreen mode bit depth.
 static int prefRefresh = 0;					// Fullscreen mode refresh rate. Set to 0 to use default rate.
 
-// ARToolKit globals.
-static ARParam		gARTCparam;
+// Image acquisition.
 static ARUint8		*gARTImage = NULL;
+
+// Marker detection.
 static int			gARTThreshhold = 100;
 static long			gCallCountMarkerDetect = 0;
-static double		gPatt_trans[3][4];
-static int			gPatt_found = FALSE;
+
+// Transformation matrix retrieval.
+static double		gPatt_width     = 80.0;	// Per-marker, but we are using only 1 marker.
+static double		gPatt_centre[2] = {0.0, 0.0}; // Per-marker, but we are using only 1 marker.
+static double		gPatt_trans[3][4];		// Per-marker, but we are using only 1 marker.
+static int			gPatt_found = FALSE;	// Per-marker, but we are using only 1 marker.
+static int			gPatt_id;				// Per-marker, but we are using only 1 marker.
+
+// Drawing.
+static ARParam		gARTCparam;
 static ARGL_CONTEXT_SETTINGS_REF gArglSettings = NULL;
-
-static int			gPatt_id;
-static double		gPatt_width     = 80.0;
-static double		gPatt_centre[2] = {0.0, 0.0};
-
-// Other globals.
 static int gDrawRotate = FALSE;
 static float gDrawRotateAngle = 0;			// For use in drawing.
 
@@ -148,8 +151,8 @@ static void DrawCubeUpdate(float timeDelta)
 
 static int setupCamera(const char *cparam_name, char *vconf, ARParam *cparam)
 {	
-    ARParam  wparam;
-	int xsize, ysize;
+    ARParam			wparam;
+	int				xsize, ysize;
 
     // Open the video path.
     if (arVideoOpen(vconf) < 0) {
@@ -167,11 +170,12 @@ static int setupCamera(const char *cparam_name, char *vconf, ARParam *cparam)
         return (FALSE);
     }
     arParamChangeSize(&wparam, xsize, ysize, cparam);
-    arInitCparam(cparam);
     fprintf(stdout, "*** Camera Parameter ***\n");
     arParamDisp(cparam);
 	
-    if (arVideoCapStart() != 0) {
+    arInitCparam(cparam);
+
+	if (arVideoCapStart() != 0) {
     	fprintf(stderr, "setupCamera(): Unable to begin camera data capture.\n");
 		return (FALSE);		
 	}
@@ -432,7 +436,6 @@ int main(int argc, char** argv)
 		fprintf(stderr, "main(): Unable to set up AR camera.\n");
 		exit(-1);
 	}
-	debugReportMode();
 	if (!setupMarker(patt_name, &gPatt_id)) {
 		fprintf(stderr, "main(): Unable to set up AR marker.\n");
 		exit(-1);
@@ -459,6 +462,7 @@ int main(int argc, char** argv)
 		fprintf(stderr, "main(): arglSetupForCurrentContext() returned error.\n");
 		exit(-1);
 	}
+	debugReportMode();
 	glEnable(GL_DEPTH_TEST);
 	arUtilTimerReset();
 		
