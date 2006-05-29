@@ -84,12 +84,18 @@ static int prefHeight = 480;				// Fullscreen mode height.
 static int prefDepth = 32;					// Fullscreen mode bit depth.
 static int prefRefresh = 0;					// Fullscreen mode refresh rate. Set to 0 to use default rate.
 
-// ARToolKit globals.
-static ARParam		gARTCparam;
+// Image acquisition.
 static ARUint8		*gARTImage = NULL;
+
+// Marker detection.
 static int			gARTThreshhold = 100;
 static long			gCallCountMarkerDetect = 0;
-static int			gPatt_found = FALSE;
+
+// Transformation matrix retrieval.
+static int			gPatt_found = FALSE;	// At least one marker.
+
+// Drawing.
+static ARParam		gARTCparam;
 static ARGL_CONTEXT_SETTINGS_REF gArglSettings = NULL;
 
 // Object Data.
@@ -100,11 +106,10 @@ static int			gObjectDataCount;
 //	Functions
 // ============================================================================
 
-// Sets up gARTCparam.
-static int setupCamera(const char *cparam_name, char *vconf)
+static int setupCamera(const char *cparam_name, char *vconf, ARParam *cparam)
 {	
-    ARParam  wparam;
-	int xsize, ysize;
+    ARParam			wparam;
+	int				xsize, ysize;
 
     // Open the video path.
     if (arVideoOpen(vconf) < 0) {
@@ -121,12 +126,13 @@ static int setupCamera(const char *cparam_name, char *vconf)
 		fprintf(stderr, "setupCamera(): Error loading parameter file %s for camera.\n", cparam_name);
         return (FALSE);
     }
-    arParamChangeSize(&wparam, xsize, ysize, &gARTCparam);
-    arInitCparam(&gARTCparam);
+    arParamChangeSize(&wparam, xsize, ysize, cparam);
     fprintf(stdout, "*** Camera Parameter ***\n");
-    arParamDisp(&gARTCparam);
+    arParamDisp(cparam);
 	
-    if (arVideoCapStart() != 0) {
+    arInitCparam(cparam);
+
+	if (arVideoCapStart() != 0) {
     	fprintf(stderr, "setupCamera(): Unable to begin camera data capture.\n");
 		return (FALSE);		
 	}
@@ -170,7 +176,7 @@ static void debugReportMode(void)
 	} else {
 		fprintf(stderr, "DrawMode (C)   : TEXTURE MAPPING (HALF RESOLUTION)\n");
 	}
-	
+		
 	if( arTemplateMatchingMode == AR_TEMPLATE_MATCHING_COLOR ) {
 		fprintf(stderr, "TemplateMatchingMode (M)   : Color Template\n");
 	} else {
@@ -193,7 +199,6 @@ static void Quit(void)
 	CoUninitialize();
 #endif
 	exit(0);
-
 }
 
 static void Keyboard(unsigned char key, int x, int y)
@@ -306,7 +311,7 @@ static void Idle(void)
 }
 
 //
-//	The function is called on events when the visibility of the
+//	This function is called on events when the visibility of the
 //	GLUT window changes (including when it first becomes visible).
 //
 static void Visibility(int visible)
@@ -319,7 +324,7 @@ static void Visibility(int visible)
 }
 
 //
-//	The function is called when the
+//	This function is called when the
 //	GLUT window is resized.
 //
 static void Reshape(int w, int h)
@@ -336,7 +341,7 @@ static void Reshape(int w, int h)
 }
 
 //
-// The function is called when the window needs redrawing.
+// This function is called when the window needs redrawing.
 //
 static void Display(void)
 {
@@ -346,14 +351,13 @@ static void Display(void)
 	
 	// Select correct buffer for this context.
 	glDrawBuffer(GL_BACK);
-
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear the buffers for new frame.
+	
 	arglDispImage(gARTImage, &gARTCparam, 1.0, gArglSettings);	// zoom = 1.0.
 	arVideoCapNext();
 	gARTImage = NULL; // Image data is no longer valid after calling arVideoCapNext().
 				
 	if (gPatt_found) {
-		glClear(GL_DEPTH_BUFFER_BIT);	// Clear the buffers for new frame.
-			
 		// Projection transformation.
 		arglCameraFrustum(&gARTCparam, VIEW_DISTANCE_MIN, VIEW_DISTANCE_MAX, p);
 		glMatrixMode(GL_PROJECTION);
@@ -398,7 +402,7 @@ int main(int argc, char** argv)
 #else
 		"-dev=/dev/video0 -channel=0 -palette=YUV420P -width=320 -height=240";
 #endif
-static char objectDataFilename[] = "Data/object_data_vrml";
+	char objectDataFilename[] = "Data/object_data_vrml";
 	
 	// ----------------------------------------------------------------------------
 	// Library inits.
@@ -410,11 +414,10 @@ static char objectDataFilename[] = "Data/object_data_vrml";
 	// Hardware setup.
 	//
 
-	if (!setupCamera(cparam_name, vconf)) {
+	if (!setupCamera(cparam_name, vconf, &gARTCparam)) {
 		fprintf(stderr, "main(): Unable to set up AR camera.\n");
 		exit(-1);
 	}
-	debugReportMode();
 	
 #ifdef _WIN32
 	CoInitialize(NULL);
@@ -441,13 +444,22 @@ static char objectDataFilename[] = "Data/object_data_vrml";
 		fprintf(stderr, "main(): arglSetupForCurrentContext() returned error.\n");
 		exit(-1);
 	}
+	debugReportMode();
 	arUtilTimerReset();
 
 	if (!setupMarkersObjects(objectDataFilename)) {
 		fprintf(stderr, "main(): Unable to set up AR objects and markers.\n");
 		Quit();
 	}
-		
+	
+	// Test render all the VRML objects.
+    printf("About to render VRML objects \n");
+    glEnable(GL_TEXTURE_2D);
+    for (i = 0; i < gObjectDataCount; i++) {
+		arVrmlDraw(gObjectData[i].vrml_id);
+    }
+    glDisable(GL_TEXTURE_2D);
+	
 	// Register GLUT event-handling callbacks.
 	// NB: Idle() is registered by Visibility.
 	glutDisplayFunc(Display);

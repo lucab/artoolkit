@@ -446,7 +446,7 @@ static void Visibility(int visible)
 }
 
 //
-//	The function is called when a
+//	This function is called when the
 //	GLUT window is resized.
 //
 static void Reshape(int w, int h)
@@ -463,13 +463,13 @@ static void Reshape(int w, int h)
 }
 
 //
-// The function is called when a window needs redrawing.
+// This function is called when a window needs redrawing.
 //
 static void DisplayPerContext(const int drawContextIndex)
 {
     GLdouble p[16];
 	GLdouble m[16];
-
+	
 	// Select correct buffer for this context.
 	glDrawBuffer(GL_BACK);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	// Clear the buffers for new frame.
@@ -554,7 +554,6 @@ int main(int argc, char** argv)
 	};
 	const char *patt_name  = "Data/patt.hiro";
 	
-
 	// ----------------------------------------------------------------------------
 	// Library inits.
 	//
@@ -584,12 +583,11 @@ int main(int argc, char** argv)
 		exit(-1);
 	}
 	gContextsActiveCount = CONTEXTSACTIVECOUNT;
-	for (i = 0; i < gContextsActiveCount; i++) debugReportMode(gContextsActive[i].arglSettings);
-	if (!setupMarker(patt_name, &gPatt_id)) {
+	for (i = 0; i < gContextsActiveCount; i++) 	if (!setupMarker(patt_name, &gPatt_id)) {
 		fprintf(stderr, "main(): Unable to set up AR marker.\n");
 		exit(-1);
 	}
-
+	
 	// ----------------------------------------------------------------------------
 	// Library setup.
 	//
@@ -617,13 +615,14 @@ int main(int argc, char** argv)
 			fprintf(stderr, "main(): arglSetupForCurrentContext() returned error.\n");
 			exit(-1);
 		}
+		debugReportMode(gContextsActive[i].arglSettings);
 		glEnable(GL_DEPTH_TEST);
 	}
 	arUtilTimerReset();
-
+		
 	// Register GLUT event-handling callbacks.
 	// NB: Idle() is registered by Visibility.
 	glutMainLoop();
-	
+
 	return (0);
 }
