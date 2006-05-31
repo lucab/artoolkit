@@ -1678,7 +1678,7 @@
 		788A85C1089AA5C6001AB56A /* optical-Info.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = "optical-Info.plist"; sourceTree = "<group>"; };
 		788C838C089AB5B9003E3825 /* simpleLite.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = simpleLite.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		788C83A7089AB67A003E3825 /* simpleLite-Info.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = "simpleLite-Info.plist"; sourceTree = "<group>"; };
-		788C83C5089AB6AE003E3825 /* simpleVRML.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = simpleVRML.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		788C83C5089AB6AE003E3825 /* simpleVRML.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = simpleVRML.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		788C83F0089AB8B1003E3825 /* simpleVRML-Info.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = "simpleVRML-Info.plist"; sourceTree = "<group>"; };
 		78A519D1089ABA58005197A0 /* twoView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = twoView.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		78A519E4089ABB07005197A0 /* twoView-Info.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = "twoView-Info.plist"; sourceTree = "<group>"; };
@@ -6701,10 +6701,7 @@
 		788C83C3089AB6AE003E3825 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
+				ARCHS = ppc;
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "examples/simpleVRML/simpleVRML-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -6721,10 +6718,7 @@
 		788C83C4089AB6AE003E3825 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
+				ARCHS = ppc;
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "examples/simpleVRML/simpleVRML-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
