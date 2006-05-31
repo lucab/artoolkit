@@ -275,9 +275,7 @@ static void Idle(void)
 		// Check for object visibility.
 		
 		for (i = 0; i < gObjectDataCount; i++) {
-			
-			gObjectData[i].visible = 0;
-			
+		
 			// Check through the marker_info array for highest confidence
 			// visible marker matching our object's pattern.
 			k = -1;
@@ -302,6 +300,8 @@ static void Idle(void)
 				}
 				gObjectData[i].visible = 1;
 				gPatt_found = TRUE;
+			} else {
+				gObjectData[i].visible = 0;
 			}
 		}
 		
