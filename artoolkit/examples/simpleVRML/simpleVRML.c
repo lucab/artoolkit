@@ -391,6 +391,7 @@ static void Display(void)
 
 int main(int argc, char** argv)
 {
+	int i;
 	char glutGamemode[32];
 	const char *cparam_name = 
 		"Data/camera_para.dat";
