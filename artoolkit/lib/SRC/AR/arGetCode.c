@@ -303,7 +303,7 @@ printf("%3d(%f), %3d(%f)\n", xdiv2, sqrt(lx1), ydiv2, sqrt(ly1));
     }
 
     for( j = 0; j < AR_PATT_SIZE_Y; j++ ) {
-        for( i = 0; i < AR_PATT_SIZE_Y; i++ ) {
+        for( i = 0; i < AR_PATT_SIZE_X; i++ ) {				// PRL 2006-06-08.
             ext_pat[j][i][0] = ext_pat2[j][i][0] / (xdiv*ydiv);
             ext_pat[j][i][1] = ext_pat2[j][i][1] / (xdiv*ydiv);
             ext_pat[j][i][2] = ext_pat2[j][i][2] / (xdiv*ydiv);
