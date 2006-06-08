@@ -110,6 +110,11 @@
 #  define GL_PROXY_TEXTURE_RECTANGLE		0x84F7
 #  define GL_MAX_RECTANGLE_TEXTURE_SIZE		0x84F8
 #endif
+#ifndef GL_MESA_ycbcr_texture
+#  define GL_YCBCR_MESA						0x8757
+#  define GL_UNSIGNED_SHORT_8_8_MESA		0x85BA
+#  define GL_UNSIGNED_SHORT_8_8_REV_MESA	0x85BB
+#endif
 
 //#define ARGL_DEBUG
 
@@ -694,7 +699,7 @@ ARGL_CONTEXT_SETTINGS_REF arglSetupForCurrentContext(void)
 	contextSettings = (ARGL_CONTEXT_SETTINGS_REF)calloc(1, sizeof(ARGL_CONTEXT_SETTINGS));
 	// Use default pixel format handed to us by <AR/config.h>.
 	if (!arglPixelFormatSet(contextSettings, AR_DEFAULT_PIXEL_FORMAT)) {
-		fprintf(stderr, "Unknown default pixel format defined in config.h.\n");
+		fprintf(stderr, "Unknown or unsupported default pixel format defined in config.h.\n");
 		return (NULL);
 	}
 	arglDrawModeSet(contextSettings, AR_DRAW_BY_TEXTURE_MAPPING);
@@ -846,26 +851,39 @@ int arglPixelFormatSet(ARGL_CONTEXT_SETTINGS_REF contextSettings, AR_PIXEL_FORMA
 			contextSettings->pixSize = 4;
 			break;
 		case AR_PIXEL_FORMAT_ABGR:	// SGI.
-			contextSettings->pixIntFormat = GL_RGBA;
-			contextSettings->pixFormat = GL_ABGR_EXT;
-			contextSettings->pixType = GL_UNSIGNED_BYTE;
-			contextSettings->pixSize = 4;
+			if (arglGLCapabilityCheck(0, (unsigned char *)"GL_EXT_abgr")) {
+				contextSettings->pixIntFormat = GL_RGBA;
+				contextSettings->pixFormat = GL_ABGR_EXT;
+				contextSettings->pixType = GL_UNSIGNED_BYTE;
+				contextSettings->pixSize = 4;
+			} else {
+				return (FALSE);
+			}
 			break;
 		case AR_PIXEL_FORMAT_BGRA:	// Windows.
-			contextSettings->pixIntFormat = GL_RGBA;
-			contextSettings->pixFormat = GL_BGRA;
-			contextSettings->pixType = GL_UNSIGNED_BYTE;
-			contextSettings->pixSize = 4;
+			if (arglGLCapabilityCheck(0x0120, (unsigned char *)"GL_EXT_bgra")) {
+				contextSettings->pixIntFormat = GL_RGBA;
+				contextSettings->pixFormat = GL_BGRA;
+				contextSettings->pixType = GL_UNSIGNED_BYTE;
+				contextSettings->pixSize = 4;
+			} else {
+				return (FALSE);
+			}
 			break;
 		case AR_PIXEL_FORMAT_ARGB:	// Mac.
-			contextSettings->pixIntFormat = GL_RGBA;
-			contextSettings->pixFormat = GL_BGRA;
+			if (arglGLCapabilityCheck(0x0120, (unsigned char *)"GL_EXT_bgra")
+				&& arglGLCapabilityCheck(0x0120, (unsigned char *)"GL_APPLE_packed_pixels")) {
+				contextSettings->pixIntFormat = GL_RGBA;
+				contextSettings->pixFormat = GL_BGRA;
 #ifdef AR_BIG_ENDIAN
-			contextSettings->pixType = GL_UNSIGNED_INT_8_8_8_8_REV;
+				contextSettings->pixType = GL_UNSIGNED_INT_8_8_8_8_REV;
 #else
-			contextSettings->pixType = GL_UNSIGNED_INT_8_8_8_8;
+				contextSettings->pixType = GL_UNSIGNED_INT_8_8_8_8;
 #endif
-			contextSettings->pixSize = 4;
+				contextSettings->pixSize = 4;
+			} else {
+				return (FALSE);
+			}
 			break;
 		case AR_PIXEL_FORMAT_RGB:
 			contextSettings->pixIntFormat = GL_RGB;
@@ -874,29 +892,57 @@ int arglPixelFormatSet(ARGL_CONTEXT_SETTINGS_REF contextSettings, AR_PIXEL_FORMA
 			contextSettings->pixSize = 3;
 			break;
 		case AR_PIXEL_FORMAT_BGR:
-			contextSettings->pixIntFormat = GL_RGB;
-			contextSettings->pixFormat = GL_BGR;
-			contextSettings->pixType = GL_UNSIGNED_BYTE;
-			contextSettings->pixSize = 3;
+			if (arglGLCapabilityCheck(0x0120, (unsigned char *)"GL_EXT_bgra")) {
+				contextSettings->pixIntFormat = GL_RGB;
+				contextSettings->pixFormat = GL_BGR;
+				contextSettings->pixType = GL_UNSIGNED_BYTE;
+				contextSettings->pixSize = 3;
+			} else {
+				return (FALSE);
+			}
 			break;
 		case AR_PIXEL_FORMAT_2vuy:
-			contextSettings->pixIntFormat = GL_RGB;
-			contextSettings->pixFormat = GL_YCBCR_422_APPLE;
+			if (arglGLCapabilityCheck(0, (unsigned char *)"GL_APPLE_ycbcr_422")) {
+				contextSettings->pixIntFormat = GL_RGB;
+				contextSettings->pixFormat = GL_YCBCR_422_APPLE;
 #ifdef AR_BIG_ENDIAN
-			contextSettings->pixType = GL_UNSIGNED_SHORT_8_8_REV_APPLE;
+				contextSettings->pixType = GL_UNSIGNED_SHORT_8_8_REV_APPLE;
 #else
-			contextSettings->pixType = GL_UNSIGNED_SHORT_8_8_APPLE;
+				contextSettings->pixType = GL_UNSIGNED_SHORT_8_8_APPLE;
 #endif
+			} else if (arglGLCapabilityCheck(0, (unsigned char *)"GL_MESA_ycbcr_texture")) {
+				contextSettings->pixIntFormat = GL_YCBCR_MESA;
+				contextSettings->pixFormat = GL_YCBCR_MESA;
+#ifdef AR_BIG_ENDIAN
+				contextSettings->pixType = GL_UNSIGNED_SHORT_8_8_REV_MESA;
+#else
+				contextSettings->pixType = GL_UNSIGNED_SHORT_8_8_MESA;
+#endif
+			} else {
+				return (FALSE);
+			}
 			contextSettings->pixSize = 2;
 			break;
 		case AR_PIXEL_FORMAT_yuvs:
-			contextSettings->pixIntFormat = GL_RGB;
-			contextSettings->pixFormat = GL_YCBCR_422_APPLE;
+			if (arglGLCapabilityCheck(0, (unsigned char *)"GL_APPLE_ycbcr_422")) {
+				contextSettings->pixIntFormat = GL_RGB;
+				contextSettings->pixFormat = GL_YCBCR_422_APPLE;
 #ifdef AR_BIG_ENDIAN
-			contextSettings->pixType = GL_UNSIGNED_SHORT_8_8_APPLE;
+				contextSettings->pixType = GL_UNSIGNED_SHORT_8_8_APPLE;
 #else
-			contextSettings->pixType = GL_UNSIGNED_SHORT_8_8_REV_APPLE;
+				contextSettings->pixType = GL_UNSIGNED_SHORT_8_8_REV_APPLE;
 #endif
+			} else if (arglGLCapabilityCheck(0, (unsigned char *)"GL_MESA_ycbcr_texture")) {
+				contextSettings->pixIntFormat = GL_YCBCR_MESA;
+				contextSettings->pixFormat = GL_YCBCR_MESA;
+#ifdef AR_BIG_ENDIAN
+				contextSettings->pixType = GL_UNSIGNED_SHORT_8_8_MESA;
+#else
+				contextSettings->pixType = GL_UNSIGNED_SHORT_8_8_REV_MESA;
+#endif
+			} else {
+				return (FALSE);
+			}
 			contextSettings->pixSize = 2;
 			break;
 		default:
@@ -938,9 +984,10 @@ int arglPixelFormatGet(ARGL_CONTEXT_SETTINGS_REF contextSettings, AR_PIXEL_FORMA
 			*size = 3;
 			break;
 		case GL_YCBCR_422_APPLE:
+		case GL_YCBCR_MESA:
 #ifdef AR_BIG_ENDIAN
-			if (contextSettings->pixType == GL_UNSIGNED_SHORT_8_8_REV_APPLE) *format = AR_PIXEL_FORMAT_2vuy;
-			else if (contextSettings->pixType == GL_UNSIGNED_SHORT_8_8_APPLE) *format = AR_PIXEL_FORMAT_yuvs;
+			if (contextSettings->pixType == GL_UNSIGNED_SHORT_8_8_REV_APPLE) *format = AR_PIXEL_FORMAT_2vuy; // N.B.: GL_UNSIGNED_SHORT_8_8_REV_APPLE = GL_UNSIGNED_SHORT_8_8_REV_MESA
+			else if (contextSettings->pixType == GL_UNSIGNED_SHORT_8_8_APPLE) *format = AR_PIXEL_FORMAT_yuvs; // GL_UNSIGNED_SHORT_8_8_APPLE = GL_UNSIGNED_SHORT_8_8_MESA
 #else
 			if (contextSettings->pixType == GL_UNSIGNED_SHORT_8_8_APPLE) *format = AR_PIXEL_FORMAT_2vuy;
 			else if (contextSettings->pixType == GL_UNSIGNED_SHORT_8_8_REV_APPLE) *format = AR_PIXEL_FORMAT_yuvs;
