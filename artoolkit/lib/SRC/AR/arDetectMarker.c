@@ -18,6 +18,7 @@ int arSavePatt( ARUint8 *image, ARMarkerInfo *marker_info, char *filename )
     int       vertex[4];
     int       i, j, k, x, y;
 
+	// Match supplied info against previously recognised marker.
     for( i = 0; i < wmarker_num; i++ ) {
         if( marker_info->area   == marker_info2[i].area
          && marker_info->pos[0] == marker_info2[i].pos[0]
@@ -36,6 +37,7 @@ int arSavePatt( ARUint8 *image, ARMarkerInfo *marker_info, char *filename )
     fp = fopen( filename, "w" );
     if( fp == NULL ) return -1;
 
+	// Write out in order AR_PATT_SIZE_X columns x AR_PATT_SIZE_Y rows x 3 colours x 4 orientations.
     for( i = 0; i < 4; i++ ) {
         for( j = 0; j < 3; j++ ) {
             for( y = 0; y < AR_PATT_SIZE_Y; y++ ) {
