@@ -38,10 +38,15 @@
 #  include <GLUT/glut.h>
 #  include <OpenGL/glext.h>
 #endif
-#include <AR/gsub.h>
+#include <AR/config.h>
 #include <AR/video.h>
 #include <AR/param.h>
 #include <AR/ar.h>
+#include <AR/gsub_lite.h>
+
+// ============================================================================
+//	Constants
+// ============================================================================
 
 // ============================================================================
 //	Global variables
@@ -71,162 +76,322 @@ char			*vconf = "-width=640 -height=480";
 char			*vconf = "";
 #endif
 
+// Image acquisition.
+static ARUint8		*gARTImage = NULL;
+static ARUint8		*gARTsaveImage = NULL;
 
-int             xsize;
-int             ysize;
-
-ARUint8*        image   = NULL;
-ARMarkerInfo*   target  = NULL;
-ARParam         param;
-int             thresh  = 100;
+// Marker detection.
+static int			gARTThreshhold = 100;
+static ARMarkerInfo* gTarget  = NULL;
 
 
-static void init(void);
-static void cleanup(void);
-static void keyEvent( unsigned char key, int x, int y);
-static void mouseEvent(int button, int state, int x, int y);
-static void mainLoop(void);
-static void img_copy( ARUint8 *src, ARUint8 *dst, int size );
+// Drawing.
+static ARParam		gARTCparam;
+static ARGL_CONTEXT_SETTINGS_REF gArglSettings = NULL;
 
-int main(int argc, char *argv[])
+// ============================================================================
+//	Functions
+// ============================================================================
+
+void lineSeg(double x1, double y1, double x2, double y2, ARGL_CONTEXT_SETTINGS_REF contextSettings, ARParam cparam, double zoom)
 {
-	glutInit(&argc, argv);
-    init();
-
-    arVideoCapStart();
-    argMainLoop( mouseEvent, keyEvent, mainLoop );
-	return (0);
+	int enable;
+    float   ox, oy;
+    double  xx1, yy1, xx2, yy2;
+	
+	if (!contextSettings) return;
+	arglDistortionCompensationGet(contextSettings, &enable);
+    if (arglDrawModeGet(contextSettings) == AR_DRAW_BY_TEXTURE_MAPPING && enable) {
+        xx1 = x1;  yy1 = y1;
+        xx2 = x2;  yy2 = y2;
+    } else {
+        arParamIdeal2Observ(cparam.dist_factor, x1, y1, &xx1, &yy1);
+        arParamIdeal2Observ(cparam.dist_factor, x2, y2, &xx2, &yy2);
+    }
+	
+    xx1 *= zoom; yy1 *= zoom;
+    xx2 *= zoom; yy2 *= zoom;
+	
+	ox = 0;
+	oy = cparam.ysize - 1;
+	glBegin(GL_LINES);
+	glVertex2f(ox + xx1, oy - yy1);
+	glVertex2f(ox + xx2, oy - yy2);
+	glEnd();
+    glFlush();
 }
 
-
-static void init( void )
+static int setupCamera(ARParam *cparam)
 {
     ARParam  wparam;
     char     name1[256], name2[256];
+	int				xsize, ysize;
 
     printf("Enter camera parameter filename");
     printf("(Data/camera_para.dat): ");
-    if( fgets(name1, 256, stdin) == NULL ) exit(0);
-    if( sscanf(name1, "%s", name2) != 1 ) {
-        strcpy( name2, "Data/camera_para.dat");
+    if (fgets(name1, 256, stdin) == NULL) exit(0);
+    if (sscanf(name1, "%s", name2) != 1) {
+        strcpy(name2, "Data/camera_para.dat");
     }
-    if( arParamLoad(name2, 1, &wparam) < 0 ) {
+
+	// Load the camera parameters.
+	if (arParamLoad(name2, 1, &wparam) < 0 ) {
         printf("Parameter load error !!\n");
-        exit(0);
+        return (FALSE);
     }
-
-    if( arVideoOpen(vconf) < 0 ) exit(0);
-    if( arVideoInqSize(&xsize, &ysize) < 0 ) exit(0);
-    arMalloc( image, ARUint8, xsize*ysize*AR_PIX_SIZE_DEFAULT );
-    printf("Image size (x,y) = (%d,%d)\n", xsize, ysize);
-
-    arParamChangeSize( &wparam, xsize, ysize, &param );
-    arParamDisp( &param );
-    arInitCparam( &param );
-
-    argInit( &param, 1.0, 0, 0, 0, 0 );
-    argDrawMode2D();
+	
+    // Open the video path.
+    if (arVideoOpen(vconf) < 0) {
+    	fprintf(stderr, "setupCamera(): Unable to open connection to camera.\n");
+    	return (FALSE);
+	}
+	
+    // Find the size of the window.
+    if (arVideoInqSize(&xsize, &ysize) < 0) return (FALSE);
+    fprintf(stdout, "Camera image size (x,y) = (%d,%d)\n", xsize, ysize);
+	
+	// Resize for the window and init.
+    arParamChangeSize(&wparam, xsize, ysize, cparam);
+    fprintf(stdout, "*** Camera Parameter ***\n");
+    arParamDisp(cparam);
+	
+    arInitCparam(cparam);
+	
+	if (arVideoCapStart() != 0) {
+    	fprintf(stderr, "setupCamera(): Unable to begin camera data capture.\n");
+		return (FALSE);		
+	}
+	
+	return (TRUE);
 }
 
-static void cleanup(void)
+static void Quit(void)
 {
-    arVideoCapStop();
-    arVideoClose();
-    argCleanup();
+	free(gARTsaveImage); gARTsaveImage = NULL;
+	arglCleanup(gArglSettings);
+	arVideoCapStop();
+	arVideoClose();
+	exit(0);
 }
 
-static void   keyEvent( unsigned char key, int x, int y)
+static void Keyboard(unsigned char key, int x, int y)
 {
-    /* quit if the ESC key is pressed */
-    if( key == 0x1b ) {
-        cleanup();
-        exit(0);
-    }
-
-    /* change the threshold value when 't' key pressed */
-    if( key == 't' ) {
-        printf("Enter new threshold value (default = 100): ");
-        scanf("%d",&thresh); while( getchar()!='\n' );
-        printf("\n");
+	switch (key) {
+		case 0x1B:						// Quit.
+		case 'Q':
+		case 'q':
+			Quit();
+			break;
+		case 'T':
+		case 't':
+		printf("Enter new threshold value (default = 100): ");
+			scanf("%d", &gARTThreshhold); while (getchar()!='\n');
+				printf("\n");
+			break;
+		case '?':
+		case '/':
+			printf("Keys:\n");
+			printf(" q or [esc]    Quit demo.\n");
+			printf(" t             Enter new binarization threshold value.\n");
+			printf(" ? or /        Show this help.\n");
+			printf("\nAdditionally, the ARVideo library supplied the following help text:\n");
+			arVideoDispOption();
+			break;
+		default:
+			break;
     }
 }
 
-static void mouseEvent(int button, int state, int x, int y)
+static void Mouse(int button, int state, int x, int y)
 {
     char   name1[256], name2[256];
-
-    if( button == GLUT_RIGHT_BUTTON  && state == GLUT_DOWN ) {
-        cleanup();
-        exit(0);
-    }
-    if( button == GLUT_MIDDLE_BUTTON  && state == GLUT_DOWN ) {
-        printf("Enter new threshold value (default = 100): ");
-        scanf("%d",&thresh); while( getchar()!='\n' );
-        printf("\n");
-    }
-    if( button == GLUT_LEFT_BUTTON  && state == GLUT_DOWN && target != NULL ) {
-        printf("Enter filename: ");
-        if( fgets(name1, 256, stdin) == NULL ) return;
-        if( sscanf(name1, "%s", name2) != 1 ) return;
-        if( arSavePatt(image, target, name2) < 0 ) {
-            printf("ERROR!!\n");
-        }
-        else {
-            printf("  Saved\n");
-        }
-    }
+	
+	if (state == GLUT_DOWN) {
+		if (button == GLUT_RIGHT_BUTTON) {
+			Quit();
+		} else if (button == GLUT_MIDDLE_BUTTON) {
+			printf("Enter new threshold value (default = 100): ");
+			scanf("%d", &gARTThreshhold); while (getchar() != '\n');
+			printf("\n");
+		} else if (button == GLUT_LEFT_BUTTON && gARTsaveImage && gTarget) {
+			printf("Enter filename: ");
+			if (fgets(name1, 256, stdin) == NULL) return;
+			if (sscanf(name1, "%s", name2) != 1 ) return;
+			if (arSavePatt(gARTsaveImage, gTarget, name2) < 0) {
+				printf("ERROR!!\n");
+			} else {
+				printf("  Saved\n");
+			}
+		}
+	}
 }
 
-static void mainLoop(void)
+static void Idle(void)
 {
-    ARUint8         *dataPtr;
-    ARMarkerInfo    *marker_info;
-    int             marker_num;
+	static int ms_prev;
+	int ms;
+	float s_elapsed;
+	ARUint8 *image;
     int             areamax;
+	ARMarkerInfo    *marker_info;					// Pointer to array holding the details of detected markers.
+    int             marker_num;						// Count of number of markers detected.
     int             i;
-
-    if( (dataPtr = (unsigned char *)arVideoGetImage()) == NULL ) {
-        arUtilSleep(2);
-        return;
-    }
-    img_copy( dataPtr, image, xsize*ysize*AR_PIX_SIZE_DEFAULT );
-    arVideoCapNext();
-
-    if( arDetectMarker(image, thresh, &marker_info, &marker_num) < 0 ) {
-        cleanup();
-        exit(0);
-    }
-
-    areamax = 0;
-    target = NULL;
-    for( i = 0; i < marker_num; i++ ) {
-        if( marker_info[i].area > areamax ) {
-            areamax = marker_info[i].area;
-            target = &(marker_info[i]);
-        }
-    }
-    argDispImage( image, 0, 0 );
-
-
-    if( target != NULL ) {
-        glLineWidth( 2.0 );
-        glColor3d( 0.0, 1.0, 0.0 );
-        argLineSeg( target->vertex[0][0], target->vertex[0][1],
-                    target->vertex[1][0], target->vertex[1][1], 0, 0 );
-        argLineSeg( target->vertex[3][0], target->vertex[3][1],
-                    target->vertex[0][0], target->vertex[0][1], 0, 0 );
-        glColor3d( 1.0, 0.0, 0.0 );
-        argLineSeg( target->vertex[1][0], target->vertex[1][1],
-                    target->vertex[2][0], target->vertex[2][1], 0, 0 );
-        argLineSeg( target->vertex[2][0], target->vertex[2][1],
-                    target->vertex[3][0], target->vertex[3][1], 0, 0 );
-    }
-    argSwapBuffers();
- 
-    return;
+	
+	// Find out how long since Idle() last ran.
+	ms = glutGet(GLUT_ELAPSED_TIME);
+	s_elapsed = (float)(ms - ms_prev) * 0.001;
+	if (s_elapsed < 0.01f) return; // Don't update more often than 100 Hz.
+	ms_prev = ms;
+	
+	// Grab a video frame.
+	if ((image = arVideoGetImage()) != NULL) {
+		gARTImage = image;
+		
+		if (arDetectMarker(gARTImage, gARTThreshhold, &marker_info, &marker_num) < 0) {
+			Quit();
+		}
+		
+		areamax = 0;
+		gTarget = NULL;
+		for (i = 0; i < marker_num; i++) {
+			if (marker_info[i].area > areamax) {
+				areamax = marker_info[i].area;
+				gTarget = &(marker_info[i]);
+			}
+		}
+		memcpy(gARTsaveImage, gARTImage,  gARTCparam.xsize * gARTCparam.ysize * AR_PIX_SIZE_DEFAULT);
+		
+		// Tell GLUT the display has changed.
+		glutPostRedisplay();
+	}
 }
 
-static void img_copy( ARUint8 *src, ARUint8 *dst, int size )
+//
+//	This function is called on events when the visibility of the
+//	GLUT window changes (including when it first becomes visible).
+//
+static void Visibility(int visible)
 {
-    while( (size--) > 0 ) *(dst++) = *(src++);
+	if (visible == GLUT_VISIBLE) {
+		glutIdleFunc(Idle);
+	} else {
+		glutIdleFunc(NULL);
+	}
 }
+
+//
+//	This function is called when the
+//	GLUT window is resized.
+//
+static void Reshape(int w, int h)
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glViewport(0, 0, (GLsizei) w, (GLsizei) h);
+	
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	
+	// Call through to anyone else who needs to know about window sizing here.
+}
+
+static void beginOrtho2D(int xsize, int ysize) {
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	gluOrtho2D(0.0, xsize, 0.0, ysize);
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();	
+}
+
+static void endOrtho2D(void) {
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+}
+
+//
+// This function is called when the window needs redrawing.
+//
+static void Display(void)
+{
+	// Select correct buffer for this context.
+	glDrawBuffer(GL_BACK);
+	glClear(GL_COLOR_BUFFER_BIT); // Clear the buffers for new frame.
+	
+	arglDispImage(gARTImage, &gARTCparam, 1.0, gArglSettings);	// zoom = 1.0.
+	arVideoCapNext();
+	gARTImage = NULL; // Image data is no longer valid after calling arVideoCapNext().
+
+	if (gTarget != NULL) {
+		glDisable(GL_DEPTH_TEST);
+		glDisable(GL_LIGHTING);
+		glDisable(GL_TEXTURE_2D);
+		beginOrtho2D(gARTCparam.xsize, gARTCparam.ysize);
+        glLineWidth(2.0f);
+        glColor3d(0.0, 1.0, 0.0);
+        lineSeg(gTarget->vertex[0][0], gTarget->vertex[0][1],
+				gTarget->vertex[1][0], gTarget->vertex[1][1], gArglSettings, gARTCparam, 1.0);
+        lineSeg(gTarget->vertex[3][0], gTarget->vertex[3][1],
+				gTarget->vertex[0][0], gTarget->vertex[0][1], gArglSettings, gARTCparam, 1.0);
+        glColor3d(1.0, 0.0, 0.0);
+        lineSeg(gTarget->vertex[1][0], gTarget->vertex[1][1],
+				gTarget->vertex[2][0], gTarget->vertex[2][1], gArglSettings, gARTCparam, 1.0);
+        lineSeg(gTarget->vertex[2][0], gTarget->vertex[2][1],
+				gTarget->vertex[3][0], gTarget->vertex[3][1], gArglSettings, gARTCparam, 1.0);
+		endOrtho2D();
+    }
+
+	glutSwapBuffers();
+}
+
+int main(int argc, char *argv[])
+{
+	// ----------------------------------------------------------------------------
+	// Library inits.
+	//
+	
+	glutInit(&argc, argv);
+	
+	// ----------------------------------------------------------------------------
+	// Hardware setup.
+	//
+	
+	if (!setupCamera(&gARTCparam)) {
+		fprintf(stderr, "main(): Unable to set up AR camera.\n");
+		exit(-1);
+	}
+	
+	// ----------------------------------------------------------------------------
+	// Library setup.
+	//
+	
+	// Set up GL context(s) for OpenGL to draw into.
+    glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
+	glutInitWindowSize(gARTCparam.xsize, gARTCparam.ysize);
+	glutCreateWindow(argv[0]);
+	
+	// Setup argl library for current context.
+	if ((gArglSettings = arglSetupForCurrentContext()) == NULL) {
+		fprintf(stderr, "main(): arglSetupForCurrentContext() returned error.\n");
+		exit(-1);
+	}
+	
+	arMalloc(gARTsaveImage, ARUint8, gARTCparam.xsize * gARTCparam.ysize * AR_PIX_SIZE_DEFAULT);
+	
+	// Register GLUT event-handling callbacks.
+	// NB: Idle() is registered by Visibility.
+	glutDisplayFunc(Display);
+	glutReshapeFunc(Reshape);
+	glutVisibilityFunc(Visibility);
+	glutKeyboardFunc(Keyboard);
+    glutMouseFunc(Mouse);
+	
+	glutMainLoop();
+	
+	return (0);
+}
+
