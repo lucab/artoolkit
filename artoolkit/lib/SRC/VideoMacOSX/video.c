@@ -92,7 +92,9 @@
 //	Private definitions
 // ============================================================================
 
-#define AR_VIDEO_DEBUG_BUFFERCOPY					// Uncomment to have ar2VideoGetImage() return a copy of video pixel data.
+#ifndef __i386__								// Hack: don't do buffercopy on Intel Macs.
+#  define AR_VIDEO_DEBUG_BUFFERCOPY				// Uncomment to have ar2VideoGetImage() return a copy of video pixel data.
+#endif
 //#define AR_VIDEO_SUPPORT_OLD_QUICKTIME		// Uncomment to allow use of non-thread safe QuickTime (pre-6.4).
 #define AR_VIDEO_DEBUG_FIX_DUAL_PROCESSOR_RACE
 
@@ -161,10 +163,9 @@ struct _AR2VideoParamT {
 	long					rowBytes;		// PRL.
 	long					bufSize;		// PRL.
 	ARUint8*				bufPixels;		// PRL.
-#ifdef AR_VIDEO_DEBUG_BUFFERCOPY
+	int						bufCopyFlag;	// PRL
 	ARUint8*				bufPixelsCopy1; // PRL.
 	ARUint8*				bufPixelsCopy2; // PRL.
-#endif // AR_VIDEO_DEBUG_BUFFERCOPY
 	int						grabber;			// PRL.
 	MatrixRecordPtr			scaleMatrixPtr; // PRL.
 	VdigGrabRef				pVdg;			// DH (seeSaw).
@@ -1362,6 +1363,12 @@ AR2VideoParamT *ar2VideoOpen(char *config)
 	//vid->lastTime		= 0;
 	//vid->timeScale	= 0;
 	vid->grabber		= grabber;
+#ifdef AR_VIDEO_DEBUG_BUFFERCOPY
+	vid->bufCopyFlag	= 1;
+#else
+	vid->bufCopyFlag	= 0;
+#endif // AR_VIDEO_DEBUG_BUFFERCOPY
+	
 
 	if(!(vid->pVdg = vdgAllocAndInit(grabber))) {
 		fprintf(stderr, "ar2VideoOpen(): vdgAllocAndInit returned error.\n");
@@ -1445,12 +1452,12 @@ AR2VideoParamT *ar2VideoOpen(char *config)
 	vid->rowBytes = vid->width * bytesPerPixel;
 	vid->bufSize = vid->height * vid->rowBytes;
 	if (!(vid->bufPixels = (ARUint8 *)valloc(vid->bufSize * sizeof(ARUint8)))) exit (1);
-#ifdef AR_VIDEO_DEBUG_BUFFERCOPY
-	// And another two buffers for OpenGL to read out of.
-	if (!(vid->bufPixelsCopy1 = (ARUint8 *)valloc(vid->bufSize * sizeof(ARUint8)))) exit (1);
-	if (!(vid->bufPixelsCopy2 = (ARUint8 *)valloc(vid->bufSize * sizeof(ARUint8)))) exit (1);
-#endif // AR_VIDEO_DEBUG_BUFFERCOPY
-	   // Wrap a GWorld around the pixel buffer.
+	if (vid->bufCopyFlag) {
+		// And another two buffers for OpenGL to read out of.
+		if (!(vid->bufPixelsCopy1 = (ARUint8 *)valloc(vid->bufSize * sizeof(ARUint8)))) exit (1);
+		if (!(vid->bufPixelsCopy2 = (ARUint8 *)valloc(vid->bufSize * sizeof(ARUint8)))) exit (1);
+	}
+	// Wrap a GWorld around the pixel buffer.
 	err_s = QTNewGWorldFromPtr(&(vid->pGWorld),			// returned GWorld
 							   pixFormat,				// format of pixels
 							   &(vid->theRect),			// bounds
@@ -1518,10 +1525,10 @@ AR2VideoParamT *ar2VideoOpen(char *config)
 out6:
 	DisposeGWorld(vid->pGWorld);
 out5:
-#ifdef AR_VIDEO_DEBUG_BUFFERCOPY
-	free(vid->bufPixelsCopy2);
-	free(vid->bufPixelsCopy1);
-#endif // AR_VIDEO_DEBUG_BUFFERCOPY
+	if (vid->bufCopyFlag) {
+		free(vid->bufPixelsCopy2);
+		free(vid->bufPixelsCopy1);
+	}
 	free(vid->bufPixels);
 	if (vid->scaleMatrixPtr) free(vid->scaleMatrixPtr);
 out3:
@@ -1578,16 +1585,16 @@ int ar2VideoClose(AR2VideoParamT *vid)
         vid->pGWorld = NULL;
     }
 	
-#ifdef AR_VIDEO_DEBUG_BUFFERCOPY
-	if (vid->bufPixelsCopy2) {
-		free(vid->bufPixelsCopy2);
-		vid->bufPixelsCopy2 = NULL;
+	if (vid->bufCopyFlag) {
+		if (vid->bufPixelsCopy2) {
+			free(vid->bufPixelsCopy2);
+			vid->bufPixelsCopy2 = NULL;
+		}
+		if (vid->bufPixelsCopy1) {
+			free(vid->bufPixelsCopy1);
+			vid->bufPixelsCopy1 = NULL;
+		}
 	}
-	if (vid->bufPixelsCopy1) {
-		free(vid->bufPixelsCopy1);
-		vid->bufPixelsCopy1 = NULL;
-	}
-#endif // AR_VIDEO_DEBUG_BUFFERCOPY
 	if (vid->bufPixels) {
 		free(vid->bufPixels);
 		vid->bufPixels = NULL;
@@ -1801,19 +1808,19 @@ ARUint8 *ar2VideoGetImage(AR2VideoParamT *vid)
 		// of non-alpha data. This was an awful hack which caused all sorts
 		// of problems and which can now be avoided after rewriting the
 		// various bits of the toolkit to cope.
-#ifdef AR_VIDEO_DEBUG_BUFFERCOPY
-		if (vid->status & AR_VIDEO_STATUS_BIT_BUFFER) {
-			memcpy((void *)(vid->bufPixelsCopy2), (void *)(vid->bufPixels), vid->bufSize);
-			pix = vid->bufPixelsCopy2;
-			vid->status &= ~AR_VIDEO_STATUS_BIT_BUFFER; // Clear buffer bit.
+		if (vid->bufCopyFlag) {
+			if (vid->status & AR_VIDEO_STATUS_BIT_BUFFER) {
+				memcpy((void *)(vid->bufPixelsCopy2), (void *)(vid->bufPixels), vid->bufSize);
+				pix = vid->bufPixelsCopy2;
+				vid->status &= ~AR_VIDEO_STATUS_BIT_BUFFER; // Clear buffer bit.
+			} else {
+				memcpy((void *)(vid->bufPixelsCopy1), (void *)(vid->bufPixels), vid->bufSize);
+				pix = vid->bufPixelsCopy1;
+				vid->status |= AR_VIDEO_STATUS_BIT_BUFFER; // Set buffer bit.
+			}
 		} else {
-			memcpy((void *)(vid->bufPixelsCopy1), (void *)(vid->bufPixels), vid->bufSize);
-			pix = vid->bufPixelsCopy1;
-			vid->status |= AR_VIDEO_STATUS_BIT_BUFFER; // Set buffer bit.
+			pix = vid->bufPixels;
 		}
-#else
-		pix = vid->bufPixels;
-#endif // AR_VIDEO_DEBUG_BUFFERCOPY
 
 		vid->status &= ~AR_VIDEO_STATUS_BIT_READY; // Clear ready bit.
 		
