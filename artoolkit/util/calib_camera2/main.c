@@ -531,11 +531,11 @@ static void Reshape(int w, int h)
 	// Call through to anyone else who needs to know about window sizing here.
 }
 
-static void beginOrtho2D(void) {
+static void beginOrtho2D(int xsize, int ysize) {
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
-	gluOrtho2D(0.0, gXsize, 0.0, gYsize);
+	gluOrtho2D(0.0, xsize, 0.0, ysize);
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glLoadIdentity();	
@@ -560,7 +560,7 @@ static void Display(void)
     glDisable(GL_DEPTH_TEST);
 	glDisable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D);
-	beginOrtho2D();
+	beginOrtho2D(gXsize, gYsize);
 
     if (gStatus == 0) {
 		
