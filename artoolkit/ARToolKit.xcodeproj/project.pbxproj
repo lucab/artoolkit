@@ -268,6 +268,7 @@
 		4A8EA58B065873E100ADDDD1 /* param.h in Headers */ = {isa = PBXBuildFile; fileRef = 4A427D070484329800B56093 /* param.h */; };
 		4A8EA5A40658752200ADDDD1 /* gsub_lite.c in Sources */ = {isa = PBXBuildFile; fileRef = 4A8EA5A30658752200ADDDD1 /* gsub_lite.c */; };
 		4A8EA5B00658754A00ADDDD1 /* gsub_lite.h in Headers */ = {isa = PBXBuildFile; fileRef = 4A8EA5AF0658754A00ADDDD1 /* gsub_lite.h */; };
+		4AC48C650A37BA7F007A153D /* libARgsub_lite.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A66475606598B950061DA76 /* libARgsub_lite.a */; };
 		4ADF303606A78E0B00F6204E /* arMultiGetTransMat.c in Sources */ = {isa = PBXBuildFile; fileRef = 4A427D490484329900B56093 /* arMultiGetTransMat.c */; };
 		4AF4982B066FFEBD00EEDF04 /* videoMacOSX.h in Headers */ = {isa = PBXBuildFile; fileRef = 4A427D0C0484329800B56093 /* videoMacOSX.h */; };
 		4AF49830066FFED200EEDF04 /* ar.h in Headers */ = {isa = PBXBuildFile; fileRef = 4A427D000484329800B56093 /* ar.h */; };
@@ -427,7 +428,6 @@
 		7872EF9108E3196100DB266E /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A3F14FD064A0C510042B0D7 /* OpenGL.framework */; };
 		7872EF9208E3196100DB266E /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A3F14FE064A0C510042B0D7 /* QuickTime.framework */; };
 		7872EF9308E3196100DB266E /* libAR.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A427D120484329800B56093 /* libAR.a */; };
-		7872EF9408E3196100DB266E /* libARgsub.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A427D130484329800B56093 /* libARgsub.a */; };
 		7872EF9508E3196100DB266E /* libARvideo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A427D160484329800B56093 /* libARvideo.a */; };
 		7872EF9608E3196100DB266E /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A934B5C086A150A00DF2FAC /* Cocoa.framework */; };
 		788A85A3089AA558001AB56A /* Data in Resources */ = {isa = PBXBuildFile; fileRef = 782EA555089995C300A8A712 /* Data */; };
@@ -1921,7 +1921,7 @@
 				7872EF9108E3196100DB266E /* OpenGL.framework in Frameworks */,
 				7872EF9208E3196100DB266E /* QuickTime.framework in Frameworks */,
 				7872EF9308E3196100DB266E /* libAR.a in Frameworks */,
-				7872EF9408E3196100DB266E /* libARgsub.a in Frameworks */,
+				4AC48C650A37BA7F007A153D /* libARgsub_lite.a in Frameworks */,
 				7872EF9508E3196100DB266E /* libARvideo.a in Frameworks */,
 				7872EF9608E3196100DB266E /* Cocoa.framework in Frameworks */,
 			);
