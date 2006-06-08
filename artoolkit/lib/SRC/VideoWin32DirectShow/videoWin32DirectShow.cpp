@@ -143,7 +143,9 @@ int ar2VideoDispOption(void)
 AR2VideoParamT *ar2VideoOpen(char *config)
 {
 	AR2VideoParamT *vid = NULL;
-	
+	char config_default[] = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><dsvl_input><camera show_format_dialog=\"true\" friendly_name=\"\"><pixel_format><RGB32 flip_h=\"false\" flip_v=\"true\"/></pixel_format></camera></dsvl_input>";
+														
+														
 	// Allocate the parameters structure and fill it in.
 	arMalloc(vid, AR2VideoParamT, 1);
 	memset(vid, 0, sizeof(AR2VideoParamT));
@@ -151,8 +153,15 @@ AR2VideoParamT *ar2VideoOpen(char *config)
 	CoInitialize(NULL);
 	
 	vid->graphManager = new DSVL_VideoSource();
-	
-	if(FAILED(vid->graphManager->BuildGraphFromXMLFile(config))) return(NULL);
+	if (!config) {
+		if(FAILED(vid->graphManager->BuildGraphFromXMLString(config_default))) return(NULL);
+	} else {
+		if (strncmp(config, "<?xml", 5) == 0) {
+			if(FAILED(vid->graphManager->BuildGraphFromXMLString(config))) return(NULL);
+		} else {
+			if(FAILED(vid->graphManager->BuildGraphFromXMLFile(config))) return(NULL);
+		}
+	}
 	if(FAILED(vid->graphManager->EnableMemoryBuffer())) return(NULL);
 
 	return (vid);
