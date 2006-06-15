@@ -19,6 +19,7 @@
  *	2.7.9	2005-08-15	PRL		Added complete support for runtime selection of pixel format and rectangle/power-of-2 textures.
  *	2.8.0	2006-04-04	PRL		Move pixel format constants into toolkit global namespace (in config.h).
  *	2.8.1	2006-04-06	PRL		Move arglDrawMode, arglTexmapMode, arglTexRectangle out of global variables.
+ *  2.8.2   2006-06-12  PRL		More stringent runtime GL caps checking. Fix zoom for DRAWPIXELS mode.
  *
  */
 /*

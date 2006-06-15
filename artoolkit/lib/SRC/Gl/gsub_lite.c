@@ -19,6 +19,7 @@
  *	2.7.9	2005-08-15	PRL		Added complete support for runtime selection of pixel format and rectangle/power-of-2 textures.
  *	2.8.0	2006-04-04	PRL		Move pixel format constants into toolkit global namespace (in config.h).
  *	2.8.1	2006-04-06	PRL		Move arglDrawMode, arglTexmapMode, arglTexRectangle out of global variables.
+ *  2.8.2   2006-06-12  PRL		More stringent runtime GL caps checking. Fix zoom for DRAWPIXELS mode.
  *
  */
 /*
@@ -173,59 +174,6 @@ GLuint arglAppleTextureRangeStorageHint = GL_STORAGE_PRIVATE_APPLE; // GL_STORAG
 // ============================================================================
 //	Private functions.
 // ============================================================================
-
-//
-// Convert a camera parameter structure into an OpenGL projection matrix.
-//
-static void arglConvGLcpara(ARParam *param, double focalmin, double focalmax, double m[16])
-{
-    double   icpara[3][4];
-    double   trans[3][4];
-    double   p[3][3], q[4][4];
-    int      i, j;
-
-    if(arParamDecompMat(param->mat, icpara, trans) < 0) {
-        fprintf(stderr, "arglConvGLcpara(): arParamDecompMat() indicated parameter error.\n");
-        return;
-    }
-
-    for(i = 0; i < 3; i++) {
-        for(j = 0; j < 3; j++) {
-            p[i][j] = icpara[i][j] / icpara[2][2];
-        }
-    }
-    q[0][0] = (2.0 * p[0][0] / param->xsize);
-    q[0][1] = (2.0 * p[0][1] / param->xsize);
-    q[0][2] = ((2.0 * p[0][2] / param->xsize)  - 1.0);
-    q[0][3] = 0.0;
-
-    q[1][0] = 0.0;
-    q[1][1] = (2.0 * p[1][1] / param->ysize);
-    q[1][2] = ((2.0 * p[1][2] / param->ysize) - 1.0);
-    q[1][3] = 0.0;
-
-    q[2][0] = 0.0;
-    q[2][1] = 0.0;
-    q[2][2] = (focalmax + focalmin)/(focalmax - focalmin);
-    q[2][3] = -2.0 * focalmax * focalmin / (focalmax - focalmin);
-
-    q[3][0] = 0.0;
-    q[3][1] = 0.0;
-    q[3][2] = 1.0;
-    q[3][3] = 0.0;
-
-    for(i = 0; i < 4; i++) {
-        for(j = 0; j < 3; j++) {
-            m[i+j*4] = q[i][0] * trans[0][j]
-			+ q[i][1] * trans[1][j]
-			+ q[i][2] * trans[2][j];
-        }
-        m[i+3*4] = q[i][0] * trans[0][3]
-		+ q[i][1] * trans[1][3]
-		+ q[i][2] * trans[2][3]
-		+ q[i][3];
-    }
-}
 
 //
 //  Provide a gluCheckExtension() function, since some platforms don't have GLU version 1.3 or later.
@@ -699,7 +647,7 @@ ARGL_CONTEXT_SETTINGS_REF arglSetupForCurrentContext(void)
 	contextSettings = (ARGL_CONTEXT_SETTINGS_REF)calloc(1, sizeof(ARGL_CONTEXT_SETTINGS));
 	// Use default pixel format handed to us by <AR/config.h>.
 	if (!arglPixelFormatSet(contextSettings, AR_DEFAULT_PIXEL_FORMAT)) {
-		fprintf(stderr, "Unknown or unsupported default pixel format defined in config.h.\n");
+		fprintf(stderr, "Unknown default pixel format defined in config.h.\n");
 		return (NULL);
 	}
 	arglDrawModeSet(contextSettings, AR_DRAW_BY_TEXTURE_MAPPING);
@@ -716,16 +664,64 @@ void arglCleanup(ARGL_CONTEXT_SETTINGS_REF contextSettings)
 	free(contextSettings);
 }
 
+//
+// Convert a camera parameter structure into an OpenGL projection matrix.
+//
 void arglCameraFrustum(const ARParam *cparam, const double focalmin, const double focalmax, GLdouble m_projection[16])
 {
-    int		i;
-	ARParam	cparam_copy;
+	double   icpara[3][4];
+    double   trans[3][4];
+    double   p[3][3], q[4][4];
+	int      width, height;
+    int      i, j;
+	
+    width  = cparam->xsize;
+    height = cparam->ysize;
 
-    cparam_copy = *cparam;
-	for (i = 0; i < 4; i++) {
-        cparam_copy.mat[1][i] = (cparam_copy.ysize - 1)*(cparam_copy.mat[2][i]) - cparam_copy.mat[1][i];
+    if (arParamDecompMat(cparam->mat, icpara, trans) < 0) {
+        fprintf(stderr, "arglCameraFrustum(): arParamDecompMat() indicated parameter error.\n");
+        return;
     }
-    arglConvGLcpara(&cparam_copy, focalmin, focalmax, m_projection);
+	for (i = 0; i < 4; i++) {
+        icpara[1][i] = (height - 1)*(icpara[2][i]) - icpara[1][i];
+    }
+		
+    for(i = 0; i < 3; i++) {
+        for(j = 0; j < 3; j++) {
+            p[i][j] = icpara[i][j] / icpara[2][2];
+        }
+    }
+    q[0][0] = (2.0 * p[0][0] / (width - 1));
+    q[0][1] = (2.0 * p[0][1] / (width - 1));
+    q[0][2] = ((2.0 * p[0][2] / (width - 1))  - 1.0);
+    q[0][3] = 0.0;
+	
+    q[1][0] = 0.0;
+    q[1][1] = (2.0 * p[1][1] / (height - 1));
+    q[1][2] = ((2.0 * p[1][2] / (height - 1)) - 1.0);
+    q[1][3] = 0.0;
+	
+    q[2][0] = 0.0;
+    q[2][1] = 0.0;
+    q[2][2] = (focalmax + focalmin)/(focalmax - focalmin);
+    q[2][3] = -2.0 * focalmax * focalmin / (focalmax - focalmin);
+	
+    q[3][0] = 0.0;
+    q[3][1] = 0.0;
+    q[3][2] = 1.0;
+    q[3][3] = 0.0;
+	
+    for (i = 0; i < 4; i++) {
+        for (j = 0; j < 3; j++) {
+            m_projection[i + j*4] = q[i][0] * trans[0][j]
+			+ q[i][1] * trans[1][j]
+			+ q[i][2] * trans[2][j];
+        }
+        m_projection[i + 3*4] = q[i][0] * trans[0][3]
+		+ q[i][1] * trans[1][3]
+		+ q[i][2] * trans[2][3]
+		+ q[i][3];
+    }	
 }
 
 void arglCameraView(double para[3][4], GLdouble m_modelview[16], double scale)
@@ -797,14 +793,16 @@ void arglDispImage(ARUint8 *image, const ARParam *cparam, const double zoom, ARG
 void arglDispImageStateful(ARUint8 *image, const ARParam *cparam, const double zoom, ARGL_CONTEXT_SETTINGS_REF contextSettings)
 {
 	float zoomf;
-	int texmapScaleFactor;
+	int texmapScaleFactor, params[4];
 	
 	zoomf = (float)zoom;
 	texmapScaleFactor = contextSettings->arglTexmapMode + 1;
 	if (contextSettings->arglDrawMode == AR_DRAW_BY_GL_DRAW_PIXELS) {
 		glDisable(GL_TEXTURE_2D);
-		glPixelZoom(zoomf, -zoomf);
-		glRasterPos2f(0.0f, cparam->ysize * zoomf);
+		glGetIntegerv(GL_VIEWPORT, params);
+		glPixelZoom(zoomf * ((float)(params[2]) / (float)(cparam->xsize)),
+				   -zoomf * ((float)(params[3]) / (float)(cparam->ysize)));
+		glRasterPos2f(0.0f, (float)(cparam->ysize));
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 		glDrawPixels(cparam->xsize, cparam->ysize, contextSettings->pixFormat, contextSettings->pixType, image);
 	} else {
