@@ -39,7 +39,7 @@
 
 - (id)initInput:(int)inInputIndex withSeqGrabComponent:(SeqGrabComponent)inSeqGrab withSGChannel:(SGChannel)inSgchanVideo;
 - (void)dealloc;
-- (IBAction)sgConfigurationDialog:(id)sender;
+- (IBAction)sgConfigurationDialog:(id)sender withStandardDialog:(int)standardDialog;
 - (OSErr)loadUserData:(UserData *)outUserData fromDefaults:(NSUserDefaults *)inDefaults forKey:(NSString *)inKey;
 - (OSErr)saveUserData:(UserData)inUserData toDefaults:(NSUserDefaults *)inDefaults withKey:(NSString *)outKey;
 

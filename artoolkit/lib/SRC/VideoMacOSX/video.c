@@ -347,12 +347,12 @@ VdigGrabRef vdgAllocAndInit(const int grabber)
 	return (pVdg);
 }
 
-static ComponentResult vdgRequestSettings(VdigGrab* pVdg, const int showDialog, const int inputIndex)
+static ComponentResult vdgRequestSettings(VdigGrab* pVdg, const int showDialog, const int standardDialog, const int inputIndex)
 {
 	ComponentResult err;
 	
 	// Use the SG Dialog to allow the user to select device and compression settings
-	if (err = RequestSGSettings(inputIndex, pVdg->seqGrab, pVdg->sgchanVideo, showDialog)) {
+	if (err = RequestSGSettings(inputIndex, pVdg->seqGrab, pVdg->sgchanVideo, showDialog, standardDialog)) {
 		fprintf(stderr, "RequestSGSettings err=%ld\n", err); 
 		goto endFunc;
 	}	
@@ -1200,6 +1200,7 @@ AR2VideoParamT *ar2VideoOpen(char *config)
 	int					grabber = 1;
 	int					showFPS = 0;
 	int					showDialog = 1;
+	int					standardDialog = 0;
     OSErr				err_s = noErr;
 	ComponentResult		err = noErr;
 	int					err_i = 0;
@@ -1242,6 +1243,8 @@ AR2VideoParamT *ar2VideoOpen(char *config)
                 showFPS = 1;
             } else if (strncmp(a, "-nodialog", 9) == 0) {
                 showDialog = 0;
+            } else if (strncmp(a, "-standarddialog", 15) == 0) {
+                standardDialog = 1;
             } else {
                 err_i = 1;
             }
@@ -1375,7 +1378,7 @@ AR2VideoParamT *ar2VideoOpen(char *config)
 		goto out1;
 	}
 	
-	if (err = vdgRequestSettings(vid->pVdg, showDialog, gVidCount)) {
+	if (err = vdgRequestSettings(vid->pVdg, showDialog, standardDialog, gVidCount)) {
 		fprintf(stderr, "ar2VideoOpen(): vdgRequestSettings err=%ld.\n", err);
 		goto out2;
 	}

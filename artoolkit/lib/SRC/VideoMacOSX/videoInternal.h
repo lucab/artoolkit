@@ -35,7 +35,7 @@
 extern "C" {
 #endif
 
-OSStatus RequestSGSettings(const int inputIndex, SeqGrabComponent seqGrab, SGChannel sgchanVideo, const int showDialog);
+OSStatus RequestSGSettings(const int inputIndex, SeqGrabComponent seqGrab, SGChannel sgchanVideo, const int showDialog, const int standardDialog);
 
 #ifdef __cplusplus
 }

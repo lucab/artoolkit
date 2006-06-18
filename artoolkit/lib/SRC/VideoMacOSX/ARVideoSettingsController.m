@@ -77,58 +77,58 @@
 
 // NOTE: There is a know bug in QuickTime 6.4 in which the
 // Settings Dialog pops up in random locations...sigh...
-- (IBAction) sgConfigurationDialog:(id)sender
+- (IBAction) sgConfigurationDialog:(id)sender withStandardDialog:(int)standardDialog
 {
-	ComponentResult			err;
-	Component				*PanelListPtr = NULL;
-	long					PanelCount;	
-	
 	// Set up the settings panel list removing the "Compression" panel.
-	ComponentDescription	cDesc;
-	Component				c;
-	long					cCount;
-	Component				*cPtr;
-	
-	cDesc.componentType = SeqGrabPanelType;
-	cDesc.componentSubType = VideoMediaType;
-	cDesc.componentManufacturer = cDesc.componentFlags = cDesc.componentFlagsMask = 0L;
-	cCount = CountComponents(&cDesc);
-	if (cCount == 0) {
-		fprintf(stderr, "-sgConfigurationDialog: error in CountComponents().\n");
-		goto bail;
-	}
+	ComponentResult			err;
 
-	PanelListPtr = (Component *)NewPtr(sizeof(Component) * (cCount + 1));
-	if (err = MemError() || NULL == PanelListPtr) {
-		fprintf(stderr, "-sgConfigurationDialog: error in NewPtr().\n");
-		goto bail;
-	}
-	
-	PanelCount = 0;
-	cPtr = PanelListPtr;
-	c = 0L;
-	do {
-		ComponentDescription compInfo;
-		c = FindNextComponent(c, &cDesc);
-		if (c) {
-			Handle hName = NewHandle(0);
+	if (standardDialog) {
+		err = SGSettingsDialog(seqGrab, sgchanVideo, 0, 0, seqGrabSettingsPreviewOnly, NULL, 0L);
+	} else {
+		ComponentDescription	cDesc;
+		long					cCount;
+		ComponentDescription	cDesc2;
+		
+		cDesc.componentType = SeqGrabPanelType;
+		cDesc.componentSubType = VideoMediaType;
+		cDesc.componentManufacturer = cDesc.componentFlags = cDesc.componentFlagsMask = 0L;
+		cCount = CountComponents(&cDesc);
+		if (cCount == 0) {
+			fprintf(stderr, "-sgConfigurationDialog: error in CountComponents().\n");
+			goto bail;
+		}
+		
+		Component *PanelListPtr = (Component *)NewPtr(sizeof(Component) * (cCount + 1));
+		if (err = MemError() || NULL == PanelListPtr) {
+			fprintf(stderr, "-sgConfigurationDialog: error in NewPtr().\n");
+			goto bail;
+		}
+		Component *cPtr = PanelListPtr;
+		long PanelCount = 0L;	
+		Component c = NULL;
+		while ((c = FindNextComponent(c, &cDesc)) != NULL) {
+			Handle hName = NewHandleClear(0);
 			if (err = MemError() || NULL == hName) {
 				fprintf(stderr, "-sgConfigurationDialog: error in NewHandle().\n");
 				goto bail;
 			}
 			
-			GetComponentInfo(c, &compInfo, hName, NULL, NULL);
+			GetComponentInfo(c, &cDesc2, hName, NULL, NULL);
 			if (PLstrcmp(*(unsigned char **)hName, "\pCompression") != 0) {
-				*cPtr++ = c;
+				*cPtr = c;
+				cPtr++;
 				PanelCount++;
 			}
 			DisposeHandle(hName);
 		}
-	} while (c);
-	
-	// Bring up the dialog and if the user didn't cancel
-	// save the new channel settings for later.
-	err = SGSettingsDialog(seqGrab, sgchanVideo, PanelCount, PanelListPtr, 0, NULL, 0L);
+		
+		// Bring up the dialog and if the user didn't cancel
+		// save the new channel settings for later.
+		err = SGSettingsDialog(seqGrab, sgchanVideo, PanelCount, PanelListPtr, seqGrabSettingsPreviewOnly, NULL, 0L);
+bail:
+		DisposePtr((Ptr)PanelListPtr);
+	}
+
 	if (err == noErr) {
 		// Dispose the old settings and get the new channel settings.
 		if (mUserData) DisposeUserData(mUserData);
@@ -146,9 +146,6 @@
 	} else if (err != userCanceledErr) {
 		fprintf(stderr, "-sgConfigurationDialog: error %ld in SGSettingsDialog().\n", err);
 	}
-	
-bail:
-	DisposePtr((Ptr)PanelListPtr);
 }
 
 // Get the Channel Settings as UserData from the preferences
@@ -211,7 +208,7 @@ bail:
 
 @end
 
-OSStatus RequestSGSettings(const int inputIndex, SeqGrabComponent seqGrab, SGChannel sgchanVideo, const int showDialog)
+OSStatus RequestSGSettings(const int inputIndex, SeqGrabComponent seqGrab, SGChannel sgchanVideo, const int showDialog, const int standardDialog)
 {
     NSAutoreleasePool *localPool;
 	ARVideoSettingsController *localController;
@@ -223,7 +220,7 @@ OSStatus RequestSGSettings(const int inputIndex, SeqGrabComponent seqGrab, SGCha
 	localPool = [[NSAutoreleasePool alloc] init];
     
     localController = [[ARVideoSettingsController alloc] initInput:inputIndex withSeqGrabComponent:seqGrab withSGChannel:sgchanVideo];
-	if (showDialog) [localController sgConfigurationDialog:NULL];
+	if (showDialog) [localController sgConfigurationDialog:NULL withStandardDialog:standardDialog];
 	[localController release];
 	
     [localPool release];
