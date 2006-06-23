@@ -80,9 +80,12 @@
 
 #include <Carbon/Carbon.h>
 #include <QuickTime/QuickTime.h>
+#include <CoreServices/CoreServices.h>			// Gestalt()
 #include <pthread.h>
 #include <sys/time.h>
 #include <unistd.h>		// usleep()
+#include <sys/types.h>	// sysctlbyname()
+#include <sys/sysctl.h>	// sysctlbyname()
 #include <AR/config.h>
 #include <AR/ar.h>
 #include <AR/video.h>
@@ -92,9 +95,6 @@
 //	Private definitions
 // ============================================================================
 
-#ifndef __i386__								// Hack: don't do buffercopy on Intel Macs.
-#  define AR_VIDEO_DEBUG_BUFFERCOPY				// Uncomment to have ar2VideoGetImage() return a copy of video pixel data.
-#endif
 //#define AR_VIDEO_SUPPORT_OLD_QUICKTIME		// Uncomment to allow use of non-thread safe QuickTime (pre-6.4).
 #define AR_VIDEO_DEBUG_FIX_DUAL_PROCESSOR_RACE
 
@@ -1157,6 +1157,54 @@ static void *ar2VideoInternalThread(void *arg)
 	return (NULL);
 }
 
+static int sysctlbyname_with_pid (const char *name, pid_t pid,
+								  void *oldp, size_t *oldlenp,
+								  void *newp, size_t newlen)
+{
+    if (pid == 0) {
+        if (sysctlbyname(name, oldp, oldlenp, newp, newlen) == -1)  {
+            fprintf(stderr, "sysctlbyname_with_pid(0): sysctlbyname  failed:"
+					"%s\n", strerror(errno));
+            return -1;
+        }
+    } else {
+        int mib[CTL_MAXNAME];
+        size_t len = CTL_MAXNAME;
+        if (sysctlnametomib(name, mib, &len) == -1) {
+            fprintf(stderr, "sysctlbyname_with_pid: sysctlnametomib  failed:"
+					"%s\n", strerror(errno));
+            return -1;
+        }
+        mib[len] = pid;
+        len++;
+        if (sysctl(mib, len, oldp, oldlenp, newp, newlen) == -1)  {
+            fprintf(stderr, "sysctlbyname_with_pid: sysctl  failed:"
+                    "%s\n", strerror(errno));
+            return -1;
+        }
+    }
+    return 0;
+}
+
+// Pass 0 to use current PID.
+int is_pid_native (pid_t pid)
+{
+    int ret = 0;
+    size_t sz = sizeof(ret);
+	if (sysctlbyname_with_pid("sysctl.proc_native", pid,
+							  &ret, &sz, NULL, 0) == -1) {
+		if (errno == ENOENT) {
+            // sysctl doesn't exist, which means that this version of Mac OS
+            // pre-dates Rosetta, so the application must be native.
+            return 1;
+        }
+        fprintf(stderr, "is_pid_native: sysctlbyname_with_pid  failed:"
+                "%s\n", strerror(errno));
+        return -1;
+    }
+    return ret;
+}
+
 #pragma mark -
 
 int ar2VideoDispOption(void)
@@ -1214,6 +1262,7 @@ AR2VideoParamT *ar2VideoOpen(char *config)
 	CGrafPtr			theSavedPort;
 	GDHandle			theSavedDevice;
 	Rect				sourceRect = {0, 0};
+	long				cpuType;
 	
 	// Process configuration options.
 	a = config;
@@ -1366,12 +1415,28 @@ AR2VideoParamT *ar2VideoOpen(char *config)
 	//vid->lastTime		= 0;
 	//vid->timeScale	= 0;
 	vid->grabber		= grabber;
-#ifdef AR_VIDEO_DEBUG_BUFFERCOPY
-	vid->bufCopyFlag	= 1;
-#else
-	vid->bufCopyFlag	= 0;
-#endif // AR_VIDEO_DEBUG_BUFFERCOPY
 	
+	// Find out if we are running on an Intel Mac.
+	if ((err_s = Gestalt(gestaltNativeCPUtype, &cpuType) != noErr)) {
+		fprintf(stderr, "ar2VideoOpen(): Error getting native CPU type.\n");
+		goto out1;
+	}
+	if (cpuType == gestaltCPUPentium) {
+		// We are running on an Intel-based Mac.
+		vid->bufCopyFlag	= 0; //Hack: don't do buffercopy on Intel Macs.
+		printf("Detected Intel CPU.\n");
+	} else {
+		int native = is_pid_native(0);
+		// We are not. But are we running under Rosetta?
+		if (native == 0) {
+			// We're running under Rosetta.
+			vid->bufCopyFlag	= 0;
+			printf("Detected Intel CPU, but running PowerPC code under Rosetta.\n");
+		} else {
+			// Error if < 0, or native if 1.
+			vid->bufCopyFlag	= 1;
+		}
+	}
 
 	if(!(vid->pVdg = vdgAllocAndInit(grabber))) {
 		fprintf(stderr, "ar2VideoOpen(): vdgAllocAndInit returned error.\n");
