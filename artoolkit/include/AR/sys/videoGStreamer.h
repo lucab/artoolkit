@@ -8,6 +8,9 @@
  */
 #ifndef AR_VIDEO_GSTREAMER_H
 #define AR_VIDEO_GSTREAMER_H
+
+
+
 #ifdef  __cplusplus
 extern "C" {
 #endif
@@ -15,6 +18,7 @@ extern "C" {
 #include <AR/config.h>
 #include <AR/ar.h>
 #include <gst/gst.h>
+
 
 typedef struct {
 
@@ -35,4 +39,5 @@ typedef struct {
 #ifdef  __cplusplus
 }
 #endif
+
 #endif
