@@ -60,7 +60,9 @@
 #if defined(__sgi)
 char            *vconf = "-size=FULL";
 #elif defined(__linux)
-#  if defined(AR_INPUT_V4L)
+#  if defined(AR_INPUT_GSTREAMER)
+char 			*vconf = "videotestsrc";
+#  elif defined(AR_INPUT_V4L)
 char            *vconf = "-width=640 -height=480";
 #  elif defined(AR_INPUT_1394CAM)
 #    ifndef DRAGONFLY

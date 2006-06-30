@@ -20,7 +20,15 @@
 #ifdef _WIN32
 char			*vconf = "Data\\WDM_camera_flipV.xml";
 #else
+#ifdef AR_INPUT_GSTREAMER
+char			*vconf = "videotestsrc ! capsfilter caps=video/x-raw-rgb,bpp=24 ! identity name=artoolkit ! fakesink";
+/*
+char			*vconf = "filesrc location=/home/joe_sample/Media/gstreamer_test_xvid.avi ! decodebin ! ffmpegcolorspace ! videorate ! capsfilter caps=video/x-raw-rgb,bpp=24 ! identity name=artoolkit ! fakesink";
+*/
+
+#else
 char			*vconf = "";
+#endif
 #endif
 
 int             xsize, ysize;

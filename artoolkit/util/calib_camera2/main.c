@@ -60,7 +60,9 @@
 #if defined(__sgi)
 static char            *vconf = "-size=FULL";
 #elif defined(__linux)
-#  if defined(AR_INPUT_V4L)
+#  if defined(AR_INPUT_GSTREAMER)
+char 			*vconf = "videotestsrc ! capsfilter caps=video/x-raw-rgb,bpp=24 ! identity name=artoolkit ! fakesink";
+#  elif defined(AR_INPUT_V4L)
 static char            *vconf = "-width=640 -height=480";
 #  elif defined(AR_INPUT_1394CAM)
 #    ifndef DRAGONFLY

@@ -20,13 +20,23 @@
 #ifdef _WIN32
 char			*vconf = "Data\\WDM_camera_flipV.xml";
 #else
-char			*vconf = "";
+
+/*
+char			*vconf = "gst_arttoolkit.xml";
+*/
+/* example for GStreamer based capture */
+char			*vconf = " videotestsrc ! capsfilter caps=video/x-raw-rgb,bpp=24 ! identity name=artoolkit ! fakesink";
+
+/*
+char *vconf = "filesrc location=gstreamer_test_xvid.avi ! decodebin ! ffmpegcolorspace ! capsfilter caps=video/x-raw-rgb,bpp=24 ! identity name=artoolkit ! fakesink";
+*/
+
 #endif
 
 int             xsize, ysize;
 int             count = 0;
 
-char           *cparam_name    = "Data/camera_para.dat";
+char           *cparam_name = "Data/camera_para.dat";
 ARParam         cparam;
 
 
@@ -40,6 +50,8 @@ int main(int argc, char **argv)
 {
 	//initialize applications
 	glutInit(&argc, argv);
+	
+	
     init();
 
 	//start video capture
@@ -91,6 +103,7 @@ static void init( void )
 
     /* open the video path */
     if( arVideoOpen( vconf ) < 0 ) exit(0);
+    
     /* find the size of the window */
     if( arVideoInqSize(&xsize, &ysize) < 0 ) exit(0);
     printf("Image size (x,y) = (%d,%d)\n", xsize, ysize);

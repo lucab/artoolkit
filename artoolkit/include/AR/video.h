@@ -26,7 +26,7 @@
  *
  *  The actual supported platforms (and the driver/library used) are:
  *  - Windows: with Microsoft DirectShow (VFW obsolete).
- *  - Linux: with Video4Linux library, IEEE1394 camera library, and DV camera library.
+ *  - Linux: with Video4Linux library, GStreamer, IEEE1394 camera library and DV camera library.
  *  - Macintosh: with QuickTime.
  *  - SGI: with VL.
  *
@@ -44,14 +44,16 @@
  *  History :
  *		modified by Thomas Pintaric (pintaric@ims.tuwien.ac.at) to add
  *       a fully transparent DirectShow Driver.
+ *      modified by Hartmut Seichter (hartmut@technotecture.com) to add
+ *       GStreamer video support
  *
  *  \author Hirokazu Kato kato@sys.im.hiroshima-cu.ac.jp
  *  \author Atsishi Nakazawa nakazawa@inolab.sys.es.osaka-u.ac.jp
  *  \author Thomas Pintaric pintaric@ims.tuwien.ac.at (Windows DirectShow video support).
  *  \author Philip Lamb phil@eden.net.nz (Macintosh Quicktime video support).
+ *  \author Hartmut Seichter hartmut@technotecture.com (GStreamer Video support)
  *  \version 4.3b
  *  \date 03/02/02
- *
  *
  */
 /* --------------------------------------------------------------------------
@@ -104,6 +106,9 @@ extern "C" {
 #  endif
 #  ifdef  AR_INPUT_1394CAM
 #    include <AR/sys/videoLinux1394Cam.h>
+#  endif
+#  ifdef  AR_INPUT_GSTREAMER
+#    include <AR/sys/videoGStreamer.h>
 #  endif
 #endif
 

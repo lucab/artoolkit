@@ -62,7 +62,7 @@ Prerequisites:
  
 Unpack the ARToolKit to a convenient location. The root of this location will be referred to below as {ARToolKit}:
     tar zxvf ARToolKit-2.71.3.tgz
-Configure and build. The Linux builds support video input using either Video4Linux, an IIDC-compliant or DV camera connected via IEEE-1394, or a Sony EyeToy camera connected via USB. You will be prompted as to which of the four Linux video drivers you wish to use at the Configure step.
+Configure and build. The Linux builds support video input using either Video4Linux, an IIDC-compliant or DV camera connected via IEEE-1394, or a Sony EyeToy camera connected via USB. Alternatively you can use GStreamer 0.10 (0.8 is not supported and also not recommended) as input method. This requires you to install the gstreamer development packages for your Linux distribution. You will be prompted as to which of the four Linux video drivers you wish to use at the Configure step.
     cd {ARToolKit}
     ./Configure
 	make

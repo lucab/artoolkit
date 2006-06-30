@@ -12,18 +12,20 @@
 #define AR_PIXEL_FORMAT_yuvs 9
 #define AR_PIXEL_FORMAT_YUY2 AR_PIXEL_FORMAT_yuvs
 
-/*------------------------------------------------------------*/
-/*                                                            */
-/*  For Linux, you should define one of below 3 input method  */
-/*    AR_INPUT_V4L:     use of standard Video4Linux Library   */
-/*    AR_INPUT_DV:      use of DV Camera                      */
-/*    AR_INPUT_1394CAM: use of 1394 Digital Camara            */
-/*                                                            */
-/*------------------------------------------------------------*/
+/*--------------------------------------------------------------*/
+/*                                                              */
+/*  For Linux, you should define one of below 4 input method    */
+/*    AR_INPUT_V4L:       use of standard Video4Linux Library   */
+/*    AR_INPUT_GSTREAMER: use of GStreamer Media Framework      */
+/*    AR_INPUT_DV:        use of DV Camera                      */
+/*    AR_INPUT_1394CAM:   use of 1394 Digital Camera            */
+/*                                                              */
+/*--------------------------------------------------------------*/
 #ifdef __linux
 #undef  AR_INPUT_V4L
 #undef  AR_INPUT_DV
 #undef  AR_INPUT_1394CAM
+#undef  AR_INPUT_GSTREAMER
 
 #  ifdef AR_INPUT_V4L
 #    ifdef USE_EYETOY
@@ -38,6 +40,10 @@
 #  endif
 
 #  ifdef AR_INPUT_1394CAM
+#    define  AR_DEFAULT_PIXEL_FORMAT AR_PIXEL_FORMAT_RGB
+#  endif
+
+#  ifdef AR_INPUT_GSTREAMER
 #    define  AR_DEFAULT_PIXEL_FORMAT AR_PIXEL_FORMAT_RGB
 #  endif
 
