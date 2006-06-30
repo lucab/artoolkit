@@ -22,6 +22,23 @@
 #include <string.h>
 
 
+struct _AR2VideoParamT {
+
+	/* GStreamer pipeline */
+	GstElement *pipeline;
+	
+	/* GStreamer identity needed for probing */
+	GstElement *probe;
+	
+	/* size of the image */
+	int	width, height;
+
+	/* the actual video buffer */
+    ARUint8             *videoBuffer;
+    
+};
+
+
 static AR2VideoParamT *gVid = 0;
 
 static gboolean
