@@ -21,8 +21,7 @@ INCLUDE= ${INC_DIR}/AR/video.h
 #
 #   compilation control
 #
-LIBOBJS= ${LIB}(video.o) \
-         ${LIB}(video2.o)
+LIBOBJS= ${LIB}(video.o)
 
 all:		${LIBOBJS}
 

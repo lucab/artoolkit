@@ -412,13 +412,24 @@ int main(int argc, char** argv)
 	char glutGamemode[32];
 	const char *cparam_name = 
 		"Data/camera_para.dat";
-	char *vconf = // Camera configuration.
+	//
+	// Camera configuration.
+	//
+	char *vconf = 
 #if defined(_WIN32)
 		"Data\\WDM_camera_flipV.xml";
 #elif defined(__APPLE__)
 		"";
-#else
+#elif defined(__linux)
+#  if defined(AR_INPUT_GSTREAMER)
+		//"gst_arttoolkit.xml";
+		//"filesrc location=gstreamer_test_xvid.avi ! decodebin ! ffmpegcolorspace ! capsfilter caps=video/x-raw-rgb,bpp=24 ! identity name=artoolkit ! fakesink";
+		" videotestsrc ! capsfilter caps=video/x-raw-rgb,bpp=24 ! identity name=artoolkit ! fakesink";
+#  else
 		"-dev=/dev/video0 -channel=0 -palette=YUV420P -width=320 -height=240";
+#  endif
+#else
+		"";
 #endif
 	const char *patt_name  = "Data/patt.hiro";
 	

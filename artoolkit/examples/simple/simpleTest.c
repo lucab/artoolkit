@@ -15,20 +15,24 @@
 #include <AR/param.h>
 #include <AR/ar.h>
 
-/* set up the video format globals */
-
-#ifdef _WIN32
-char			*vconf = "Data\\WDM_camera_flipV.xml";
+//
+// Camera configuration.
+//
+char *vconf = 
+#if defined(_WIN32)
+	"Data\\WDM_camera_flipV.xml";
+#elif defined(__APPLE__)
+	"";
+#elif defined(__linux)
+#  if defined(AR_INPUT_GSTREAMER)
+//"gst_arttoolkit.xml";
+//"filesrc location=gstreamer_test_xvid.avi ! decodebin ! ffmpegcolorspace ! capsfilter caps=video/x-raw-rgb,bpp=24 ! identity name=artoolkit ! fakesink";
+	" videotestsrc ! capsfilter caps=video/x-raw-rgb,bpp=24 ! identity name=artoolkit ! fakesink";
+#  else
+	"-dev=/dev/video0 -channel=0 -palette=YUV420P -width=320 -height=240";
+#  endif
 #else
-#ifdef AR_INPUT_GSTREAMER
-char			*vconf = "videotestsrc ! capsfilter caps=video/x-raw-rgb,bpp=24 ! identity name=artoolkit ! fakesink";
-/*
-char			*vconf = "filesrc location=/home/joe_sample/Media/gstreamer_test_xvid.avi ! decodebin ! ffmpegcolorspace ! videorate ! capsfilter caps=video/x-raw-rgb,bpp=24 ! identity name=artoolkit ! fakesink";
-*/
-
-#else
-char			*vconf = "";
-#endif
+	"";
 #endif
 
 int             xsize, ysize;

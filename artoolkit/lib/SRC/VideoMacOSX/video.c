@@ -1233,6 +1233,10 @@ int ar2VideoDispOption(void)
     printf("    pixel format. The following values are supported: \n");
     printf("    32, BGRA, RGBA, ABGR, 24, 24BG, 2vuy, yuvs.\n");
     printf("    (See http://developer.apple.com/quicktime/icefloe/dispatch020.html.)\n");
+    printf(" -fliph\n");
+    printf("    Flip camera image horizontally.\n");
+    printf(" -flipv\n");
+    printf("    Flip camera image vertically.\n");
     printf("\n");
 
     return (0);
@@ -1249,6 +1253,7 @@ AR2VideoParamT *ar2VideoOpen(char *config)
 	int					showFPS = 0;
 	int					showDialog = 1;
 	int					standardDialog = 0;
+	int					flipH = 0, flipV = 0;
     OSErr				err_s = noErr;
 	ComponentResult		err = noErr;
 	int					err_i = 0;
@@ -1261,7 +1266,6 @@ AR2VideoParamT *ar2VideoOpen(char *config)
 	long				bytesPerPixel;
 	CGrafPtr			theSavedPort;
 	GDHandle			theSavedDevice;
-	Rect				sourceRect = {0, 0};
 	long				cpuType;
 	
 	// Process configuration options.
@@ -1294,6 +1298,10 @@ AR2VideoParamT *ar2VideoOpen(char *config)
                 showDialog = 0;
             } else if (strncmp(a, "-standarddialog", 15) == 0) {
                 standardDialog = 1;
+            } else if (strncmp(a, "-fliph", 6) == 0) {
+                flipH = 1;
+            } else if (strncmp(a, "-flipv", 6) == 0) {
+                flipV = 1;
             } else {
                 err_i = 1;
             }
@@ -1495,24 +1503,43 @@ AR2VideoParamT *ar2VideoOpen(char *config)
 			(char)(((*(vid->vdImageDesc))->cType >>  8) & 0xFF),
 			(char)(((*(vid->vdImageDesc))->cType >>  0) & 0xFF),
 			((*vid->vdImageDesc)->width), ((*vid->vdImageDesc)->height));
-			
+	
 	// If a particular size was requested, set the size of the GWorld to
 	// the request, otherwise set it to the size of the incoming video.
 	vid->width = (width ? width : (int)((*vid->vdImageDesc)->width));
 	vid->height = (height ? height : (int)((*vid->vdImageDesc)->height));
-	SetRect(&(vid->theRect), 0, 0, (short)vid->width, (short)vid->height);
-	
+	SetRect(&(vid->theRect), 0, 0, (short)vid->width, (short)vid->height);	
+
 	// Make a scaling matrix for the sequence if size of incoming video differs from GWorld dimensions.
+	vid->scaleMatrixPtr = NULL;
+	int doSourceScale;
 	if (vid->width != (int)((*vid->vdImageDesc)->width) || vid->height != (int)((*vid->vdImageDesc)->height)) {
-		sourceRect.right = (*vid->vdImageDesc)->width;
-		sourceRect.bottom = (*vid->vdImageDesc)->height;
 		arMalloc(vid->scaleMatrixPtr, MatrixRecord, 1);
-		RectMatrix(vid->scaleMatrixPtr, &sourceRect, &(vid->theRect));
+		SetIdentityMatrix(vid->scaleMatrixPtr);
+		Fixed scaleX, scaleY;
+		scaleX = FixRatio(vid->width, (*vid->vdImageDesc)->width);
+		scaleY = FixRatio(vid->height, (*vid->vdImageDesc)->height);
+		ScaleMatrix(vid->scaleMatrixPtr, scaleX, scaleY, 0, 0);
 		fprintf(stdout, "Video will be scaled to size %dx%d.\n", vid->width, vid->height);
+		doSourceScale = 1;
 	} else {
-		vid->scaleMatrixPtr = NULL;
+		doSourceScale = 0;
 	}
 	
+	// If a flip was requested, add a scaling matrix for it.
+	if (flipH || flipV) {
+		Fixed scaleX, scaleY;
+		if (flipH) scaleX = -fixed1;
+		else scaleX = fixed1;
+		if (flipV) scaleY = -fixed1;
+		else scaleY = fixed1;
+		if (!doSourceScale) {
+			arMalloc(vid->scaleMatrixPtr, MatrixRecord, 1);
+			SetIdentityMatrix(vid->scaleMatrixPtr);
+		}
+		ScaleMatrix(vid->scaleMatrixPtr, scaleX, scaleY, FloatToFixed((float)(vid->width) * 0.5f), FloatToFixed((float)(vid->height) * 0.5f));
+	}
+
 	// Allocate buffer for the grabber to write pixel data into, and use
 	// QTNewGWorldFromPtr() to wrap an offscreen GWorld structure around
 	// it. We do it in these two steps rather than using QTNewGWorld()

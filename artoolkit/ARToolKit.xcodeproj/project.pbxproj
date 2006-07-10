@@ -1472,6 +1472,8 @@
 		4A934B5C086A150A00DF2FAC /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		4A934D7C086A2BB900DF2FAC /* libSystemStubs.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSystemStubs.a; path = /usr/lib/libSystemStubs.a; sourceTree = "<absolute>"; };
 		4A934D80086A2DB700DF2FAC /* libARvrml.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libARvrml.a; sourceTree = "<group>"; };
+		4A99C6520A59DCC3001B4C35 /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
+		4A99C6530A59DCC3001B4C35 /* video.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = video.c; sourceTree = "<group>"; };
 		4AAB8C740728934300708844 /* ARToolKit.dsw */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; lineEnding = 2; path = ARToolKit.dsw; sourceTree = "<group>"; };
 		4AAB8C750728934300708844 /* ARToolKit.sln */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = ARToolKit.sln; sourceTree = "<group>"; };
 		4AAB8C760728937100708844 /* libARvideo.dsp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = libARvideo.dsp; sourceTree = "<group>"; };
@@ -2317,6 +2319,7 @@
 				4A83563C074D90E300F58781 /* ARvrml */,
 				4A427D530484329900B56093 /* Gl */,
 				4A427D630484329900B56093 /* Makefile.in */,
+				4A99C6510A59DCC3001B4C35 /* VideoGStreamer */,
 				4A427D640484329900B56093 /* VideoLinux1394Cam */,
 				4A427D680484329900B56093 /* VideoLinuxDV */,
 				4A427D6C0484329900B56093 /* VideoLinuxV4L */,
@@ -2508,6 +2511,15 @@
 				4A835642074D90E300F58781 /* Makefile.in */,
 			);
 			path = ARvrml;
+			sourceTree = "<group>";
+		};
+		4A99C6510A59DCC3001B4C35 /* VideoGStreamer */ = {
+			isa = PBXGroup;
+			children = (
+				4A99C6520A59DCC3001B4C35 /* Makefile.in */,
+				4A99C6530A59DCC3001B4C35 /* video.c */,
+			);
+			path = VideoGStreamer;
 			sourceTree = "<group>";
 		};
 		4AC3C076075188AB0073D2C6 /* graphicsTest */ = {

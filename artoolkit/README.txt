@@ -124,8 +124,16 @@ The VRML renderering library and example (libARvrml & simpleVRML) are optional b
 	./simpleVRML
 
 
-Changes in version 2.71.3 (this release) (2006-06-19).
+Changes in version 2.71.4 (this release) (2006-06-23).
 ------------------------------------------------------
+- Fix for an error in the VRML library inclusion on Mac OS X.
+- Now detect if running emulated on Mac OS X on Intel, and optimise for this case.
+- Linux builds: Support for gstreamer video capture added, thanks to Hartmut Seichter.
+- Mac OS X: Two new video config tokens are now available; -fliph and -flipv, which will mirror the video image horizontally and vertically respectively.
+
+
+Changes in version 2.71.3 (2006-06-19).
+---------------------------------------
 - This release supports Mac OS X on Intel, and builds Universal binaries, with the exception of the VRML projects (since OpenVRML does not yet build on Mac OS X i386).
 - Fixed line endings in MS Visual Studio 6 project files calib_distortion.dsp and calib_camera2.dsp.
 - Fix for a bug in VideoLinuxDV identified by Simon Goodall, where video stream could be incorrectly closed twice (SF 1452403).
