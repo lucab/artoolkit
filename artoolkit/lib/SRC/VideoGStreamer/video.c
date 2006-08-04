@@ -158,6 +158,7 @@ ar2VideoOpen(char *config ) {
 	int i;
 	GstPad *pad;
 	GstXML *xml;
+	GstStateChangeReturn _ret;
 
 	/* initialise GStreamer */
 	gst_init(0,0);	
@@ -211,8 +212,6 @@ ar2VideoOpen(char *config ) {
 	/* dismiss the pad */
 	gst_object_unref (pad);
 
-
-	
 	/* request ready state */
 	gst_element_set_state (vid->pipeline, GST_STATE_READY);
 	
@@ -233,7 +232,30 @@ ar2VideoOpen(char *config ) {
     	g_print ("libARvideo: GStreamer pipeline is PAUSED!\n");
     }
 
-	
+	/* now preroll for V4L v2 interfaces */
+	if (strstr(config, "v4l2src") != 0) 
+	{
+		/* set playing state of the pipeline */
+		gst_element_set_state (vid->pipeline, GST_STATE_PLAYING);
+		
+		/* wait until it's up and running or failed */
+		if (gst_element_get_state (vid->pipeline, NULL, NULL, -1) == GST_STATE_CHANGE_FAILURE) {
+	    	g_error ("libARvideo: failed to put GStreamer into PLAYING state!\n");
+	    } else {
+	    	g_print ("libARvideo: GStreamer pipeline is PLAYING!\n");
+	    }
+		
+		/* set playing state of the pipeline */
+		gst_element_set_state (vid->pipeline, GST_STATE_PAUSED);
+		
+		/* wait until it's up and running or failed */
+		if (gst_element_get_state (vid->pipeline, NULL, NULL, -1) == GST_STATE_CHANGE_FAILURE) {
+	    	g_error ("libARvideo: failed to put GStreamer into PAUSED state!\n");
+	    } else {
+	    	g_print ("libARvideo: GStreamer pipeline is PAUSED!\n");
+	    }
+	}
+		
 #if 0
 	/* write the bin to stdout */
 	gst_xml_write_file (GST_ELEMENT (vid->pipeline), stdout);
@@ -281,7 +303,9 @@ ar2VideoCapStart(AR2VideoParamT *vid)
     		g_error ("libARvideo: failed to put GStreamer into PLAYING state!\n");    	
     		return 0;
   
- 	   }
+        } else {
+			g_print ("libARvideo: GStreamer pipeline is PLAYING!\n");
+		} 
 	}
 	return 1; 
 }
