@@ -233,7 +233,8 @@ ar2VideoOpen(char *config ) {
     }
 
 	/* now preroll for V4L v2 interfaces */
-	if (strstr(config, "v4l2src") != 0) 
+	if ((strstr(config, "v4l2src") != 0) ||
+		(strstr(config, "dv1394src") != 0))
 	{
 		/* set playing state of the pipeline */
 		gst_element_set_state (vid->pipeline, GST_STATE_PLAYING);
