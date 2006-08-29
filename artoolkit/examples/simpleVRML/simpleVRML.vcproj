@@ -40,6 +40,7 @@
 				OutputFile="$(ProjectDir)..\..\bin\$(ProjectName)d.exe"
 				AdditionalLibraryDirectories="$(ProjectDir)..\..\lib;$(ProjectDir)..\..\OpenVRML\lib;$(ProjectDir)..\..\OpenVRML\dependencies\lib"
 				IgnoreDefaultLibraryNames="libc.lib;libcd.lib;libcmt.lib;libcmtd.lib;msvcrt.lib"
+				GenerateDebugInformation="TRUE"
 				SubSystem="1"
 				TargetMachine="1"/>
 			<Tool

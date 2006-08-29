@@ -454,12 +454,14 @@ int main(int argc, char** argv)
 	}
 	
 	// Test render all the VRML objects.
-    printf("About to render VRML objects \n");
+    fprintf(stdout, "Pre-rendering the VRML objects...");
+	fflush(stdout);
     glEnable(GL_TEXTURE_2D);
     for (i = 0; i < gObjectDataCount; i++) {
 		arVrmlDraw(gObjectData[i].vrml_id);
     }
     glDisable(GL_TEXTURE_2D);
+	fprintf(stdout, " done\n");
 	
 	// Register GLUT event-handling callbacks.
 	// NB: Idle() is registered by Visibility.
