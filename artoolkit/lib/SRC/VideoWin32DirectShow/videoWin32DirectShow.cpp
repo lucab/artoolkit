@@ -50,6 +50,7 @@
 struct _AR2VideoParamT {
 	DSVL_VideoSource	*graphManager;
 	MemoryBufferHandle  g_Handle;
+	bool				bufferCheckedOut;
 	__int64				g_Timestamp; // deprecated, use (g_Handle.t) instead.
 	//bool flip_horizontal = false; // deprecated.
 	//bool flip_vertical = false;   // deprecated.
@@ -154,15 +155,15 @@ AR2VideoParamT *ar2VideoOpen(char *config)
 	
 	vid->graphManager = new DSVL_VideoSource();
 	if (!config) {
-		if(FAILED(vid->graphManager->BuildGraphFromXMLString(config_default))) return(NULL);
+		if (FAILED(vid->graphManager->BuildGraphFromXMLString(config_default))) return(NULL);
 	} else {
 		if (strncmp(config, "<?xml", 5) == 0) {
-			if(FAILED(vid->graphManager->BuildGraphFromXMLString(config))) return(NULL);
+			if (FAILED(vid->graphManager->BuildGraphFromXMLString(config))) return(NULL);
 		} else {
-			if(FAILED(vid->graphManager->BuildGraphFromXMLFile(config))) return(NULL);
+			if (FAILED(vid->graphManager->BuildGraphFromXMLFile(config))) return(NULL);
 		}
 	}
-	if(FAILED(vid->graphManager->EnableMemoryBuffer())) return(NULL);
+	if (FAILED(vid->graphManager->EnableMemoryBuffer())) return(NULL);
 
 	return (vid);
 }
@@ -173,7 +174,7 @@ int ar2VideoClose(AR2VideoParamT *vid)
 	if (vid == NULL) return (-1);
 	if (vid->graphManager == NULL) return (-1);
 	
-	vid->graphManager->CheckinMemoryBuffer(vid->g_Handle, true);
+	if (vid->bufferCheckedOut) vid->graphManager->CheckinMemoryBuffer(vid->g_Handle, true);
 	vid->graphManager->Stop();
 	delete vid->graphManager;
 	vid->graphManager = NULL;
@@ -190,11 +191,17 @@ unsigned char *ar2VideoGetImage(AR2VideoParamT *vid)
 	if (vid == NULL) return (NULL);
 	if (vid->graphManager == NULL) return (NULL);
 	
+	if (vid->bufferCheckedOut) {
+		if (FAILED(vid->graphManager->CheckinMemoryBuffer(vid->g_Handle))) return (NULL);
+		vid->bufferCheckedOut = false;
+	}
 	wait_result = vid->graphManager->WaitForNextSample(frame_timeout_ms);
-	if(wait_result == WAIT_OBJECT_0) {
+	if (wait_result == WAIT_OBJECT_0) {
 		if (FAILED(vid->graphManager->CheckoutMemoryBuffer(&(vid->g_Handle), &pixelBuffer, NULL, NULL, NULL, &(vid->g_Timestamp)))) return(NULL);
+		vid->bufferCheckedOut = true;
 		return (pixelBuffer);
 	}
+
 	return(NULL);
 }
 
@@ -203,7 +210,7 @@ int ar2VideoCapStart(AR2VideoParamT *vid)
 	if (vid == NULL) return (-1);
 	if (vid->graphManager == NULL) return (-1);
 	
-	if(FAILED(vid->graphManager->Run())) return (-1);
+	if (FAILED(vid->graphManager->Run())) return (-1);
 	return (0);
 }
 
@@ -212,7 +219,10 @@ int ar2VideoCapStop(AR2VideoParamT *vid)
 	if (vid == NULL) return (-1);
 	if (vid->graphManager == NULL) return (-1);
 
-	vid->graphManager->CheckinMemoryBuffer(vid->g_Handle, true);
+	if (vid->bufferCheckedOut) {
+		if (FAILED(vid->graphManager->CheckinMemoryBuffer(vid->g_Handle, true))) return (-1);
+		vid->bufferCheckedOut = false;
+	}
 
 	// PRL 2005-09-21: Commented out due to issue where stopping the
 	// media stream cuts off glut's periodic tasks, including functions
@@ -227,7 +237,11 @@ int ar2VideoCapNext(AR2VideoParamT *vid)
 	if (vid == NULL) return (-1);
 	if (vid->graphManager == NULL) return (-1);
 
-	return (SUCCEEDED(vid->graphManager->CheckinMemoryBuffer(vid->g_Handle)) ? 0 : -1);
+	if (vid->bufferCheckedOut) {
+		if (FAILED(vid->graphManager->CheckinMemoryBuffer(vid->g_Handle, true))) return (-1);
+		vid->bufferCheckedOut = false;
+	}
+	return (0);
 }
 
 int ar2VideoInqSize(AR2VideoParamT *vid, int *x, int *y)
@@ -284,6 +298,7 @@ unsigned char *ar2VideoLockBuffer(AR2VideoParamT *vid, MemoryBufferHandle* pHand
 	if (vid->graphManager == NULL) return (NULL);
 	
 	if (FAILED(vid->graphManager->CheckoutMemoryBuffer(pHandle, &pixelBuffer))) return (NULL);
+	vid->bufferCheckedOut = true;
 	
 	return (pixelBuffer);
 }
@@ -294,7 +309,8 @@ int ar2VideoUnlockBuffer(AR2VideoParamT *vid, MemoryBufferHandle Handle)
 	if (vid->graphManager == NULL) return(-1);
 	
 	if (FAILED(vid->graphManager->CheckinMemoryBuffer(Handle))) return(-1);
-	
+	vid->bufferCheckedOut = false;
+
 	return (0);
 }
 
