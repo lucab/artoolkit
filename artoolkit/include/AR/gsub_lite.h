@@ -277,7 +277,7 @@ void arglCameraFrustum(const ARParam *cparam, const double focalmin, const doubl
 		To use different OpenGL units, e.g. metres, then you would pass 0.001.
  	@availability First appeared in ARToolKit 2.68.
 */
-void arglCameraView(double para[3][4], GLdouble m_modelview[16], double scale);
+void arglCameraView(const double para[3][4], GLdouble m_modelview[16], const double scale);
 
 /*!
     @function
