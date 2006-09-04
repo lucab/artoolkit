@@ -22,7 +22,7 @@ INCLUDE=  ${INC_DIR}/AR/config.h \
 #
 #   compilation control
 #
-LIBOBJS= ${LIB}(video.o)
+LIBOBJS= ${LIB}(video.o conversions.o)
 
 all:		${LIBOBJS}
 
