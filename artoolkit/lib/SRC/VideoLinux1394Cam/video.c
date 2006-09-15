@@ -163,12 +163,13 @@ int arVideoDispOption( void )
 int arVideoOpen( char *config )
 {
     if( gVid != NULL ) {
-        printf("Device has been opened!!\n");
-        return -1;
+      fprintf(stderr, "The device has already been opened!\n");
+      exit (1);
     }
     gVid = ar2VideoOpen( config );
-    if( gVid == NULL ) return -1;
-
+    if (gVid == NULL)
+      return (-1);
+    
     return 0;
 }
 
@@ -234,7 +235,7 @@ static int ar2Video1394Init( int debug, int *card, int *node );
 
 int ar2VideoDispOption( void )
 {
-    printf("\n");
+    printf ("\n");
     printf("ARVideo may be configured using one or more of the following options, separated by a space:\n\n");
     printf(" -node=N\n");
     printf("    specifies detected node ID of a FireWire camera (-1: Any).\n");
@@ -286,21 +287,20 @@ AR2VideoParamT *ar2VideoOpen( char *config )
     /* If no config string is supplied, we should use the environment variable otherwise set a sane default */
     if (!strcmp (config, ""))
       {
-	/* None suppplied, lets see if the user supplied one from the shell */
+        /* None suppplied, lets see if the user supplied one from the shell */
         char *envconf = getenv ("ARTOOLKIT_CONFIG");
         if ((envconf != NULL) && (strcmp (envconf, "")))
-	  {
-	    config = envconf;
-	    printf ("Using config string from environment [%s]\n", config);
-	  }
-	else
-	  {
-	    printf ("No config string supplied, assuming 640x480 with YUV411 encoding\n");
-	  }
+          {
+            config = envconf;
+            printf ("Using config string from environment [%s]\n", config);
+          }
+        else
+          {
+            printf ("No config string supplied, assuming 640x480 with YUV411 encoding\n");
+          }
       }
     else
       printf ("Using supplied config string [%s]\n", config);
-    
     
     a = config;
     if( a != NULL) {
@@ -448,7 +448,7 @@ AR2VideoParamT *ar2VideoOpen( char *config )
           vid->int_rate = FRAMERATE_60;
           break;
         default:
-          printf("Sorry, Unsupported Frame Rate for IEEE1394 Camera.\n");
+          fprintf(stderr, "Sorry, Unsupported Frame Rate for IEEE1394 Camera.\n");
           exit(1);
     }
     
@@ -611,7 +611,7 @@ int ar2VideoCapStart( AR2VideoParamT *vid )
     
     
     if(vid->status != 0 && vid->status != 3){
-        printf("arVideoCapStart has already been called.\n");
+        fprintf(stderr, "arVideoCapStart has already been called.\n");
         return -1;
     }
     
@@ -666,7 +666,7 @@ int ar2VideoCapStart( AR2VideoParamT *vid )
 int ar2VideoCapNext( AR2VideoParamT *vid )
 {
     if(vid->status == 0 || vid->status == 3){
-        printf("arVideoCapStart has never been called.\n");
+        fprintf(stderr, "arVideoCapStart has never been called.\n");
         return -1;
     }
     if(vid->status == 2) vid->status = 1;
@@ -684,13 +684,13 @@ int ar2VideoCapStop( AR2VideoParamT *vid )
         }
     }
     if(vid->status == 0){
-        printf("arVideoCapStart has never been called.\n");
+        fprintf(stderr, "arVideoCapStart has never been called.\n");
         return -1;
     }
     vid->status = 3;
 
     if( dc1394_stop_iso_transmission(arV1394.handle, vid->node) != DC1394_SUCCESS ) {
-        printf("couldn't stop the camera?\n");
+        fprintf(stderr, "couldn't stop the camera?\n");
         return -1;
     }
 
@@ -716,16 +716,16 @@ ARUint8 *ar2VideoGetImage( AR2VideoParamT *vid )
     register ARUint8 r, g, b;
 
     if(vid->status == 0){
-        printf("arVideoCapStart has never been called.\n");
+        fprintf(stderr, "arVideoCapStart has never been called.\n");
         return NULL;
     }
     if(vid->status == 2){
-        printf("arVideoCapNext has never been called since previous arVideoGetImage.\n");
+        fprintf(stderr, "arVideoCapNext has never been called since previous arVideoGetImage.\n");
         return NULL;
     }
 
     if( dc1394_dma_single_capture( &(vid->camera) ) != DC1394_SUCCESS ) {
-        fprintf( stderr, "unable to capture a frame\n");
+        fprintf(stderr, "unable to capture a frame\n");
         return NULL;
     }
     vid->status = 2;
@@ -771,18 +771,18 @@ ARUint8 *ar2VideoGetImage( AR2VideoParamT *vid )
 		pattern = BAYER_PATTERN_GBRG;
 		break;
 	      case 0x59595959:  /* YYYY = BW */
-		printf ("Camera is black and white, Bayer conversion is not possible\n");
+		fprintf (stderr, "Camera is black and white, Bayer conversion is not possible\n");
 		exit (1);
 	      default:
 		if (prev_pattern == -1)
 		  {
-		    printf ("Camera BAYER_TILE_MAPPING register has an unexpected value 0x%x on initial startup, which should not occur\n", qValue);
+		    fprintf (stderr, "Camera BAYER_TILE_MAPPING register has an unexpected value 0x%x on initial startup, which should not occur\n", qValue);
 		    exit (1);
 		  }
 		else
 		  {
 		    /* This is a wierd bug where occasionally you get an invalid register value and I have no idea why this is */
-		    printf ("WARNING! The BAYER_TILE_MAPPING register has an unexpected value 0x%x, but I was able to use the previous stored result\n", qValue);
+		    fprintf (stderr, "WARNING! The BAYER_TILE_MAPPING register has an unexpected value 0x%x, but I was able to use the previous stored result\n", qValue);
 		    pattern = prev_pattern;
 		  }
 	      }
