@@ -67,10 +67,12 @@
  *   - Added support for Bayer image tiling for Point Grey DragonFly cameras
  *
  *
- *   Revision: 1.3   Date: 2006/09/4 ( wayne@cs.unisa.edu.au )
+ *   Revision: 1.3   Date: 2006/09/16 ( wayne@cs.unisa.edu.au )
  *   - Stabilised interfaces around latest libdc1394 libraries
  *   - Added various other cleanups and bug fixes to make the code more stable
  *   - Added licensing allowing LGPL or existing GPL with permission from original authors
+ *   - Rearranged various constants from AR/config.h to make things easier to understand
+ *   - Better config string support with ARTOOLKIT_CONFIG to override defaults from the shell
  *
  */
 
