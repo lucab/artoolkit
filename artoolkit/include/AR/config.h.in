@@ -123,23 +123,7 @@
 #  endif
 
 #  ifdef AR_INPUT_1394CAM
-#    define   VIDEO_NODE_ANY                      -1
-#    define   VIDEO_MODE_320x240_YUV422           32
-#    define   VIDEO_MODE_640x480_YUV411           33
-#    define   VIDEO_MODE_640x480_RGB              34
-#    define   VIDEO_MODE_640x480_YUV411_HALF      35
-#    define   VIDEO_MODE_640x480_MONO             36
-#    define   VIDEO_MODE_640x480_MONO_COLOR       37
-#    define   VIDEO_MODE_640x480_MONO_COLOR_HALF  38
-#    define   VIDEO_FRAME_RATE_1_875               1
-#    define   VIDEO_FRAME_RATE_3_75                2
-#    define   VIDEO_FRAME_RATE_7_5                 3
-#    define   VIDEO_FRAME_RATE_15                  4
-#    define   VIDEO_FRAME_RATE_30                  5
-#    define   VIDEO_FRAME_RATE_60                  6
-#    define   DEFAULT_VIDEO_NODE                   VIDEO_NODE_ANY
-#    define   DEFAULT_VIDEO_MODE                   VIDEO_MODE_640x480_YUV411_HALF
-#    define   DEFAULT_VIDEO_FRAME_RATE             VIDEO_FRAME_RATE_30
+/* Defines all moved into video.c now - they are not used anywhere else */
 #  endif
 
 #  define   DEFAULT_IMAGE_PROC_MODE     AR_IMAGE_PROC_IN_FULL

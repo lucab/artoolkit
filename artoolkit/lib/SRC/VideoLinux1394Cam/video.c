@@ -117,6 +117,30 @@
 #define MAX_PORTS 4 /* This is the maximum number of Firewire cards we can have installed in the system, it is an arbitrary number */
 
 
+
+
+/* Defines that control various aspects of this code */
+#define   VIDEO_NODE_ANY                      -1
+#define   VIDEO_MODE_320x240_YUV422           32
+#define   VIDEO_MODE_640x480_YUV411           33
+#define   VIDEO_MODE_640x480_RGB              34
+#define   VIDEO_MODE_640x480_YUV411_HALF      35
+#define   VIDEO_MODE_640x480_MONO             36
+#define   VIDEO_MODE_640x480_MONO_COLOR       37
+#define   VIDEO_MODE_640x480_MONO_COLOR_HALF  38
+#define   VIDEO_FRAME_RATE_1_875               1
+#define   VIDEO_FRAME_RATE_3_75                2
+#define   VIDEO_FRAME_RATE_7_5                 3
+#define   VIDEO_FRAME_RATE_15                  4
+#define   VIDEO_FRAME_RATE_30                  5
+#define   VIDEO_FRAME_RATE_60                  6
+#define   DEFAULT_VIDEO_NODE                   VIDEO_NODE_ANY
+#define   DEFAULT_VIDEO_MODE                   VIDEO_MODE_640x480_YUV411_HALF
+#define   DEFAULT_VIDEO_FRAME_RATE             VIDEO_FRAME_RATE_30
+
+
+
+
 /* Error checking to ensure we have a proper configuration, and put some debugging out */
 #ifdef LIBDC_8
 #warning Compiling using original 0.8.3 libDC library (single camera only) - debian: libdc1394-8-dev
