@@ -123,7 +123,6 @@
 #  endif
 
 #  ifdef AR_INPUT_1394CAM
-#undef    DRAGONFLY
 #    define   VIDEO_NODE_ANY                      -1
 #    define   VIDEO_MODE_320x240_YUV422           32
 #    define   VIDEO_MODE_640x480_YUV411           33
@@ -139,11 +138,7 @@
 #    define   VIDEO_FRAME_RATE_30                  5
 #    define   VIDEO_FRAME_RATE_60                  6
 #    define   DEFAULT_VIDEO_NODE                   VIDEO_NODE_ANY
-#    ifndef   DRAGONFLY
-#      define   DEFAULT_VIDEO_MODE                   VIDEO_MODE_640x480_YUV411_HALF
-#    else
-#      define   DEFAULT_VIDEO_MODE                   VIDEO_MODE_640x480_MONO_COLOR_HALF
-#    endif
+#    define   DEFAULT_VIDEO_MODE                   VIDEO_MODE_640x480_YUV411_HALF
 #    define   DEFAULT_VIDEO_FRAME_RATE             VIDEO_FRAME_RATE_30
 #  endif
 

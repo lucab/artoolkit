@@ -65,11 +65,7 @@ char 			*vconf = "videotestsrc ! capsfilter caps=video/x-raw-rgb,bpp=24 ! identi
 #  elif defined(AR_INPUT_V4L)
 static char            *vconf = "-width=640 -height=480";
 #  elif defined(AR_INPUT_1394CAM)
-#    ifndef DRAGONFLY
 static char            *vconf = "-mode=640x480_YUV411";
-#    else
-static char            *vconf = "-mode=640x480_MONO_COLOR";
-#    endif
 #  elif defined(AR_INPUT_DV)
 static char            *vconf = "";
 #  endif

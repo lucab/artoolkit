@@ -74,20 +74,6 @@ then
         RANLIB=""
         LIBS="-lglut -lGLU -lGL -lXi -lXmu -lX11 -lm -lraw1394 -ldc1394_control"
         CONFIG="AR_INPUT_1394CAM"
-
-        echo "Do you use a DragonFly as the default camera? (y or n)"
-        echo -n "Enter : "
-        read ANS
-	if ( [ "$ANS" = "y" ] || [ "$ANS" = "Y" ] ||  [ "$ANS" = "yes" ] || [ "$ANS" = "YES" ])
-        then
-            DRAGON="y"
-	elif ( [ "$ANS" = "n" ] || [ "$ANS" = "N" ] ||  [ "$ANS" = "no" ] || [ "$ANS" = "NO" ])
-        then
-            DRAGON="n"
-        else
-            echo "Please enter y or n."
-            exit 0
-        fi        
     elif [ "$ANS" = "5" ]
     then
         VIDEO_DRIVER="VideoGStreamer"
@@ -202,13 +188,6 @@ elif [ "$NVEXT" = "n" ]
 then
 cat > $SED <<EOF
 s/#undef    AR_OPENGL_TEXTURE_RECTANGLE/#undef    AR_OPENGL_TEXTURE_RECTANGLE/
-EOF
-fi
-
-if [ "$DRAGON" = "y" ]
-then
-cat >> $SED <<EOF
-s/#undef    DRAGONFLY/#define    DRAGONFLY/
 EOF
 fi
 

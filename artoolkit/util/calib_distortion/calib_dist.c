@@ -65,11 +65,7 @@ char 			*vconf = "videotestsrc";
 #  elif defined(AR_INPUT_V4L)
 char            *vconf = "-width=640 -height=480";
 #  elif defined(AR_INPUT_1394CAM)
-#    ifndef DRAGONFLY
 char            *vconf = "-mode=640x480_YUV411";
-#    else
-char            *vconf = "-mode=640x480_MONO_COLOR";
-#    endif
 #  elif defined(AR_INPUT_DV)
 char            *vconf = "";
 #  endif
