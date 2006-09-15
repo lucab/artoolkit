@@ -564,7 +564,7 @@ AR2VideoParamT *ar2VideoOpen( char *config )
     
     
     /* Decide on where the video1394 device nodes are, they can be either at
-       /dev/video1394/* or /dev/video1394-* depending on the distribution */
+       /dev/video1394/ or /dev/video1394-* depending on the distribution */
     struct stat video_stat;
     if (stat ("/dev/video1394", &video_stat) < 0)
       sprintf (video1394devname, "/dev/video1394-%d", vid->card);
