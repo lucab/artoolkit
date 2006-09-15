@@ -8,6 +8,7 @@ Changes in version 2.71.4 (this release) (2006-06-23).
 - Now detect if running emulated on Mac OS X on Intel, and optimise for this case.
 - Linux builds: Support for gstreamer video capture added, thanks to Hartmut Seichter.
 - Mac OS X: Two new video config tokens are now available; -fliph and -flipv, which will mirror the video image horizontally and vertically respectively.
+- Linux 1394 DC: Major changes to add PointGray DragonFly support, add LGPL/GPL license info, better config string support, stabilised interfaces, lots of clean ups to make the code easier to work with
 
 
 Changes in version 2.71.3 (2006-06-19).
