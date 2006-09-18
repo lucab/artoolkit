@@ -27,7 +27,7 @@ char *vconf =
 #if defined (AR_INPUT_GSTREAMER)
 	"";
 #elif defined (AR_INPUT_V4L)
-	"-dev=/dev/video0 -channel=0 -palette=YUV420P -width=320 -height=240";
+	"";
 #elif defined (AR_INPUT_DV)
         "";
 #elif defined (AR_INPUT_1394CAM)

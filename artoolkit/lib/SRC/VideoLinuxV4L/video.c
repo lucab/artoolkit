@@ -152,6 +152,25 @@ AR2VideoParamT *ar2VideoOpen( char *config )
     char                      *a, line[256];
     int                       i;
     int                       adjust = 1;
+
+
+	/* following plainly copied from Wayne :) */
+	/* If no config string is supplied, we should use the environment variable otherwise set a sane default */
+	if (!strcmp (config, "")) {
+
+			/* None suppplied, lets see if the user supplied one from the shell */
+			char *envconf = getenv ("ARTOOLKIT_CONFIG");
+			if ((envconf != NULL) && (strcmp (envconf, ""))) {
+			config = envconf;
+			printf ("Using config string from environment [%s]\n", config);
+		}
+		else {
+			printf ("No config string supplied, please consult documentation\n");
+		}
+	} else
+		printf ("Using supplied config string [%s]\n", config);
+
+
     
     arMalloc( vid, AR2VideoParamT, 1 );
     strcpy( vid->dev, DEFAULT_VIDEO_DEVICE );
