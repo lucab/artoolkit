@@ -395,13 +395,10 @@ int main(int argc, char** argv)
 	char glutGamemode[32];
 	const char *cparam_name = 
 		"Data/camera_para.dat";
-	char *vconf = // Camera configuration.
-#if defined(_WIN32)
-		"Data\\WDM_camera_flipV.xml";
-#elif defined(__APPLE__)
-		"";
+#ifdef _WIN32
+	char			*vconf = "Data\\WDM_camera_flipV.xml";
 #else
-		"-dev=/dev/video0 -channel=0 -palette=YUV420P -width=320 -height=240";
+	char			*vconf = "";
 #endif
 	char objectDataFilename[] = "Data/object_data_vrml";
 	

@@ -415,19 +415,10 @@ int main(int argc, char** argv)
 	//
 	// Camera configuration.
 	//
-	char *vconf = 
-#if defined(_WIN32)
-		"Data\\WDM_camera_flipV.xml";
-#elif defined(__APPLE__)
-		"";
-#elif defined(__linux)
-#  if defined(AR_INPUT_GSTREAMER)
-	"";
-#  else
-		"-dev=/dev/video0 -channel=0 -palette=YUV420P -width=320 -height=240";
-#  endif
+#ifdef _WIN32
+	char			*vconf = "Data\\WDM_camera_flipV.xml";
 #else
-		"";
+	char			*vconf = "";
 #endif
 	const char *patt_name  = "Data/patt.hiro";
 	

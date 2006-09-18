@@ -18,25 +18,10 @@
 //
 // Camera configuration.
 //
-char *vconf = 
-#if defined(_WIN32)
-	"Data\\WDM_camera_flipV.xml";
-#elif defined(__APPLE__)
-	"";
-#elif defined (__linux)
-#if defined (AR_INPUT_GSTREAMER)
-	"";
-#elif defined (AR_INPUT_V4L)
-	"";
-#elif defined (AR_INPUT_DV)
-        "";
-#elif defined (AR_INPUT_1394CAM)
-        "";
+#ifdef _WIN32
+char			*vconf = "Data\\WDM_camera_flipV.xml";
 #else
-#error Unknown Linux video interface type
-#endif /* __linux */
-#else
-#error Unknown system type (Win32, Apple, SGI, or Linux only)
+char			*vconf = "";
 #endif
 
 int             xsize, ysize;
