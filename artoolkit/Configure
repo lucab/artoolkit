@@ -90,6 +90,19 @@ then
         echo "Please enter 1,2,3,4 or 5."
         exit 0
     fi
+	echo "Do you want to create debug symbols? (y or n)"
+    echo -n "Enter : "
+    read ANS
+    if [ "$ANS" = "y" ]
+    then
+        CFLAG="$CFLAG -g"
+    elif [ "$ANS" = "n" ]
+    then
+        CFLAG="$CFLAG"
+    else
+        echo "Please enter y or n."
+        exit 0
+    fi	
 elif [ "$E" = "IRIX" ]
 then
     VIDEO_DRIVER="VideoSGI"
@@ -115,7 +128,7 @@ then
     RANLIB="ranlib \$\@"
     LIBS="-framework Carbon -framework QuickTime -framework GLUT -framework OpenGL -framework AppKit -framework Foundation -lobjc"
 
-    echo "Dose your Mac have fast texture mapping hardware? (y or n)"
+    echo "Does your Mac have fast texture mapping hardware? (y or n)"
     echo -n "Enter : "
     read ANS
     if [ "$ANS" = "y" ]

@@ -91,6 +91,35 @@ cb_have_data (GstPad    *pad,
 	return TRUE;
 }
 
+void 
+testing_pad(GstPad *pad)
+{		
+	const GstCaps *caps;
+	GstStructure *str;
+	
+	gint width,height;
+	gdouble rate;
+
+	caps=gst_pad_get_negotiated_caps(pad);
+
+	if (caps) {
+		str=gst_caps_get_structure(caps,0);
+
+		/* Get some data about the frame */
+		gst_structure_get_int(str,"width",&width);
+		gst_structure_get_int(str,"height",&height);
+		gst_structure_get_double(str,"framerate",&rate);
+		
+		g_print("libARvideo: GStreamer negotiated %dx%d\n",width,height);
+	} else {
+		return;
+#if 0		
+		g_print("Nothing yet!");	
+#endif
+
+	}
+}
+
 
 int
 arVideoOpen( char *config ) {
@@ -156,9 +185,25 @@ ar2VideoOpen(char *config ) {
 	AR2VideoParamT *vid = 0;
 	GError *error = 0;
 	int i;
-	GstPad *pad;
+	GstPad *pad, *peerpad;
 	GstXML *xml;
 	GstStateChangeReturn _ret;
+
+	/* following plainly copied from Wayne :) */
+	/* If no config string is supplied, we should use the environment variable otherwise set a sane default */
+	if (!strcmp (config, "")) {
+
+			/* None suppplied, lets see if the user supplied one from the shell */
+			char *envconf = getenv ("ARTOOLKIT_CONFIG");
+			if ((envconf != NULL) && (strcmp (envconf, ""))) {
+			config = envconf;
+			printf ("Using config string from environment [%s]\n", config);
+		}
+		else {
+			g_printf ("No config string supplied, please consult documentation\n");
+		}
+	} else
+		g_print ("Using supplied config string [%s]\n", config);
 
 	/* initialise GStreamer */
 	gst_init(0,0);	
@@ -209,9 +254,9 @@ ar2VideoOpen(char *config ) {
 	/* install the probe callback for capturing */
 	gst_pad_add_buffer_probe (pad, G_CALLBACK (cb_have_data), vid);	
 	
-	/* dismiss the pad */
-	gst_object_unref (pad);
+	
 
+#if 0
 	/* request ready state */
 	gst_element_set_state (vid->pipeline, GST_STATE_READY);
 	
@@ -221,9 +266,17 @@ ar2VideoOpen(char *config ) {
     } else {
     	g_print ("libARvideo: GStreamer pipeline is READY!\n");
     }
+#endif
 
 	/* Needed to fill the information for ARVidInfo */
 	gst_element_set_state (vid->pipeline, GST_STATE_PAUSED);
+
+	peerpad = gst_pad_get_peer(pad);
+	
+	testing_pad(peerpad);
+
+	/* dismiss the pad */
+	gst_object_unref (pad);
 	
 	/* wait until it's up and running or failed */
 	if (gst_element_get_state (vid->pipeline, NULL, NULL, -1) == GST_STATE_CHANGE_FAILURE) {

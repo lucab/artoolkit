@@ -25,11 +25,7 @@ char *vconf =
 	"";
 #elif defined (__linux)
 #if defined (AR_INPUT_GSTREAMER)
-/* possible streams
- "filesrc location=gstreamer_test_xvid.avi ! decodebin ! ffmpegcolorspace ! capsfilter caps=video/x-raw-rgb,bpp=24 ! identity name=artoolkit ! fakesink";
-  "v4l2src device=/dev/video1 use-fixed-fps=false ! ffmpegcolorspace ! capsfilter caps=video/x-raw-rgb,bpp=24 ! identity name=artoolkit ! fakesink";
-*/
-	" videotestsrc ! capsfilter caps=video/x-raw-rgb,bpp=24 ! identity name=artoolkit ! fakesink";
+	"";
 #elif defined (AR_INPUT_V4L)
 	"-dev=/dev/video0 -channel=0 -palette=YUV420P -width=320 -height=240";
 #elif defined (AR_INPUT_DV)

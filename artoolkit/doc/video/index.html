@@ -29,6 +29,7 @@ The text is reproduced here for your convenience.</p>
 <p>Select an operating system / driver for which you wish to view the help text</p>
 <ul>
   <li><a href="#VideoLinux1394Cam">VideoLinux1394Cam</a></li>
+  <li><a href="#VideoGStreamer">VideoGStreamer</a></li>
   <li><a href="#VideoLinuxDVCam">VideoLinuxDVCam</a></li>
   <li><a href="#VideoLinuxV4L">VideoLinuxV4L</a></li>
   <li><a href="#VideoMacOSX">VideoMacOSX</a></li>
@@ -60,7 +61,28 @@ The text is reproduced here for your convenience.</p>
      -[name]=N  where name is brightness, iris, shutter, gain, saturation, gamma, sharpness
         (value must be a legal value for this parameter - use coriander to find what they are
 </pre>
-    
+
+<a class="anchor" name="VideoGStreamer">
+<h2>VideoGStreamer</h2>
+<p>
+	ARVideo via <a href="http://www.gstreamer.org">GStreamer</a> may be configured using a configuration string following the <code>gst-launch</code> syntax. Some examples (using the ARTOOLKIT_CONFIG environment variable, bash syntax):
+</p>
+
+<ul>
+<li>Loading a file from disk:
+<pre>
+$&gt; export ARTOOLKIT_CONFIG="filesrc location=gstreamer_test_xvid.avi ! decodebin ! ffmpegcolorspace ! capsfilter caps=video/x-raw-rgb,bpp=24 ! identity name=artoolkit ! fakesink"
+</pre>
+
+<li>Using a webcam on /dev/video0 through Video4Linux v2 (V4L2):
+<pre>$&gt; export ARTOOLKIT_CONFIG="v4l2src device=/dev/video1 use-fixed-fps=false ! ffmpegcolorspace ! capsfilter caps=video/x-raw-rgb,bpp=24 ! identity name=artoolkit ! fakesink"
+</pre>
+</li>
+
+The same strings can also directly been used within the code:
+<pre>arVideoOpen("videotestsrc ! capsfilter caps=video/x-raw-rgb,bpp=24 ! identity name=artoolkit ! fakesink");</pre>
+
+</ul>
 
 <a class="anchor" name="VideoLinuxDV">
 <h2>VideoLinuxDV
