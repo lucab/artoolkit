@@ -180,7 +180,7 @@ int arVideoCapNext( void )
 /*---------------------------------------------------------------------------*/
 
 AR2VideoParamT* 
-ar2VideoOpen(char *config ) {
+ar2VideoOpen(char *config_in ) {
 
 	AR2VideoParamT *vid = 0;
 	GError *error = 0;
@@ -188,22 +188,23 @@ ar2VideoOpen(char *config ) {
 	GstPad *pad, *peerpad;
 	GstXML *xml;
 	GstStateChangeReturn _ret;
+	char *config;
 
-	/* following plainly copied from Wayne :) */
-	/* If no config string is supplied, we should use the environment variable otherwise set a sane default */
-	if (!strcmp (config, "")) {
-
-			/* None suppplied, lets see if the user supplied one from the shell */
-			char *envconf = getenv ("ARTOOLKIT_CONFIG");
-			if ((envconf != NULL) && (strcmp (envconf, ""))) {
+	/* If no config string is supplied, we should use the environment variable, otherwise set a sane default */
+	if (!config_in || !(config_in[0])) {
+		/* None suppplied, lets see if the user supplied one from the shell */
+		char *envconf = getenv ("ARTOOLKIT_CONFIG");
+		if (envconf) {
 			config = envconf;
-			printf ("Using config string from environment [%s]\n", config);
+			g_printf ("Using config string from environment [%s].\n", envconf);
+		} else {
+			config = NULL;
+			g_printf ("No video config string supplied, using defaults.\n");
 		}
-		else {
-			g_printf ("No config string supplied, please consult documentation\n");
-		}
-	} else
-		g_print ("Using supplied config string [%s]\n", config);
+	} else {
+		config = config_in;
+		g_printf ("Using supplied video config string [%s].\n", config_in);
+	}
 
 	/* initialise GStreamer */
 	gst_init(0,0);	

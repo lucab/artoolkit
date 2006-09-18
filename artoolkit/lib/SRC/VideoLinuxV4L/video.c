@@ -143,34 +143,32 @@ int ar2VideoDispOption( void )
     return 0;
 }
 
-AR2VideoParamT *ar2VideoOpen( char *config )
+AR2VideoParamT *ar2VideoOpen( char *config_in )
 {
     AR2VideoParamT            *vid;
     struct video_capability   vd;
     struct video_channel      vc[MAXCHANNEL];
     struct video_picture      vp;
-    char                      *a, line[256];
+    char                      *config, *a, line[256];
     int                       i;
     int                       adjust = 1;
 
 
-	/* following plainly copied from Wayne :) */
-	/* If no config string is supplied, we should use the environment variable otherwise set a sane default */
-	if (!strcmp (config, "")) {
-
-			/* None suppplied, lets see if the user supplied one from the shell */
-			char *envconf = getenv ("ARTOOLKIT_CONFIG");
-			if ((envconf != NULL) && (strcmp (envconf, ""))) {
+	/* If no config string is supplied, we should use the environment variable, otherwise set a sane default */
+	if (!config_in || !(config_in[0])) {
+		/* None suppplied, lets see if the user supplied one from the shell */
+		char *envconf = getenv ("ARTOOLKIT_CONFIG");
+		if (envconf) {
 			config = envconf;
-			printf ("Using config string from environment [%s]\n", config);
+			printf ("Using config string from environment [%s].\n", envconf);
+		} else {
+			config = NULL;
+			printf ("No video config string supplied, using defaults.\n");
 		}
-		else {
-			printf ("No config string supplied, please consult documentation\n");
-		}
-	} else
-		printf ("Using supplied config string [%s]\n", config);
-
-
+	} else {
+		config = config_in;
+		printf ("Using supplied video config string [%s].\n", config_in);
+	}
     
     arMalloc( vid, AR2VideoParamT, 1 );
     strcpy( vid->dev, DEFAULT_VIDEO_DEVICE );
@@ -191,7 +189,7 @@ AR2VideoParamT *ar2VideoOpen( char *config )
     vid->debug      = 0;
     vid->videoBuffer=NULL;
 
-    a = config;
+	a = config;
     if( a != NULL) {
         for(;;) {
             while( *a == ' ' || *a == '\t' ) a++;
