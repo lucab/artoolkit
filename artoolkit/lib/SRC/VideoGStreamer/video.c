@@ -194,7 +194,7 @@ ar2VideoOpen(char *config_in ) {
 	if (!config_in || !(config_in[0])) {
 		/* None suppplied, lets see if the user supplied one from the shell */
 		char *envconf = getenv ("ARTOOLKIT_CONFIG");
-		if (envconf) {
+		if (envconf && envconf[0]) {
 			config = envconf;
 			g_printf ("Using config string from environment [%s].\n", envconf);
 		} else {

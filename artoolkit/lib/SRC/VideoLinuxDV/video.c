@@ -106,11 +106,11 @@ int ar2VideoDispOption( void )
     return 0;
 }
 
-AR2VideoParamT *ar2VideoOpen( char *config )
+AR2VideoParamT *ar2VideoOpen( char *config_in )
 {
     struct raw1394_portinfo    g_pinf[16];
     AR2VideoParamT            *vid;
-    char                      *a, line[256];
+    char                      *config, *a, line[256];
     int                        numcards;
     int                        i;
 
@@ -119,6 +119,22 @@ AR2VideoParamT *ar2VideoOpen( char *config )
     vid->debug      = 0;
     vid->status     = 0;
 
+	/* If no config string is supplied, we should use the environment variable, otherwise set a sane default */
+	if (!config_in || !(config_in[0])) {
+		/* None suppplied, lets see if the user supplied one from the shell */
+		char *envconf = getenv ("ARTOOLKIT_CONFIG");
+		if (envconf && envconf[0]) {
+			config = envconf;
+			printf ("Using config string from environment [%s].\n", envconf);
+		} else {
+			config = NULL;
+			printf ("No video config string supplied, using defaults.\n");
+		}
+	} else {
+		config = config_in;
+		printf ("Using supplied video config string [%s].\n", config_in);
+	}
+	
     a = config;
     if( a != NULL) {
         for(;;) {

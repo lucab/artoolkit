@@ -1243,7 +1243,7 @@ int ar2VideoDispOption(void)
 }
 
 
-AR2VideoParamT *ar2VideoOpen(char *config)
+AR2VideoParamT *ar2VideoOpen(char *config_in)
 {
     static int			initF = 0;
 	long				qtVersion = 0L;
@@ -1258,7 +1258,7 @@ AR2VideoParamT *ar2VideoOpen(char *config)
 	ComponentResult		err = noErr;
 	int					err_i = 0;
     AR2VideoParamT		*vid = NULL;
-    char				*a, line[256];
+    char				*config, *a, line[256];
 #ifdef AR_VIDEO_SUPPORT_OLD_QUICKTIME
 	int					weLocked = 0;
 #endif // AR_VIDEO_SUPPORT_OLD_QUICKTIME
@@ -1268,6 +1268,22 @@ AR2VideoParamT *ar2VideoOpen(char *config)
 	GDHandle			theSavedDevice;
 	long				cpuType;
 	
+	/* If no config string is supplied, we should use the environment variable, otherwise set a sane default */
+	if (!config_in || !(config_in[0])) {
+		/* None suppplied, lets see if the user supplied one from the shell */
+		char *envconf = getenv ("ARTOOLKIT_CONFIG");
+		if (envconf && envconf[0]) {
+			config = envconf;
+			printf ("Using config string from environment [%s].\n", envconf);
+		} else {
+			config = NULL;
+			printf ("No video config string supplied, using defaults.\n");
+		}
+	} else {
+		config = config_in;
+		printf ("Using supplied video config string [%s].\n", config_in);
+	}
+
 	// Process configuration options.
 	a = config;
     if (a) {
