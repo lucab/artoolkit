@@ -117,9 +117,7 @@
 #  endif
 
 #  ifdef AR_INPUT_DV
-#    define   VIDEO_MODE_PAL              0
-#    define   VIDEO_MODE_NTSC             1
-#    define   DEFAULT_VIDEO_MODE          VIDEO_MODE_NTSC
+/* Defines all moved into video.c now - they are not used anywhere else */
 #  endif
 
 #  ifdef AR_INPUT_1394CAM
