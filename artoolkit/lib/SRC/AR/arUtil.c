@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <string.h>
 #ifdef _WIN32
 #include <sys/timeb.h>
 #include <windows.h>
