@@ -270,6 +270,49 @@ extern int      arMatchingPCAMode;
 */
 
 /**
+ * \brief Get the ARToolKit version information in numberic and string format.
+ *
+ * As of version 2.72, ARToolKit now allows querying of the version number
+ * of the toolkit available at runtime. It is highly recommended that
+ * any calling program that depends on features in a certain
+ * ARToolKit version, check at runtime that it is linked to a version
+ * of ARToolKit that can supply those features. It is NOT sufficient
+ * to check the ARToolKit SDK header versions, since with ARToolKit implemented
+ * in dynamically-loaded libraries, there is no guarantee that the
+ * version of ARToolKit installed on the machine at run-time will as
+ * recent as the version of the ARToolKit SDK which the host
+ * program was compiled against.
+ * The version information is reported in binary-coded decimal format,
+ * and optionally in an ASCII string. See the config.h header
+ * for more discussion of the definition of major, minor, tiny and build
+ * version numbers.
+ * 
+ * \param versionStringRef
+ *	If non-NULL, the location pointed to will be filled
+ *	with a pointer to a string containing the version information.
+ *  Fields in the version string are separated by spaces. As of version
+ *  2.72.0, there is only one field implemented, and this field
+ *  contains the major, minor and tiny version numbers
+ *	in dotted-decimal format. The string is guaranteed to contain
+ *  at least this field in all future versions of the toolkit.
+ *  Later versions of the toolkit may add other fields to this string
+ *  to report other types of version information. The storage for the
+ *  string is malloc'ed inside the function. The caller is responsible
+ *  for free'ing the string.
+ *
+ * \return Returns the full version number of the ARToolKit in
+ *	binary coded decimal (BCD) format.
+ *  BCD format allows simple tests of version number in the caller
+ *  e.g. if ((arGetVersion(NULL) >> 16) > 0x0272) printf("This release is later than 2.72\n");
+ *	The major version number is encoded in the most-significant byte
+ *  (bits 31-24), the minor version number in the second-most-significant
+ *	byte (bits 23-16), the tiny version number in the third-most-significant
+ *  byte (bits 15-8), and the build version number in the least-significant
+ *	byte (bits 7-0).
+ */
+ARUint32 arGetVersion(char **versionStringRef);
+
+/**
 * \brief initialize camera parameters.
 *
 * set the camera parameters specified in the camera parameters structure 
@@ -593,9 +636,9 @@ int arGetCode( ARUint8 *image, int *x_coord, int *y_coord, int *vertex,
                int *code, int *dir, double *cf );
 
 /**
-* \brief return a normalized pattern from a video image.
+* \brief Get a normalized pattern from a video image.
 *
-* This function return a normalized pattern from a video image. The
+* This function returns a normalized pattern from a video image. The
 * format is a table with AR_PATT_SIZE_X by AR_PATT_SIZE_Y
 * \param image video input image
 * \param x_coord XXXBK

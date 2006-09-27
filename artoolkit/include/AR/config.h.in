@@ -1,6 +1,52 @@
 #ifndef AR_CONFIG_H
 #define AR_CONFIG_H
 
+//
+// As of version 2.72, ARToolKit supports an OpenGL-like
+// versioning system, with both header versions (for the version
+// of the ARToolKit SDK installed) and runtime version reporting
+// via arGetVersion().
+//
+
+// The MAJOR version number defines non-backwards compatible
+// changes in the ARToolKit API. Range: [0-99].
+#define AR_HEADER_VERSION_MAJOR		2
+
+// The MINOR version number defines additions to the ARToolKit
+// API, or (occsasionally) other significant backwards-compatible
+// changes in runtime functionality. Range: [0-99].
+#define AR_HEADER_VERSION_MINOR		72
+
+// The TINY version number defines bug-fixes to existing
+// functionality. Range: [0-99].
+#define AR_HEADER_VERSION_TINY		0
+
+// The BUILD version number will always be zero in releases,
+// but may be non-zero in internal builds or in version-control
+// repository-sourced code. Range: [0-99].
+#define AR_HEADER_VERSION_BUILD		0
+
+// The string representation below must match the major, minor
+// and tiny release numbers.
+#define AR_HEADER_VERSION_STRING	"2.72.0"
+
+// The macros below are convenience macros to enable use
+// of certain ARToolKit header functionality by the release
+// version in which it appeared.
+// Each time the major version number is incremented, all
+// existing macros must be removed, and just one new one
+// added for the new major version.
+// Each time the minor version number is incremented, a new
+// AR_HAVE_HEADER_VERSION_ macro definition must be added.
+// Tiny version numbers (being bug-fix releases, by definition)
+// are NOT included in the AR_HAVE_HEADER_VERSION_ system.
+#define AR_HAVE_HEADER_VERSION_2
+#define AR_HAVE_HEADER_VERSION_2_72
+
+//
+// End version definitions.
+//
+
 #define AR_PIXEL_FORMAT_RGB 1
 #define AR_PIXEL_FORMAT_BGR 2
 #define AR_PIXEL_FORMAT_RGBA 3

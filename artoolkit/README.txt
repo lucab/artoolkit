@@ -124,12 +124,15 @@ The VRML renderering library and example (libARvrml & simpleVRML) are optional b
 	./simpleVRML
 
 
-Changes in version 2.71.4 (this release) (2006-06-23).
+Changes in version 2.72 (this release) (2006-XX-XX).
 ------------------------------------------------------
-- Fix for an error in the VRML library inclusion on Mac OS X.
-- Now detect if running emulated on Mac OS X on Intel, and optimise for this case.
-- Linux builds: Support for gstreamer video capture added, thanks to Hartmut Seichter.
+- All platforms: ARToolKit now supports querying of SDK and runtime versions.
+- Mac OS X: Fix for an error in the VRML library inclusion on Mac OS X.
+- Mac OS X: Now detects if running emulated on Intel Macs, and optimises video for this case.
 - Mac OS X: Two new video config tokens are now available; -fliph and -flipv, which will mirror the video image horizontally and vertically respectively.
+- Linux: Support for gstreamer video capture added, thanks to Hartmut Seichter.
+- Linux 1394 DC: Major changes to add PointGray DragonFly support, add LGPL/GPL license info, better config string support, stabilised interfaces, lots of clean ups to make the code easier to work with
+- Linux DV: Fix for bugs when using PAL in videoLinuxDV as reported at http://www.hitlabnz.org/forum/showthread.php?t=412.
 
 
 Changes in version 2.71.3 (2006-06-19).

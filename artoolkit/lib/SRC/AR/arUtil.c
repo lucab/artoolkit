@@ -36,6 +36,29 @@ ARUint8*   arImageR                = NULL;
 ARSParam   arsParam;
 double     arsMatR2L[3][4];
 
+ARUint32 arGetVersion(char **versionStringRef)
+{
+	const char version[] = AR_HEADER_VERSION_STRING;
+	char *s;
+	
+	if (versionStringRef) {
+		arMalloc(s, char, sizeof(version));
+		strncpy(s, version, sizeof(version));
+		*versionStringRef = s;
+	}
+	// Represent full version number (major, minor, tiny, build) in
+	// binary coded decimal. N.B: Integer division.
+	return (0x10000000u * ((unsigned int)AR_HEADER_VERSION_MAJOR / 10u) +
+			0x01000000u * ((unsigned int)AR_HEADER_VERSION_MAJOR % 10u) +
+			0x00100000u * ((unsigned int)AR_HEADER_VERSION_MINOR / 10u) +
+			0x00010000u * ((unsigned int)AR_HEADER_VERSION_MINOR % 10u) +
+			0x00001000u * ((unsigned int)AR_HEADER_VERSION_TINY / 10u) +
+			0x00000100u * ((unsigned int)AR_HEADER_VERSION_TINY % 10u) +
+			0x00000010u * ((unsigned int)AR_HEADER_VERSION_BUILD / 10u) +
+			0x00000001u * ((unsigned int)AR_HEADER_VERSION_BUILD % 10u)
+			);
+}
+
 static int arGetLine2(int x_coord[], int y_coord[], int coord_num,
                       int vertex[], double line[4][3], double v[4][2], double *dist_factor);
 
@@ -287,3 +310,4 @@ void arUtilSleep( int msec )
 #endif
     return;
 }
+
