@@ -171,16 +171,31 @@ AR2VideoParamT *ar2VideoOpen(char *config)
 
 int ar2VideoClose(AR2VideoParamT *vid)
 {
-	if (vid == NULL) return (-1);
-	if (vid->graphManager == NULL) return (-1);
+	int _ret = -1;
+
+	if (vid == NULL) return (_ret);
+
+	if (vid->graphManager != NULL) {
 	
-	if (vid->bufferCheckedOut) vid->graphManager->CheckinMemoryBuffer(vid->g_Handle, true);
-	vid->graphManager->Stop();
-	delete vid->graphManager;
-	vid->graphManager = NULL;
-	free (vid);
+		if (vid->bufferCheckedOut) 
+			vid->graphManager->CheckinMemoryBuffer(vid->g_Handle, true);
+
+		vid->graphManager->Stop();
+		delete vid->graphManager;
+		vid->graphManager = NULL;
+
+		_ret = 0;
+	}
+
+	free(vid);
+
+	// do not assume free NULL's the pointer
+	vid = NULL;
+
+	// COM should be closed down in the same context
+	CoUninitialize();
 	
-    return(0);
+    return(_ret);
 }
 
 unsigned char *ar2VideoGetImage(AR2VideoParamT *vid)
