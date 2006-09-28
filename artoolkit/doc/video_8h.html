@@ -79,18 +79,19 @@ ARToolkit video subroutines.
 <p>
 This library provides multi-platform video input support for ARToolKit. It abstracts access to hardware video input available on different machines and operating systems.<p>
 The actual supported platforms (and the driver/library used) are:<ul>
-<li>Windows: with Microsoft DirectShow (VFW obsolete).</li><li>Linux: with Video4Linux library, IEEE1394 camera library, and DV camera library.</li><li>Macintosh: with QuickTime.</li><li>SGI: with VL.</li></ul>
+<li>Windows: with Microsoft DirectShow (VFW obsolete).</li><li>Linux: with Video4Linux library, GStreamer, IEEE1394 camera library and DV camera library.</li><li>Macintosh: with QuickTime.</li><li>SGI: with VL.</li></ul>
 <p>
 This library provides two sets of functions, depending on whether your program needs to use only one video stream, or more than one video stream. These two sets are functionally identical.<ul>
 <li>one camera: use the <b>arVideo*</b> functions.</li><li>multiple cameras: use the <b>ar2Video*</b> functions.</li></ul>
 <p>
 More information on establishing video streams is available in the ARToolKit manual.<p>
 <dl compact><dt><b>Remarks:</b></dt><dd>The arVideo* functions maintain the current video stream in a global variable and internally call the ar2Video* functions.</dd></dl>
-History : modified by Thomas Pintaric (<a href="mailto:pintaric@ims.tuwien.ac.at">pintaric@ims.tuwien.ac.at</a>) to add a fully transparent DirectShow Driver.<p>
+History : modified by Thomas Pintaric (<a href="mailto:pintaric@ims.tuwien.ac.at">pintaric@ims.tuwien.ac.at</a>) to add a fully transparent DirectShow Driver. modified by Hartmut Seichter (<a href="mailto:hartmut@technotecture.com">hartmut@technotecture.com</a>) to add GStreamer video support<p>
 <dl compact><dt><b>Author:</b></dt><dd>Hirokazu Kato <a href="mailto:kato@sys.im.hiroshima-cu.ac.jp">kato@sys.im.hiroshima-cu.ac.jp</a> <p>
 Atsishi Nakazawa <a href="mailto:nakazawa@inolab.sys.es.osaka-u.ac.jp">nakazawa@inolab.sys.es.osaka-u.ac.jp</a> <p>
 Thomas Pintaric <a href="mailto:pintaric@ims.tuwien.ac.at">pintaric@ims.tuwien.ac.at</a> (Windows DirectShow video support). <p>
-Philip Lamb <a href="mailto:phil@eden.net.nz">phil@eden.net.nz</a> (Macintosh Quicktime video support). </dd></dl>
+Philip Lamb <a href="mailto:phil@eden.net.nz">phil@eden.net.nz</a> (Macintosh Quicktime video support). <p>
+Hartmut Seichter <a href="mailto:hartmut@technotecture.com">hartmut@technotecture.com</a> (GStreamer Video support) </dd></dl>
 <dl compact><dt><b>Version:</b></dt><dd>4.3b </dd></dl>
 <dl compact><dt><b>Date:</b></dt><dd>03/02/02 </dd></dl>
 <hr><h2>Function Documentation</h2>

@@ -63,6 +63,9 @@ typedef unsigned int&nbsp;</td><td class="memItemRight" valign="bottom"><b>ARUin
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">ARToolKit pixel-format specifiers.  <a href="#641bf68ce0529b6b323ec156e69c5590"></a><br></td></tr>
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">ARUint32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="ar_8h.html#5f6a6f78cfce8c8dfc80479b47232eb4">arGetVersion</a> (char **versionStringRef)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Get the ARToolKit version information in numberic and string format.  <a href="#5f6a6f78cfce8c8dfc80479b47232eb4"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="ar_8h.html#52f12a73083b810427e2a9066e69a0f2">arInitCparam</a> (<a class="el" href="structARParam.html">ARParam</a> *param)</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">initialize camera parameters.  <a href="#52f12a73083b810427e2a9066e69a0f2"></a><br></td></tr>
@@ -128,7 +131,7 @@ double&nbsp;</td><td class="memItemRight" valign="bottom"><b>arGetTransMat5</b> 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">sleep the actual thread.  <a href="#e563a6bac5ed423dd919f1eaeddde63e"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">ARInt16 *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="ar_8h.html#42ad9c96a619e0d62be0627634332dfe">arLabeling</a> (ARUint8 *image, int thresh, int *label_num, int **area, double **pos, int **clip, int **label_ref)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">extracted connected component from image.  <a href="#42ad9c96a619e0d62be0627634332dfe"></a><br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">extract connected components from image.  <a href="#42ad9c96a619e0d62be0627634332dfe"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="ar_8h.html#4909575c338b25813a1c824d46b2f4fe">arGetImgFeature</a> (int *num, int **area, int **clip, double **pos)</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">XXXBK.  <a href="#4909575c338b25813a1c824d46b2f4fe"></a><br></td></tr>
@@ -143,7 +146,7 @@ double&nbsp;</td><td class="memItemRight" valign="bottom"><b>arGetTransMat5</b> 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">XXXBK.  <a href="#90b6568d18fcceb2fd95fe538cf15a49"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="ar_8h.html#5f9a199367ae02c106c1845f8706727e">arGetPatt</a> (ARUint8 *image, int *x_coord, int *y_coord, int *vertex, ARUint8 ext_pat[AR_PATT_SIZE_Y][AR_PATT_SIZE_X][3])</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">return a normalized pattern from a video image.  <a href="#5f9a199367ae02c106c1845f8706727e"></a><br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Get a normalized pattern from a video image.  <a href="#5f9a199367ae02c106c1845f8706727e"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="ar_8h.html#870cde1dfb861bfdbb12f2a71baa2a4e">arGetLine</a> (int x_coord[], int y_coord[], int coord_num, int vertex[], double line[4][3], double v[4][2])</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">estimate a line from a list of point.  <a href="#870cde1dfb861bfdbb12f2a71baa2a4e"></a><br></td></tr>
@@ -1249,9 +1252,9 @@ XXXBK <dl compact><dt><b>Parameters:</b></dt><dd>
     <td>
 
 <p>
-return a normalized pattern from a video image. 
+Get a normalized pattern from a video image. 
 <p>
-This function return a normalized pattern from a video image. The format is a table with AR_PATT_SIZE_X by AR_PATT_SIZE_Y <dl compact><dt><b>Parameters:</b></dt><dd>
+This function returns a normalized pattern from a video image. The format is a table with AR_PATT_SIZE_X by AR_PATT_SIZE_Y <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>image</em>&nbsp;</td><td>video input image </td></tr>
     <tr><td valign="top"></td><td valign="top"><em>x_coord</em>&nbsp;</td><td>XXXBK </td></tr>
@@ -1452,6 +1455,43 @@ calculate the transformation between a detected marker and the real camera, i.e.
     </td>
   </tr>
 </table>
+<a class="anchor" name="5f6a6f78cfce8c8dfc80479b47232eb4"></a><!-- doxytag: member="ar.h::arGetVersion" ref="5f6a6f78cfce8c8dfc80479b47232eb4" args="(char **versionStringRef)" --><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">ARUint32 arGetVersion           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">char **&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap> <em>versionStringRef</em>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Get the ARToolKit version information in numberic and string format. 
+<p>
+As of version 2.72, ARToolKit now allows querying of the version number of the toolkit available at runtime. It is highly recommended that any calling program that depends on features in a certain ARToolKit version, check at runtime that it is linked to a version of ARToolKit that can supply those features. It is NOT sufficient to check the ARToolKit SDK header versions, since with ARToolKit implemented in dynamically-loaded libraries, there is no guarantee that the version of ARToolKit installed on the machine at run-time will as recent as the version of the ARToolKit SDK which the host program was compiled against. The version information is reported in binary-coded decimal format, and optionally in an ASCII string. See the config.h header for more discussion of the definition of major, minor, tiny and build version numbers.<p>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>versionStringRef</em>&nbsp;</td><td>If non-NULL, the location pointed to will be filled with a pointer to a string containing the version information. Fields in the version string are separated by spaces. As of version 2.72.0, there is only one field implemented, and this field contains the major, minor and tiny version numbers in dotted-decimal format. The string is guaranteed to contain at least this field in all future versions of the toolkit. Later versions of the toolkit may add other fields to this string to report other types of version information. The storage for the string is malloc'ed inside the function. The caller is responsible for free'ing the string.</td></tr>
+  </table>
+</dl>
+<dl compact><dt><b>Returns:</b></dt><dd>Returns the full version number of the ARToolKit in binary coded decimal (BCD) format. BCD format allows simple tests of version number in the caller e.g. if ((arGetVersion(NULL) &gt;&gt; 16) &gt; 0x0272) printf("This release is later than 2.72\n"); The major version number is encoded in the most-significant byte (bits 31-24), the minor version number in the second-most-significant byte (bits 23-16), the tiny version number in the third-most-significant byte (bits 15-8), and the build version number in the least-significant byte (bits 7-0). </dd></dl>
+    </td>
+  </tr>
+</table>
 <a class="anchor" name="52f12a73083b810427e2a9066e69a0f2"></a><!-- doxytag: member="ar.h::arInitCparam" ref="52f12a73083b810427e2a9066e69a0f2" args="(ARParam *param)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
@@ -1552,20 +1592,20 @@ set the camera parameters specified in the camera parameters structure *param to
     <td>
 
 <p>
-extracted connected component from image. 
+extract connected components from image. 
 <p>
-Labeling the input image, i.e. extracted connected component from the inptu video image. <dl compact><dt><b>Parameters:</b></dt><dd>
+Label the input image, i.e. extract connected components from the input video image. <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>image</em>&nbsp;</td><td>input image </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>image</em>&nbsp;</td><td>input image, as returned by <a class="el" href="video_8h.html#aba310982da09d39a4a92c5cd394d0dd">arVideoGetImage()</a> </td></tr>
     <tr><td valign="top"></td><td valign="top"><em>thresh</em>&nbsp;</td><td>lighting threshold </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>label_num</em>&nbsp;</td><td>number of detected components </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>area</em>&nbsp;</td><td>XXXBK </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>pos</em>&nbsp;</td><td>XXXBK </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>clip</em>&nbsp;</td><td>XXXBK </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>label_ref</em>&nbsp;</td><td>XXXBK </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>label_num</em>&nbsp;</td><td>Ouput- number of detected components </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>area</em>&nbsp;</td><td>On return, if label_num &gt; 0, points to an array of ints, one for each detected component. </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pos</em>&nbsp;</td><td>On return, if label_num &gt; 0, points to an array of doubles, one for each detected component. </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>clip</em>&nbsp;</td><td>On return, if label_num &gt; 0, points to an array of ints, one for each detected component. </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>label_ref</em>&nbsp;</td><td>On return, if label_num &gt; 0, points to an array of ints, one for each detected component. </td></tr>
   </table>
 </dl>
-<dl compact><dt><b>Returns:</b></dt><dd>XXXBK </dd></dl>
+<dl compact><dt><b>Returns:</b></dt><dd>returns a pointer to the labeled output image, ready for passing onto the next stage of processing. </dd></dl>
     </td>
   </tr>
 </table>
