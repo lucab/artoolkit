@@ -896,6 +896,12 @@ int arglPixelFormatSet(ARGL_CONTEXT_SETTINGS_REF contextSettings, AR_PIXEL_FORMA
 				return (FALSE);
 			}
 			break;
+		case AR_PIXEL_FORMAT_MONO:
+			contextSettings->pixIntFormat = GL_LUMINANCE;
+			contextSettings->pixFormat = GL_LUMINANCE;
+			contextSettings->pixType = GL_UNSIGNED_BYTE;
+			contextSettings->pixSize = 1;
+			break;
 		case AR_PIXEL_FORMAT_2vuy:
 			if (arglGLCapabilityCheck(0, (unsigned char *)"GL_APPLE_ycbcr_422")) {
 				contextSettings->pixIntFormat = GL_RGB;
@@ -989,6 +995,10 @@ int arglPixelFormatGet(ARGL_CONTEXT_SETTINGS_REF contextSettings, AR_PIXEL_FORMA
 #endif
 			else return (FALSE);
 			*size = 2;
+			break;
+		case GL_LUMINANCE:
+			*format = AR_PIXEL_FORMAT_MONO;
+			*size = 1;
 			break;
 		default:
 			return (FALSE);

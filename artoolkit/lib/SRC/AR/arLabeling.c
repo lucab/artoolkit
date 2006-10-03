@@ -235,6 +235,8 @@ static ARInt16 *labeling2( ARUint8 *image, int thresh,
             if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresht3 ) {
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGB)
             if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresht3 ) {
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_MONO)
+			if( *(pnt) <= thresh ) {
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_2vuy)
 			if( *(pnt+1) <= thresh ) {
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_yuvs)
@@ -581,6 +583,9 @@ static ARInt16 *labeling3( ARUint8 *image, int thresh,
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGB)
             if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresht3 ) {
                 *(dpnt+0) = *(dpnt+1) = *(dpnt+2) = 255;
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_MONO)
+			if( *(pnt) <= thresh ) {
+				*(dpnt) = 255;
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_2vuy)
 			if( *(pnt+1) <= thresh ) {
 				*(dpnt+1) = 255;
@@ -701,6 +706,8 @@ static ARInt16 *labeling3( ARUint8 *image, int thresh,
                 *(dpnt+0) = *(dpnt+1) = *(dpnt+2) = 0;
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGB)
                 *(dpnt+0) = *(dpnt+1) = *(dpnt+2) = 0;
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_MONO)
+                *(dpnt) = 0;
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_2vuy)
                 *(dpnt+1) = 0;
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_yuvs)

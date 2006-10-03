@@ -5,6 +5,7 @@ ARToolKit ChangeLog.
 Changes in version 2.72 (this release) (2006-XX-XX).
 ------------------------------------------------------
 - All platforms: ARToolKit now supports querying of SDK and runtime versions.
+- All platforms: Support for AR_PIXEL_FORMAT_MONO is now included.
 - Mac OS X: Fix for an error in the VRML library inclusion on Mac OS X.
 - Mac OS X: Now detects if running emulated on Intel Macs, and optimises video for this case.
 - Mac OS X: Two new video config tokens are now available; -fliph and -flipv, which will mirror the video image horizontally and vertically respectively.

@@ -52,6 +52,7 @@
 #define AR_PIXEL_FORMAT_RGBA 3
 #define AR_PIXEL_FORMAT_BGRA 4
 #define AR_PIXEL_FORMAT_ABGR 5
+#define AR_PIXEL_FORMAT_MONO 6
 #define AR_PIXEL_FORMAT_ARGB 7
 #define AR_PIXEL_FORMAT_2vuy 8
 #define AR_PIXEL_FORMAT_UYVY AR_PIXEL_FORMAT_2vuy
@@ -215,6 +216,8 @@
 #  define AR_PIX_SIZE_DEFAULT      3
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_2vuy) || (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_yuvs)
 #  define AR_PIX_SIZE_DEFAULT      2
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_MONO)
+#  define AR_PIX_SIZE_DEFAULT      1
 #else
 #  error Unknown default pixel format defined in config.h.
 #endif

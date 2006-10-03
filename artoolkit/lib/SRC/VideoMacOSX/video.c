@@ -1349,6 +1349,8 @@ AR2VideoParamT *ar2VideoOpen(char *config_in)
 		pixFormat = k32ABGRPixelFormat;
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGRA)
 		pixFormat = k32BGRAPixelFormat;
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_MONO)
+		pixFormat = k8IndexedGrayPixelFormat;
 #else
 #  error Unsupported default pixel format specified in config.h.
 #endif
@@ -1369,6 +1371,8 @@ AR2VideoParamT *ar2VideoOpen(char *config_in)
 		case k32RGBAPixelFormat:
 			bytesPerPixel = 4l;
 			break;
+		case k8IndexedGrayPixelFormat:
+			bytesPerPixel = 1l;
 		default:
 			fprintf(stderr, "ar2VideoOpen(): Unsupported pixel format requested.\n");
 			return(NULL);

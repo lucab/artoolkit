@@ -427,6 +427,8 @@ static void Motion(int x, int y)
                 *p1 = ((255 - *(p+1)) < gThresh ? 0 : 255);
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_yuvs)
                 *p1 = ((255 - *(p+0)) < gThresh ? 0 : 255);
+#elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_MONO)
+                *p1 = ((255 - *(p)) < gThresh ? 0 : 255);
 #else
 #  error Unknown default pixel format defined in config.h
 #endif

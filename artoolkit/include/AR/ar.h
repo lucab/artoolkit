@@ -107,6 +107,9 @@ typedef unsigned int      ARUint32;
 	Green, and Blue component. This is the native 32 bit format for the Mac
 	platform.
 	
+	AR_PIXEL_FORMAT_MONO
+	Each pixel is represented by 8 bits of luminance information.
+	
 	AR_PIXEL_FORMAT_2vuy
 	8-bit 4:2:2 Component Y'CbCr format. Each 16 bit pixel is represented
 	by an unsigned eight bit luminance component and two unsigned eight bit
