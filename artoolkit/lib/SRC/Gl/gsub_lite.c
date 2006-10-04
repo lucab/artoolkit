@@ -708,30 +708,123 @@ void arglCameraFrustum(const ARParam *cparam, const double focalmin, const doubl
     q[3][2] = 1.0;
     q[3][3] = 0.0;
 	
-    for (i = 0; i < 4; i++) {
-        for (j = 0; j < 3; j++) {
-            m_projection[i + j*4] = q[i][0] * trans[0][j]
-			+ q[i][1] * trans[1][j]
-			+ q[i][2] * trans[2][j];
+    for (i = 0; i < 4; i++) { // Row.
+		// First 3 columns of the current row.
+        for (j = 0; j < 3; j++) { // Column.
+            m_projection[i + j*4] = q[i][0] * trans[0][j] +
+									q[i][1] * trans[1][j] +
+									q[i][2] * trans[2][j];
         }
-        m_projection[i + 3*4] = q[i][0] * trans[0][3]
-		+ q[i][1] * trans[1][3]
-		+ q[i][2] * trans[2][3]
-		+ q[i][3];
+		// Fourth column of the current row.
+        m_projection[i + 3*4] = q[i][0] * trans[0][3] +
+								q[i][1] * trans[1][3] +
+								q[i][2] * trans[2][3] +
+								q[i][3];
+    }	
+}
+
+void arglCameraFrustumRH(const ARParam *cparam, const double focalmin, const double focalmax, GLdouble m_projection[16])
+{
+	double   icpara[3][4];
+    double   trans[3][4];
+    double   p[3][3], q[4][4];
+	int      width, height;
+    int      i, j;
+	
+    width  = cparam->xsize;
+    height = cparam->ysize;
+	
+    if (arParamDecompMat(cparam->mat, icpara, trans) < 0) {
+        printf("arglCameraFrustum(): arParamDecompMat() indicated parameter error.\n"); // Windows bug: when running multi-threaded, can't write to stderr!
+        return;
+    }
+	for (i = 0; i < 4; i++) {
+        icpara[1][i] = (height - 1)*(icpara[2][i]) - icpara[1][i];
+    }
+	
+    for(i = 0; i < 3; i++) {
+        for(j = 0; j < 3; j++) {
+            p[i][j] = icpara[i][j] / icpara[2][2];
+        }
+    }
+    q[0][0] = (2.0 * p[0][0] / (width - 1));
+    q[0][1] = (2.0 * p[0][1] / (width - 1));
+    q[0][2] = -((2.0 * p[0][2] / (width - 1))  - 1.0);
+    q[0][3] = 0.0;
+	
+    q[1][0] = 0.0;
+    q[1][1] = -(2.0 * p[1][1] / (height - 1));
+    q[1][2] = -((2.0 * p[1][2] / (height - 1)) - 1.0);
+    q[1][3] = 0.0;
+	
+    q[2][0] = 0.0;
+    q[2][1] = 0.0;
+    q[2][2] = (focalmax + focalmin)/(focalmin - focalmax);
+    q[2][3] = 2.0 * focalmax * focalmin / (focalmin - focalmax);
+	
+    q[3][0] = 0.0;
+    q[3][1] = 0.0;
+    q[3][2] = -1.0;
+    q[3][3] = 0.0;
+	
+    for (i = 0; i < 4; i++) { // Row.
+		// First 3 columns of the current row.
+        for (j = 0; j < 3; j++) { // Column.
+            m_projection[i + j*4] = q[i][0] * trans[0][j] +
+			q[i][1] * trans[1][j] +
+			q[i][2] * trans[2][j];
+        }
+		// Fourth column of the current row.
+        m_projection[i + 3*4] = q[i][0] * trans[0][3] +
+								q[i][1] * trans[1][3] +
+								q[i][2] * trans[2][3] +
+								q[i][3];
     }	
 }
 
 void arglCameraView(const double para[3][4], GLdouble m_modelview[16], const double scale)
 {
-    int     i, j;
+	m_modelview[0 + 0*4] = para[0][0]; // R1C1
+	m_modelview[0 + 1*4] = para[0][1]; // R1C2
+	m_modelview[0 + 2*4] = para[0][2];
+	m_modelview[0 + 3*4] = para[0][3];
+	m_modelview[1 + 0*4] = para[1][0]; // R2
+	m_modelview[1 + 1*4] = para[1][1];
+	m_modelview[1 + 2*4] = para[1][2];
+	m_modelview[1 + 3*4] = para[1][3];
+	m_modelview[2 + 0*4] = para[2][0]; // R3
+	m_modelview[2 + 1*4] = para[2][1];
+	m_modelview[2 + 2*4] = para[2][2];
+	m_modelview[2 + 3*4] = para[2][3];
+	m_modelview[3 + 0*4] = 0.0;
+	m_modelview[3 + 1*4] = 0.0;
+	m_modelview[3 + 2*4] = 0.0;
+	m_modelview[3 + 3*4] = 1.0;
+	if (scale != 0.0) {
+		m_modelview[12] *= scale;
+		m_modelview[13] *= scale;
+		m_modelview[14] *= scale;
+	}
+}
 
-    for (j = 0; j < 3; j++) { // Row.
-        for(i = 0; i < 4; i++) { // Column.
-            m_modelview[j + i*4] = para[j][i];
-        }
-    }
-    m_modelview[3 + 0*4] = m_modelview[3 + 1*4] = m_modelview[3 + 2*4] = 0.0; // row + column x 4.
-    m_modelview[3 + 3*4] = 1.0;
+void arglCameraViewRH(const double para[3][4], GLdouble m_modelview[16], const double scale)
+{
+	m_modelview[0 + 0*4] = para[0][0]; // R1C1
+	m_modelview[0 + 1*4] = para[0][1]; // R1C2
+	m_modelview[0 + 2*4] = para[0][2];
+	m_modelview[0 + 3*4] = para[0][3];
+	m_modelview[1 + 0*4] = -para[1][0]; // R2
+	m_modelview[1 + 1*4] = -para[1][1];
+	m_modelview[1 + 2*4] = -para[1][2];
+	m_modelview[1 + 3*4] = -para[1][3];
+	m_modelview[2 + 0*4] = -para[2][0]; // R3
+	m_modelview[2 + 1*4] = -para[2][1];
+	m_modelview[2 + 2*4] = -para[2][2];
+	m_modelview[2 + 3*4] = -para[2][3];
+	m_modelview[3 + 0*4] = 0.0;
+	m_modelview[3 + 1*4] = 0.0;
+	m_modelview[3 + 2*4] = 0.0;
+	m_modelview[3 + 3*4] = 1.0;
 	if (scale != 0.0) {
 		m_modelview[12] *= scale;
 		m_modelview[13] *= scale;
@@ -796,7 +889,7 @@ void arglDispImageStateful(ARUint8 *image, const ARParam *cparam, const double z
 	texmapScaleFactor = contextSettings->arglTexmapMode + 1;
 	if (contextSettings->arglDrawMode == AR_DRAW_BY_GL_DRAW_PIXELS) {
 		glDisable(GL_TEXTURE_2D);
-		glGetIntegerv(GL_VIEWPORT, params);
+		glGetIntegerv(GL_VIEWPORT, (GLint *)params);
 		glPixelZoom(zoomf * ((float)(params[2]) / (float)(cparam->xsize)),
 				   -zoomf * ((float)(params[3]) / (float)(cparam->ysize)));
 		glRasterPos2f(0.0f, (float)(cparam->ysize));

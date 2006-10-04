@@ -11,8 +11,14 @@
 <dt><tt><a href="Functions.html#//apple_ref/c/func/arglCameraFrustum" target="doc">arglCameraFrustum</a></tt></dt>
 <dd>Create an OpenGL perspective projection matrix.
 </dd>
+<dt><tt><a href="Functions.html#//apple_ref/c/func/arglCameraFrustumRH" target="doc">arglCameraFrustumRH</a></tt></dt>
+<dd>(description)
+</dd>
 <dt><tt><a href="Functions.html#//apple_ref/c/func/arglCameraView" target="doc">arglCameraView</a></tt></dt>
 <dd>Create an OpenGL viewing transformation matrix.
+</dd>
+<dt><tt><a href="Functions.html#//apple_ref/c/func/arglCameraViewRH" target="doc">arglCameraViewRH</a></tt></dt>
+<dd>(description)
 </dd>
 <dt><tt><a href="Functions.html#//apple_ref/c/func/arglCleanup" target="doc">arglCleanup</a></tt></dt>
 <dd>Free memory used by gsub_lite associated with the specified context.
@@ -101,6 +107,27 @@ to set the viewing projection.
 <dt><i>Availability</i></dt><dd>First appeared in ARToolKit 2.68.
 </dd>
 </dl>
+<hr><!-- headerDoc=func;  uid=//apple_ref/c/func/arglCameraFrustumRH;  name=arglCameraFrustumRH -->
+<a name="//apple_ref/c/func/arglCameraFrustumRH"></a>
+<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h3><a name="arglCameraFrustumRH">arglCameraFrustumRH</a></h3>
+</td></tr></table><hr><dl></dl><p>(description)
+</p>
+<blockquote><pre><!-- a logicalPath="//apple_ref/c/cl/void //apple_ref/c/cl/void //apple_ref/c/tdef/void //apple_ref/c/tag/void //apple_ref/c/econst/void //apple_ref/c/struct/void //apple_ref/c/clconst/void" --><font class="type">void</font><!-- /a --> <!-- a logicalPath="//apple_ref/c/instm/arglCameraFrustumRH //apple_ref/c/clm/arglCameraFrustumRH //apple_ref/c/intfcm/arglCameraFrustumRH //apple_ref/c/func/arglCameraFrustumRH //apple_ref/c/ftmplt/arglCameraFrustumRH //apple_ref/c/defn/arglCameraFrustumRH //apple_ref/c/macro/arglCameraFrustumRH" --><font class="function">arglCameraFrustumRH</font><!-- /a -->(
+    <font class="keyword">const</font> <!-- a logicalPath="//apple_ref/c/cl/ARParam //apple_ref/c/cl/ARParam //apple_ref/c/tdef/ARParam //apple_ref/c/tag/ARParam //apple_ref/c/econst/ARParam //apple_ref/c/struct/ARParam //apple_ref/c/clconst/ARParam" --><font class="type">ARParam</font><!-- /a --> *<font class="param">cparam</font>,
+    <font class="keyword">const</font> <!-- a logicalPath="//apple_ref/c/cl/double //apple_ref/c/cl/double //apple_ref/c/tdef/double //apple_ref/c/tag/double //apple_ref/c/econst/double //apple_ref/c/struct/double //apple_ref/c/clconst/double" --><font class="type">double</font><!-- /a --> <font class="param">focalmin</font>,
+    <font class="keyword">const</font> <!-- a logicalPath="//apple_ref/c/cl/double //apple_ref/c/cl/double //apple_ref/c/tdef/double //apple_ref/c/tag/double //apple_ref/c/econst/double //apple_ref/c/struct/double //apple_ref/c/clconst/double" --><font class="type">double</font><!-- /a --> <font class="param">focalmax</font>,
+    <!-- a logicalPath="//apple_ref/c/cl/GLdouble //apple_ref/c/cl/GLdouble //apple_ref/c/tdef/GLdouble //apple_ref/c/tag/GLdouble //apple_ref/c/econst/GLdouble //apple_ref/c/struct/GLdouble //apple_ref/c/clconst/GLdouble" --><font class="type">GLdouble</font><!-- /a --> <!-- a logicalPath="//apple_ref/c/cl/m_projection //apple_ref/c/cl/m_projection //apple_ref/c/tdef/m_projection //apple_ref/c/tag/m_projection //apple_ref/c/econst/m_projection //apple_ref/c/struct/m_projection //apple_ref/c/clconst/m_projection" --><font class="type">m_projection</font><!-- /a -->[<font class="number">16</font>]); </pre></blockquote>
+<h5><font face="Lucida Grande,Helvetica,Arial">Parameter Descriptions</font></h5>
+<blockquote>
+<dl>
+<dt><code><i>(name)</i></code></dt><dd>(description)</dd>
+</dl>
+</blockquote>
+<dl><dt><i>function result</i></dt><dd>(description)
+</dd>
+<h5><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5><p>(description)
+</p>
+</dl>
 <hr><!-- headerDoc=func;  uid=//apple_ref/c/func/arglCameraView;  name=arglCameraView -->
 <a name="//apple_ref/c/func/arglCameraView"></a>
 <table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h3><a name="arglCameraView">arglCameraView</a></h3>
@@ -130,6 +157,26 @@ to set the viewing transformation of the virtual camera.
 </p>
 <dt><i>Availability</i></dt><dd>First appeared in ARToolKit 2.68.
 </dd>
+</dl>
+<hr><!-- headerDoc=func;  uid=//apple_ref/c/func/arglCameraViewRH;  name=arglCameraViewRH -->
+<a name="//apple_ref/c/func/arglCameraViewRH"></a>
+<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h3><a name="arglCameraViewRH">arglCameraViewRH</a></h3>
+</td></tr></table><hr><dl></dl><p>(description)
+</p>
+<blockquote><pre><!-- a logicalPath="//apple_ref/c/cl/void //apple_ref/c/cl/void //apple_ref/c/tdef/void //apple_ref/c/tag/void //apple_ref/c/econst/void //apple_ref/c/struct/void //apple_ref/c/clconst/void" --><font class="type">void</font><!-- /a --> <!-- a logicalPath="//apple_ref/c/instm/arglCameraViewRH //apple_ref/c/clm/arglCameraViewRH //apple_ref/c/intfcm/arglCameraViewRH //apple_ref/c/func/arglCameraViewRH //apple_ref/c/ftmplt/arglCameraViewRH //apple_ref/c/defn/arglCameraViewRH //apple_ref/c/macro/arglCameraViewRH" --><font class="function">arglCameraViewRH</font><!-- /a -->(
+    <font class="keyword">const</font> <!-- a logicalPath="//apple_ref/c/cl/double //apple_ref/c/cl/double //apple_ref/c/tdef/double //apple_ref/c/tag/double //apple_ref/c/econst/double //apple_ref/c/struct/double //apple_ref/c/clconst/double" --><font class="type">double</font><!-- /a --> <!-- a logicalPath="//apple_ref/c/cl/para //apple_ref/c/cl/para //apple_ref/c/tdef/para //apple_ref/c/tag/para //apple_ref/c/econst/para //apple_ref/c/struct/para //apple_ref/c/clconst/para" --><font class="type">para</font><!-- /a -->[<font class="number">3</font>][<font class="number">4</font>],
+    <!-- a logicalPath="//apple_ref/c/cl/GLdouble //apple_ref/c/cl/GLdouble //apple_ref/c/tdef/GLdouble //apple_ref/c/tag/GLdouble //apple_ref/c/econst/GLdouble //apple_ref/c/struct/GLdouble //apple_ref/c/clconst/GLdouble" --><font class="type">GLdouble</font><!-- /a --> <!-- a logicalPath="//apple_ref/c/cl/m_modelview //apple_ref/c/cl/m_modelview //apple_ref/c/tdef/m_modelview //apple_ref/c/tag/m_modelview //apple_ref/c/econst/m_modelview //apple_ref/c/struct/m_modelview //apple_ref/c/clconst/m_modelview" --><font class="type">m_modelview</font><!-- /a -->[<font class="number">16</font>],
+    <font class="keyword">const</font> <!-- a logicalPath="//apple_ref/c/cl/double //apple_ref/c/cl/double //apple_ref/c/tdef/double //apple_ref/c/tag/double //apple_ref/c/econst/double //apple_ref/c/struct/double //apple_ref/c/clconst/double" --><font class="type">double</font><!-- /a --> <font class="param">scale</font>); </pre></blockquote>
+<h5><font face="Lucida Grande,Helvetica,Arial">Parameter Descriptions</font></h5>
+<blockquote>
+<dl>
+<dt><code><i>(name)</i></code></dt><dd>(description)</dd>
+</dl>
+</blockquote>
+<dl><dt><i>function result</i></dt><dd>(description)
+</dd>
+<h5><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5><p>(description)
+</p>
 </dl>
 <hr><!-- headerDoc=func;  uid=//apple_ref/c/func/arglCleanup;  name=arglCleanup -->
 <a name="//apple_ref/c/func/arglCleanup"></a>
