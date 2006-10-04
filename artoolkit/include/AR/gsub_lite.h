@@ -259,6 +259,15 @@ void arglCleanup(ARGL_CONTEXT_SETTINGS_REF contextSettings);
 void arglCameraFrustum(const ARParam *cparam, const double focalmin, const double focalmax, GLdouble m_projection[16]);
 
 /*!
+    @function 
+    @abstract   (description)
+    @discussion (description)
+    @param      (name) (description)
+    @result     (description)
+*/
+void arglCameraFrustumRH(const ARParam *cparam, const double focalmin, const double focalmax, GLdouble m_projection[16]);
+
+/*!
     @function
     @abstract Create an OpenGL viewing transformation matrix.
 	@discussion
@@ -278,6 +287,15 @@ void arglCameraFrustum(const ARParam *cparam, const double focalmin, const doubl
  	@availability First appeared in ARToolKit 2.68.
 */
 void arglCameraView(const double para[3][4], GLdouble m_modelview[16], const double scale);
+
+/*!
+    @function 
+    @abstract   (description)
+    @discussion (description)
+    @param      (name) (description)
+    @result     (description)
+*/
+void arglCameraViewRH(const double para[3][4], GLdouble m_modelview[16], const double scale);
 
 /*!
     @function

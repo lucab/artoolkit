@@ -484,7 +484,7 @@ static void DisplayPerContext(const int drawContextIndex)
 	if (gContextsActive[drawContextIndex].patt_found) {
 		
 		// Projection transformation.
-		arglCameraFrustum(&(gContextsActive[drawContextIndex].ARTCparam), VIEW_DISTANCE_MIN, VIEW_DISTANCE_MAX, p);
+		arglCameraFrustumRH(&(gContextsActive[drawContextIndex].ARTCparam), VIEW_DISTANCE_MIN, VIEW_DISTANCE_MAX, p);
 		glMatrixMode(GL_PROJECTION);
 		glLoadMatrixd(p);
 		glMatrixMode(GL_MODELVIEW);
@@ -496,7 +496,7 @@ static void DisplayPerContext(const int drawContextIndex)
 		//none
 		
 		// ARToolKit supplied distance in millimetres, but I want OpenGL to work in my units.
-		arglCameraView(gContextsActive[drawContextIndex].patt_trans, m, VIEW_SCALEFACTOR);
+		arglCameraViewRH(gContextsActive[drawContextIndex].patt_trans, m, VIEW_SCALEFACTOR);
 		glLoadMatrixd(m);
 		
 		// All other lighting and geometry goes here.

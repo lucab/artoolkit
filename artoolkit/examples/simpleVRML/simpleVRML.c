@@ -359,7 +359,7 @@ static void Display(void)
 				
 	if (gPatt_found) {
 		// Projection transformation.
-		arglCameraFrustum(&gARTCparam, VIEW_DISTANCE_MIN, VIEW_DISTANCE_MAX, p);
+		arglCameraFrustumRH(&gARTCparam, VIEW_DISTANCE_MIN, VIEW_DISTANCE_MAX, p);
 		glMatrixMode(GL_PROJECTION);
 		glLoadMatrixd(p);
 		glMatrixMode(GL_MODELVIEW);
@@ -375,7 +375,7 @@ static void Display(void)
 		for (i = 0; i < gObjectDataCount; i++) {
 			if ((gObjectData[i].visible != 0) && (gObjectData[i].vrml_id >= 0)) {
 				//fprintf(stderr, "About to draw object %i\n", i);
-				arglCameraView(gObjectData[i].trans, m, VIEW_SCALEFACTOR_4);
+				arglCameraViewRH(gObjectData[i].trans, m, VIEW_SCALEFACTOR_4);
 				glLoadMatrixd(m);
 
 				arVrmlDraw(gObjectData[i].vrml_id);

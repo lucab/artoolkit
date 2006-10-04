@@ -382,7 +382,7 @@ static void Display(void)
 				
 	if (gPatt_found) {
 		// Projection transformation.
-		arglCameraFrustum(&gARTCparam, VIEW_DISTANCE_MIN, VIEW_DISTANCE_MAX, p);
+		arglCameraFrustumRH(&gARTCparam, VIEW_DISTANCE_MIN, VIEW_DISTANCE_MAX, p);
 		glMatrixMode(GL_PROJECTION);
 		glLoadMatrixd(p);
 		glMatrixMode(GL_MODELVIEW);
@@ -394,9 +394,9 @@ static void Display(void)
 		//none
 		
 		// ARToolKit supplied distance in millimetres, but I want OpenGL to work in my units.
-		arglCameraView(gPatt_trans, m, VIEW_SCALEFACTOR);
+		arglCameraViewRH(gPatt_trans, m, VIEW_SCALEFACTOR);
 		glLoadMatrixd(m);
-		
+
 		// All other lighting and geometry goes here.
 		DrawCube();
 	} // gPatt_found
