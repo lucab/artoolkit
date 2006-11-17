@@ -846,7 +846,7 @@ void arglDispImage(ARUint8 *image, const ARParam *cparam, const double zoom, ARG
 
 	// Prepare an orthographic projection, set camera position for 2D drawing, and save GL state.
 	glGetTexEnviv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, &texEnvModeSave); // Save GL texture environment mode.
-	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	if (texEnvModeSave != GL_REPLACE) glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 	lightingSave = glIsEnabled(GL_LIGHTING);			// Save enabled state of lighting.
 	if (lightingSave == GL_TRUE) glDisable(GL_LIGHTING);
 	depthTestSave = glIsEnabled(GL_DEPTH_TEST);		// Save enabled state of depth test.
@@ -859,7 +859,20 @@ void arglDispImage(ARUint8 *image, const ARParam *cparam, const double zoom, ARG
 	glPushMatrix();
 	glLoadIdentity();		
 	
-	arglDispImageStateful(image, cparam, zoom, contextSettings);
+	if (arDebug) { // Globals from ar.h: arDebug, arImage, arImageProcMode.
+		if (arImage) {
+			if (arImageProcMode == AR_IMAGE_PROC_IN_HALF) {
+				ARParam cparamScaled = *cparam;
+				cparamScaled.xsize /= 2;
+				cparamScaled.ysize /= 2;
+				arglDispImageStateful(arImage, &cparamScaled, zoom * 2.0, contextSettings);
+			} else {
+				arglDispImageStateful(arImage, cparam, zoom, contextSettings);
+			}
+		}
+	} else {
+		arglDispImageStateful(image, cparam, zoom, contextSettings);
+	}
 
 	// Restore previous projection, camera position, and GL state.
 	glMatrixMode(GL_PROJECTION);
@@ -868,7 +881,7 @@ void arglDispImage(ARUint8 *image, const ARParam *cparam, const double zoom, ARG
 	glPopMatrix();
 	if (depthTestSave == GL_TRUE) glEnable(GL_DEPTH_TEST);			// Restore enabled state of depth test.
 	if (lightingSave == GL_TRUE) glEnable(GL_LIGHTING);			// Restore enabled state of lighting.
-	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, texEnvModeSave); // Restore GL texture environment mode.
+	if (texEnvModeSave != GL_REPLACE) glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, texEnvModeSave); // Restore GL texture environment mode.
 	
 #ifdef ARGL_DEBUG
 	// Report any errors we generated.

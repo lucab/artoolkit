@@ -183,7 +183,7 @@ static int DrawCubeCleanup(int contextIndex)
 
 static int DrawCubeFinal(void)
 {
-	if (!gDrawListBox) {
+	if (gDrawListBox) {
 		free(gDrawListBox);
 		gDrawListBox = NULL;
 	}
@@ -358,11 +358,16 @@ static void Keyboard(unsigned char key, int x, int y)
 			arUtilTimerReset();
 			gCallCountGetImage = 0;
 			break;
+		case 'D':
+		case 'd':
+			arDebug = !arDebug;
+			break;
 		case '?':
 		case '/':
 			printf("Keys:\n");
 			printf(" q or [esc]    Quit demo.\n");
 			printf(" c             Change arglDrawMode and arglTexmapMode.\n");
+			printf(" d             Activate / deactivate debug mode.\n");
 			printf(" ? or /        Show this help.\n");
 			printf("\nAdditionally, the ARVideo library supplied the following help text:\n");
 			arVideoDispOption();

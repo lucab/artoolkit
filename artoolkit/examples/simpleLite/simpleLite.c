@@ -267,11 +267,16 @@ static void Keyboard(unsigned char key, int x, int y)
 			arUtilTimerReset();
 			debugReportMode();
 			break;
+		case 'D':
+		case 'd':
+			arDebug = !arDebug;
+			break;
 		case '?':
 		case '/':
 			printf("Keys:\n");
 			printf(" q or [esc]    Quit demo.\n");
 			printf(" c             Change arglDrawMode and arglTexmapMode.\n");
+			printf(" d             Activate / deactivate debug mode.\n");
 			printf(" ? or /        Show this help.\n");
 			printf("\nAdditionally, the ARVideo library supplied the following help text:\n");
 			arVideoDispOption();
@@ -410,8 +415,7 @@ static void Display(void)
 int main(int argc, char** argv)
 {
 	char glutGamemode[32];
-	const char *cparam_name = 
-		"Data/camera_para.dat";
+	const char *cparam_name = "Data/camera_para.dat";
 	//
 	// Camera configuration.
 	//
@@ -453,7 +457,7 @@ int main(int argc, char** argv)
 		glutGameModeString(glutGamemode);
 		glutEnterGameMode();
 	} else {
-		glutInitWindowSize(gARTCparam.xsize, gARTCparam.ysize);
+		glutInitWindowSize(prefWidth, prefHeight);
 		glutCreateWindow(argv[0]);
 	}
 

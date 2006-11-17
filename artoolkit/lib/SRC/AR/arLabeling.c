@@ -224,26 +224,27 @@ static ARInt16 *labeling2( ARUint8 *image, int thresh,
     for (j = 1; j < lysize - 1; j++, pnt += poff*2, pnt2 += 2) {
         for(i = 1; i < lxsize-1; i++, pnt+=poff, pnt2++) {
 #if (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ARGB)
-            if( *(pnt+1) + *(pnt+2) + *(pnt+3) <= thresht3 ) {
+            if( *(pnt+1) + *(pnt+2) + *(pnt+3) <= thresht3 )
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ABGR)
-            if( *(pnt+1) + *(pnt+2) + *(pnt+3) <= thresht3 ) {
+            if( *(pnt+1) + *(pnt+2) + *(pnt+3) <= thresht3 )
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGRA)
-            if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresht3 ) {
+            if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresht3 )
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGR)
-            if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresht3 ) {
+            if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresht3 )
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGBA)
-            if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresht3 ) {
+            if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresht3 )
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGB)
-            if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresht3 ) {
+            if( *(pnt+0) + *(pnt+1) + *(pnt+2) <= thresht3 )
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_MONO)
-			if( *(pnt) <= thresh ) {
+			if( *(pnt) <= thresh )
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_2vuy)
-			if( *(pnt+1) <= thresh ) {
+			if( *(pnt+1) <= thresh )
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_yuvs)
-			if( *(pnt+0) <= thresh ) {
+			if( *(pnt+0) <= thresh )
 #else
 #  error Unknown default pixel format defined in config.h
 #endif
+			{
                 pnt1 = &(pnt2[-lxsize]);
                 if( *pnt1 > 0 ) {
                     *pnt2 = *pnt1;
@@ -481,6 +482,18 @@ static ARInt16 *labeling3( ARUint8 *image, int thresh,
     int       *wclip;
     double    *wpos;
 	int		  thresht3 = thresh * 3;
+	static int imageProcModePrev = -1;
+	static int imXsizePrev = -1;
+	static int imYsizePrev = -1;
+
+	// Ensure that the debug image is correct size.
+	// If size has changed, debug image will need to be re-allocated.
+	if (imageProcModePrev != arImageProcMode || imXsizePrev != arImXsize || imYsizePrev != arImYsize) {
+		arLabelingCleanup();
+		imageProcModePrev = arImageProcMode;
+		imXsizePrev = arImXsize;
+		imYsizePrev = arImYsize;
+	}
 
     if( arImageProcMode == AR_IMAGE_PROC_IN_HALF ) {
         lxsize = arImXsize / 2;
@@ -588,10 +601,10 @@ static ARInt16 *labeling3( ARUint8 *image, int thresh,
 				*(dpnt) = 255;
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_2vuy)
 			if( *(pnt+1) <= thresh ) {
-				*(dpnt+1) = 255;
+				*(dpnt+0) = 128; *(dpnt+1) = 235; // *(dpnt+0) is chroma, set to 128 to maintain black & white debug image.
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_yuvs)
 			if( *(pnt+0) <= thresh ) {
-				*(dpnt+0) = 255;
+				*(dpnt+0) = 235; *(dpnt+1) = 128; // *(dpnt+1) is chroma, set to 128 to maintain black & white debug image.
 #else
 #  error Unknown default pixel format defined in config.h
 #endif
@@ -695,27 +708,26 @@ static ARInt16 *labeling3( ARUint8 *image, int thresh,
             else {
                 *pnt2 = 0;
 #if (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ARGB)
-                *(dpnt+1) = *(dpnt+2) = *(dpnt+3) = 0;
+                *(dpnt+1) = *(dpnt+2) = *(dpnt+3) = 0; }
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ABGR)
-                *(dpnt+1) = *(dpnt+2) = *(dpnt+3) = 0;
+                *(dpnt+1) = *(dpnt+2) = *(dpnt+3) = 0; }
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGRA)
-                *(dpnt+0) = *(dpnt+1) = *(dpnt+2) = 0;
+                *(dpnt+0) = *(dpnt+1) = *(dpnt+2) = 0; }
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGR)
-                *(dpnt+0) = *(dpnt+1) = *(dpnt+2) = 0;
+                *(dpnt+0) = *(dpnt+1) = *(dpnt+2) = 0; }
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGBA)
-                *(dpnt+0) = *(dpnt+1) = *(dpnt+2) = 0;
+                *(dpnt+0) = *(dpnt+1) = *(dpnt+2) = 0; }
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGB)
-                *(dpnt+0) = *(dpnt+1) = *(dpnt+2) = 0;
+                *(dpnt+0) = *(dpnt+1) = *(dpnt+2) = 0; }
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_MONO)
-                *(dpnt) = 0;
+                *(dpnt) = 0; }
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_2vuy)
-                *(dpnt+1) = 0;
+                *(dpnt+0) = 128; *(dpnt+1) = 16; } // *(dpnt+0) is chroma, set to 128 to maintain black & white debug image.
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_yuvs)
-                *(dpnt+0) = 0;
+                *(dpnt+0) = 16; *(dpnt+1) = 128; } // *(dpnt+1) is chroma, set to 128 to maintain black & white debug image.
 #else
 #  error Unknown default pixel format defined in config.h
 #endif
-            }
         }
         if (arImageProcMode == AR_IMAGE_PROC_IN_HALF) pnt += arImXsize*AR_PIX_SIZE_DEFAULT;
     }
@@ -759,4 +771,17 @@ static ARInt16 *labeling3( ARUint8 *image, int thresh,
     *pos       = wpos;
     *clip      = wclip;
     return( l_image );
+}
+
+void arLabelingCleanup(void)
+{
+	if (arImageL) {
+		free (arImageL);
+		arImageL = NULL;
+		arImage = NULL;
+	}
+	if (arImageR) {
+		free (arImageR);
+		arImageR = NULL;
+	}
 }
