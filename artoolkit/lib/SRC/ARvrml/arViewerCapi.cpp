@@ -49,7 +49,7 @@ int arVrmlLoadFile(const char *file)
 {
   
     FILE             *fp;
-    openvrml::browser * myBrowser = 0;
+    openvrml::browser * myBrowser = NULL;
     char             buf[256], buf1[256];
     char             buf2[256];
     int              id;
@@ -65,7 +65,6 @@ int arVrmlLoadFile(const char *file)
     if( i == AR_VRML_MAX ) return -1;
     id = i;
 
-
     if( (fp=fopen(file, "r")) == NULL ) return -1;
 
     get_buff(buf, 256, fp);
@@ -77,21 +76,25 @@ int arVrmlLoadFile(const char *file)
     buf2[i+1] = '\0';
     sprintf(buf, "%s%s", buf2, buf1);
 
-    myBrowser = new openvrml::browser(std::cout, std::cerr);
-    if( !myBrowser) {fclose(fp); return -1;}
+    myBrowser = new arVrmlBrowser;
+    if (!myBrowser) {
+		fclose(fp);
+		return -1;
+	}
 
-    std::vector<std::string> uri(1, buf);
-    std::vector<std::string> parameter; 
-    myBrowser->load_url(uri, parameter);
-
-    viewer[id] = new arVrmlViewer(*myBrowser);
-    if(!viewer[id]) 
-    {
+    viewer[id] = new arVrmlViewer();
+    if (!viewer[id]) {
         delete myBrowser;
         fclose(fp);
         return -1;
     }
-    strcpy( viewer[id]->filename, buf );
+    strcpy(viewer[id]->filename, buf); // Save filename in viewer.
+	myBrowser->viewer(viewer[id]);
+	
+	std::vector<std::string> uri(1, buf);
+    std::vector<std::string> parameter; 
+    myBrowser->load_url(uri, parameter);
+	
     
     get_buff(buf, 256, fp);
     if( sscanf(buf, "%lf %lf %lf", &viewer[id]->translation[0], 

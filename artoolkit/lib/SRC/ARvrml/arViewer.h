@@ -22,15 +22,31 @@
 #ifndef AR_VRMLINT_H
 #define AR_VRMLINT_H
 
+#include <iostream>
+#include <fstream>
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/utility.hpp>
 #include <openvrml/browser.h>
 #include <openvrml/gl/viewer.h>
 #include <openvrml/bounding_volume.h>
+#ifdef _WIN32
+#  include <windows.h>
+#endif
+
+class arVrmlBrowser : public openvrml::browser {
+public:
+	arVrmlBrowser();
+	
+private:
+	virtual std::auto_ptr<openvrml::resource_istream>
+	do_get_resource(const std::string & uri);
+};
 
 class arVrmlViewer : public openvrml::gl::viewer {
 
 public:
-  arVrmlViewer(openvrml::browser& browser);
-  ~arVrmlViewer();
+  arVrmlViewer();
+  ~arVrmlViewer() throw ();
 
     char             filename[512];
     double           translation[3];
