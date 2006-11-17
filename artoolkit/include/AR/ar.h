@@ -579,6 +579,15 @@ ARInt16 *arLabeling( ARUint8 *image, int thresh,
                      int **label_ref );
 
 /**
+ * \brief clean up static data allocated by arLabeling.
+ *
+ * In debug mode, arLabeling may allocate and use static storage.
+ * This function deallocates this storage.
+ */
+ void arLabelingCleanup(void);
+
+
+/**
 * \brief  XXXBK
 *
 *  XXXBK
