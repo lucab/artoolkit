@@ -116,21 +116,13 @@
 
 /* Begin PBXBuildFile section */
 		4A304AE30A4B8D98003AD621 /* libjpeg.62.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A304AD90A4B8D98003AD621 /* libjpeg.62.0.0.dylib */; };
-		4A304AE40A4B8D98003AD621 /* libmozjs.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A304ADA0A4B8D98003AD621 /* libmozjs.dylib */; };
-		4A304AE50A4B8D98003AD621 /* libnspr4.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A304ADB0A4B8D98003AD621 /* libnspr4.dylib */; };
-		4A304AEA0A4B8D98003AD621 /* libplc4.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A304AE00A4B8D98003AD621 /* libplc4.dylib */; };
-		4A304AEB0A4B8D98003AD621 /* libplds4.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A304AE10A4B8D98003AD621 /* libplds4.dylib */; };
-		4A304AEC0A4B8D98003AD621 /* libpng.3.1.2.7.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A304AE20A4B8D98003AD621 /* libpng.3.1.2.7.dylib */; };
-		4A304AF50A4B8F67003AD621 /* libopenvrml-gl.5.0.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A304ADC0A4B8D98003AD621 /* libopenvrml-gl.5.0.1.dylib */; };
-		4A304AF60A4B8F67003AD621 /* libopenvrml.4.0.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A304ADE0A4B8D98003AD621 /* libopenvrml.4.0.1.dylib */; };
+		4A304AEC0A4B8D98003AD621 /* libpng12.0.12.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A304AE20A4B8D98003AD621 /* libpng12.0.12.0.dylib */; };
+		4A304AF50A4B8F67003AD621 /* libopenvrml-gl.6.0.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A304ADC0A4B8D98003AD621 /* libopenvrml-gl.6.0.3.dylib */; };
+		4A304AF60A4B8F67003AD621 /* libopenvrml.6.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A304ADE0A4B8D98003AD621 /* libopenvrml.6.1.0.dylib */; };
 		4A304B020A4B905A003AD621 /* libjpeg.62.0.0.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A304AD90A4B8D98003AD621 /* libjpeg.62.0.0.dylib */; };
-		4A304B030A4B905A003AD621 /* libmozjs.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A304ADA0A4B8D98003AD621 /* libmozjs.dylib */; };
-		4A304B040A4B905A003AD621 /* libnspr4.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A304ADB0A4B8D98003AD621 /* libnspr4.dylib */; };
-		4A304B050A4B905A003AD621 /* libopenvrml-gl.5.0.1.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A304ADC0A4B8D98003AD621 /* libopenvrml-gl.5.0.1.dylib */; };
-		4A304B060A4B905A003AD621 /* libopenvrml.4.0.1.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A304ADE0A4B8D98003AD621 /* libopenvrml.4.0.1.dylib */; };
-		4A304B070A4B905A003AD621 /* libplc4.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A304AE00A4B8D98003AD621 /* libplc4.dylib */; };
-		4A304B080A4B905A003AD621 /* libplds4.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A304AE10A4B8D98003AD621 /* libplds4.dylib */; };
-		4A304B090A4B905A003AD621 /* libpng.3.1.2.7.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A304AE20A4B8D98003AD621 /* libpng.3.1.2.7.dylib */; };
+		4A304B050A4B905A003AD621 /* libopenvrml-gl.6.0.3.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A304ADC0A4B8D98003AD621 /* libopenvrml-gl.6.0.3.dylib */; };
+		4A304B060A4B905A003AD621 /* libopenvrml.6.1.0.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A304ADE0A4B8D98003AD621 /* libopenvrml.6.1.0.dylib */; };
+		4A304B090A4B905A003AD621 /* libpng12.0.12.0.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A304AE20A4B8D98003AD621 /* libpng12.0.12.0.dylib */; };
 		4A3F11510649F8040042B0D7 /* mAlloc.c in Sources */ = {isa = PBXBuildFile; fileRef = 4A427D2B0484329900B56093 /* mAlloc.c */; };
 		4A3F11570649F8050042B0D7 /* mAllocDup.c in Sources */ = {isa = PBXBuildFile; fileRef = 4A427D2C0484329900B56093 /* mAllocDup.c */; };
 		4A3F11650649F8280042B0D7 /* mFree.c in Sources */ = {isa = PBXBuildFile; fileRef = 4A427D340484329900B56093 /* mFree.c */; };
@@ -200,7 +192,10 @@
 		4A8EA5A40658752200ADDDD1 /* gsub_lite.c in Sources */ = {isa = PBXBuildFile; fileRef = 4A8EA5A30658752200ADDDD1 /* gsub_lite.c */; };
 		4A8EA5B00658754A00ADDDD1 /* gsub_lite.h in Headers */ = {isa = PBXBuildFile; fileRef = 4A8EA5AF0658754A00ADDDD1 /* gsub_lite.h */; };
 		4AC48C650A37BA7F007A153D /* libARgsub_lite.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A66475606598B950061DA76 /* libARgsub_lite.a */; };
+		4ADBC7C10B0C0A5E00A1431F /* libboost_thread-1_33_1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4ADBC7C00B0C0A5E00A1431F /* libboost_thread-1_33_1.dylib */; };
+		4ADBCB3B0B0C157400A1431F /* libboost_thread-1_33_1.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4ADBC7C00B0C0A5E00A1431F /* libboost_thread-1_33_1.dylib */; };
 		4ADF303606A78E0B00F6204E /* arMultiGetTransMat.c in Sources */ = {isa = PBXBuildFile; fileRef = 4A427D490484329900B56093 /* arMultiGetTransMat.c */; };
+		4AF15F2E0AB129780015588E /* libstdc++.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4AF15F2D0AB129780015588E /* libstdc++.6.dylib */; };
 		4AF4982B066FFEBD00EEDF04 /* videoMacOSX.h in Headers */ = {isa = PBXBuildFile; fileRef = 4A427D0C0484329800B56093 /* videoMacOSX.h */; };
 		4AF49830066FFED200EEDF04 /* ar.h in Headers */ = {isa = PBXBuildFile; fileRef = 4A427D000484329800B56093 /* ar.h */; };
 		4AF49844066FFEE800EEDF04 /* param.h in Headers */ = {isa = PBXBuildFile; fileRef = 4A427D070484329800B56093 /* param.h */; };
@@ -397,8 +392,6 @@
 		788C83CC089AB78F003E3825 /* object.c in Sources */ = {isa = PBXBuildFile; fileRef = 4A1308AF075BE4A700D62ACD /* object.c */; };
 		788C83CD089AB795003E3825 /* simpleVRML.c in Sources */ = {isa = PBXBuildFile; fileRef = 4A1308B1075BE4A700D62ACD /* simpleVRML.c */; };
 		788C83DE089AB7E5003E3825 /* libARvrml.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A934D80086A2DB700DF2FAC /* libARvrml.a */; };
-		788C83E1089AB808003E3825 /* libstdc++.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A130A19075C284C00D62ACD /* libstdc++.a */; };
-		788C83E2089AB80D003E3825 /* libSystemStubs.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A934D7C086A2BB900DF2FAC /* libSystemStubs.a */; };
 		78A519C2089ABA58005197A0 /* Data in Resources */ = {isa = PBXBuildFile; fileRef = 782EA555089995C300A8A712 /* Data */; };
 		78A519C6089ABA58005197A0 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A3F167F064A0E270042B0D7 /* Carbon.framework */; };
 		78A519C7089ABA58005197A0 /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A3F14FC064A0C510042B0D7 /* GLUT.framework */; };
@@ -444,33 +437,6 @@
 		78D2541F089AA3AD0064B793 /* multiTest.c in Sources */ = {isa = PBXBuildFile; fileRef = 4A427CBD0484329800B56093 /* multiTest.c */; };
 		78D25420089AA3C80064B793 /* libARMulti.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A427D150484329800B56093 /* libARMulti.a */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXBuildRule section */
-		4A934B4D086A137B00DF2FAC /* PBXBuildRule */ = {
-			isa = PBXBuildRule;
-			compilerSpec = com.apple.compilers.gcc.3_3;
-			fileType = sourcecode.cpp;
-			isEditable = 1;
-			outputFiles = (
-			);
-		};
-		788C83E3089AB869003E3825 /* PBXBuildRule */ = {
-			isa = PBXBuildRule;
-			compilerSpec = com.apple.compilers.gcc.3_3;
-			fileType = sourcecode.c;
-			isEditable = 1;
-			outputFiles = (
-			);
-		};
-		788C83E4089AB870003E3825 /* PBXBuildRule */ = {
-			isa = PBXBuildRule;
-			compilerSpec = com.apple.compilers.gcc.3_3;
-			fileType = sourcecode.cpp;
-			isEditable = 1;
-			outputFiles = (
-			);
-		};
-/* End PBXBuildRule section */
 
 /* Begin PBXContainerItemProxy section */
 		4A3F14A9064A0B100042B0D7 /* PBXContainerItemProxy */ = {
@@ -1281,13 +1247,10 @@
 			dstSubfolderSpec = 6;
 			files = (
 				4A304B020A4B905A003AD621 /* libjpeg.62.0.0.dylib in CopyFiles */,
-				4A304B030A4B905A003AD621 /* libmozjs.dylib in CopyFiles */,
-				4A304B040A4B905A003AD621 /* libnspr4.dylib in CopyFiles */,
-				4A304B050A4B905A003AD621 /* libopenvrml-gl.5.0.1.dylib in CopyFiles */,
-				4A304B060A4B905A003AD621 /* libopenvrml.4.0.1.dylib in CopyFiles */,
-				4A304B070A4B905A003AD621 /* libplc4.dylib in CopyFiles */,
-				4A304B080A4B905A003AD621 /* libplds4.dylib in CopyFiles */,
-				4A304B090A4B905A003AD621 /* libpng.3.1.2.7.dylib in CopyFiles */,
+				4A304B050A4B905A003AD621 /* libopenvrml-gl.6.0.3.dylib in CopyFiles */,
+				4A304B060A4B905A003AD621 /* libopenvrml.6.1.0.dylib in CopyFiles */,
+				4A304B090A4B905A003AD621 /* libpng12.0.12.0.dylib in CopyFiles */,
+				4ADBCB3B0B0C157400A1431F /* libboost_thread-1_33_1.dylib in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1299,19 +1262,14 @@
 		4A1308AF075BE4A700D62ACD /* object.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = object.c; sourceTree = "<group>"; };
 		4A1308B0075BE4A700D62ACD /* object.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = object.h; sourceTree = "<group>"; };
 		4A1308B1075BE4A700D62ACD /* simpleVRML.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = simpleVRML.c; sourceTree = "<group>"; };
-		4A130A19075C284C00D62ACD /* libstdc++.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libstdc++.a"; path = "/usr/lib/gcc/darwin/3.3/libstdc++.a"; sourceTree = "<absolute>"; };
 		4A130A48075C2C1B00D62ACD /* simpleVRML.vcproj */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = simpleVRML.vcproj; sourceTree = "<group>"; };
 		4A2244940659A20D0014DA8E /* simpleLite.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = simpleLite.c; sourceTree = "<group>"; };
 		4A2244950659A20D0014DA8E /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
 		4A2246520659B1EA0014DA8E /* simpleLite */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = simpleLite; sourceTree = "<group>"; };
-		4A304AD90A4B8D98003AD621 /* libjpeg.62.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libjpeg.62.0.0.dylib; path = openvrml/lib/libjpeg.62.0.0.dylib; sourceTree = "<group>"; };
-		4A304ADA0A4B8D98003AD621 /* libmozjs.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmozjs.dylib; path = openvrml/lib/libmozjs.dylib; sourceTree = "<group>"; };
-		4A304ADB0A4B8D98003AD621 /* libnspr4.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libnspr4.dylib; path = openvrml/lib/libnspr4.dylib; sourceTree = "<group>"; };
-		4A304ADC0A4B8D98003AD621 /* libopenvrml-gl.5.0.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libopenvrml-gl.5.0.1.dylib"; path = "openvrml/lib/libopenvrml-gl.5.0.1.dylib"; sourceTree = "<group>"; };
-		4A304ADE0A4B8D98003AD621 /* libopenvrml.4.0.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopenvrml.4.0.1.dylib; path = openvrml/lib/libopenvrml.4.0.1.dylib; sourceTree = "<group>"; };
-		4A304AE00A4B8D98003AD621 /* libplc4.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libplc4.dylib; path = openvrml/lib/libplc4.dylib; sourceTree = "<group>"; };
-		4A304AE10A4B8D98003AD621 /* libplds4.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libplds4.dylib; path = openvrml/lib/libplds4.dylib; sourceTree = "<group>"; };
-		4A304AE20A4B8D98003AD621 /* libpng.3.1.2.7.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpng.3.1.2.7.dylib; path = openvrml/lib/libpng.3.1.2.7.dylib; sourceTree = "<group>"; };
+		4A304AD90A4B8D98003AD621 /* libjpeg.62.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libjpeg.62.0.0.dylib; path = "openvrml-0.16.1-bin-macosx/lib/libjpeg.62.0.0.dylib"; sourceTree = "<group>"; };
+		4A304ADC0A4B8D98003AD621 /* libopenvrml-gl.6.0.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libopenvrml-gl.6.0.3.dylib"; path = "openvrml-0.16.1-bin-macosx/lib/libopenvrml-gl.6.0.3.dylib"; sourceTree = "<group>"; };
+		4A304ADE0A4B8D98003AD621 /* libopenvrml.6.1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopenvrml.6.1.0.dylib; path = "openvrml-0.16.1-bin-macosx/lib/libopenvrml.6.1.0.dylib"; sourceTree = "<group>"; };
+		4A304AE20A4B8D98003AD621 /* libpng12.0.12.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpng12.0.12.0.dylib; path = "openvrml-0.16.1-bin-macosx/lib/libpng12.0.12.0.dylib"; sourceTree = "<group>"; };
 		4A307DCF07DD3E7B00613859 /* ARVideoSettingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARVideoSettingsController.m; sourceTree = "<group>"; };
 		4A3F14FC064A0C510042B0D7 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = /System/Library/Frameworks/GLUT.framework; sourceTree = "<absolute>"; };
 		4A3F14FD064A0C510042B0D7 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
@@ -1469,8 +1427,10 @@
 		4A83565E074D945A00F58781 /* arvrml.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = arvrml.h; sourceTree = "<group>"; };
 		4A8EA5A30658752200ADDDD1 /* gsub_lite.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = gsub_lite.c; sourceTree = "<group>"; };
 		4A8EA5AF0658754A00ADDDD1 /* gsub_lite.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = gsub_lite.h; sourceTree = "<group>"; };
+		4A928ED20AAE82DB00732556 /* conversions.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = conversions.c; sourceTree = "<group>"; };
+		4A928ED30AAE82DB00732556 /* conversions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = conversions.h; sourceTree = "<group>"; };
+		4A928ED40AAE82DB00732556 /* grabdma.tgz */ = {isa = PBXFileReference; lastKnownFileType = file; path = grabdma.tgz; sourceTree = "<group>"; };
 		4A934B5C086A150A00DF2FAC /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
-		4A934D7C086A2BB900DF2FAC /* libSystemStubs.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSystemStubs.a; path = /usr/lib/libSystemStubs.a; sourceTree = "<absolute>"; };
 		4A934D80086A2DB700DF2FAC /* libARvrml.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libARvrml.a; sourceTree = "<group>"; };
 		4A99C6520A59DCC3001B4C35 /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
 		4A99C6530A59DCC3001B4C35 /* video.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = video.c; sourceTree = "<group>"; };
@@ -1570,12 +1530,14 @@
 		4AC3C0DE07518F4B0073D2C6 /* relationTest.dsp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = relationTest.dsp; sourceTree = "<group>"; };
 		4AC3C0DF07518F650073D2C6 /* simpleTest.dsp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = simpleTest.dsp; sourceTree = "<group>"; };
 		4AC3C0E007518F790073D2C6 /* simpleTest2.dsp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = simpleTest2.dsp; sourceTree = "<group>"; };
+		4ADBC7C00B0C0A5E00A1431F /* libboost_thread-1_33_1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_thread-1_33_1.dylib"; path = "openvrml-0.16.1-bin-macosx/lib/libboost_thread-1_33_1.dylib"; sourceTree = "<group>"; };
 		4AE22FFD0659B7A80047D402 /* libARMulti.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libARMulti.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		4AE22FFE0659B7A80047D402 /* libARgsubUtil.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libARgsubUtil.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		4AE230010659B7A80047D402 /* libARvideo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libARvideo.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		4AE230150659B7A80047D402 /* libARgsub.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libARgsub.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		4AE230280659B7A80047D402 /* libARgsub_lite.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libARgsub_lite.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		4AE230340659B7A80047D402 /* libAR.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libAR.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		4AF15F2D0AB129780015588E /* libstdc++.6.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.6.dylib"; path = "/usr/lib/libstdc++.6.dylib"; sourceTree = "<absolute>"; };
 		4AFEA7E407DE94E100483D33 /* ARVideoSettingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARVideoSettingsController.h; sourceTree = "<group>"; };
 		4AFEA85207DEB00000483D33 /* videoInternal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = videoInternal.h; sourceTree = "<group>"; };
 		782EA3A508998E3500A8A712 /* collideTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = collideTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1905,16 +1867,12 @@
 				788C83BF089AB6AE003E3825 /* libARgsub_lite.a in Frameworks */,
 				788C83C0089AB6AE003E3825 /* libARvideo.a in Frameworks */,
 				788C83DE089AB7E5003E3825 /* libARvrml.a in Frameworks */,
-				788C83E2089AB80D003E3825 /* libSystemStubs.a in Frameworks */,
 				4A304AE30A4B8D98003AD621 /* libjpeg.62.0.0.dylib in Frameworks */,
-				4A304AE40A4B8D98003AD621 /* libmozjs.dylib in Frameworks */,
-				4A304AE50A4B8D98003AD621 /* libnspr4.dylib in Frameworks */,
-				4A304AF50A4B8F67003AD621 /* libopenvrml-gl.5.0.1.dylib in Frameworks */,
-				4A304AF60A4B8F67003AD621 /* libopenvrml.4.0.1.dylib in Frameworks */,
-				4A304AEA0A4B8D98003AD621 /* libplc4.dylib in Frameworks */,
-				4A304AEB0A4B8D98003AD621 /* libplds4.dylib in Frameworks */,
-				4A304AEC0A4B8D98003AD621 /* libpng.3.1.2.7.dylib in Frameworks */,
-				788C83E1089AB808003E3825 /* libstdc++.a in Frameworks */,
+				4A304AF50A4B8F67003AD621 /* libopenvrml-gl.6.0.3.dylib in Frameworks */,
+				4A304AF60A4B8F67003AD621 /* libopenvrml.6.1.0.dylib in Frameworks */,
+				4A304AEC0A4B8D98003AD621 /* libpng12.0.12.0.dylib in Frameworks */,
+				4ADBC7C10B0C0A5E00A1431F /* libboost_thread-1_33_1.dylib in Frameworks */,
+				4AF15F2E0AB129780015588E /* libstdc++.6.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2034,21 +1992,17 @@
 		4A3F1552064A0C7C0042B0D7 /* External Libraries & Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4ADBC7C00B0C0A5E00A1431F /* libboost_thread-1_33_1.dylib */,
 				4A304AD90A4B8D98003AD621 /* libjpeg.62.0.0.dylib */,
-				4A304ADA0A4B8D98003AD621 /* libmozjs.dylib */,
-				4A304ADB0A4B8D98003AD621 /* libnspr4.dylib */,
-				4A304ADC0A4B8D98003AD621 /* libopenvrml-gl.5.0.1.dylib */,
-				4A304ADE0A4B8D98003AD621 /* libopenvrml.4.0.1.dylib */,
-				4A304AE00A4B8D98003AD621 /* libplc4.dylib */,
-				4A304AE10A4B8D98003AD621 /* libplds4.dylib */,
-				4A304AE20A4B8D98003AD621 /* libpng.3.1.2.7.dylib */,
+				4A304ADC0A4B8D98003AD621 /* libopenvrml-gl.6.0.3.dylib */,
+				4A304ADE0A4B8D98003AD621 /* libopenvrml.6.1.0.dylib */,
+				4A304AE20A4B8D98003AD621 /* libpng12.0.12.0.dylib */,
 				4A934B5C086A150A00DF2FAC /* Cocoa.framework */,
 				4A3F167F064A0E270042B0D7 /* Carbon.framework */,
 				4A3F14FC064A0C510042B0D7 /* GLUT.framework */,
 				4A3F14FD064A0C510042B0D7 /* OpenGL.framework */,
 				4A3F14FE064A0C510042B0D7 /* QuickTime.framework */,
-				4A130A19075C284C00D62ACD /* libstdc++.a */,
-				4A934D7C086A2BB900DF2FAC /* libSystemStubs.a */,
+				4AF15F2D0AB129780015588E /* libstdc++.6.dylib */,
 			);
 			name = "External Libraries & Frameworks";
 			sourceTree = "<group>";
@@ -2412,6 +2366,9 @@
 		4A427D640484329900B56093 /* VideoLinux1394Cam */ = {
 			isa = PBXGroup;
 			children = (
+				4A928ED20AAE82DB00732556 /* conversions.c */,
+				4A928ED30AAE82DB00732556 /* conversions.h */,
+				4A928ED40AAE82DB00732556 /* grabdma.tgz */,
 				4A427D660484329900B56093 /* Makefile.in */,
 				4A427D670484329900B56093 /* video.c */,
 			);
@@ -2856,7 +2813,6 @@
 				4A835658074D936800F58781 /* Frameworks */,
 			);
 			buildRules = (
-				4A934B4D086A137B00DF2FAC /* PBXBuildRule */,
 			);
 			dependencies = (
 				4A83567C074D96E600F58781 /* PBXTargetDependency */,
@@ -3235,8 +3191,6 @@
 				4A304AD40A4B8C23003AD621 /* CopyFiles */,
 			);
 			buildRules = (
-				788C83E4089AB870003E3825 /* PBXBuildRule */,
-				788C83E3089AB869003E3825 /* PBXBuildRule */,
 			);
 			dependencies = (
 				788C83AF089AB6AE003E3825 /* PBXTargetDependency */,
@@ -4976,7 +4930,7 @@
 		4A7E9132085904A2001E80E8 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = ppc;
+				ARCHS = "$(NATIVE_ARCH)";
 				COPY_PHASE_STRIP = NO;
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = /;
@@ -4986,12 +4940,11 @@
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = (
-					/sw/include,
 					"$(HEADER_SEARCH_PATHS_QUOTED_1)",
 					"$(HEADER_SEARCH_PATHS_QUOTED_2)",
 				);
 				HEADER_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/include\"";
-				HEADER_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/openvrml/include\"";
+				HEADER_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/openvrml-0.16.1-bin-macosx/include\"";
 				INSTALL_PATH = "$(SRCROOT)/lib";
 				LIBRARY_STYLE = STATIC;
 				PRODUCT_NAME = ARvrml;
@@ -5003,7 +4956,7 @@
 		4A7E9133085904A2001E80E8 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = ppc;
+				ARCHS = "$(NATIVE_ARCH)";
 				COPY_PHASE_STRIP = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = /;
@@ -5011,12 +4964,11 @@
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = (
-					/sw/include,
 					"$(HEADER_SEARCH_PATHS_QUOTED_1)",
 					"$(HEADER_SEARCH_PATHS_QUOTED_2)",
 				);
 				HEADER_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/include\"";
-				HEADER_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/openvrml/include\"";
+				HEADER_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/openvrml-0.16.1-bin-macosx/include\"";
 				INSTALL_PATH = "$(SRCROOT)/lib";
 				LIBRARY_STYLE = STATIC;
 				PRODUCT_NAME = ARvrml;
@@ -5075,6 +5027,10 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				HEADERMAP_INCLUDES_FLAT_ENTRIES_FOR_TARGET_BEING_BUILT = NO;
+				HEADERMAP_INCLUDES_FRAMEWORK_ENTRIES_FOR_ALL_PRODUCT_TYPES = NO;
+				HEADERMAP_INCLUDES_NONPUBLIC_NONPRIVATE_HEADERS = NO;
+				PREBINDING = NO;
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 				WARNING_CFLAGS = "-Wmost";
 				ZERO_LINK = NO;
@@ -5089,6 +5045,10 @@
 				DSTROOT = /;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				HEADERMAP_INCLUDES_FLAT_ENTRIES_FOR_TARGET_BEING_BUILT = NO;
+				HEADERMAP_INCLUDES_FRAMEWORK_ENTRIES_FOR_ALL_PRODUCT_TYPES = NO;
+				HEADERMAP_INCLUDES_NONPUBLIC_NONPRIVATE_HEADERS = NO;
+				PREBINDING = NO;
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 				WARNING_CFLAGS = "-Wmost";
 			};
@@ -5709,18 +5669,18 @@
 		788C83C3089AB6AE003E3825 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = ppc;
+				ARCHS = "$(NATIVE_ARCH)";
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "examples/simpleVRML/simpleVRML-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
 				LIBRARY_SEARCH_PATHS = (
-					/sw/lib,
-					/usr/lib/gcc/darwin/3.3,
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/openvrml/lib\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/openvrml-0.16.1-bin-macosx/lib\"";
 				PRODUCT_NAME = simpleVRML;
 			};
 			name = Development;
@@ -5728,18 +5688,18 @@
 		788C83C4089AB6AE003E3825 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = ppc;
+				ARCHS = "$(NATIVE_ARCH)";
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "examples/simpleVRML/simpleVRML-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
 				LIBRARY_SEARCH_PATHS = (
-					lib,
-					/sw/lib,
-					/usr/lib/gcc/darwin/3.3,
-					"$(SRCROOT)/lib",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
 				);
-				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/openvrml/lib\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/lib\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/openvrml/lib\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/openvrml-0.16.1-bin-macosx/lib\"";
 				PRODUCT_NAME = simpleVRML;
 			};
 			name = Deployment;
