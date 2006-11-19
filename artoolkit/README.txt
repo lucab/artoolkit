@@ -171,6 +171,7 @@ Known issues in this release.
 - On Windows, it is not easy to work out what to put into the DSVideoLib xml config file. Particularly, DirectShow IDs may include a "&" character, which needs to be escaped in xml (i.e. changed to "&amp;" wherever it occurs).
 - The Mac video library does not yet use the new QuickTime 7 video pipeline.
 - Changing the pixel format requires recompilation of libAR. This problem is solved in ARToolKit Professional v4 (commercially-licensed).
+- The Mac default pixel format has been changed back to ARGB for compatibility with the OSGART project release.
 
 
 Changes in earlier releases.

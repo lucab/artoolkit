@@ -128,7 +128,7 @@
 #    undef   AR_BIG_ENDIAN   // Least significant Byte has greatest address in memory (i386).
 #    define  AR_LITTLE_ENDIAN
 #  endif
-#  define  AR_DEFAULT_PIXEL_FORMAT AR_PIXEL_FORMAT_2vuy
+#  define  AR_DEFAULT_PIXEL_FORMAT AR_PIXEL_FORMAT_ARGB
 #endif
 
 
