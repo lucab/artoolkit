@@ -5,6 +5,7 @@ Read me for ARToolKit-2.72.
 Contents.
 ---------
 About this archive.
+The ARToolKit license model.
 Building on Windows.
 Building on Linux / SGI Irix.
 Building on Mac OS X.
@@ -17,7 +18,7 @@ About this archive.
 -------------------
 This archive contains the ARToolKit libraries, utilities and examples, version 2.72.
 
-ARToolKit is released under the GNU General Public License (GPL). Please read the file COPYING.txt.
+ARToolKit version 2.72 is released under the GNU General Public License (GPL). Please read the file COPYING.txt.
 
 The latest version of ARToolKit is available from http://sf.net/projects/artoolkit.
 
@@ -28,6 +29,26 @@ This archive was assembled by:
     HIT Lab NZ
     http://www.hitlabnz.org
     2006-11-20
+
+
+The ARToolKit license model.
+----------------------------
+
+ARToolKit is made available under a dual-license model. As it has been since the first public release of version 1.0, ARToolKit is freely available for non-commercial use under the terms of the GNU General Public License. A proprietary version of ARToolKit developed in parallel for professional commercial use by ARToolworks, Inc. is made available under different license terms, to suit end-user need.
+
+We believe this model offers the best of both worlds. Persons developing their software under an open source model are freely availed of the ARToolKit source code, and the ARToolKit open source project benefits in return from enhancements, bug reports, and external development ideas. Those persons developing under a proprietary source model, from whom the ARToolKit code base does not benefit through reciprocal openness, contribute financially instead. License fees fund research and development of today's and tomorrow's versions of the ARToolKit through research activities at partner institutions.
+
+The GPL-licensed toolkit.:
+
+ARToolKit versions 1.0 through 2.x are available under the GPL. Please read the full text of the GPL prior to downloading and/or using the ARToolKit source code. Your downloading and/or use of the code signifies acceptance of the terms and conditions of the license. If you are unable to comply with the license terms, please immediately destroy all copies of the code in your possession.
+
+Please be aware that while the GPL allows you to freely use the source code, it also imposes certain restrictions on the way in which you can use the code. Your attention is drawn particularly to section 2b of the GPL: "You must cause any work that you distribute or publish, that in whole or in part contains or is derived from the Program or any part thereof, to be licensed as a whole at no charge to all third parties under the terms of this License.", i.e. your software incorporating or linking to ARToolKit must also be open-source software, licensed under the GPL. Use of the ARToolKit in breach of the terms of the GPL will be subject to legal action by the copyright holders.
+
+Licenses for professional and commercial use.:
+
+In response to demand from toolkit users, the holders of the copyright on much of the ARToolKit version 1.0 - 2.x code have elected to make this code and other substantially advanced ARToolKit and AR code available under proprietary licenses for professional and commercial use by persons for whom the GPL license is not ideal. These license arrangements are managed by ARToolworks, Inc., Seattle, WA, USA. A variety of license types are available at reasonable cost. Please contact ARToolworks, Inc. directly for information on products, license terms, and pricing.
+
+ARToolworks also provide a variety of value-added services, including professional support, customization and other modifications, and end-user turnkey applications.
 
 
 Building on Windows.
@@ -127,26 +148,35 @@ The VRML renderering library and example (libARvrml & simpleVRML) are optional b
 Changes in version 2.72 (this release) (2006-11-20).
 ------------------------------------------------------
 All platforms:
-New feature: ARToolKit now supports querying of SDK and runtime versions.
-New feature: There are now right-hand coordinate system versions of the OpenGL projection and modelview matrix functions, named arglCameraFrustumRH and arglCameraViewRH, respectively. These will help when integrating ARToolKit into existing OpenGL drawing.
-Enhancement: Support for AR_PIXEL_FORMAT_MONO is now included.
-Enhancement: gsub_lite now supports arDebug mode.
-Enhancement: ARvrml now builds against OpenVRML-0.16.1.
+- New feature: ARToolKit now supports querying of SDK and runtime versions.
+- New feature: There are now right-hand coordinate system versions of the OpenGL projection and modelview matrix functions, named arglCameraFrustumRH and arglCameraViewRH, respectively. These will help when integrating ARToolKit into existing OpenGL drawing.
+- Enhancement: Support for AR_PIXEL_FORMAT_MONO is now included.
+- Enhancement: gsub_lite now supports arDebug mode.
+- Enhancement: ARvrml now builds against OpenVRML-0.16.1.
+- Enhancement: The license model is now stated more clearly in the readme.
 
 Mac OS X:
-Bug fix: Fix for an error in the VRML library inclusion on Mac OS X.
-Bug fix: Now detects if running emulated on Intel Macs, and optimises video for this case.
-Enhancement: Two new video config tokens are now available; -fliph and -flipv, which will mirror the video image horizontally and vertically respectively.
+- Bug fix: Fix for an error in the VRML library inclusion on Mac OS X.
+- Bug fix: Now detects if running emulated on Intel Macs, and optimises video for this case.
+- Enhancement: Two new video config tokens are now available; -fliph and -flipv, which will mirror the video image horizontally and vertically respectively.
 
 Linux:
-New feature: Support for gstreamer video capture added, thanks to Hartmut Seichter.
-Enhancement: Major changes to Video1394DC- add PointGray DragonFly support, add LGPL/GPL license info, better config string support, stabilised interfaces, lots of clean ups to make the code easier to work with.
-Bug fix: Using PAL in VideoLinuxDV as reported at http://www.hitlabnz.org/forum/showthread.php?t=412.
+- New feature: Support for gstreamer video capture added, thanks to Hartmut Seichter.
+- Enhancement: Major changes to Video1394DC- add PointGray DragonFly support, add LGPL/GPL license info, better config string support, stabilised interfaces, lots of clean ups to make the code easier to work with.
+- Bug fix: Using PAL in VideoLinuxDV as reported at http://www.hitlabnz.org/forum/showthread.php?t=412.
+
+
+Known issues in this release.
+-----------------------------
+- On Windows, it is not easy to work out what to put into the DSVideoLib xml config file. Particularly, DirectShow IDs may include a "&" character, which needs to be escaped in xml (i.e. changed to "&amp;" wherever it occurs).
+- The Mac video library does not yet use the new QuickTime 7 video pipeline.
+- Changing the pixel format requires recompilation of libAR. This problem is solved in ARToolKit Professional v4 (commercially-licensed).
 
 
 Changes in earlier releases.
 ----------------------------
 Please see the file ChangeLog.txt.
+
 
 --
 EOF
