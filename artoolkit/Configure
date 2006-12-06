@@ -40,6 +40,20 @@ then
     read ANS
     if [ "$ANS" = "1" ]
     then
+		echo
+		echo "Color conversion should use x86 assembly (choose 'n' for 64bit systems)?"
+ 		echo -n "Enter : "
+		read ANS
+		if [ "$ANS" = "y" ]
+		then
+			CCVT_OBJ="ccvt_i386.o"
+		elif [ "$ANS" = "n" ]
+		then
+			CCVT_OBJ="ccvt_c.o"
+		else
+			echo "Please enter y or n."
+			exit 0
+		fi	
         VIDEO_DRIVER="VideoLinuxV4L"
         CFLAG="-O -I/usr/X11R6/include"
         LDFLAG="-L/usr/X11R6/lib"
@@ -49,6 +63,20 @@ then
         CONFIG="AR_INPUT_V4L"
     elif [ "$ANS" = "2" ]
     then
+		echo
+		echo "Color conversion should use x86 assembly (not working for 64bit)?"
+ 		echo -n "Enter : "
+		read ANS
+		if [ "$ANS" = "y" ]
+		then
+			CCVT_OBJ="ccvt_i386.o"
+		elif [ "$ANS" = "n" ]
+		then
+			CCVT_OBJ="ccvt_c.o"
+		else
+			echo "Please enter y or n."
+			exit 0
+		fi		
         VIDEO_DRIVER="VideoLinuxV4L"
         CFLAG="-O -I/usr/X11R6/include -DUSE_EYETOY"
         LDFLAG="-L/usr/X11R6/lib"
@@ -176,6 +204,8 @@ echo $RANLIB | sed -e 's/\//\\\//g' >$SED
 RANLIB=`cat $SED`
 echo $LIBS | sed -e 's/\//\\\//g' >$SED
 LIBS=`cat $SED`
+echo $CCVT_OBJ | sed -e 's/\//\\\//g' >$SED
+CCVT_OBJ=`cat $SED`
 
 cat > $SED <<EOF
 s/@VIDEO_DRIVER@/$VIDEO_DRIVER/
@@ -184,6 +214,7 @@ s/@LDFLAG@/$LDFLAG/
 s/@ARFLAG@/$ARFLAG/
 s/@RANLIB@/$RANLIB/
 s/@LIBS@/$LIBS/
+s/@CCVT_OBJ@/$CCVT_OBJ/
 EOF
 
 

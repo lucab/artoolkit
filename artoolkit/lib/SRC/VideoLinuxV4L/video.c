@@ -593,9 +593,13 @@ ARUint8 *ar2VideoGetImage( AR2VideoParamT *vid )
     if(vid->palette == VIDEO_PALETTE_YUV420P)
     {
 
-        ccvt_420p_bgr24(vid->width, vid->height, buf, buf+(vid->width*vid->height),
+        /* ccvt_420p_bgr24(vid->width, vid->height, buf, buf+(vid->width*vid->height),
 	 	        buf+(vid->width*vid->height)+(vid->width*vid->height)/4,
 		        vid->videoBuffer);
+		*/
+
+		ccvt_420p_bgr24(vid->width, vid->height, buf, vid->videoBuffer);
+
         return vid->videoBuffer;
     }
 #ifdef USE_EYETOY

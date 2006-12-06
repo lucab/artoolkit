@@ -21,7 +21,9 @@ INCLUDE= ${INC_DIR}/AR/video.h
 #
 #   compilation control
 #
-LIBOBJS= ${LIB}(video.o) ${LIB}(ccvt_i386.o)
+# LIBOBJS= ${LIB}(video.o) ${LIB}(ccvt_i386.o)
+LIBOBJS= ${LIB}(@CCVT_OBJ@) ${LIB}(video.o)
+
 
 all:		${LIBOBJS}
 
