@@ -191,7 +191,7 @@ void arVrmlViewer::redraw()
     glDepthFunc(GL_LEQUAL);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDisable(GL_FOG);          // this is a global attribute
-    glDisable(GL_TEXTURE_2D);
+    //glDisable(GL_TEXTURE_2D);
     glEnable(GL_CULL_FACE);
     glFrontFace(GL_CCW);
     glCullFace(GL_BACK);
@@ -222,7 +222,7 @@ void arVrmlViewer::redraw()
 	}
     glDisable(GL_BLEND);
     glDisable(GL_CULL_FACE);
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+    //glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 	
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
@@ -258,11 +258,15 @@ void arVrmlViewer::set_viewpoint(const openvrml::vec3f & position,
 }
 
 viewer::object_t arVrmlViewer::insert_background(const std::vector<float> & groundAngle,
-                              const std::vector<openvrml::color> & groundColor,
-                              const std::vector<float> & skyAngle,
-                              const std::vector<openvrml::color> & skyColor,
-                              size_t * whc,
-                              unsigned char ** pixels)
+												 const std::vector<color> & groundColor,
+												 const std::vector<float> & skyAngle,
+												 const std::vector<color> & skyColor,
+												 const image & front,
+												 const image & back,
+												 const image & left,
+												 const image & right,
+												 const image & top,
+												 const image & bottom)
 {
 	return 0;
 }

@@ -71,13 +71,17 @@ protected:
                                        float avatarSize,
                                        float visibilityLimit);
 
-    virtual viewer::object_t insert_background(const std::vector<float> & groundAngle,
-                              const std::vector<openvrml::color> & groundColor,
-                              const std::vector<float> & skyAngle,
-                              const std::vector<openvrml::color> & skyColor,
-                              size_t * whc = 0,
-                              unsigned char ** pixels = 0);
-
+   virtual viewer::object_t insert_background(const std::vector<float> & groundAngle,
+											  const std::vector<openvrml::color> & groundColor,
+											  const std::vector<float> & skyAngle,
+											  const std::vector<openvrml::color> & skyColor,
+											  const openvrml::image & front,
+											  const openvrml::image & back,
+											  const openvrml::image & left,
+											  const openvrml::image & right,
+											  const openvrml::image & top,
+											  const openvrml::image & bottom);
+		
     virtual viewer::object_t insert_dir_light(float ambientIntensity,
                                               float intensity,
                                               const openvrml::color & color,
