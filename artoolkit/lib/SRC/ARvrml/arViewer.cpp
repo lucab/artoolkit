@@ -28,12 +28,6 @@
  * 
  */
 
-//#ifdef _WIN32
-//#  include <windows.h>
-//#endif
-
-//#include <stdio.h>
-//#include <string.h>
 #include <iostream>
 #include <math.h>
 #ifdef __APPLE__
