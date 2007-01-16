@@ -185,46 +185,46 @@ static int setupCamera(const char *cparam_name, char *vconf, ARParam *cparam)
 
 static int setupMarker(const char *patt_name, int *patt_id)
 {
-	
-    if((*patt_id = arLoadPatt(patt_name)) < 0) {
-        fprintf(stderr, "setupMarker(): pattern load error !!\n");
-        return (FALSE);
-    }
-	
+	// Loading only 1 pattern in this example.
+	if((*patt_id = arLoadPatt(patt_name)) < 0) {
+		fprintf(stderr, "setupMarker(): pattern load error !!\n");
+		return (FALSE);
+	}
+
 	return (TRUE);
 }
 
 // Report state of ARToolKit global variables arFittingMode,
 // arImageProcMode, arglDrawMode, arTemplateMatchingMode, arMatchingPCAMode.
-static void debugReportMode(void)
+static void debugReportMode(const ARGL_CONTEXT_SETTINGS_REF arglContextSettings)
 {
-	if(arFittingMode == AR_FITTING_TO_INPUT ) {
+	if (arFittingMode == AR_FITTING_TO_INPUT) {
 		fprintf(stderr, "FittingMode (Z): INPUT IMAGE\n");
 	} else {
 		fprintf(stderr, "FittingMode (Z): COMPENSATED IMAGE\n");
 	}
 	
-	if( arImageProcMode == AR_IMAGE_PROC_IN_FULL ) {
+	if (arImageProcMode == AR_IMAGE_PROC_IN_FULL) {
 		fprintf(stderr, "ProcMode (X)   : FULL IMAGE\n");
 	} else {
 		fprintf(stderr, "ProcMode (X)   : HALF IMAGE\n");
 	}
 	
-	if (arglDrawModeGet(gArglSettings) == AR_DRAW_BY_GL_DRAW_PIXELS) {
+	if (arglDrawModeGet(arglContextSettings) == AR_DRAW_BY_GL_DRAW_PIXELS) {
 		fprintf(stderr, "DrawMode (C)   : GL_DRAW_PIXELS\n");
-	} else if (arglTexmapModeGet(gArglSettings) == AR_DRAW_TEXTURE_FULL_IMAGE) {
+	} else if (arglTexmapModeGet(arglContextSettings) == AR_DRAW_TEXTURE_FULL_IMAGE) {
 		fprintf(stderr, "DrawMode (C)   : TEXTURE MAPPING (FULL RESOLUTION)\n");
 	} else {
 		fprintf(stderr, "DrawMode (C)   : TEXTURE MAPPING (HALF RESOLUTION)\n");
 	}
 		
-	if( arTemplateMatchingMode == AR_TEMPLATE_MATCHING_COLOR ) {
+	if (arTemplateMatchingMode == AR_TEMPLATE_MATCHING_COLOR) {
 		fprintf(stderr, "TemplateMatchingMode (M)   : Color Template\n");
 	} else {
 		fprintf(stderr, "TemplateMatchingMode (M)   : BW Template\n");
 	}
 	
-	if( arMatchingPCAMode == AR_MATCHING_WITHOUT_PCA ) {
+	if (arMatchingPCAMode == AR_MATCHING_WITHOUT_PCA) {
 		fprintf(stderr, "MatchingPCAMode (P)   : Without PCA\n");
 	} else {
 		fprintf(stderr, "MatchingPCAMode (P)   : With PCA\n");
@@ -265,7 +265,7 @@ static void Keyboard(unsigned char key, int x, int y)
 			fprintf(stderr, "*** Camera - %f (frame/sec)\n", (double)gCallCountMarkerDetect/arUtilTimer());
 			gCallCountMarkerDetect = 0;
 			arUtilTimerReset();
-			debugReportMode();
+			debugReportMode(gArglSettings);
 			break;
 		case 'D':
 		case 'd':
@@ -309,7 +309,6 @@ static void Idle(void)
 	// Grab a video frame.
 	if ((image = arVideoGetImage()) != NULL) {
 		gARTImage = image;	// Save the fetched image.
-		gPatt_found = FALSE;	// Invalidate any previous detected markers.
 		
 		gCallCountMarkerDetect++; // Increment ARToolKit FPS counter.
 		
@@ -332,6 +331,8 @@ static void Idle(void)
 			// Get the transformation between the marker and the real camera into gPatt_trans.
 			arGetTransMat(&(marker_info[k]), gPatt_centre, gPatt_width, gPatt_trans);
 			gPatt_found = TRUE;
+		} else {
+			gPatt_found = FALSE;
 		}
 		
 		// Tell GLUT the display has changed.
@@ -385,25 +386,28 @@ static void Display(void)
 	arVideoCapNext();
 	gARTImage = NULL; // Image data is no longer valid after calling arVideoCapNext().
 				
+	// Projection transformation.
+	arglCameraFrustumRH(&gARTCparam, VIEW_DISTANCE_MIN, VIEW_DISTANCE_MAX, p);
+	glMatrixMode(GL_PROJECTION);
+	glLoadMatrixd(p);
+	glMatrixMode(GL_MODELVIEW);
+		
+	// Viewing transformation.
+	glLoadIdentity();
+	// Lighting and geometry that moves with the camera should go here.
+	// (I.e. must be specified before viewing transformations.)
+	//none
+	
 	if (gPatt_found) {
-		// Projection transformation.
-		arglCameraFrustumRH(&gARTCparam, VIEW_DISTANCE_MIN, VIEW_DISTANCE_MAX, p);
-		glMatrixMode(GL_PROJECTION);
-		glLoadMatrixd(p);
-		glMatrixMode(GL_MODELVIEW);
-		
-		// Viewing transformation.
-		glLoadIdentity();
-		// Lighting and geometry that moves with the camera should go here.
-		// (I.e. must be specified before viewing transformations.)
-		//none
-		
-		// ARToolKit supplied distance in millimetres, but I want OpenGL to work in my units.
+	
+		// Calculate the camera position relative to the marker.
+		// Replace VIEW_SCALEFACTOR with 1.0 to make one drawing unit equal to 1.0 ARToolKit units (usually millimeters).
 		arglCameraViewRH(gPatt_trans, m, VIEW_SCALEFACTOR);
 		glLoadMatrixd(m);
 
-		// All other lighting and geometry goes here.
+		// All lighting and geometry to be drawn relative to the marker goes here.
 		DrawCube();
+	
 	} // gPatt_found
 	
 	// Any 2D overlays go here.
@@ -440,11 +444,7 @@ int main(int argc, char** argv)
 		fprintf(stderr, "main(): Unable to set up AR camera.\n");
 		exit(-1);
 	}
-	if (!setupMarker(patt_name, &gPatt_id)) {
-		fprintf(stderr, "main(): Unable to set up AR marker.\n");
-		exit(-1);
-	}
-	
+
 	// ----------------------------------------------------------------------------
 	// Library setup.
 	//
@@ -466,10 +466,15 @@ int main(int argc, char** argv)
 		fprintf(stderr, "main(): arglSetupForCurrentContext() returned error.\n");
 		exit(-1);
 	}
-	debugReportMode();
+	debugReportMode(gArglSettings);
 	glEnable(GL_DEPTH_TEST);
 	arUtilTimerReset();
 		
+	if (!setupMarker(patt_name, &gPatt_id)) {
+		fprintf(stderr, "main(): Unable to set up AR marker.\n");
+		Quit();
+	}
+	
 	// Register GLUT event-handling callbacks.
 	// NB: Idle() is registered by Visibility.
 	glutDisplayFunc(Display);

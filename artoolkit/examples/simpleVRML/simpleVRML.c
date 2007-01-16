@@ -66,11 +66,9 @@
 //	Constants
 // ============================================================================
 
-#define VIEW_SCALEFACTOR		0.025		// 1.0 ARToolKit unit becomes 0.025 of my OpenGL units.
-#define VIEW_SCALEFACTOR_1		1.0			// 1.0 ARToolKit unit becomes 1.0 of my OpenGL units.
-#define VIEW_SCALEFACTOR_4		4.0			// 1.0 ARToolKit unit becomes 4.0 of my OpenGL units.
-#define VIEW_DISTANCE_MIN		4.0			// Objects closer to the camera than this will not be displayed.
-#define VIEW_DISTANCE_MAX		4000.0		// Objects further away from the camera than this will not be displayed.
+#define VIEW_SCALEFACTOR		1.0			// 1.0 ARToolKit unit becomes 1.0 of my OpenGL units.
+#define VIEW_DISTANCE_MIN		10.0		// Objects closer to the camera than this will not be displayed.
+#define VIEW_DISTANCE_MAX		10000.0		// Objects further away from the camera than this will not be displayed.
 
 
 // ============================================================================
@@ -90,9 +88,6 @@ static ARUint8		*gARTImage = NULL;
 // Marker detection.
 static int			gARTThreshhold = 100;
 static long			gCallCountMarkerDetect = 0;
-
-// Transformation matrix retrieval.
-static int			gPatt_found = FALSE;	// At least one marker.
 
 // Drawing.
 static ARParam		gARTCparam;
@@ -140,50 +135,49 @@ static int setupCamera(const char *cparam_name, char *vconf, ARParam *cparam)
 	return (TRUE);
 }
 
-static int setupMarkersObjects(char *objectDataFilename)
+static int setupMarkersObjects(char *objectDataFilename, ObjectData_T **objectDataRef, int *objectDataCountRef)
 {	
 	// Load in the object data - trained markers and associated bitmap files.
-    if ((gObjectData = read_VRMLdata(objectDataFilename, &gObjectDataCount)) == NULL) {
+    if ((*objectDataRef = read_VRMLdata(objectDataFilename, objectDataCountRef)) == NULL) {
         fprintf(stderr, "setupMarkersObjects(): read_VRMLdata returned error !!\n");
         return (FALSE);
     }
+    printf("Object count = %d\n", *objectDataCountRef);
 
-    printf("Object count = %d\n", gObjectDataCount);
-	
 	return (TRUE);
 }
 
 // Report state of ARToolKit global variables arFittingMode,
 // arImageProcMode, arglDrawMode, arTemplateMatchingMode, arMatchingPCAMode.
-static void debugReportMode(void)
+static void debugReportMode(const ARGL_CONTEXT_SETTINGS_REF arglContextSettings)
 {
-	if(arFittingMode == AR_FITTING_TO_INPUT ) {
+	if (arFittingMode == AR_FITTING_TO_INPUT) {
 		fprintf(stderr, "FittingMode (Z): INPUT IMAGE\n");
 	} else {
 		fprintf(stderr, "FittingMode (Z): COMPENSATED IMAGE\n");
 	}
 	
-	if( arImageProcMode == AR_IMAGE_PROC_IN_FULL ) {
+	if (arImageProcMode == AR_IMAGE_PROC_IN_FULL) {
 		fprintf(stderr, "ProcMode (X)   : FULL IMAGE\n");
 	} else {
 		fprintf(stderr, "ProcMode (X)   : HALF IMAGE\n");
 	}
 	
-	if (arglDrawModeGet(gArglSettings) == AR_DRAW_BY_GL_DRAW_PIXELS) {
+	if (arglDrawModeGet(arglContextSettings) == AR_DRAW_BY_GL_DRAW_PIXELS) {
 		fprintf(stderr, "DrawMode (C)   : GL_DRAW_PIXELS\n");
-	} else if (arglTexmapModeGet(gArglSettings) == AR_DRAW_TEXTURE_FULL_IMAGE) {
+	} else if (arglTexmapModeGet(arglContextSettings) == AR_DRAW_TEXTURE_FULL_IMAGE) {
 		fprintf(stderr, "DrawMode (C)   : TEXTURE MAPPING (FULL RESOLUTION)\n");
 	} else {
 		fprintf(stderr, "DrawMode (C)   : TEXTURE MAPPING (HALF RESOLUTION)\n");
 	}
 		
-	if( arTemplateMatchingMode == AR_TEMPLATE_MATCHING_COLOR ) {
+	if (arTemplateMatchingMode == AR_TEMPLATE_MATCHING_COLOR) {
 		fprintf(stderr, "TemplateMatchingMode (M)   : Color Template\n");
 	} else {
 		fprintf(stderr, "TemplateMatchingMode (M)   : BW Template\n");
 	}
 	
-	if( arMatchingPCAMode == AR_MATCHING_WITHOUT_PCA ) {
+	if (arMatchingPCAMode == AR_MATCHING_WITHOUT_PCA) {
 		fprintf(stderr, "MatchingPCAMode (P)   : Without PCA\n");
 	} else {
 		fprintf(stderr, "MatchingPCAMode (P)   : With PCA\n");
@@ -203,7 +197,8 @@ static void Quit(void)
 
 static void Keyboard(unsigned char key, int x, int y)
 {
-	int mode;
+	int mode, threshChange = 0;
+	
 	switch (key) {
 		case 0x1B:						// Quit.
 		case 'Q':
@@ -224,19 +219,38 @@ static void Keyboard(unsigned char key, int x, int y)
 			fprintf(stderr, "*** Camera - %f (frame/sec)\n", (double)gCallCountMarkerDetect/arUtilTimer());
 			gCallCountMarkerDetect = 0;
 			arUtilTimerReset();
-			debugReportMode();
+			debugReportMode(gArglSettings);
+			break;
+		case '-':
+			threshChange = -5;
+			break;
+		case '+':
+		case '=':
+			threshChange = +5;
+			break;
+		case 'D':
+		case 'd':
+			arDebug = !arDebug;
 			break;
 		case '?':
 		case '/':
 			printf("Keys:\n");
 			printf(" q or [esc]    Quit demo.\n");
 			printf(" c             Change arglDrawMode and arglTexmapMode.\n");
+			printf(" - and +       Adjust threshhold.\n");
+			printf(" d             Activate / deactivate debug mode.\n");
 			printf(" ? or /        Show this help.\n");
 			printf("\nAdditionally, the ARVideo library supplied the following help text:\n");
 			arVideoDispOption();
 			break;
 		default:
 			break;
+	}
+	if (threshChange) {
+		gARTThreshhold += threshChange;
+		if (gARTThreshhold < 0) gARTThreshhold = 0;
+		if (gARTThreshhold > 255) gARTThreshhold = 255;
+		printf("Threshhold changed to %d.\n", gARTThreshhold);
 	}
 }
 
@@ -263,7 +277,6 @@ static void Idle(void)
 	// Grab a video frame.
 	if ((image = arVideoGetImage()) != NULL) {
 		gARTImage = image;	// Save the fetched image.
-		gPatt_found = FALSE;	// Invalidate any previous detected markers.
 		
 		gCallCountMarkerDetect++; // Increment ARToolKit FPS counter.
 		
@@ -299,13 +312,12 @@ static void Idle(void)
 									  gObjectData[i].trans);
 				}
 				gObjectData[i].visible = 1;
-				gPatt_found = TRUE;
 			} else {
 				gObjectData[i].visible = 0;
 			}
 		}
 		
-		// Tell GLUT to update the display.
+		// Tell GLUT the display has changed.
 		glutPostRedisplay();
 	}
 }
@@ -357,31 +369,32 @@ static void Display(void)
 	arVideoCapNext();
 	gARTImage = NULL; // Image data is no longer valid after calling arVideoCapNext().
 				
-	if (gPatt_found) {
-		// Projection transformation.
-		arglCameraFrustumRH(&gARTCparam, VIEW_DISTANCE_MIN, VIEW_DISTANCE_MAX, p);
-		glMatrixMode(GL_PROJECTION);
-		glLoadMatrixd(p);
-		glMatrixMode(GL_MODELVIEW);
+	// Projection transformation.
+	arglCameraFrustumRH(&gARTCparam, VIEW_DISTANCE_MIN, VIEW_DISTANCE_MAX, p);
+	glMatrixMode(GL_PROJECTION);
+	glLoadMatrixd(p);
+	glMatrixMode(GL_MODELVIEW);
 		
-		// Viewing transformation.
-		glLoadIdentity();
-		// Lighting and geometry that moves with the camera should go here.
-		// (I.e. must be specified before viewing transformations.)
-		//none
-		
-		// All other lighting and geometry goes here.
-		// Calculate the camera position for each object and draw it.
-		for (i = 0; i < gObjectDataCount; i++) {
-			if ((gObjectData[i].visible != 0) && (gObjectData[i].vrml_id >= 0)) {
-				//fprintf(stderr, "About to draw object %i\n", i);
-				arglCameraViewRH(gObjectData[i].trans, m, VIEW_SCALEFACTOR_4);
-				glLoadMatrixd(m);
+	// Viewing transformation.
+	glLoadIdentity();
+	// Lighting and geometry that moves with the camera should go here.
+	// (I.e. must be specified before viewing transformations.)
+	//none
+	
+	for (i = 0; i < gObjectDataCount; i++) {
+	
+		if ((gObjectData[i].visible != 0) && (gObjectData[i].vrml_id >= 0)) {
+	
+			// Calculate the camera position for the object and draw it.
+			// Replace VIEW_SCALEFACTOR with 1.0 to make one drawing unit equal to 1.0 ARToolKit units (usually millimeters).
+			arglCameraViewRH(gObjectData[i].trans, m, VIEW_SCALEFACTOR);
+			glLoadMatrixd(m);
 
-				arVrmlDraw(gObjectData[i].vrml_id);
-			}			
-		}
-	} // gPatt_found
+			// All lighting and geometry to be drawn relative to the marker goes here.
+			//fprintf(stderr, "About to draw object %i\n", i);
+			arVrmlDraw(gObjectData[i].vrml_id);
+		}			
+	}
 	
 	// Any 2D overlays go here.
 	//none
@@ -393,8 +406,10 @@ int main(int argc, char** argv)
 {
 	int i;
 	char glutGamemode[32];
-	const char *cparam_name = 
-		"Data/camera_para.dat";
+	const char *cparam_name = "Data/camera_para.dat";
+	//
+	// Camera configuration.
+	//
 #ifdef _WIN32
 	char			*vconf = "Data\\WDM_camera_flipV.xml";
 #else
@@ -433,7 +448,7 @@ int main(int argc, char** argv)
 		glutGameModeString(glutGamemode);
 		glutEnterGameMode();
 	} else {
-		glutInitWindowSize(gARTCparam.xsize, gARTCparam.ysize);
+		glutInitWindowSize(prefWidth, prefHeight);
 		glutCreateWindow(argv[0]);
 	}
 
@@ -442,10 +457,11 @@ int main(int argc, char** argv)
 		fprintf(stderr, "main(): arglSetupForCurrentContext() returned error.\n");
 		exit(-1);
 	}
-	debugReportMode();
+	debugReportMode(gArglSettings);
+	glEnable(GL_DEPTH_TEST);
 	arUtilTimerReset();
 
-	if (!setupMarkersObjects(objectDataFilename)) {
+	if (!setupMarkersObjects(objectDataFilename, &gObjectData, &gObjectDataCount)) {
 		fprintf(stderr, "main(): Unable to set up AR objects and markers.\n");
 		Quit();
 	}
