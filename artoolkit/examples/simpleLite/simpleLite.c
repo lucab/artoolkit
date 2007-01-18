@@ -186,7 +186,7 @@ static int setupCamera(const char *cparam_name, char *vconf, ARParam *cparam)
 static int setupMarker(const char *patt_name, int *patt_id)
 {
 	// Loading only 1 pattern in this example.
-	if((*patt_id = arLoadPatt(patt_name)) < 0) {
+	if ((*patt_id = arLoadPatt(patt_name)) < 0) {
 		fprintf(stderr, "setupMarker(): pattern load error !!\n");
 		return (FALSE);
 	}

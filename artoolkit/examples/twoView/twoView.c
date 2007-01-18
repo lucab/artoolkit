@@ -232,8 +232,8 @@ static int setupCameras(const int cameraCount, const char *cparam_names[], char 
 
 static int setupMarker(const char *patt_name, int *patt_id)
 {
-	
-    if((*patt_id = arLoadPatt(patt_name)) < 0) {
+	// Loading only 1 pattern in this example.
+    if ((*patt_id = arLoadPatt(patt_name)) < 0) {
         fprintf(stderr, "setupMarker(): pattern load error !!\n");
         return (FALSE);
     }
@@ -277,25 +277,8 @@ static void debugReportMode(ARGL_CONTEXT_SETTINGS_REF	arglSettings)
 		fprintf(stderr, "MatchingPCAMode (P)   : With PCA\n");
 	}
 #ifdef APPLE_TEXTURE_FAST_TRANSFER
-#  ifdef GL_APPLE_client_storage
 	fprintf(stderr, "arglAppleClientStorage is %d.\n", arglAppleClientStorage);
-#  endif // GL_APPLE_client_storage
-#  ifdef GL_APPLE_texture_range
 	fprintf(stderr, "arglAppleTextureRange is %d.\n", arglAppleTextureRange);
-	fprintf(stderr, "arglAppleTextureRangeStorageHint is ");
-	switch (arglAppleTextureRangeStorageHint) {
-		case GL_STORAGE_SHARED_APPLE:
-			fprintf(stderr, "GL_STORAGE_SHARED_APPLE.\n");
-			break;
-		case GL_STORAGE_CACHED_APPLE:
-			fprintf(stderr, "GL_STORAGE_CACHED_APPLE.\n");
-			break;
-		default:
-		case GL_STORAGE_PRIVATE_APPLE:
-			fprintf(stderr, "GL_STORAGE_PRIVATE_APPLE.\n");
-			break;
-	}
-#  endif // GL_APPLE_texture_range
 #endif // APPLE_TEXTURE_FAST_TRANSFER
 }
 
@@ -405,7 +388,6 @@ static void Idle(void)
 		// Grab a video frame.
 		if ((image = ar2VideoGetImage(gContextsActive[i].ARTVideo)) != NULL) {
 			gContextsActive[i].ARTImage = image;	// Save the fetched image.
-			gContextsActive[i].patt_found = FALSE;	// Invalidate any previous detected markers.
 			
 			gContextsActive[i].callCountMarkerDetect++; // Increment ARToolKit FPS counter.
 			//fprintf(stderr, "Idle(): Got image #%ld from cam %d on attempt #%ld.\n", gContextsActive[i].callCountMarkerDetect, i + 1, gCallCountGetImage);
@@ -421,7 +403,7 @@ static void Idle(void)
 			for (j = 0; j < marker_num; j++) {
 				if (marker_info[j].id == gPatt_id) {
 					if (k == -1) k = j; // First marker detected.
-					else if(marker_info[j].cf > marker_info[k].cf) k = j; // Higher confidence marker detected.
+					else if (marker_info[j].cf > marker_info[k].cf) k = j; // Higher confidence marker detected.
 				}
 			}
 			
@@ -429,6 +411,8 @@ static void Idle(void)
 				// Get the transformation between the marker and the real camera into gPatt_trans1.
 				arGetTransMat(&(marker_info[k]), gPatt_centre, gPatt_width, gContextsActive[i].patt_trans);
 				gContextsActive[i].patt_found = TRUE;
+			} else {
+				gContextsActive[i].patt_found = FALSE;
 			}
 	
 			glutPostWindowRedisplay(gContextsActive[i].apiContextIndex);
@@ -486,26 +470,28 @@ static void DisplayPerContext(const int drawContextIndex)
 	ar2VideoCapNext(gContextsActive[drawContextIndex].ARTVideo);
 	gContextsActive[drawContextIndex].ARTImage = NULL; // Image data is no longer valid after calling ar2VideoCapNext().
 	
+	// Projection transformation.
+	arglCameraFrustumRH(&(gContextsActive[drawContextIndex].ARTCparam), VIEW_DISTANCE_MIN, VIEW_DISTANCE_MAX, p);
+	glMatrixMode(GL_PROJECTION);
+	glLoadMatrixd(p);
+	glMatrixMode(GL_MODELVIEW);
+
+	// Viewing transformation.
+	glLoadIdentity();
+	// Lighting and geometry that moves with the camera should go here.
+	// (I.e. must be specified before viewing transformations.)
+	//none
+
 	if (gContextsActive[drawContextIndex].patt_found) {
 		
-		// Projection transformation.
-		arglCameraFrustumRH(&(gContextsActive[drawContextIndex].ARTCparam), VIEW_DISTANCE_MIN, VIEW_DISTANCE_MAX, p);
-		glMatrixMode(GL_PROJECTION);
-		glLoadMatrixd(p);
-		glMatrixMode(GL_MODELVIEW);
-		
-		// Viewing transformation.
-		glLoadIdentity();
-		// Lighting and geometry that moves with the camera should go here.
-		// (I.e. must be specified before viewing transformations.)
-		//none
-		
-		// ARToolKit supplied distance in millimetres, but I want OpenGL to work in my units.
+		// Calculate the camera position relative to the marker.
+		// Replace VIEW_SCALEFACTOR with 1.0 to make one drawing unit equal to 1.0 ARToolKit units (usually millimeters).
 		arglCameraViewRH(gContextsActive[drawContextIndex].patt_trans, m, VIEW_SCALEFACTOR);
 		glLoadMatrixd(m);
 		
-		// All other lighting and geometry goes here.
+		// All lighting and geometry to be drawn relative to the marker goes here.
 		DrawCube(drawContextIndex);
+
 	} // patt_found
 	
 	// Any 2D overlays go here.
@@ -588,11 +574,7 @@ int main(int argc, char** argv)
 		exit(-1);
 	}
 	gContextsActiveCount = CONTEXTSACTIVECOUNT;
-	for (i = 0; i < gContextsActiveCount; i++) 	if (!setupMarker(patt_name, &gPatt_id)) {
-		fprintf(stderr, "main(): Unable to set up AR marker.\n");
-		exit(-1);
-	}
-	
+
 	// ----------------------------------------------------------------------------
 	// Library setup.
 	//
@@ -624,6 +606,11 @@ int main(int argc, char** argv)
 		glEnable(GL_DEPTH_TEST);
 	}
 	arUtilTimerReset();
+	
+	if (!setupMarker(patt_name, &gPatt_id)) {
+		fprintf(stderr, "main(): Unable to set up AR marker in context %d.\n", i);
+		exit(-1);
+	}	
 		
 	// Register GLUT event-handling callbacks.
 	// NB: Idle() is registered by Visibility.
