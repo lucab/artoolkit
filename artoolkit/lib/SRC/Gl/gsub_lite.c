@@ -151,19 +151,16 @@ typedef struct _ARGL_CONTEXT_SETTINGS ARGL_CONTEXT_SETTINGS;
 //	Public globals.
 // ============================================================================
 
-// It'd be nice if we could wrap these in accessor functions!
 // These items relate to Apple's fast texture transfer support.
-//#define ARGL_USE_TEXTURE_RANGE	// Commented out due to conflicts with GL_APPLE_ycbcr_422 extension.
-#if defined(__APPLE__) && defined(APPLE_TEXTURE_FAST_TRANSFER)
-int arglAppleClientStorage = TRUE; // TRUE | FALSE .
-#  ifdef ARGL_USE_TEXTURE_RANGE
-int arglAppleTextureRange = TRUE; // TRUE | FALSE .
-GLuint arglAppleTextureRangeStorageHint = GL_STORAGE_SHARED_APPLE; // GL_STORAGE_PRIVATE_APPLE | GL_STORAGE_SHARED_APPLE | GL_STORAGE_CACHED_APPLE .
+#ifdef __APPLE__
+#  ifdef APPLE_TEXTURE_FAST_TRANSFER
+int arglAppleClientStorage = TRUE;
+int arglAppleTextureRange = TRUE;
 #  else
-int arglAppleTextureRange = FALSE; // TRUE | FALSE .
-GLuint arglAppleTextureRangeStorageHint = GL_STORAGE_PRIVATE_APPLE; // GL_STORAGE_PRIVATE_APPLE | GL_STORAGE_SHARED_APPLE | GL_STORAGE_CACHED_APPLE .
-#  endif // ARGL_USE_TEXTURE_RANGE
-#endif // __APPLE__ && APPLE_TEXTURE_FAST_TRANSFER
+int arglAppleClientStorage = FALSE;
+int arglAppleTextureRange = FALSE;
+#  endif // APPLE_TEXTURE_FAST_TRANSFER
+#endif // __APPLE__
 
 // ============================================================================
 //	Private globals.
@@ -268,14 +265,6 @@ static int arglDispImageTexPow2CapabilitiesCheck(const ARParam *cparam, ARGL_CON
 	}
 	
 	// Now check that the renderer can accomodate a texture of this size.
-#ifdef APPLE_TEXTURE_FAST_TRANSFER
-	// Can't use client storage or texture range.
-#  ifdef ARGL_USE_TEXTURE_RANGE
-	glTextureRangeAPPLE(GL_TEXTURE_2D, 0, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_PRIVATE_APPLE);
-#  endif // ARGL_USE_TEXTURE_RANGE
-	glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, FALSE);
-#endif // APPLE_TEXTURE_FAST_TRANSFER
 	glTexImage2D(GL_PROXY_TEXTURE_2D, 0, contextSettings->pixIntFormat, contextSettings->texturePow2SizeX, contextSettings->texturePow2SizeY, 0, contextSettings->pixFormat, contextSettings->pixType, NULL);
 	glGetTexLevelParameteriv(GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &format);
 	if (!format) {
@@ -342,11 +331,9 @@ static void arglDispImageTexPow2(ARUint8 *image, const ARParam *cparam, const fl
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, contextSettings->texturePow2WrapMode);
 
 #ifdef APPLE_TEXTURE_FAST_TRANSFER
-#  ifdef ARGL_USE_TEXTURE_RANGE
 		// Can't use client storage or texture range.
 		glTextureRangeAPPLE(GL_TEXTURE_2D, 0, NULL);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_PRIVATE_APPLE);
-#  endif // ARGL_USE_TEXTURE_RANGE
 		glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, FALSE);
 #endif // APPLE_TEXTURE_FAST_TRANSFER
 
@@ -434,11 +421,9 @@ static void arglDispImageTexPow2(ARUint8 *image, const ARParam *cparam, const fl
 
     glBindTexture(GL_TEXTURE_2D, contextSettings->texturePow2);
 #ifdef APPLE_TEXTURE_FAST_TRANSFER
-#  ifdef ARGL_USE_TEXTURE_RANGE
 	// Can't use client storage or texture range.
 	glTextureRangeAPPLE(GL_TEXTURE_2D, 0, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_PRIVATE_APPLE);
-#endif // ARGL_USE_TEXTURE_RANGE
 	glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, FALSE);
 #endif // APPLE_TEXTURE_FAST_TRANSFER
 	if (texmapScaleFactor == 2) {
@@ -533,15 +518,13 @@ static void arglDispImageTexRectangle(ARUint8 *image, const ARParam *cparam, con
 		glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 #ifdef APPLE_TEXTURE_FAST_TRANSFER
-#  ifdef ARGL_USE_TEXTURE_RANGE
 		if (arglAppleTextureRange) {
 			glTextureRangeAPPLE(GL_TEXTURE_RECTANGLE, cparam->xsize * cparam->ysize * contextSettings->pixSize, image);
-			glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_STORAGE_HINT_APPLE, arglAppleTextureRangeStorageHint);
+			glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_SHARED_APPLE);
 		} else {
 			glTextureRangeAPPLE(GL_TEXTURE_RECTANGLE, 0, NULL);
 			glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_PRIVATE_APPLE);
 		}
-#endif // ARGL_USE_TEXTURE_RANGE
 		glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, arglAppleClientStorage);
 #endif // APPLE_TEXTURE_FAST_TRANSFER
 		
@@ -609,15 +592,13 @@ static void arglDispImageTexRectangle(ARUint8 *image, const ARParam *cparam, con
 
     glBindTexture(GL_TEXTURE_RECTANGLE, contextSettings->textureRectangle);
 #ifdef APPLE_TEXTURE_FAST_TRANSFER
-#  ifdef ARGL_USE_TEXTURE_RANGE
 	if (arglAppleTextureRange) {
 		glTextureRangeAPPLE(GL_TEXTURE_RECTANGLE, cparam->xsize * cparam->ysize * contextSettings->pixSize, image);
-		glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_STORAGE_HINT_APPLE, arglAppleTextureRangeStorageHint);
+		glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_SHARED_APPLE);
 	} else {
 		glTextureRangeAPPLE(GL_TEXTURE_RECTANGLE, 0, NULL);
 		glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_PRIVATE_APPLE);
 	}
-#endif // ARGL_USE_TEXTURE_RANGE
 	glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, arglAppleClientStorage);
 #endif // APPLE_TEXTURE_FAST_TRANSFER
 	if (texmapScaleFactor == 2) {

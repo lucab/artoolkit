@@ -1036,6 +1036,7 @@ static void *ar2VideoInternalThread(void *arg)
 			ts.tv_sec += 1;
 		}
 #endif // AR_VIDEO_DEBUG_FIX_DUAL_PROCESSOR_RACE
+		
 #ifdef AR_VIDEO_SUPPORT_OLD_QUICKTIME
 		// Get a lock to access QuickTime (for SGIdle()), but only if more than one thread is running.
 		if (gVidCount > 1) {
@@ -1056,10 +1057,6 @@ static void *ar2VideoInternalThread(void *arg)
 			// You don't always know where these errors originate from, some may come
 			// from the VDig.
 			fprintf(stderr, "vdgIdle err=%ld.\n", err);
-			// ... to fix this we could simply call SGStop and SGStartRecord again
-			// calling stop allows the SG to release and re-prepare for grabbing
-			// hopefully fixing any problems, this is obviously a very relaxed
-			// approach.
 			keepAlive = 0;
 			break;
 		}
@@ -1129,10 +1126,19 @@ static void *ar2VideoInternalThread(void *arg)
 #endif
 				//vid->lastTime = time;
 			}
-			
+			// Now copy the frame (if double-buffering).
+			if (vid->bufCopyFlag) {
+				if (vid->status & AR_VIDEO_STATUS_BIT_BUFFER) {
+					memcpy((void *)(vid->bufPixelsCopy2), (void *)(vid->bufPixels), vid->bufSize);
+				} else {
+					memcpy((void *)(vid->bufPixelsCopy1), (void *)(vid->bufPixels), vid->bufSize);
+				}
+			}
 			// Mark status to indicate we have a frame available.
 			vid->status |= AR_VIDEO_STATUS_BIT_READY;			
 		}
+		
+		// All done. Wewease Wodger!
 #ifndef AR_VIDEO_DEBUG_FIX_DUAL_PROCESSOR_RACE		
 		err_i = pthread_cond_timedwait(&(vid->condition), &(vid->bufMutex), &ts);
 		if (err_i != 0 && err_i != ETIMEDOUT) {
@@ -1237,6 +1243,8 @@ int ar2VideoDispOption(void)
     printf("    Flip camera image horizontally.\n");
     printf(" -flipv\n");
     printf("    Flip camera image vertically.\n");
+    printf(" -singlebuffer\n");
+    printf("    Use single buffering of captured video instead of triple-buffering.\n");
     printf("\n");
 
     return (0);
@@ -1245,7 +1253,6 @@ int ar2VideoDispOption(void)
 
 AR2VideoParamT *ar2VideoOpen(char *config_in)
 {
-    static int			initF = 0;
 	long				qtVersion = 0L;
 	int					width = 0;
 	int					height = 0;
@@ -1253,6 +1260,7 @@ AR2VideoParamT *ar2VideoOpen(char *config_in)
 	int					showFPS = 0;
 	int					showDialog = 1;
 	int					standardDialog = 0;
+	int					singleBuffer = 0;
 	int					flipH = 0, flipV = 0;
     OSErr				err_s = noErr;
 	ComponentResult		err = noErr;
@@ -1264,8 +1272,6 @@ AR2VideoParamT *ar2VideoOpen(char *config_in)
 #endif // AR_VIDEO_SUPPORT_OLD_QUICKTIME
 	OSType				pixFormat = (OSType)0;
 	long				bytesPerPixel;
-	CGrafPtr			theSavedPort;
-	GDHandle			theSavedDevice;
 	long				cpuType;
 	
 	/* If no config string is supplied, we should use the environment variable, otherwise set a sane default */
@@ -1274,14 +1280,14 @@ AR2VideoParamT *ar2VideoOpen(char *config_in)
 		char *envconf = getenv ("ARTOOLKIT_CONFIG");
 		if (envconf && envconf[0]) {
 			config = envconf;
-			printf ("Using config string from environment [%s].\n", envconf);
+			printf ("Using video config from environment \"%s\".\n", envconf);
 		} else {
 			config = NULL;
-			printf ("No video config string supplied, using defaults.\n");
+			printf ("Using default video config.\n");
 		}
 	} else {
 		config = config_in;
-		printf ("Using supplied video config string [%s].\n", config_in);
+		printf ("Using supplied video config \"%s\".\n", config_in);
 	}
 
 	// Process configuration options.
@@ -1318,6 +1324,8 @@ AR2VideoParamT *ar2VideoOpen(char *config_in)
                 flipH = 1;
             } else if (strncmp(a, "-flipv", 6) == 0) {
                 flipV = 1;
+            } else if (strncmp(a, "-singlebuffer", 13) == 0) {
+                singleBuffer = 1;
             } else {
                 err_i = 1;
             }
@@ -1379,12 +1387,6 @@ AR2VideoParamT *ar2VideoOpen(char *config_in)
 			break;			
 	}
 	
-	// Once only, initialize for Carbon.
-    if (initF == 0) {
-        InitCursor();
-        initF = 1;
-    }
-
 	// If there are no active grabbers, init QuickTime.
 	if (gVidCount == 0) {
 	
@@ -1443,6 +1445,7 @@ AR2VideoParamT *ar2VideoOpen(char *config_in)
 	//vid->lastTime		= 0;
 	//vid->timeScale	= 0;
 	vid->grabber		= grabber;
+	vid->bufCopyFlag	= !singleBuffer;
 	
 	// Find out if we are running on an Intel Mac.
 	if ((err_s = Gestalt(gestaltNativeCPUtype, &cpuType) != noErr)) {
@@ -1450,19 +1453,18 @@ AR2VideoParamT *ar2VideoOpen(char *config_in)
 		goto out1;
 	}
 	if (cpuType == gestaltCPUPentium) {
-		// We are running on an Intel-based Mac.
-		vid->bufCopyFlag	= 0; //Hack: don't do buffercopy on Intel Macs.
-		printf("Detected Intel CPU.\n");
+		// We are running native on an Intel-based Mac.
+		//printf("Detected Intel CPU.\n");
 	} else {
 		int native = is_pid_native(0);
 		// We are not. But are we running under Rosetta?
 		if (native == 0) {
 			// We're running under Rosetta.
-			vid->bufCopyFlag	= 0;
 			printf("Detected Intel CPU, but running PowerPC code under Rosetta.\n");
+		} else if (native == 1) {
+			//printf("Detected PowerPC CPU.\n");
 		} else {
-			// Error if < 0, or native if 1.
-			vid->bufCopyFlag	= 1;
+			// Error.
 		}
 	}
 
@@ -1589,7 +1591,6 @@ AR2VideoParamT *ar2VideoOpen(char *config_in)
 	// Lock the pixmap and make sure it's locked because
 	// we can't decompress into an unlocked PixMap, 
 	// and open the default sequence grabber.
-	// TODO: Allow user to configure sequence grabber.
 	err_i = (int)LockPixels(GetGWorldPixMap(vid->pGWorld));
 	if (!err_i) {
 		fprintf(stderr,"ar2VideoOpen(): Unable to lock buffer for sequence grabbing.\n");
@@ -1597,13 +1598,16 @@ AR2VideoParamT *ar2VideoOpen(char *config_in)
 	}
 	
 	// Erase to black.
-#if 0
+#if 1
+	CGContextRef ctx;
 	QDBeginCGContext(vid->pGWorld, &ctx);
-	CGContextSetRGBFillColor(ctx, 1, 1, 1, 1);               
+	CGContextSetRGBFillColor(ctx, 0, 0, 0, 1);               
 	CGContextFillRect(ctx, CGRectMake(0, 0, (vid->theRect).left - (vid->theRect).right, (vid->theRect).top - (vid->theRect).bottom));
 	CGContextFlush(ctx);
 	QDEndCGContext (vid->pGWorld, &ctx);
 #else
+	CGrafPtr			theSavedPort;
+	GDHandle			theSavedDevice;
     GetGWorld(&theSavedPort, &theSavedDevice);    
     SetGWorld(vid->pGWorld, NULL);
     BackColor(blackColor);
@@ -1907,12 +1911,6 @@ ARUint8 *ar2VideoGetImage(AR2VideoParamT *vid)
 	// So, do we have a new frame from the sequence grabber?	
 	if (vid->status & AR_VIDEO_STATUS_BIT_READY) {
 		
-		// Need lock to guarantee this thread exclusive access to vid.
-		if (!ar2VideoInternalLock(&(vid->bufMutex))) {
-			fprintf(stderr, "ar2VideoGetImage(): Unable to lock mutex.\n");
-			return (NULL);
-		}
-		
 		//fprintf(stderr, "For vid @ %p got frame %ld.\n", vid, vid->frameCount);
 		
 		// Prior Mac versions of ar2VideoInternal added 1 to the pixmap base address
@@ -1924,6 +1922,11 @@ ARUint8 *ar2VideoGetImage(AR2VideoParamT *vid)
 		// of problems and which can now be avoided after rewriting the
 		// various bits of the toolkit to cope.
 		if (vid->bufCopyFlag) {
+			// Need lock to guarantee this thread exclusive access to vid.
+			if (!ar2VideoInternalLock(&(vid->bufMutex))) {
+				fprintf(stderr, "ar2VideoGetImage(): Unable to lock mutex.\n");
+				return (NULL);
+			}
 			if (vid->status & AR_VIDEO_STATUS_BIT_BUFFER) {
 				memcpy((void *)(vid->bufPixelsCopy2), (void *)(vid->bufPixels), vid->bufSize);
 				pix = vid->bufPixelsCopy2;
@@ -1933,16 +1936,16 @@ ARUint8 *ar2VideoGetImage(AR2VideoParamT *vid)
 				pix = vid->bufPixelsCopy1;
 				vid->status |= AR_VIDEO_STATUS_BIT_BUFFER; // Set buffer bit.
 			}
+			if (!ar2VideoInternalUnlock(&(vid->bufMutex))) {
+				fprintf(stderr, "ar2VideoGetImage(): Unable to unlock mutex.\n");
+				return (NULL);
+			}
 		} else {
 			pix = vid->bufPixels;
 		}
 
 		vid->status &= ~AR_VIDEO_STATUS_BIT_READY; // Clear ready bit.
 		
-		if (!ar2VideoInternalUnlock(&(vid->bufMutex))) {
-			fprintf(stderr, "ar2VideoGetImage(): Unable to unlock mutex.\n");
-			return (NULL);
-		}
 	}
 	
 	return (pix);

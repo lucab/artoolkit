@@ -177,11 +177,10 @@ typedef struct _ARGL_CONTEXT_SETTINGS *ARGL_CONTEXT_SETTINGS_REF;
 //	Public globals.
 // ============================================================================
 
-#if defined(__APPLE__) && defined(APPLE_TEXTURE_FAST_TRANSFER)
+#if defined(__APPLE__)
 extern int arglAppleClientStorage;
 extern int arglAppleTextureRange;
-extern GLuint arglAppleTextureRangeStorageHint;
-#endif // __APPLE__ && APPLE_TEXTURE_FAST_TRANSFER
+#endif // __APPLE__
 	
 // ============================================================================
 //	Public functions.
