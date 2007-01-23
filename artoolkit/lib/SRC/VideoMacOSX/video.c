@@ -1236,8 +1236,11 @@ int ar2VideoDispOption(void)
 	printf(" -pixelformat=cccc\n");
     printf("    Return images with pixels in format cccc, where cccc is either a\n");
     printf("    numeric pixel format number or a valid 4-character-code for a\n");
-    printf("    pixel format. The following values are supported: \n");
-    printf("    32, BGRA, RGBA, ABGR, 24, 24BG, 2vuy, yuvs.\n");
+    printf("    pixel format.\n");
+	printf("    The following numeric values are supported: \n");
+	printf("    24 (24-bit RGB), 32 (32-bit ARGB), 40 (8-bit grey)");
+	printf("    The following 4-character-codes are supported: \n");
+    printf("    BGRA, RGBA, ABGR, 24BG, 2vuy, yuvs.\n");
     printf("    (See http://developer.apple.com/quicktime/icefloe/dispatch020.html.)\n");
     printf(" -fliph\n");
     printf("    Flip camera image horizontally.\n");
