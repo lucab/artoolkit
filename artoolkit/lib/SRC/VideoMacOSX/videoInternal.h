@@ -1,5 +1,5 @@
 /*
- *	Copyright (c) 2005-2006 Philip Lamb (PRL) phil@eden.net.nz. All rights reserved.
+ *	Copyright (c) 2005-2007 Philip Lamb (PRL) phil@eden.net.nz. All rights reserved.
  *	
  *	Rev		Date		Who		Changes
  *	1.0.0	2005-03-08	PRL		Written.

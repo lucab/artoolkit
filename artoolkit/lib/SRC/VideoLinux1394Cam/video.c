@@ -1,6 +1,6 @@
 /*
   1394 Linux Firewire Digital Camera Interface
-  Copyright (C) 2002 - 2006
+  Copyright (c) 2002-2007
   Kiyoshi Kiyokawa (kiyo@crl.go.jp)
   Hirokazu Kato (kato@sys.im.hiroshima-cu.ac.jp)
   Wayne Piekarski (wayne@cs.unisa.edu.au)

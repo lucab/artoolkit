@@ -1,5 +1,5 @@
 /*  --------------------------------------------------------------------------
-*   Copyright (c) 20042-2006 HIT Lab NZ.
+*   Copyright (c) 20042-2007 HIT Lab NZ.
 *   The distribution policy is described in the file COPYING.txt furnished 
 *    with this library.
 *   -------------------------------------------------------------------------*/
