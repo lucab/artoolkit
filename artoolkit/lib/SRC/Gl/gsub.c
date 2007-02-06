@@ -552,7 +552,7 @@ static void argDispImageTexRectangle( ARUint8 *image, int xwin, int ywin, int mo
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ABGR)
         glTexImage2D( AR_TEXTURE_RECTANGLE, 0, GL_RGBA, gImXsize, gImYsize/size_adjust_factor, 0, GL_ABGR, GL_UNSIGNED_BYTE, image );
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGRA)
-        glTexImage2D( AR_TEXTURE_RECTANGLE, 0, GL_RGBA, gImXsize, gImYsize/size_adjust_factor, 0, GL_BGRA, GL_UNSIGNED_BYTE, image );
+        glTexImage2D( AR_TEXTURE_RECTANGLE, 0, GL_RGB, gImXsize, gImYsize/size_adjust_factor, 0, GL_BGRA, GL_UNSIGNED_BYTE, image );
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGR)
         glTexImage2D( AR_TEXTURE_RECTANGLE, 0, GL_RGB, gImXsize, gImYsize/size_adjust_factor, 0, GL_BGR, GL_UNSIGNED_BYTE, image );
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGBA)
@@ -746,7 +746,7 @@ static void argDispImageTex4( ARUint8 *wimage, int xwin, int ywin, int mode )
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ABGR)
         glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, tex1Xsize1, tex1Ysize/size_adjust_factor, 0, GL_ABGR, GL_UNSIGNED_BYTE, image );
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGRA)
-        glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, tex1Xsize1, tex1Ysize/size_adjust_factor, 0, GL_BGRA, GL_UNSIGNED_BYTE, image );
+        glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, tex1Xsize1, tex1Ysize/size_adjust_factor, 0, GL_BGRA, GL_UNSIGNED_BYTE, image );
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGR)
         glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, tex1Xsize1, tex1Ysize/size_adjust_factor, 0, GL_BGR, GL_UNSIGNED_BYTE, image );
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGBA)
@@ -963,7 +963,7 @@ static void argDispImageTex3( ARUint8 *wimage, int xwin, int ywin, int mode )
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ABGR)
         glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, tex1Xsize1, tex1Ysize/size_adjust_factor, 0, GL_ABGR, GL_UNSIGNED_BYTE, image );
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGRA)
-        glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, tex1Xsize1, tex1Ysize/size_adjust_factor, 0, GL_BGRA, GL_UNSIGNED_BYTE, image );
+        glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, tex1Xsize1, tex1Ysize/size_adjust_factor, 0, GL_BGRA, GL_UNSIGNED_BYTE, image );
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGR)
         glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, tex1Xsize1, tex1Ysize/size_adjust_factor, 0, GL_BGR, GL_UNSIGNED_BYTE, image );
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGBA)
@@ -1120,7 +1120,7 @@ static void argDispImageTex3( ARUint8 *wimage, int xwin, int ywin, int mode )
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ABGR)
         glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, tex1Xsize2, tex1Ysize/size_adjust_factor, 0, GL_ABGR, GL_UNSIGNED_BYTE, image+tex1Xsize1*AR_PIX_SIZE_DEFAULT );
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGRA)
-        glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, tex1Xsize2, tex1Ysize/size_adjust_factor, 0, GL_BGRA, GL_UNSIGNED_BYTE, image+tex1Xsize1*AR_PIX_SIZE_DEFAULT );
+        glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, tex1Xsize2, tex1Ysize/size_adjust_factor, 0, GL_BGRA, GL_UNSIGNED_BYTE, image+tex1Xsize1*AR_PIX_SIZE_DEFAULT );
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGR)
         glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, tex1Xsize2, tex1Ysize/size_adjust_factor, 0, GL_BGR, GL_UNSIGNED_BYTE, image+tex1Xsize1*AR_PIX_SIZE_DEFAULT );
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGBA)
@@ -1413,7 +1413,7 @@ static void argDispHalfImageTex( ARUint8 *wimage, int xwin, int ywin, int mode )
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_ABGR)
         glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, tex2Xsize, tex2Ysize, 0, GL_ABGR, GL_UNSIGNED_BYTE, image );
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGRA)
-        glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, tex2Xsize, tex2Ysize, 0, GL_BGRA, GL_UNSIGNED_BYTE, image );
+        glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, tex2Xsize, tex2Ysize, 0, GL_BGRA, GL_UNSIGNED_BYTE, image );
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_BGR)
         glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, tex2Xsize, tex2Ysize, 0, GL_BGR, GL_UNSIGNED_BYTE, image );
 #elif (AR_DEFAULT_PIXEL_FORMAT == AR_PIXEL_FORMAT_RGBA)
