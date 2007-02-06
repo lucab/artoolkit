@@ -2,8 +2,27 @@ ARToolKit ChangeLog.
 ====================
 
 
-Changes in version 2.72 (this release) (2006-11-20).
+Changes in version 2.72.1 (this release) (2007-02-07).
 ------------------------------------------------------
+All platforms:
+- Bug fix: Removed VRML backgrounds which were still showing when using new OpenVRML-0.16.3.
+- Bug fix: The bud_B VRML model does not render correctly with OpenVRML-0.16.3 and has been temporarily removed.
+- Enhancement: Debug mode ('d' key) and threshhold adjustment ('+' and '-' keys) are now enabled in all gsub_lite-based examples.
+
+Windows:
+- Bug fix: Fix for issue which made video stream appear white in examples based on the old gsub library.
+- Enhancement: added reading of environment variable ARTOOLKIT_CONFIG for DSVL video capture.
+
+Linux:
+- Bug fix: VideoLinuxV4L should now compile correctly on 64-bit x86 systems.
+
+Mac OS X:
+- Bug fix: A long-standing performance problem in the Mac video library has been addressed, allowing correct and optimal buffering of the video stream.
+- Enhancement: ARvrml now links to fink-supplied OpenVRML-0.16.3 by default.
+
+
+Changes in version 2.72 (2006-11-20).
+-------------------------------------
 All platforms:
 - New feature: ARToolKit now supports querying of SDK and runtime versions.
 - New feature: There are now right-hand coordinate system versions of the OpenGL projection and modelview matrix functions, named arglCameraFrustumRH and arglCameraViewRH, respectively. These will help when integrating ARToolKit into existing OpenGL drawing.

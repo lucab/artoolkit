@@ -1,5 +1,5 @@
-Read me for ARToolKit-2.72.
-===========================
+Read me for ARToolKit-2.72.1.
+=============================
 
 
 Contents.
@@ -16,9 +16,9 @@ Changes in earlier releases.
 
 About this archive.
 -------------------
-This archive contains the ARToolKit libraries, utilities and examples, version 2.72.
+This archive contains the ARToolKit libraries, utilities and examples, version 2.72.1.
 
-ARToolKit version 2.72 is released under the GNU General Public License (GPL). Please read the file COPYING.txt.
+ARToolKit version 2.72.1 is released under the GNU General Public License (GPL). Please read the file COPYING.txt.
 
 The latest version of ARToolKit is available from http://sf.net/projects/artoolkit.
 
@@ -28,7 +28,7 @@ This archive was assembled by:
     Philip Lamb
     HIT Lab NZ
     http://www.hitlabnz.org
-    2006-11-20
+    2007-02-07
 
 
 The ARToolKit license model.
@@ -82,7 +82,7 @@ Prerequisites:
  *  (Optional, for VRML renderer only) openvrml-0.16.1 and dependencies. Download from http://sf.net/projects/openvrml.
  
 Unpack the ARToolKit to a convenient location. The root of this location will be referred to below as {ARToolKit}:
-    tar zxvf ARToolKit-2.72.tgz
+    tar zxvf ARToolKit-2.72.1.tgz
 Configure and build. The Linux builds support video input using either Video4Linux, an IIDC-compliant or DV camera connected via IEEE-1394, or a Sony EyeToy camera connected via USB. Alternatively you can use GStreamer 0.10 (0.8 is not supported and also not recommended) as input method. This requires you to install the gstreamer development packages for your Linux distribution. You will be prompted as to which of the four Linux video drivers you wish to use at the Configure step.
     cd {ARToolKit}
     ./Configure
@@ -121,7 +121,7 @@ The VRML renderering library and example (libARvrml & simpleVRML) are optional b
 Alternately, ARToolKit can be built from the Terminal, using the Unix makefiles.
 Drop the ARToolKit into a convenient location, e.g. your Desktop, then open a Terminal window and type:
 	cd ~/Desktop
-	tar zxvf ARToolKit-2.72.tgz
+	tar zxvf ARToolKit-2.72.1.tgz
 Configure and build
 	cd ~/ARToolKit
 	./Configure
@@ -131,11 +131,8 @@ Following a successful build, to run a binary such as simpleTest, add these comm
 	./simpleTest
 
 The VRML renderering library and example (libARvrml & simpleVRML) are optional builds:
-	Either:
-		tar xzvf OpenVRML-0.16.16-bin-MacOSX.tar.gz ~/Desktop/ARToolKit
-	Or:
-		fink -b install mozilla-dev
-		fink install openvrml6-dev openvrml-gl6-dev
+	fink -b install mozilla-dev
+	fink install openvrml6-dev openvrml-gl6-dev
 	Then:
 	cd ~/Desktop/ARToolKit/lib/SRC/ARvrml
 	make
@@ -145,25 +142,23 @@ The VRML renderering library and example (libARvrml & simpleVRML) are optional b
 	./simpleVRML
 
 
-Changes in version 2.72 (this release) (2006-11-20).
+Changes in version 2.72.1 (this release) (2007-02-07).
 ------------------------------------------------------
 All platforms:
-- New feature: ARToolKit now supports querying of SDK and runtime versions.
-- New feature: There are now right-hand coordinate system versions of the OpenGL projection and modelview matrix functions, named arglCameraFrustumRH and arglCameraViewRH, respectively. These will help when integrating ARToolKit into existing OpenGL drawing.
-- Enhancement: Support for AR_PIXEL_FORMAT_MONO is now included.
-- Enhancement: gsub_lite now supports arDebug mode.
-- Enhancement: ARvrml now builds against OpenVRML-0.16.1.
-- Enhancement: The license model is now stated more clearly in the readme.
+- Bug fix: Removed VRML backgrounds which were still showing when using new OpenVRML-0.16.3.
+- Bug fix: The bud_B VRML model does not render correctly with OpenVRML-0.16.3 and has been temporarily removed.
+- Enhancement: Debug mode ('d' key) and threshhold adjustment ('+' and '-' keys) are now enabled in all gsub_lite-based examples.
 
-Mac OS X:
-- Bug fix: Fix for an error in the VRML library inclusion on Mac OS X.
-- Bug fix: Now detects if running emulated on Intel Macs, and optimises video for this case.
-- Enhancement: Two new video config tokens are now available; -fliph and -flipv, which will mirror the video image horizontally and vertically respectively.
+Windows:
+- Bug fix: Fix for issue which made video stream appear white in examples based on the old gsub library.
+- Enhancement: added reading of environment variable ARTOOLKIT_CONFIG for DSVL video capture.
 
 Linux:
-- New feature: Support for gstreamer video capture added, thanks to Hartmut Seichter.
-- Enhancement: Major changes to Video1394DC- add PointGray DragonFly support, add LGPL/GPL license info, better config string support, stabilised interfaces, lots of clean ups to make the code easier to work with.
-- Bug fix: Using PAL in VideoLinuxDV as reported at http://www.hitlabnz.org/forum/showthread.php?t=412.
+- Bug fix: VideoLinuxV4L should now compile correctly on 64-bit x86 systems.
+
+Mac OS X:
+- Bug fix: A long-standing performance problem in the Mac video library has been addressed, allowing correct and optimal buffering of the video stream.
+- Enhancement: ARvrml now links to fink-supplied OpenVRML-0.16.3 by default.
 
 
 Known issues in this release.
