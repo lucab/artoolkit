@@ -255,6 +255,7 @@ ar2VideoOpen(char *config_in ) {
 	/* install the probe callback for capturing */
 	gst_pad_add_buffer_probe (pad, G_CALLBACK (cb_have_data), vid);	
 	
+
 	
 
 #if 0
@@ -288,7 +289,8 @@ ar2VideoOpen(char *config_in ) {
 
 	/* now preroll for V4L v2 interfaces */
 	if ((strstr(config, "v4l2src") != 0) ||
-		(strstr(config, "dv1394src") != 0))
+		(strstr(config, "dv1394src") != 0) ||
+		(strstr(config, "rtspsrc") != 0) )
 	{
 		/* set playing state of the pipeline */
 		gst_element_set_state (vid->pipeline, GST_STATE_PLAYING);

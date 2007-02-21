@@ -75,12 +75,19 @@ $&gt; export ARTOOLKIT_CONFIG="filesrc location=gstreamer_test_xvid.avi ! decode
 </pre>
 
 <li>Using a webcam on /dev/video0 through Video4Linux v2 (V4L2):
-<pre>$&gt; export ARTOOLKIT_CONFIG="v4l2src device=/dev/video1 use-fixed-fps=false ! ffmpegcolorspace ! capsfilter caps=video/x-raw-rgb,bpp=24 ! identity name=artoolkit ! fakesink"
+<pre>$&gt; export ARTOOLKIT_CONFIG="v4l2src device=/dev/video0 use-fixed-fps=false ! ffmpegcolorspace ! capsfilter caps=video/x-raw-rgb,bpp=24 ! identity name=artoolkit ! fakesink"
 </pre>
 </li>
 
-The same strings can also directly been used within the code:
+
+<li>The same strings can also directly been used within the code:
 <pre>arVideoOpen("videotestsrc ! capsfilter caps=video/x-raw-rgb,bpp=24 ! identity name=artoolkit ! fakesink");</pre>
+</li>
+
+
+<li>Using a RTSP streaming source as a video input:
+<pre>$&gt; export ARTOOLKIT_CONFIG=&quot;rtspsrc location=rtsp://somertspstreamingserver:554/live.sdp ! rtpmp4vdepay ! decodebin ! ffmpegcolorspace ! capsfilter caps=video/x-raw-rgb,bpp=24 ! identity name=artoolkit ! fakesink sync=0&quot;</pre>
+</li>
 
 </ul>
 
