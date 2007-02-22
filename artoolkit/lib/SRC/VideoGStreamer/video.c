@@ -370,7 +370,7 @@ ar2VideoCapStart(AR2VideoParamT *vid)
 int 
 ar2VideoCapStop(AR2VideoParamT *vid) {
 	/* stop pipeline */
-	return gst_element_set_state (vid->pipeline, GST_STATE_NULL);
+	return gst_element_set_state (vid->pipeline, GST_STATE_PAUSED);
 }
 
 int 
