@@ -40,9 +40,9 @@ $(TARGET): $(OBJS)
 
 clean:
 	-rm -f *.o *~ *.bak
-	-rm $(TARGET)
+	-rm -f $(TARGET)
 
 allclean:
 	-rm -f *.o *~ *.bak
-	-rm $(TARGET)
+	-rm -f $(TARGET)
 	-rm -f Makefile
