@@ -74,6 +74,12 @@
  *   - Rearranged various constants from AR/config.h to make things easier to understand
  *   - Better config string support with ARTOOLKIT_CONFIG to override defaults from the shell
  *
+ *
+ *   Revision: 1.4   Date: 2007/03/13 ( wayne@cs.unisa.edu.au )
+ *   - Removed local definition of video mode constants
+ *   - Use RGB by default which works on all cameras instead of YUV411_HALF from before
+ *   - Other clean ups in error checking and debugging errors
+ *
  */
 
 #include <sys/ioctl.h>
@@ -123,22 +129,9 @@
 
 /* Defines that control various aspects of this code */
 #define   VIDEO_NODE_ANY                      -1
-#define   VIDEO_MODE_320x240_YUV422           32
-#define   VIDEO_MODE_640x480_YUV411           33
-#define   VIDEO_MODE_640x480_RGB              34
-#define   VIDEO_MODE_640x480_YUV411_HALF      35
-#define   VIDEO_MODE_640x480_MONO             36
-#define   VIDEO_MODE_640x480_MONO_COLOR       37
-#define   VIDEO_MODE_640x480_MONO_COLOR_HALF  38
-#define   VIDEO_FRAME_RATE_1_875               1
-#define   VIDEO_FRAME_RATE_3_75                2
-#define   VIDEO_FRAME_RATE_7_5                 3
-#define   VIDEO_FRAME_RATE_15                  4
-#define   VIDEO_FRAME_RATE_30                  5
-#define   VIDEO_FRAME_RATE_60                  6
 #define   DEFAULT_VIDEO_NODE                   VIDEO_NODE_ANY
-#define   DEFAULT_VIDEO_MODE                   VIDEO_MODE_640x480_YUV411_HALF
-#define   DEFAULT_VIDEO_FRAME_RATE             VIDEO_FRAME_RATE_30
+#define   DEFAULT_VIDEO_MODE                   MODE_640x480_RGB
+#define   DEFAULT_VIDEO_FRAME_RATE             FRAMERATE_15
 
 
 
@@ -334,13 +327,13 @@ AR2VideoParamT *ar2VideoOpen( char *config_in )
 
             if( strncmp( a, "-mode=", 6 ) == 0 ) {
                 if ( strncmp( &a[6], "320x240_YUV422", 14 ) == 0 ) {
-                    vid->mode = VIDEO_MODE_320x240_YUV422;
+                    vid->mode = MODE_320x240_YUV422;
                 }
                 else if ( strncmp( &a[6], "640x480_YUV411", 14 ) == 0 ) {
-                    vid->mode = VIDEO_MODE_640x480_YUV411;
+                    vid->mode = MODE_640x480_YUV411;
                 }
                 else if ( strncmp( &a[6], "640x480_RGB", 11 ) == 0 ) {
-                    vid->mode = VIDEO_MODE_640x480_RGB;
+                    vid->mode = MODE_640x480_RGB;
                 }
                 else {
                     ar2VideoDispOption();
@@ -384,22 +377,22 @@ AR2VideoParamT *ar2VideoOpen( char *config_in )
             }
             else if( strncmp( a, "-rate=", 6 ) == 0 ) {
                 if ( strncmp( &a[6], "1.875", 5 ) == 0 ) {
-                    vid->rate = VIDEO_FRAME_RATE_1_875;
+                    vid->rate = FRAMERATE_1_875;
                 }
                 else if ( strncmp( &a[6], "3.75", 4 ) == 0 ) {
-                    vid->rate = VIDEO_FRAME_RATE_3_75;
+                    vid->rate = FRAMERATE_3_75;
                 }
                 else if ( strncmp( &a[6], "7.5", 3 ) == 0 ) {
-                    vid->rate = VIDEO_FRAME_RATE_7_5;
+                    vid->rate = FRAMERATE_7_5;
                 }
                 else if ( strncmp( &a[6], "15", 2 ) == 0 ) {
-                    vid->rate = VIDEO_FRAME_RATE_15;
+                    vid->rate = FRAMERATE_15;
                 }
                 else if ( strncmp( &a[6], "30", 2 ) == 0 ) {
-                    vid->rate = VIDEO_FRAME_RATE_30;
+                    vid->rate = FRAMERATE_30;
                 }
                 else if ( strncmp( &a[6], "60", 2 ) == 0 ) {
-                    vid->rate = VIDEO_FRAME_RATE_60;
+                    vid->rate = FRAMERATE_60;
                 }
                 else {
                     ar2VideoDispOption();
@@ -428,56 +421,11 @@ AR2VideoParamT *ar2VideoOpen( char *config_in )
       {
         if( ar2Video1394Init(vid->debug, &vid->card, &vid->node) < 0 )
 	  {
-	    fprintf (stderr, "Could not initialise 1394\n");
+	    fprintf (stderr, "Could not initialise 1394 bus with card=%d and node=%d\n", vid->card, vid->node);
 	    exit(1);
 	  }
         initFlag = 1;
       }
-    
-    switch( vid->mode )
-      {
-      case VIDEO_MODE_320x240_YUV422:
-	vid->int_mode = MODE_320x240_YUV422;
-	break;
-      case VIDEO_MODE_640x480_YUV411:
-	vid->int_mode = MODE_640x480_YUV411;
-	break;
-      case VIDEO_MODE_640x480_RGB:
-	vid->int_mode = MODE_640x480_RGB;
-	break;
-      default:
-	printf("Sorry, Unsupported Video Format for IEEE1394 Camera.\n");
-	exit(1);
-	break;
-      }
-    
-    
-    switch( vid->rate ) {
-        case VIDEO_FRAME_RATE_1_875:
-          vid->int_rate = FRAMERATE_1_875;
-          break;
-        case VIDEO_FRAME_RATE_3_75:
-          vid->int_rate = FRAMERATE_3_75;
-          break;
-        case VIDEO_FRAME_RATE_7_5:
-          vid->int_rate = FRAMERATE_7_5;
-          break;
-        case VIDEO_FRAME_RATE_15:
-          vid->int_rate = FRAMERATE_15;
-          break;
-        case VIDEO_FRAME_RATE_30:
-          vid->int_rate = FRAMERATE_30;
-          break;
-        case VIDEO_FRAME_RATE_60:
-          vid->int_rate = FRAMERATE_60;
-          break;
-        default:
-          fprintf(stderr, "Sorry, Unsupported Frame Rate for IEEE1394 Camera.\n");
-          exit(1);
-    }
-    
-
-    
     
     
     /*-----------------------------------------------------------------------*/
@@ -486,7 +434,7 @@ AR2VideoParamT *ar2VideoOpen( char *config_in )
     if( dc1394_get_camera_feature_set(arV1394.handle, 
 				      vid->node,
 				      &(vid->features)) != DC1394_SUCCESS ) {
-        fprintf( stderr, "unable to get feature set\n");
+        fprintf( stderr, "Unable to get feature set from device\n");
     }
     else if( vid->debug ) {
       dc1394_print_feature_set( &(vid->features) );
@@ -527,7 +475,7 @@ AR2VideoParamT *ar2VideoOpen( char *config_in )
     
     /* Check that the camera supports the particular video mode we asked for */
     dc1394_query_supported_modes(arV1394.handle, vid->node,  FORMAT_VGA_NONCOMPRESSED, &value);
-    i = 31 - (vid->int_mode - MODE_FORMAT0_MIN);
+    i = 31 - (vid->mode - MODE_FORMAT0_MIN);
     p1 = 1 << i;
     p2 = value & p1;
     if( p2 == 0 )
@@ -545,13 +493,13 @@ AR2VideoParamT *ar2VideoOpen( char *config_in )
 	else
 	  {
 	    fprintf (stderr, "Detected a mono camera, assuming DragonFly camera with Bayer image decoding\n");
-	    vid->int_mode = MODE_640x480_MONO;
+	    vid->mode = MODE_640x480_MONO;
 	    ar2Video_dragonfly = 1;
 	  }
       }
     
-    dc1394_query_supported_framerates(arV1394.handle, vid->node, FORMAT_VGA_NONCOMPRESSED, vid->int_mode, &value);
-    i = 31 - (vid->int_rate - FRAMERATE_MIN);
+    dc1394_query_supported_framerates(arV1394.handle, vid->node, FORMAT_VGA_NONCOMPRESSED, vid->mode, &value);
+    i = 31 - (vid->rate - FRAMERATE_MIN);
     p1 = 1 << i;
     p2 = value & p1;
     if( p2 == 0 ) {
@@ -581,9 +529,9 @@ AR2VideoParamT *ar2VideoOpen( char *config_in )
  				 vid->channel,
 #endif
 			         vid->format,
-			         vid->int_mode,
+			         vid->mode,
 			         vid->speed,
-			         vid->int_rate,
+			         vid->rate,
 			         vid->dma_buf_num,
 #ifdef LIBDC_10
 				 0, /* do_extra_buffering */
@@ -656,9 +604,9 @@ int ar2VideoCapStart( AR2VideoParamT *vid )
 				     vid->channel,
 #endif
 			             vid->format,
-			             vid->int_mode,
+			             vid->mode,
 			             vid->speed,
-			             vid->int_rate,
+			             vid->rate,
 			             vid->dma_buf_num,
 #ifdef LIBDC_10
 				     0, /* do_extra_buffering */
@@ -755,7 +703,7 @@ ARUint8 *ar2VideoGetImage( AR2VideoParamT *vid )
     vid->status = 2;
 
 
-    switch( vid->int_mode ) {
+    switch( vid->mode ) {
         case MODE_640x480_RGB:
           return (ARUint8 *)vid->camera.capture_buffer;
 	  

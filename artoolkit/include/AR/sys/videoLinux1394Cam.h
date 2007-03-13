@@ -34,8 +34,6 @@ typedef struct {
     int      speed;
     int      format;
     int      dma_buf_num;
-    int      int_mode;
-    int      int_rate;
     int      status;
 
     int                    internal_id;
