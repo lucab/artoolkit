@@ -265,7 +265,7 @@ int ar2VideoDispOption( void )
     printf(" -rate=N\n");
     printf("    specifies desired framerate of a FireWire camera. \n");
     printf("    (1.875, 3.75, 7.5, 15, 30, 60)\n");
-    printf(" -[name]=N  where name is brightness, iris, shutter, gain, saturation, gamma, sharpness\n");
+    printf(" -[name]=N  where name is 'iris' or 'gain'.\n");
     printf("    (value must be a legal value for this parameter - use coriander to find what they are\n");
     printf("\n");
     printf(" Note that if no config string is supplied, you can override it with the environment variable ARTOOLKIT_CONFIG\n");
@@ -303,23 +303,23 @@ AR2VideoParamT *ar2VideoOpen( char *config_in )
     vid->debug        = 0;
     vid->status       = 0;
     
-	/* If no config string is supplied, we should use the environment variable, otherwise set a sane default */
-	if (!config_in || !(config_in[0])) {
-		/* None suppplied, lets see if the user supplied one from the shell */
-		char *envconf = getenv ("ARTOOLKIT_CONFIG");
-		if (envconf && envconf[0]) {
-			config = envconf;
-			printf ("Using config string from environment [%s].\n", envconf);
-		} else {
-			config = NULL;
-			printf ("No video config string supplied, using defaults.\n");
-		}
-	} else {
-		config = config_in;
-		printf ("Using supplied video config string [%s].\n", config_in);
-	}
-
-	a = config;
+    /* If no config string is supplied, we should use the environment variable, otherwise set a sane default */
+    if (!config_in || !(config_in[0])) {
+      /* None suppplied, lets see if the user supplied one from the shell */
+      char *envconf = getenv ("ARTOOLKIT_CONFIG");
+      if (envconf && envconf[0]) {
+	config = envconf;
+	printf ("Using config string from environment [%s].\n", envconf);
+      } else {
+	config = NULL;
+	printf ("No video config string supplied, using default 640x480 RGB at 15 Hz.\n");
+      }
+    } else {
+      config = config_in;
+      printf ("Using supplied video config string [%s].\n", config_in);
+    }
+    
+    a = config;
     if( a != NULL) {
         for(;;) {
             while( *a == ' ' || *a == '\t' ) a++;
@@ -336,43 +336,48 @@ AR2VideoParamT *ar2VideoOpen( char *config_in )
                     vid->mode = MODE_640x480_RGB;
                 }
                 else {
+ 		    fprintf (stderr, "Video mode string supplied [%s] is not parseable", &a[6]);
                     ar2VideoDispOption();
                     free( vid );
-                    return 0;
+                    return (NULL);
                 }
             }
 	    
             else if( strncmp( a, "-iris=", 6 ) == 0 ) {
                 sscanf( a, "%s", line );
                 if( sscanf( &line[6], "%d", &iris ) == 0 ) {
+ 		    fprintf (stderr, "Video iris value supplied [%s] is not parseable", &line[6]);
                     ar2VideoDispOption();
                     free( vid );
-                    return 0;
+                    return (NULL);
                 }
             }
             else if( strncmp( a, "-gain=", 6 ) == 0 ) {
                 sscanf( a, "%s", line );
                 if( sscanf( &line[6], "%d", &gain ) == 0 ) {
+  		    fprintf (stderr, "Video gain value supplied [%s] is not parseable", &line[6]);
                     ar2VideoDispOption();
                     free( vid );
-                    return 0;
+                    return (NULL);
                 }
             }
 	    
             else if( strncmp( a, "-node=", 6 ) == 0 ) {
                 sscanf( a, "%s", line );
                 if( sscanf( &line[6], "%d", &vid->node ) == 0 ) {
+  		    fprintf (stderr, "Firewire node value supplied [%s] is not parseable", &line[6]);
                     ar2VideoDispOption();
                     free( vid );
-                    return 0;
+                    return (NULL);
                 }
             }
             else if( strncmp( a, "-card=", 6 ) == 0 ) {
                 sscanf( a, "%s", line );
                 if( sscanf( &line[6], "%d", &vid->card ) == 0 ) {
+  		    fprintf (stderr, "Firewire card value supplied [%s] is not parseable", &line[6]);
                     ar2VideoDispOption();
                     free( vid );
-                    return 0;
+                    return (NULL);
                 }
             }
             else if( strncmp( a, "-rate=", 6 ) == 0 ) {
@@ -395,21 +400,23 @@ AR2VideoParamT *ar2VideoOpen( char *config_in )
                     vid->rate = FRAMERATE_60;
                 }
                 else {
+  	 	    fprintf (stderr, "Frame rate value supplied [%s] is not parseable", &a[6]);
                     ar2VideoDispOption();
                     free( vid );
-                    return 0;
+                    return (NULL);
                 }
             }
             else if( strncmp( a, "-debug", 6 ) == 0 ) {
                 vid->debug = 1;
             }
 	    else if( strncmp( a, "-adjust", 7 ) == 0 ) {
-	      /* Do nothing - this is for V4L compatibility */
+	      /* Do nothing - this is for VideoLinuxV4L compatibility */
 	    }
             else {
+ 	        fprintf (stderr, "Unknown config option supplied [%s]", a);
                 ar2VideoDispOption();
                 free( vid );
-                return 0;
+                return (NULL);
             }
 
             while( *a != ' ' && *a != '\t' && *a != '\0') a++;
@@ -422,7 +429,7 @@ AR2VideoParamT *ar2VideoOpen( char *config_in )
         if( ar2Video1394Init(vid->debug, &vid->card, &vid->node) < 0 )
 	  {
 	    fprintf (stderr, "Could not initialise 1394 bus with card=%d and node=%d\n", vid->card, vid->node);
-	    exit(1);
+	    return (NULL);
 	  }
         initFlag = 1;
       }
@@ -435,6 +442,7 @@ AR2VideoParamT *ar2VideoOpen( char *config_in )
 				      vid->node,
 				      &(vid->features)) != DC1394_SUCCESS ) {
         fprintf( stderr, "Unable to get feature set from device\n");
+	return (NULL);
     }
     else if( vid->debug ) {
       dc1394_print_feature_set( &(vid->features) );
@@ -463,14 +471,15 @@ AR2VideoParamT *ar2VideoOpen( char *config_in )
     /*  check parameters                                                     */
     /*-----------------------------------------------------------------------*/
     if( dc1394_query_supported_formats(arV1394.handle, vid->node, &value) != DC1394_SUCCESS ) {
-      fprintf( stderr, "unable to query_supported_formats\n");
+      fprintf( stderr, "Unable to perform a query_supported_formats call\n");
+      return (NULL);
     }
     i = 31 - (FORMAT_VGA_NONCOMPRESSED - FORMAT_MIN);
     p1 = 1 << i;
     p2 = value & p1;
     if( p2 == 0 ) {
-        fprintf( stderr, "unable to use this camera on VGA_NONCOMPRESSED format.\n");
-        exit(0);
+        fprintf( stderr, "Unable to use this camera on VGA_NONCOMPRESSED format.\n");
+	return (NULL);
     }
     
     /* Check that the camera supports the particular video mode we asked for */
@@ -488,7 +497,7 @@ AR2VideoParamT *ar2VideoOpen( char *config_in )
 	  {
 	    fprintf( stderr, "Unsupported Mode for the specified camera.\n");
 	    ar2VideoDispOption();
-	    exit(0);
+	    return (NULL);
 	  }
 	else
 	  {
@@ -503,9 +512,9 @@ AR2VideoParamT *ar2VideoOpen( char *config_in )
     p1 = 1 << i;
     p2 = value & p1;
     if( p2 == 0 ) {
-        fprintf( stderr, "Unsupported Framerate for the specified mode.\n");
+        fprintf( stderr, "Unsupported framerate for the specified mode.\n");
         ar2VideoDispOption();
-        exit(0);
+	return (NULL);
     }
     
     
@@ -540,18 +549,13 @@ AR2VideoParamT *ar2VideoOpen( char *config_in )
 				 1, video1394devname, /* drop_frames, dma_device_file */
 #endif
 			         &(vid->camera)) != DC1394_SUCCESS ) {
-        fprintf( stderr,"unable to setup camera-\n"
-                "check if you did 'insmod video1394' or,\n"
-                "check line %d of %s to make sure\n"
-                "that the video mode,framerate and format are\n"
-                "supported by your camera\n",
-                __LINE__,__FILE__);
-        exit(1);
+      fprintf (stderr, "Unable to setup initial camera DMA transfer, check that the video1394 module is loaded, and that the video mode, frame rate, and format are supported by your camera");
+      return (NULL);
     }
   
     /* set trigger mode */
     if( dc1394_set_trigger_mode(arV1394.handle, vid->node, TRIGGER_MODE_0) != DC1394_SUCCESS ) {
-        fprintf( stderr, "unable to set camera trigger mode (ignored)\n");
+      fprintf( stderr, "unable to set camera trigger mode (ignored)\n");
     }
     
     arMalloc( vid->image, ARUint8, (vid->camera.frame_width * vid->camera.frame_height * AR_PIX_SIZE_DEFAULT) );
@@ -615,16 +619,12 @@ int ar2VideoCapStart( AR2VideoParamT *vid )
 				     1, video1394devname, /* drop_frames, dma_device_file */
 #endif
 			             &(vid->camera)) != DC1394_SUCCESS ) {
-            fprintf( stderr,"unable to setup camera-\n"
-                    "check if you did 'insmod video1394' or,\n"
-                    "check line %d of %s to make sure\n"
-                    "that the video mode,framerate and format are\n"
-                    "supported by your camera\n",
-                    __LINE__,__FILE__);
-            exit(1);
+
+	  fprintf (stderr, "Unable to setup initial camera DMA transfer, check that the video1394 module is loaded, and that the video mode, frame rate, and format are supported by your camera");
+	  return (-1);
         }
     }
-
+    
     if( dc1394_start_iso_transmission(arV1394.handle, vid->node) != DC1394_SUCCESS ) {
         fprintf( stderr, "unable to start camera iso transmission\n");
         return -1;
@@ -713,7 +713,7 @@ ARUint8 *ar2VideoGetImage( AR2VideoParamT *vid )
 	    /* We only currently support Bayer image decoding from Point Grey cameras */
 	    if (ar2Video_dragonfly < 0)
 	      {
-		fprintf (stderr, "It is not possible to be in mono mode without the dragonfly flag being set previously\n");
+		fprintf (stderr, "It is not possible to be in mono mode without the dragonfly flag being set previously - internal error\n");
 		exit (1);
 	      }
 	    
@@ -743,18 +743,18 @@ ARUint8 *ar2VideoGetImage( AR2VideoParamT *vid )
 		pattern = BAYER_PATTERN_GBRG;
 		break;
 	      case 0x59595959:  /* YYYY = BW */
-		fprintf (stderr, "Camera is black and white, Bayer conversion is not possible\n");
+		fprintf (stderr, "Camera is black and white, Bayer conversion is not possible - internal error\n");
 		exit (1);
 	      default:
 		if (prev_pattern == -1)
 		  {
-		    fprintf (stderr, "Camera BAYER_TILE_MAPPING register has an unexpected value 0x%x on initial startup, which should not occur\n", qValue);
+		    fprintf (stderr, "Camera BAYER_TILE_MAPPING register has an unexpected value 0x%x on initial startup, which should not occur - internal error\n", qValue);
 		    exit (1);
 		  }
 		else
 		  {
 		    /* This is a wierd bug where occasionally you get an invalid register value and I have no idea why this is */
-		    fprintf (stderr, "WARNING! The BAYER_TILE_MAPPING register has an unexpected value 0x%x, but I was able to use the previous stored result\n", qValue);
+		    fprintf (stderr, "WARNING! The BAYER_TILE_MAPPING register has an unexpected value 0x%x, but I was able to use the previous stored result - this might be a bug\n", qValue);
 		    pattern = prev_pattern;
 		  }
 	      }
@@ -909,7 +909,7 @@ static int ar2Video1394Init( int debug, int *card, int *node )
 	((*card != -1) && (*node == -1)))
       {
 	fprintf (stderr, "Card value is %d and node value is %d, you must either auto-detect both or specify both\n", *card, *node);
-	exit (1);
+	return (-1);
       }
     
     /* If the user has specified so, we will autodetect for the camera and grab the first one we can find */
@@ -923,7 +923,7 @@ static int ar2Video1394Init( int debug, int *card, int *node )
 	if (raw_handle == NULL)
 	  {
 	    fprintf (stderr, "Could not acquire a raw1394 handle - driver not installed?\n");
-	    exit (1);
+	    return (-1);
 	  }
 	numPorts = raw1394_get_port_info (raw_handle, ports, numPorts);
 	raw1394_destroy_handle (raw_handle);
@@ -975,7 +975,7 @@ static int ar2Video1394Init( int debug, int *card, int *node )
 	if ((*card == -1) && (*node == -1))
 	  {
 	    fprintf (stderr, "Could not auto detect any cameras on the %d firewire cards available\n", numPorts);
-	    exit (1);
+	    return (-1);
 	  }
 	printf ("Using the firewire camera on card %d and node %d\n", *card, *node);
       }
@@ -986,7 +986,7 @@ static int ar2Video1394Init( int debug, int *card, int *node )
     if (arV1394.handle==NULL)
       {
 	fprintf (stderr, "Could not acquire a raw1394 handle, did you insmod the drivers?\n");
-        exit(1);
+	return (-1);
       }
     
     
