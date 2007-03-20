@@ -241,7 +241,8 @@ static void Quit(void)
 
 static void Keyboard(unsigned char key, int x, int y)
 {
-	int mode;
+	int mode, threshChange = 0;
+	
 	switch (key) {
 		case 0x1B:						// Quit.
 		case 'Q':
@@ -267,6 +268,13 @@ static void Keyboard(unsigned char key, int x, int y)
 			arUtilTimerReset();
 			debugReportMode(gArglSettings);
 			break;
+		case '-':
+			threshChange = -5;
+			break;
+		case '+':
+		case '=':
+			threshChange = +5;
+			break;
 		case 'D':
 		case 'd':
 			arDebug = !arDebug;
@@ -276,6 +284,7 @@ static void Keyboard(unsigned char key, int x, int y)
 			printf("Keys:\n");
 			printf(" q or [esc]    Quit demo.\n");
 			printf(" c             Change arglDrawMode and arglTexmapMode.\n");
+			printf(" - and +       Adjust threshhold.\n");
 			printf(" d             Activate / deactivate debug mode.\n");
 			printf(" ? or /        Show this help.\n");
 			printf("\nAdditionally, the ARVideo library supplied the following help text:\n");
@@ -283,6 +292,12 @@ static void Keyboard(unsigned char key, int x, int y)
 			break;
 		default:
 			break;
+	}
+	if (threshChange) {
+		gARTThreshhold += threshChange;
+		if (gARTThreshhold < 0) gARTThreshhold = 0;
+		if (gARTThreshhold > 255) gARTThreshhold = 255;
+		printf("Threshhold changed to %d.\n", gARTThreshhold);
 	}
 }
 
