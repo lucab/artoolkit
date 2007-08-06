@@ -78,25 +78,42 @@
 //	Private includes
 // ============================================================================
 
-#include <Carbon/Carbon.h>
-#include <QuickTime/QuickTime.h>
-#include <CoreServices/CoreServices.h>			// Gestalt()
-#include <pthread.h>
-#include <sys/time.h>
-#include <unistd.h>		// usleep()
-#include <sys/types.h>	// sysctlbyname()
-#include <sys/sysctl.h>	// sysctlbyname()
+#ifdef __APPLE__
+#  include <Carbon/Carbon.h>
+#  include <QuickTime/QuickTime.h>
+#  include <CoreServices/CoreServices.h>			// Gestalt()
+#  include <unistd.h>		// usleep(), valloc()
+#  include <sys/types.h>	// sysctlbyname()
+#  include <sys/sysctl.h>	// sysctlbyname()
+#  include "videoInternal.h"
+#elif defined(_WIN32)
+#  ifndef __MOVIES__
+#    include <Movies.h>
+#  endif
+#  ifndef __QTML__
+#    include <QTML.h>
+#  endif
+#  ifndef __GXMATH__
+#    include <GXMath.h>
+#  endif
+#else
+#  error
+#endif
+#include <pthread.h>		// Use pthreads-win32 on Windows.
+#include <string.h>			// memcpy()
 #include <AR/config.h>
 #include <AR/ar.h>
 #include <AR/video.h>
-#include "videoInternal.h"
 
 // ============================================================================
 //	Private definitions
 // ============================================================================
+#ifdef _WIN32
+#  define valloc malloc
+#  define usleep(t) Sleep((DWORD)(t/1000u));
+#endif
 
 //#define AR_VIDEO_SUPPORT_OLD_QUICKTIME		// Uncomment to allow use of non-thread safe QuickTime (pre-6.4).
-#define AR_VIDEO_DEBUG_FIX_DUAL_PROCESSOR_RACE
 
 #define AR_VIDEO_IDLE_INTERVAL_MILLISECONDS_MIN		20L
 #define AR_VIDEO_IDLE_INTERVAL_MILLISECONDS_MAX		100L
@@ -109,6 +126,21 @@
 #  define AR_PTHREAD_CANCELLED PTHREAD_CANCELED
 #else
 #  define AR_PTHREAD_CANCELLED ((void *) 1);
+#endif
+
+// pthreads-win32 cleanup functions must be declared using the cdecl calling convention.
+#if defined(_WIN32) && !defined(__CYGWIN__) && !defined(__MINGW32__)
+#  ifndef ARVIDEO_APIENTRY
+#    define ARVIDEO_APIENTRY __cdecl
+#  endif
+#elif defined(__CYGWIN__) || defined(__MINGW32__)
+#  ifndef ARVIDEO_APIENTRY
+#    define ARVIDEO_APIENTRY __attribute__ ((__cdecl__))
+#  endif
+#else // non-Win32 case.
+#  ifndef ARVIDEO_APIENTRY
+#    define ARVIDEO_APIENTRY
+#  endif
 #endif
 
 // ============================================================================
@@ -352,11 +384,20 @@ static ComponentResult vdgRequestSettings(VdigGrab* pVdg, const int showDialog, 
 	ComponentResult err;
 	
 	// Use the SG Dialog to allow the user to select device and compression settings
-	if (err = RequestSGSettings(inputIndex, pVdg->seqGrab, pVdg->sgchanVideo, showDialog, standardDialog)) {
+#ifdef __APPLE__
+	if ((err = RequestSGSettings(inputIndex, pVdg->seqGrab, pVdg->sgchanVideo, showDialog, standardDialog) != noErr)) {
 		fprintf(stderr, "RequestSGSettings err=%ld\n", err); 
 		goto endFunc;
-	}	
-
+	}
+#else
+	if (showDialog) {
+		if ((err = SGSettingsDialog(pVdg->seqGrab, pVdg->sgchanVideo, 0, 0, seqGrabSettingsPreviewOnly, NULL, 0L)) != noErr)) {
+			fprintf(stderr, "SGSettingsDialog err=%ld\n", err); 
+			goto endFunc;
+		}
+	} 
+#endif
+	
 	if (err = vdgGetSettings(pVdg)) {
 		fprintf(stderr, "vdgGetSettings err=%ld\n", err); 
 		goto endFunc;
@@ -966,7 +1007,7 @@ static int ar2VideoInternalUnlock(pthread_mutex_t *mutex)
 	return (1);
 }
 
-static void ar2VideoInternalThreadCleanup(void *arg)
+static void ARVIDEO_APIENTRY ar2VideoInternalThreadCleanup(void *arg)
 {
 	AR2VideoParamT *vid;
 	
@@ -994,11 +1035,6 @@ static void *ar2VideoInternalThread(void *arg)
 	AR2VideoParamT		*vid;
 	int					keepAlive = 1;
 
-#ifndef AR_VIDEO_DEBUG_FIX_DUAL_PROCESSOR_RACE
-	struct timeval		tv;  // Seconds and microseconds since Jan 1, 1970.
-	struct timespec		ts;  // Seconds and nanoseconds since Jan 1, 1970.
-	int					err_i;
-#endif // !AR_VIDEO_DEBUG_FIX_DUAL_PROCESSOR_RACE
 	ComponentResult		err;
 	int					isUpdated = 0;
 
@@ -1026,17 +1062,7 @@ static void *ar2VideoInternalThread(void *arg)
 	}
 	
 	while (keepAlive && vdgIsGrabbing(vid->pVdg)) {
-		
-#ifndef AR_VIDEO_DEBUG_FIX_DUAL_PROCESSOR_RACE
-		gettimeofday(&tv, NULL);
-		ts.tv_sec = tv.tv_sec;
-		ts.tv_nsec = tv.tv_usec * 1000 + vid->milliSecPerTimer * 1000000;
-		if (ts.tv_nsec >= 1000000000) {
-			ts.tv_nsec -= 1000000000;
-			ts.tv_sec += 1;
-		}
-#endif // AR_VIDEO_DEBUG_FIX_DUAL_PROCESSOR_RACE
-		
+	
 #ifdef AR_VIDEO_SUPPORT_OLD_QUICKTIME
 		// Get a lock to access QuickTime (for SGIdle()), but only if more than one thread is running.
 		if (gVidCount > 1) {
@@ -1126,27 +1152,11 @@ static void *ar2VideoInternalThread(void *arg)
 #endif
 				//vid->lastTime = time;
 			}
-			// Now copy the frame (if double-buffering).
-			if (vid->bufCopyFlag) {
-				if (vid->status & AR_VIDEO_STATUS_BIT_BUFFER) {
-					memcpy((void *)(vid->bufPixelsCopy2), (void *)(vid->bufPixels), vid->bufSize);
-				} else {
-					memcpy((void *)(vid->bufPixelsCopy1), (void *)(vid->bufPixels), vid->bufSize);
-				}
-			}
 			// Mark status to indicate we have a frame available.
 			vid->status |= AR_VIDEO_STATUS_BIT_READY;			
 		}
 		
-		// All done. Wewease Wodger!
-#ifndef AR_VIDEO_DEBUG_FIX_DUAL_PROCESSOR_RACE		
-		err_i = pthread_cond_timedwait(&(vid->condition), &(vid->bufMutex), &ts);
-		if (err_i != 0 && err_i != ETIMEDOUT) {
-			fprintf(stderr, "ar2VideoInternalThread(): Error %d waiting for condition.\n", err_i);
-			keepAlive = 0;
-			break;
-		}
-#else
+		// All done. Welease Wodger!
 		ar2VideoInternalUnlock(&(vid->bufMutex));
 		usleep(vid->milliSecPerTimer * 1000);
 		if (!ar2VideoInternalLock(&(vid->bufMutex))) {
@@ -1154,7 +1164,6 @@ static void *ar2VideoInternalThread(void *arg)
 			keepAlive = 0;
 			break;
 		}
-#endif // AR_VIDEO_DEBUG_FIX_DUAL_PROCESSOR_RACE
 		
 		pthread_testcancel();
 	}
@@ -1163,6 +1172,7 @@ static void *ar2VideoInternalThread(void *arg)
 	return (NULL);
 }
 
+#ifdef __APPLE__
 static int sysctlbyname_with_pid (const char *name, pid_t pid,
 								  void *oldp, size_t *oldlenp,
 								  void *newp, size_t newlen)
@@ -1193,7 +1203,7 @@ static int sysctlbyname_with_pid (const char *name, pid_t pid,
 }
 
 // Pass 0 to use current PID.
-int is_pid_native (pid_t pid)
+static int is_pid_native (pid_t pid)
 {
     int ret = 0;
     size_t sz = sizeof(ret);
@@ -1210,6 +1220,7 @@ int is_pid_native (pid_t pid)
     }
     return ret;
 }
+#endif // __APPLE__
 
 #pragma mark -
 
@@ -1393,8 +1404,15 @@ AR2VideoParamT *ar2VideoOpen(char *config_in)
 	// If there are no active grabbers, init QuickTime.
 	if (gVidCount == 0) {
 	
+#ifdef _WIN32
+		if ((err_s = InitializeQTML(0)) != noErr) {
+			fprintf(stderr, "ar2VideoOpen(): OS error: QuickTime not installed.\n");
+			return (NULL);
+		}
+#endif // _WIN32
+
 		if ((err_s = Gestalt(gestaltQuickTimeVersion, &qtVersion)) != noErr) {
-			fprintf(stderr,"ar2VideoOpen(): QuickTime not installed (%d).\n", err_s);
+			fprintf(stderr, "ar2VideoOpen(): OS error: QuickTime not installed (%d).\n", err_s);
 			return (NULL);
 		}
 		
@@ -1450,6 +1468,7 @@ AR2VideoParamT *ar2VideoOpen(char *config_in)
 	vid->grabber		= grabber;
 	vid->bufCopyFlag	= !singleBuffer;
 	
+#ifdef __APPLE__
 	// Find out if we are running on an Intel Mac.
 	if ((err_s = Gestalt(gestaltNativeCPUtype, &cpuType) != noErr)) {
 		fprintf(stderr, "ar2VideoOpen(): Error getting native CPU type.\n");
@@ -1470,6 +1489,7 @@ AR2VideoParamT *ar2VideoOpen(char *config_in)
 			// Error.
 		}
 	}
+#endif // __APPLE__
 
 	if(!(vid->pVdg = vdgAllocAndInit(grabber))) {
 		fprintf(stderr, "ar2VideoOpen(): vdgAllocAndInit returned error.\n");
@@ -1533,7 +1553,7 @@ AR2VideoParamT *ar2VideoOpen(char *config_in)
 	// the request, otherwise set it to the size of the incoming video.
 	vid->width = (width ? width : (int)((*vid->vdImageDesc)->width));
 	vid->height = (height ? height : (int)((*vid->vdImageDesc)->height));
-	SetRect(&(vid->theRect), 0, 0, (short)vid->width, (short)vid->height);	
+	MacSetRect(&(vid->theRect), 0, 0, (short)vid->width, (short)vid->height);	
 
 	// Make a scaling matrix for the sequence if size of incoming video differs from GWorld dimensions.
 	vid->scaleMatrixPtr = NULL;
@@ -1601,7 +1621,7 @@ AR2VideoParamT *ar2VideoOpen(char *config_in)
 	}
 	
 	// Erase to black.
-#if 1
+#ifdef __APPLE__
 	CGContextRef ctx;
 	QDBeginCGContext(vid->pGWorld, &ctx);
 	CGContextSetRGBFillColor(ctx, 0, 0, 0, 1);               
@@ -1667,7 +1687,6 @@ out:
 	if (weLocked) {
 		if (!ar2VideoInternalUnlock(&gVidQuickTimeMutex)) {
 			fprintf(stderr, "ar2VideoOpen(): Unable to unlock mutex (for QuickTime).\n");
-			return (NULL);
 		}
 	}
 #endif // AR_VIDEO_SUPPORT_OLD_QUICKTIME
@@ -1682,6 +1701,8 @@ int ar2VideoClose(AR2VideoParamT *vid)
 	int weLocked = 0;
 #endif // AR_VIDEO_SUPPORT_OLD_QUICKTIME
 	
+    if( vid == NULL ) return -1;
+
 #ifdef AR_VIDEO_SUPPORT_OLD_QUICKTIME
 	// Get a hold on the QuickTime toolbox.
 	if (gVidCount > 1) {
@@ -1758,6 +1779,9 @@ int ar2VideoClose(AR2VideoParamT *vid)
 		
 		// Probably a good idea to close down QuickTime.
 		ExitMovies();
+#ifdef _WIN32	
+		TerminateQTML();
+#endif // _WIN32	
 	}
 	
     return (0);
@@ -1771,12 +1795,14 @@ int ar2VideoCapStart(AR2VideoParamT *vid)
 	int weLocked = 0;
 #endif // AR_VIDEO_SUPPORT_OLD_QUICKTIME
 	
+    if( vid == NULL ) return -1;
+
 #ifdef AR_VIDEO_SUPPORT_OLD_QUICKTIME
 	// Get a hold on the QuickTime toolbox.
 	if (gVidCount > 1) {
 		if (!ar2VideoInternalLock(&gVidQuickTimeMutex)) {
 			fprintf(stderr, "ar2VideoCapStart(): Unable to lock mutex (for QuickTime).\n");
-			return (1);
+			return (-1);
 		}
 		weLocked = 1;
 	}
@@ -1802,7 +1828,7 @@ int ar2VideoCapStart(AR2VideoParamT *vid)
 	if (weLocked) {
 		if (!ar2VideoInternalUnlock(&gVidQuickTimeMutex)) {
 			fprintf(stderr, "ar2VideoCapStart(): Unable to unlock mutex (for QuickTime).\n");
-			return (1);
+			return (-1);
 		}
 	}
 #endif // AR_VIDEO_SUPPORT_OLD_QUICKTIME
@@ -1833,6 +1859,8 @@ int ar2VideoCapStop(AR2VideoParamT *vid)
 	void *exit_status_p; // Pointer to return value from thread, will be filled in by pthread_join().
 	ComponentResult err = noErr;
 	
+    if( vid == NULL ) return -1;
+
 	if (vid->threadRunning) {
 		// Cancel thread.
 		if ((err_i = pthread_cancel(vid->thread)) != 0) {
@@ -1858,7 +1886,7 @@ int ar2VideoCapStop(AR2VideoParamT *vid)
 		if (gVidCount > 1) {
 			if (!ar2VideoInternalLock(&gVidQuickTimeMutex)) {
 				fprintf(stderr, "ar2VideoCapStop(): Unable to lock mutex (for QuickTime).\n");
-				return (1);
+				return (-1);
 			}
 			weLocked = 1;
 		}
@@ -1876,7 +1904,7 @@ int ar2VideoCapStop(AR2VideoParamT *vid)
 		if (weLocked) {
 			if (!ar2VideoInternalUnlock(&gVidQuickTimeMutex)) {
 				fprintf(stderr, "ar2VideoCapStop(): Unable to unlock mutex (for QuickTime).\n");
-				return (1);
+				return (-1);
 			}
 		}
 #endif // AR_VIDEO_SUPPORT_OLD_QUICKTIME
@@ -1888,10 +1916,12 @@ int ar2VideoCapStop(AR2VideoParamT *vid)
 
 int ar2VideoInqSize(AR2VideoParamT *vid, int *x,int *y)
 {
+    if( vid == NULL ) return -1;
+
 	// Need lock to guarantee exclusive access to vid.
 	if (!ar2VideoInternalLock(&(vid->bufMutex))) {
 		fprintf(stderr, "ar2VideoInqSize(): Unable to lock mutex.\n");
-		return (1);
+		return (-1);
 	}
 	
     *x = vid->width;
@@ -1899,7 +1929,7 @@ int ar2VideoInqSize(AR2VideoParamT *vid, int *x,int *y)
 
 	if (!ar2VideoInternalUnlock(&(vid->bufMutex))) {
 		fprintf(stderr, "ar2VideoInqSize(): Unable to unlock mutex.\n");
-		return (1);
+		return (-1);
 	}
     return (0);
 }
@@ -1908,6 +1938,8 @@ ARUint8 *ar2VideoGetImage(AR2VideoParamT *vid)
 {
 	ARUint8 *pix = NULL;
 
+    if (vid == NULL) return (NULL);
+
 	// ar2VideoGetImage() used to block waiting for a frame.
 	// This locked the OpenGL frame rate to the camera frame rate.
 	// Now, if no frame is currently available then we won't wait around for one.
@@ -1915,15 +1947,7 @@ ARUint8 *ar2VideoGetImage(AR2VideoParamT *vid)
 	if (vid->status & AR_VIDEO_STATUS_BIT_READY) {
 		
 		//fprintf(stderr, "For vid @ %p got frame %ld.\n", vid, vid->frameCount);
-		
-		// Prior Mac versions of ar2VideoInternal added 1 to the pixmap base address
-		// returned to the caller to cope with the fact that neither
-		// arDetectMarker() or argDispImage() knew how to cope with
-		// pixel data with ARGB (Apple) or ABGR (SGI) byte ordering.
-		// Adding 1 had the effect of passing a pointer to the first byte
-		// of non-alpha data. This was an awful hack which caused all sorts
-		// of problems and which can now be avoided after rewriting the
-		// various bits of the toolkit to cope.
+		// If triple-buffering, time to copy buffer.
 		if (vid->bufCopyFlag) {
 			// Need lock to guarantee this thread exclusive access to vid.
 			if (!ar2VideoInternalLock(&(vid->bufMutex))) {
