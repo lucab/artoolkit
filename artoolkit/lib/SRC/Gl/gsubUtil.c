@@ -19,9 +19,10 @@
 #include <AR/video.h>
 #include <AR/gsubUtil.h>
 
-#define  CALIB_POS1_NUM     5
-#define  CALIB_POS2_NUM     2
+#define  CALIB_POS1_NUM     5	// Use 5 positions in the display image plane (x-y)
+#define  CALIB_POS2_NUM     2	// Use 2 positions in the display depth axis (z)
 
+// Centre of the four quadrants, and centre of whole image.
 static double   calib_pos[CALIB_POS1_NUM][2] = { { 160, 120 },
                                                  { 480, 120 },
                                                  { 320, 240 },
@@ -29,8 +30,8 @@ static double   calib_pos[CALIB_POS1_NUM][2] = { { 160, 120 },
                                                  { 480, 360 } };
 static double   calib_pos2d[CALIB_POS1_NUM][CALIB_POS2_NUM][2];
 static double   calib_pos3d[CALIB_POS1_NUM][CALIB_POS2_NUM][3];
-static int      co1;
-static int      co2;
+static int      co1;	// Index into which x-y coordinate we are capturing.
+static int      co2;	// Index into which z coordinate we are capturing.
 static int      left_right;
 static double   target_trans[3][4];
 static int      target_id;

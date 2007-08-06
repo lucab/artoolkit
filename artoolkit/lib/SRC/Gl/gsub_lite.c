@@ -637,6 +637,7 @@ ARGL_CONTEXT_SETTINGS_REF arglSetupForCurrentContext(void)
 
 void arglCleanup(ARGL_CONTEXT_SETTINGS_REF contextSettings)
 {
+	if (!contextSettings) return; // Sanity check.
 	arglCleanupTexRectangle(contextSettings);
 	arglCleanupTexPow2(contextSettings);
 	free(contextSettings);
