@@ -5443,17 +5443,10 @@
 		7872EF4B08E3186800DB266E /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "util/calib_camera2/calib_camera2-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
-				LIBRARY_SEARCH_PATHS = (
-					lib,
-					"$(SRCROOT)/lib",
-				);
+				LIBRARY_SEARCH_PATHS = lib;
 				PRODUCT_NAME = calib_camera2;
 			};
 			name = Development;
@@ -5468,10 +5461,7 @@
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "util/calib_camera2/calib_camera2-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
-				LIBRARY_SEARCH_PATHS = (
-					lib,
-					"$(SRCROOT)/lib",
-				);
+				LIBRARY_SEARCH_PATHS = lib;
 				PRODUCT_NAME = calib_camera2;
 			};
 			name = Deployment;
@@ -5479,10 +5469,6 @@
 		7872EF6508E318C900DB266E /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "util/calib_cparam/calib_cparam-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -5515,10 +5501,6 @@
 		7872EF7F08E3192200DB266E /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "util/calib_distortion/calib_dist-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
@@ -5551,10 +5533,6 @@
 		7872EF9808E3196B00DB266E /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
 				HEADER_SEARCH_PATHS = include;
 				INFOPLIST_FILE = "util/mk_patt/mk_patt-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/bin";
