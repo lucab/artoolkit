@@ -155,16 +155,13 @@ AR2VideoParamT *ar2VideoOpen(char *config)
 	
 	vid->graphManager = new DSVL_VideoSource();
 	if (!config) {
-
 		config = getenv("ARTOOLKIT_CONFIG");
-
-		if (config == NULL) {
-			config = &config_default[0];
-		}
+		if (!config) config = config_default;
 		if (FAILED(vid->graphManager->BuildGraphFromXMLString(config))) return(NULL);
-
 	} else {
-		if (strncmp(config, "<?xml", 5) == 0) {
+		if (!config[0]) {
+			if (FAILED(vid->graphManager->BuildGraphFromXMLString(config_default))) return(NULL);
+		} else if (strncmp(config, "<?xml", 5) == 0) {
 			if (FAILED(vid->graphManager->BuildGraphFromXMLString(config))) return(NULL);
 		} else {
 			if (FAILED(vid->graphManager->BuildGraphFromXMLFile(config))) return(NULL);
