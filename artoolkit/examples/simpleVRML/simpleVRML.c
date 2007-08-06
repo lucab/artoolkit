@@ -184,7 +184,7 @@ static void debugReportMode(const ARGL_CONTEXT_SETTINGS_REF arglContextSettings)
 	}
 }
 
-static void Quit(void)
+static void cleanup(void)
 {
 	arglCleanup(gArglSettings);
 	arVideoCapStop();
@@ -192,7 +192,6 @@ static void Quit(void)
 #ifdef _WIN32
 	CoUninitialize();
 #endif
-	exit(0);
 }
 
 static void Keyboard(unsigned char key, int x, int y)
@@ -203,7 +202,8 @@ static void Keyboard(unsigned char key, int x, int y)
 		case 0x1B:						// Quit.
 		case 'Q':
 		case 'q':
-			Quit();
+			cleanup();
+			exit(0);
 			break;
 		case 'C':
 		case 'c':
@@ -254,7 +254,7 @@ static void Keyboard(unsigned char key, int x, int y)
 	}
 }
 
-static void Idle(void)
+static void mainLoop(void)
 {
 	static int ms_prev;
 	int ms;
@@ -265,7 +265,7 @@ static void Idle(void)
     int             marker_num;						// Count of number of markers detected.
     int             i, j, k;
 	
-	// Find out how long since Idle() last ran.
+	// Find out how long since mainLoop() last ran.
 	ms = glutGet(GLUT_ELAPSED_TIME);
 	s_elapsed = (float)(ms - ms_prev) * 0.001;
 	if (s_elapsed < 0.01f) return; // Don't update more often than 100 Hz.
@@ -329,7 +329,7 @@ static void Idle(void)
 static void Visibility(int visible)
 {
 	if (visible == GLUT_VISIBLE) {
-		glutIdleFunc(Idle);
+		glutIdleFunc(mainLoop);
 	} else {
 		glutIdleFunc(NULL);
 	}
@@ -455,6 +455,7 @@ int main(int argc, char** argv)
 	// Setup argl library for current context.
 	if ((gArglSettings = arglSetupForCurrentContext()) == NULL) {
 		fprintf(stderr, "main(): arglSetupForCurrentContext() returned error.\n");
+		cleanup();
 		exit(-1);
 	}
 	debugReportMode(gArglSettings);
@@ -463,7 +464,8 @@ int main(int argc, char** argv)
 
 	if (!setupMarkersObjects(objectDataFilename, &gObjectData, &gObjectDataCount)) {
 		fprintf(stderr, "main(): Unable to set up AR objects and markers.\n");
-		Quit();
+		cleanup();
+		exit(-1);
 	}
 	
 	// Test render all the VRML objects.
@@ -477,7 +479,7 @@ int main(int argc, char** argv)
 	fprintf(stdout, " done\n");
 	
 	// Register GLUT event-handling callbacks.
-	// NB: Idle() is registered by Visibility.
+	// NB: mainLoop() is registered by Visibility.
 	glutDisplayFunc(Display);
 	glutReshapeFunc(Reshape);
 	glutVisibilityFunc(Visibility);

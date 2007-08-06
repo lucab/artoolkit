@@ -108,7 +108,7 @@ static void     Mouse(int button, int state, int x, int y);
 static void     Motion(int x, int y);
 static void     Keyboard(unsigned char key, int x, int y);
 static void     Quit(void);
-static void     Idle(void);
+static void     mainLoop(void);
 static void     Visibility(int visible);
 static void     Reshape(int w, int h);
 static void     Display(void);
@@ -142,7 +142,7 @@ int main(int argc, char *argv[])
 	gARTCparam.ysize = gYsize;
 	
 	// Register GLUT event-handling callbacks.
-	// NB: Idle() is registered by Visibility.
+	// NB: mainLoop() is registered by Visibility.
     glutDisplayFunc(Display);
 	glutReshapeFunc(Reshape);
 	glutVisibilityFunc(Visibility);
@@ -262,7 +262,8 @@ void checkFit(void) {
 		} else {
 			printf("Not enough images to proceed with calibration. Exiting.\n");
 		}
-		Quit();
+		cleanup();
+		exit(0);
 	}				
 }
 
@@ -274,7 +275,8 @@ static void eventCancel(void) {
 		arVideoCapStop();
 		if (gPatt.loop_num == 0) {
 			// No images with all features identified, so quit.
-			Quit();
+			cleanup();
+			exit(0);
 		} else {
 			// At least one image with all features identified,
 			// so calculate distortion.
@@ -466,7 +468,7 @@ static void Keyboard(unsigned char key, int x, int y)
 	}
 }
 
-static void Quit(void)
+static void cleanup(void)
 {
 	if (gClipImage) {
 		free(gClipImage);
@@ -475,17 +477,16 @@ static void Quit(void)
 	if (gArglSettings) arglCleanup(gArglSettings);
 	if (gWin) glutDestroyWindow(gWin);
 	arVideoClose();
-	exit(0);
 }
 
-static void Idle(void)
+static void mainLoop(void)
 {
 	static int ms_prev;
 	int ms;
 	float s_elapsed;
 	ARUint8 *image;
 	
-	// Find out how long since Idle() last ran.
+	// Find out how long since mainLoop() last ran.
 	ms = glutGet(GLUT_ELAPSED_TIME);
 	s_elapsed = (float)(ms - ms_prev) * 0.001;
 	if (s_elapsed < 0.01f) return; // Don't update more often than 100 Hz.
@@ -508,7 +509,7 @@ static void Idle(void)
 static void Visibility(int visible)
 {
 	if (visible == GLUT_VISIBLE) {
-		glutIdleFunc(Idle);
+		glutIdleFunc(mainLoop);
 	} else {
 		glutIdleFunc(NULL);
 	}

@@ -360,7 +360,7 @@ static void Keyboard(unsigned char key, int x, int y)
 	}
 }
 
-static void Idle(void)
+static void mainLoop(void)
 {
 	int i;
 	static int ms_prev;
@@ -372,7 +372,7 @@ static void Idle(void)
     int             marker_num;						// Count of number of markers detected.
     int             j, k;
 	
-	// Find out how long since Idle() last ran.
+	// Find out how long since mainLoop() last ran.
 	ms = glutGet(GLUT_ELAPSED_TIME);
 	s_elapsed = (float)(ms - ms_prev) * 0.001;
 	if (s_elapsed < 0.01f) return; // Don't update more often than 100 Hz.
@@ -381,7 +381,7 @@ static void Idle(void)
 	// Update drawing.
 	DrawCubeUpdate(s_elapsed);
 	
-	gCallCountGetImage++; // Increment Idle() counter.
+	gCallCountGetImage++; // Increment mainLoop() counter.
 	
 	for (i = 0; i < gContextsActiveCount; i++) {
 		
@@ -390,7 +390,7 @@ static void Idle(void)
 			gContextsActive[i].ARTImage = image;	// Save the fetched image.
 			
 			gContextsActive[i].callCountMarkerDetect++; // Increment ARToolKit FPS counter.
-			//fprintf(stderr, "Idle(): Got image #%ld from cam %d on attempt #%ld.\n", gContextsActive[i].callCountMarkerDetect, i + 1, gCallCountGetImage);
+			//fprintf(stderr, "mainLoop(): Got image #%ld from cam %d on attempt #%ld.\n", gContextsActive[i].callCountMarkerDetect, i + 1, gCallCountGetImage);
 			
 			// Detect the markers in the video frame.
 			if (arDetectMarkerLite(gContextsActive[i].ARTImage, gContextsActive[i].ARTThreshhold, &marker_info, &marker_num) < 0) {
@@ -428,7 +428,7 @@ static void Idle(void)
 static void Visibility(int visible)
 {
 	if (visible == GLUT_VISIBLE) {
-		glutIdleFunc(Idle);
+		glutIdleFunc(mainLoop);
 	} else {
 		glutIdleFunc(NULL);
 	}
@@ -613,7 +613,7 @@ int main(int argc, char** argv)
 	}	
 		
 	// Register GLUT event-handling callbacks.
-	// NB: Idle() is registered by Visibility.
+	// NB: mainLoop() is registered by Visibility.
 	glutMainLoop();
 
 	return (0);

@@ -115,7 +115,7 @@ static void		Keyboard(unsigned char key, int x, int y);
 static void		Special(int key, int x, int y);
 static void		Mouse(int button, int state, int x, int y);
 static void     Quit(void);
-static void     Idle(void);
+static void     mainLoop(void);
 static void     Visibility(int visible);
 static void     Reshape(int w, int h);
 static void     Display(void);
@@ -157,7 +157,7 @@ int main(int argc, char *argv[])
 	arMalloc(gSaveARTImage, unsigned char, gXsize*gYsize*AR_PIX_SIZE_DEFAULT);
 
 	// Register GLUT event-handling callbacks.
-	// NB: Idle() is registered by Visibility.
+	// NB: mainLoop() is registered by Visibility.
     glutDisplayFunc(Display);
 	glutReshapeFunc(Reshape);
 	glutVisibilityFunc(Visibility);
@@ -249,7 +249,8 @@ static void eventCancel(void) {
 	if (mode == 0) {
 		// Cancel from mode 0 should quit program.
 		arVideoCapStop();
-		Quit();
+		cleanup();
+		exit(0);
 	} else if (mode == 1) {
 		if (line_num_current == 0) {
 			// Cancel from mode 1, first line, should go back to mode 0.
@@ -327,8 +328,8 @@ static void Keyboard(unsigned char key, int x, int y)
 					printf("Input filename: ");
 					scanf("%s", name);
 					arParamSave( name, 1, &iparam );
-					
-					Quit();
+					cleanup();
+					exit(0);
 				}
             }
             break;
@@ -404,23 +405,22 @@ static void Special(int key, int x, int y)
     if (k) glutPostRedisplay();
 }
 
-static void Quit(void)
+static void cleanup(void)
 {
 	if (gSaveArglSettings) arglCleanup(gSaveArglSettings);
 	if (gArglSettings) arglCleanup(gArglSettings);
 	if (gWin) glutDestroyWindow(gWin);
 	arVideoClose();
-	exit(0);
 }
 
-static void Idle(void)
+static void mainLoop(void)
 {
 	static int ms_prev;
 	int ms;
 	float s_elapsed;
 	ARUint8 *image;
 	
-	// Find out how long since Idle() last ran.
+	// Find out how long since mainLoop() last ran.
 	ms = glutGet(GLUT_ELAPSED_TIME);
 	s_elapsed = (float)(ms - ms_prev) * 0.001;
 	if (s_elapsed < 0.01f) return; // Don't update more often than 100 Hz.
@@ -443,7 +443,7 @@ static void Idle(void)
 static void Visibility(int visible)
 {
 	if (visible == GLUT_VISIBLE) {
-		glutIdleFunc(Idle);
+		glutIdleFunc(mainLoop);
 	} else {
 		glutIdleFunc(NULL);
 	}

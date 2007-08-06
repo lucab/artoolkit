@@ -231,12 +231,11 @@ static void debugReportMode(const ARGL_CONTEXT_SETTINGS_REF arglContextSettings)
 	}
 }
 
-static void Quit(void)
+static void cleanup(void)
 {
 	arglCleanup(gArglSettings);
 	arVideoCapStop();
 	arVideoClose();
-	exit(0);
 }
 
 static void Keyboard(unsigned char key, int x, int y)
@@ -247,7 +246,8 @@ static void Keyboard(unsigned char key, int x, int y)
 		case 0x1B:						// Quit.
 		case 'Q':
 		case 'q':
-			Quit();
+			cleanup();
+			exit(0);
 			break;
 		case ' ':
 			gDrawRotate = !gDrawRotate;
@@ -301,7 +301,7 @@ static void Keyboard(unsigned char key, int x, int y)
 	}
 }
 
-static void Idle(void)
+static void mainLoop(void)
 {
 	static int ms_prev;
 	int ms;
@@ -312,7 +312,7 @@ static void Idle(void)
     int             marker_num;						// Count of number of markers detected.
     int             j, k;
 	
-	// Find out how long since Idle() last ran.
+	// Find out how long since mainLoop() last ran.
 	ms = glutGet(GLUT_ELAPSED_TIME);
 	s_elapsed = (float)(ms - ms_prev) * 0.001;
 	if (s_elapsed < 0.01f) return; // Don't update more often than 100 Hz.
@@ -362,7 +362,7 @@ static void Idle(void)
 static void Visibility(int visible)
 {
 	if (visible == GLUT_VISIBLE) {
-		glutIdleFunc(Idle);
+		glutIdleFunc(mainLoop);
 	} else {
 		glutIdleFunc(NULL);
 	}
@@ -434,16 +434,9 @@ static void Display(void)
 int main(int argc, char** argv)
 {
 	char glutGamemode[32];
-	const char *cparam_name = "Data/camera_para.dat";
-	//
-	// Camera configuration.
-	//
-#ifdef _WIN32
-	char			*vconf = "Data\\WDM_camera_flipV.xml";
-#else
-	char			*vconf = "";
-#endif
-	const char *patt_name  = "Data/patt.hiro";
+	char *cparam_name = "Data/camera_para.dat";
+	char *vconf = "";
+	char *patt_name  = "Data/patt.hiro";
 	
 	// ----------------------------------------------------------------------------
 	// Library inits.
@@ -476,22 +469,25 @@ int main(int argc, char** argv)
 		glutCreateWindow(argv[0]);
 	}
 
-	// Setup argl library for current context.
+	// Setup ARgsub_lite library for current OpenGL context.
 	if ((gArglSettings = arglSetupForCurrentContext()) == NULL) {
 		fprintf(stderr, "main(): arglSetupForCurrentContext() returned error.\n");
+		cleanup();
 		exit(-1);
 	}
 	debugReportMode(gArglSettings);
 	glEnable(GL_DEPTH_TEST);
 	arUtilTimerReset();
-		
+	
+	// Load marker(s).
 	if (!setupMarker(patt_name, &gPatt_id)) {
 		fprintf(stderr, "main(): Unable to set up AR marker.\n");
-		Quit();
+		cleanup();
+		exit(-1);
 	}
 	
 	// Register GLUT event-handling callbacks.
-	// NB: Idle() is registered by Visibility.
+	// NB: mainLoop() is registered by Visibility.
 	glutDisplayFunc(Display);
 	glutReshapeFunc(Reshape);
 	glutVisibilityFunc(Visibility);
