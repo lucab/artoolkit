@@ -24,6 +24,7 @@
  *  1.4.1   2005-03-15  PRL     QuickTime 6.4 or newer is now required by default. In order
  *								to allow earlier versions, AR_VIDEO_SUPPORT_OLD_QUICKTIME must
  *								be uncommented at compile time.
+ *  1.4.2   2007-09-26  GALEOTTI   Made -pixelformat work for format 40 and for Intel Macs.
  *
  */
 /*
@@ -1325,7 +1326,11 @@ AR2VideoParamT *ar2VideoOpen(char *config_in)
                 sscanf(a, "%s", line);
 				if (strlen(line) <= 13) err_i = 1;
 				else {
+#ifdef AR_BIG_ENDIAN
 					if (strlen(line) == 17) err_i = (sscanf(&line[13], "%4c", (char *)&pixFormat) < 1);
+#else
+					if (strlen(line) == 17) err_i = (sscanf(&line[13], "%c%c%c%c", &(((char *)&pixFormat)[3]), &(((char *)&pixFormat)[2]), &(((char *)&pixFormat)[1]), &(((char *)&pixFormat)[0])) < 1);
+#endif
 					else err_i = (sscanf(&line[13], "%li", (long *)&pixFormat) < 1); // Integer.
 				}
             } else if (strncmp(a, "-fps", 4) == 0) {
@@ -1395,8 +1400,15 @@ AR2VideoParamT *ar2VideoOpen(char *config_in)
 			break;
 		case k8IndexedGrayPixelFormat:
 			bytesPerPixel = 1l;
+			break;
 		default:
-			fprintf(stderr, "ar2VideoOpen(): Unsupported pixel format requested.\n");
+			fprintf(stderr, "ar2VideoOpen(): Unsupported pixel format requested:  0x%08x = %u = '%c%c%c%c'.\n", (unsigned int)pixFormat, (unsigned int)pixFormat,
+#ifdef AR_BIG_ENDIAN
+					((char *)&pixFormat)[0], ((char *)&pixFormat)[1], ((char *)&pixFormat)[2], ((char *)&pixFormat)[3]
+#else
+					((char *)&pixFormat)[3], ((char *)&pixFormat)[2], ((char *)&pixFormat)[1], ((char *)&pixFormat)[0]
+#endif
+			);
 			return(NULL);
 			break;			
 	}
