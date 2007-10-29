@@ -114,7 +114,7 @@ static int      init(int argc, char *argv[]);
 static void		Keyboard(unsigned char key, int x, int y);
 static void		Special(int key, int x, int y);
 static void		Mouse(int button, int state, int x, int y);
-static void     Quit(void);
+/* static void     Quit(void); */
 static void     mainLoop(void);
 static void     Visibility(int visible);
 static void     Reshape(int w, int h);
@@ -124,6 +124,7 @@ static void		drawNextLine(void);
 static void		draw_warp_line(double sx, double ex, double sy, double ey);
 static void		getCpara(void);
 static void		intersection( double line1[4], double line2[4], double *screen_coord );
+static void     cleanup(void);
 
 
 int main(int argc, char *argv[])

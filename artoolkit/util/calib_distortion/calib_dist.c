@@ -105,7 +105,7 @@ static int      init(int argc, char *argv[]);
 static void     Mouse(int button, int state, int x, int y);
 static void     Motion(int x, int y);
 static void     Keyboard(unsigned char key, int x, int y);
-static void     Quit(void);
+/* static void     Quit(void); */
 static void     mainLoop(void);
 static void     Visibility(int visible);
 static void     Reshape(int w, int h);
@@ -115,6 +115,7 @@ static void     draw_line(void);
 static void     draw_line2(double *x, double *y, int num);
 static void     draw_warp_line(double a, double b , double c);
 static void     print_comment(int status);
+static void     cleanup(void);
 
 int main(int argc, char *argv[])
 {

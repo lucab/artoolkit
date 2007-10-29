@@ -3280,6 +3280,7 @@
 		08FB7793FE84155DC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 4A7E913D085904A2001E80E8 /* Build configuration list for PBXProject "ARToolKit" */;
+			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 08FB7794FE84155DC02AAC07 /* ARToolKit */;
 			productRefGroup = 08FB7794FE84155DC02AAC07 /* ARToolKit */;
