@@ -58,8 +58,8 @@ arVrmlBrowser::do_get_resource(const std::string & uri)
 	public:
 		explicit file_resource_istream(const std::string & path): resource_istream(&this->buf_)
 		{
-			if (!this->buf_.open(path.c_str(), ios_base::in)) {
-				this->setstate(ios_base::failbit);
+			if (!this->buf_.open(path.c_str(), ios_base::in | ios_base::binary)) {
+				this->setstate(ios_base::badbit);
 			}
 		}
 			
@@ -78,7 +78,8 @@ arVrmlBrowser::do_get_resource(const std::string & uri)
 		{
 			//
 			// A real application should use OS facilities for this.  This
-			// is a crude hack.
+            // is a crude hack because sdl-viewer uses std::filebuf in
+            // order to remain simple and portable.
 			//
 			using std::find;
 			using std::string;
@@ -95,9 +96,9 @@ arVrmlBrowser::do_get_resource(const std::string & uri)
 				find(next(dot_pos.base()), this->url_.end(), '#');
 			const string ext(dot_pos.base(), hash_pos);
 			if (iequals(ext, "wrl")) {
-				media_type = "model/vrml";
+                media_type = openvrml::vrml_media_type;
 			} else if (iequals(ext, "x3dv")) {
-				media_type = "model/x3d+vrml";
+                media_type = openvrml::x3d_vrml_media_type;
 			} else if (iequals(ext, "png")) {
 				media_type = "image/png";
 			} else if (iequals(ext, "jpg") || iequals(ext, "jpeg")) {
@@ -120,8 +121,23 @@ arVrmlBrowser::do_get_resource(const std::string & uri)
 	// file://
 	//        ^
 	// 01234567
+	static const string::size_type authority_start_index = 7;
+
 	//
-	string path = uri.substr(uri.find_first_of('/', 7));
+	// On Windows we want to start at the drive letter, which is after the
+	// first slash in the path.
+	//
+	// We ignore the content of the authority; a smarter implementation
+	// should confirm that it is localhost, the machine name, or zero
+	// length.
+	//
+	string::size_type path_start_index =
+# ifdef _WIN32
+		uri.find_first_of('/', authority_start_index) + 1;
+# else
+		uri.find_first_of('/', authority_start_index);
+# endif
+	string path = uri.substr(path_start_index);
 	
 	auto_ptr<resource_istream> in(new file_resource_istream(path));
 	static_cast<file_resource_istream *>(in.get())->url(uri);
@@ -130,7 +146,7 @@ arVrmlBrowser::do_get_resource(const std::string & uri)
 }
 
 
-arVrmlViewer::arVrmlViewer() : gl::viewer::viewer()
+arVrmlViewer::arVrmlViewer()
 {
     internal_light = true;
 

@@ -20,7 +20,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="$(ProjectDir)..\..\..\include;$(ProjectDir)..\..\..\OpenVRML\include;$(ProjectDir)..\..\..\OpenVRML\dependencies\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;S;OPENVRML_ENABLE_IMAGETEXTURE_NODE;OPENVRML_ENABLE_GZIP"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
@@ -99,10 +99,10 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
-				RelativePath=".\arViewer.cpp">
+				RelativePath=".\arViewer_openvrml-0.14.3.cpp">
 			</File>
 			<File
-				RelativePath=".\arViewerCapi.cpp">
+				RelativePath=".\arViewerCapi_openvrml-0.14.3.cpp">
 			</File>
 		</Filter>
 		<Filter
@@ -110,10 +110,10 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
 			<File
-				RelativePath=".\arViewer.h">
+				RelativePath=".\arViewer_openvrml-0.14.3.h">
 			</File>
 			<File
-				RelativePath="..\..\..\include\Ar\arvrml.h">
+				RelativePath="..\..\..\include\AR\arvrml.h">
 			</File>
 		</Filter>
 		<Filter
@@ -121,9 +121,6 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}">
 		</Filter>
-		<File
-			RelativePath=".\ReadMe.txt">
-		</File>
 	</Files>
 	<Globals>
 	</Globals>
