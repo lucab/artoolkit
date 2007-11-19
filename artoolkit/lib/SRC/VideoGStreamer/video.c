@@ -23,29 +23,30 @@
 
 
 struct _AR2VideoParamT {
-
-	/* GStreamer pipeline */
-	GstElement *pipeline;
-	
-	/* GStreamer identity needed for probing */
-	GstElement *probe;
 	
 	/* size of the image */
 	int	width, height;
 
 	/* the actual video buffer */
     ARUint8             *videoBuffer;
-    
+
+	/* GStreamer pipeline */
+	GstElement *pipeline;
+	
+	/* GStreamer identity needed for probing */
+	GstElement *probe;
+
 };
 
 
-static AR2VideoParamT *gVid = 0;
+static AR2VideoParamT *gVid = NULL;
 
 static gboolean
 cb_have_data (GstPad    *pad,
 	      GstBuffer *buffer,
 	      gpointer   u_data)
 {
+
  	const GstCaps *caps;
 	GstStructure *str;
 	
@@ -53,10 +54,12 @@ cb_have_data (GstPad    *pad,
 	gdouble rate;
 	
 	AR2VideoParamT *vid = (AR2VideoParamT*)u_data;
+
+	if (vid == NULL) return FALSE;
 	
 
 	/* only do initialy for the buffer */
-	if (vid->videoBuffer == 0) 
+	if (vid->videoBuffer == NULL && buffer) 
 	{ 
 	
 		/* 
@@ -70,23 +73,22 @@ cb_have_data (GstPad    *pad,
 		gst_structure_get_int(str,"width",&width);
 		gst_structure_get_int(str,"height",&height);
 		gst_structure_get_double(str,"framerate",&rate);
-		
-		g_print("libARvideo: GStreamer negotiated %dx%d\n",width,height);
 	
 		vid->width = width;
 		vid->height = height;
+
+		g_print("libARvideo: GStreamer negotiated %dx%d (size: %d / expected: %d)\n",width,height,buffer->size, (vid->width * vid->height * AR_PIX_SIZE_DEFAULT) );	
 		
 		/* allocate the buffer */
-		vid->videoBuffer = malloc(buffer->size);
-		
-		return TRUE;
+	
+		arMalloc(vid->videoBuffer, ARUint8, (vid->width * vid->height * AR_PIX_SIZE_DEFAULT) );
 		
 	}
-	else 
+
+	if (vid->videoBuffer)
 	{
-		/* copy the video buffer */
-		memcpy(vid->videoBuffer, buffer->data, buffer->size);
-	}	
+		memcpy(vid->videoBuffer, buffer->data, buffer->size);		
+	}
 	
 	return TRUE;
 }
@@ -213,7 +215,7 @@ ar2VideoOpen(char *config_in ) {
     arMalloc( vid, AR2VideoParamT, 1 );
 
 	/* initialise buffer */
-	vid->videoBuffer = 0;
+	vid->videoBuffer = NULL;
 	
 	/* report the current version and features */
 	g_print ("libARvideo: %s\n", gst_version_string());
@@ -253,9 +255,10 @@ ar2VideoOpen(char *config_in ) {
 
 		
 	/* install the probe callback for capturing */
-	gst_pad_add_buffer_probe (pad, G_CALLBACK (cb_have_data), vid);	
 	
-
+	gst_pad_add_buffer_probe (pad, G_CALLBACK (cb_have_data), vid);	
+		
+	/* gst_object_unref(pad);*/
 	
 
 #if 0
@@ -288,10 +291,15 @@ ar2VideoOpen(char *config_in ) {
     }
 
 	/* now preroll for V4L v2 interfaces */
-	if ((strstr(config, "v4l2src") != 0) ||
+	if ( 
+		(strstr(config, "v4l2src") != 0) ||
 		(strstr(config, "dv1394src") != 0) ||
-		(strstr(config, "rtspsrc") != 0) )
+		(strstr(config, "rtspsrc") != 0) /* ||
+		(strstr(config, "videotestsrc") != 0) */)
 	{
+
+		g_print ("libARvdeo: need special prerolling for GStreamer\n"); 
+
 		/* set playing state of the pipeline */
 		gst_element_set_state (vid->pipeline, GST_STATE_PLAYING);
 		
@@ -388,3 +396,4 @@ ar2VideoInqSize(AR2VideoParamT *vid, int *x, int *y )
    *y = vid->height; // height of your static image
 
 }
+
