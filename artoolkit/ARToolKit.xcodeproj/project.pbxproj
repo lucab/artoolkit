@@ -3285,6 +3285,7 @@
 			mainGroup = 08FB7794FE84155DC02AAC07 /* ARToolKit */;
 			productRefGroup = 08FB7794FE84155DC02AAC07 /* ARToolKit */;
 			projectDirPath = "";
+			projectRoot = "";
 			targets = (
 				4AB9FFA10651CE85003B9097 /* ARToolKit complete */,
 				4A8486680728DD530063B1B3 /* Configure */,
