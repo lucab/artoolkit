@@ -108,7 +108,7 @@ then
 		GST_INCLUDE=`pkg-config --cflags gstreamer-0.10`
 		GST_LIBS=`pkg-config --libs gstreamer-0.10`
 		
-		CFLAG="-O $GST_INCLUDE -I/usr/X11R6/include"
+		CFLAG="-O $GST_INCLUDE -I/usr/X11R6/include -fPIC"
         LDFLAG="$GST_LIBS -L/usr/X11R6/lib -L/usr/local/lib"
         ARFLAG="rs"
         RANLIB=""

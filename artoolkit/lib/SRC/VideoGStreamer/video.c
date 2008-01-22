@@ -1,9 +1,9 @@
 /*
  * Video capture module utilising the GStreamer pipeline for AR Toolkit
  * 
- * (c) Copyrights 2003-2007 Hartmut Seichter
+ * (c) Copyrights 2003-2008 Hartmut Seichter <http://www.technotecture.com>
  * 
- * licensed under the terms of the GPL v2.0
+ * licensed under the terms of the LGPL v2
  *
  */
 
@@ -20,6 +20,9 @@
 
 /* using memcpy */
 #include <string.h>
+
+
+#define GSTREAMER_TEST_LAUNCH_CFG "videotestsrc ! capsfilter caps=video/x-raw-rgb,bpp=24 ! identity name=artoolkit ! fakesink"
 
 
 struct _AR2VideoParamT {
@@ -201,8 +204,14 @@ ar2VideoOpen(char *config_in ) {
 			g_printf ("Using config string from environment [%s].\n", envconf);
 		} else {
 			config = NULL;
-			g_printf ("No video config string supplied, using defaults.\n");
+
+			g_printf ("Warning: no video config string supplied, using default!.\n");
+
+			/* setting up defaults - we fall back to the TV test signal simulator */
+			config = GSTREAMER_TEST_LAUNCH_CFG;					
+				
 		}
+
 	} else {
 		config = config_in;
 		g_printf ("Using supplied video config string [%s].\n", config_in);
@@ -254,13 +263,10 @@ ar2VideoOpen(char *config_in ) {
 	pad = gst_element_get_pad (vid->probe, "src");
 
 		
-	/* install the probe callback for capturing */
-	
+	/* install the probe callback for capturing */	
 	gst_pad_add_buffer_probe (pad, G_CALLBACK (cb_have_data), vid);	
 		
-	/* gst_object_unref(pad);*/
 	
-
 #if 0
 	/* request ready state */
 	gst_element_set_state (vid->pipeline, GST_STATE_READY);
@@ -282,6 +288,9 @@ ar2VideoOpen(char *config_in ) {
 
 	/* dismiss the pad */
 	gst_object_unref (pad);
+
+	/* dismiss the peer-pad */
+	gst_object_unref (peerpad);
 	
 	/* wait until it's up and running or failed */
 	if (gst_element_get_state (vid->pipeline, NULL, NULL, -1) == GST_STATE_CHANGE_FAILURE) {
