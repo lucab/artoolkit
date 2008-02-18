@@ -14,3 +14,4 @@ allclean:
 	(cd examples;   make -f Makefile allclean)
 	rm -f Makefile
 	rm -f include/AR/config.h
+	rm -f share/artoolkit-config

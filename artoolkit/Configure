@@ -1,30 +1,49 @@
 #!/bin/sh
-# ARToolKit Configure for Linux Video Devices
+# ARToolKit Configure for Linux/Unix Video Devices
 #
 #####################################################
 
 MDIR=". \
       lib/SRC \
-      lib/SRC/AR lib/SRC/ARMulti lib/SRC/Gl \
-      lib/SRC/VideoLinux1394Cam lib/SRC/VideoLinuxDV \
-      lib/SRC/VideoLinuxV4L lib/SRC/VideoSGI \
+      lib/SRC/AR \
+      lib/SRC/ARMulti \
+      lib/SRC/Gl \
+      lib/SRC/VideoLinux1394Cam \
+      lib/SRC/VideoLinuxDV \
+      lib/SRC/VideoLinuxV4L \
+      lib/SRC/VideoSGI \
       lib/SRC/VideoMacOSX \
       lib/SRC/VideoGStreamer \
       lib/SRC/ARvrml \
       util \
-      util/calib_camera2 util/calib_cparam util/calib_distortion \
-      util/mk_patt util/graphicsTest util/videoTest \
+      util/calib_camera2 \
+      util/calib_cparam \
+      util/calib_distortion \
+      util/mk_patt \
+      util/graphicsTest \
+      util/videoTest \
       examples \
-      examples/collide  examples/exview \
-      examples/loadMultiple  examples/modeTest  examples/multi  examples/optical  \
-      examples/paddle examples/paddleDemo examples/paddleInteraction examples/range \
-      examples/relation examples/simple examples/simple2 examples/simpleLite \
-      examples/twoView examples/simpleVRML \
+      examples/collide \
+      examples/exview \
+      examples/loadMultiple \
+      examples/modeTest \
+      examples/multi \
+      examples/optical \
+      examples/paddle \
+      examples/paddleDemo \
+      examples/paddleInteraction \
+      examples/range \
+      examples/relation \
+      examples/simple \
+      examples/simple2 \
+      examples/simpleLite \
+      examples/twoView \
+      examples/simpleVRML \
       "
 
 SED=/tmp/SED.$$
 trap "rm -f $SED; exit 0" 0 1 2 3 15
-
+VERSION=`grep -E 'AR_HEADER_VERSION_STRING[[:space:]]+"[0-9]+\.[0-9]+(\.[0-9]+)*"' include/AR/config.h.in | grep -Eo "[0-9]+\.[0-9]+(\.[0-9]+)*"`
 
 
 E=`uname`
@@ -42,7 +61,7 @@ then
     then
 		echo
 		echo "Color conversion should use x86 assembly (choose 'n' for 64bit systems)?"
- 		echo -n "Enter : "
+		echo -n "Enter : "
 		read ANS
 		if [ "$ANS" = "y" ]
 		then
@@ -59,13 +78,13 @@ then
         LDFLAG="-L/usr/X11R6/lib"
         ARFLAG="rs"
         RANLIB=""
-        LIBS="-lglut -lGLU -lGL -lXi -lXmu -lX11 -lm"
+        LIBS="-lglut -lGLU -lGL -lXi -lX11 -lm -lpthread"
         CONFIG="AR_INPUT_V4L"
     elif [ "$ANS" = "2" ]
     then
 		echo
-		echo "Color conversion should use x86 assembly (not working for 64bit)?"
- 		echo -n "Enter : "
+		echo "Color conversion should use x86 assembly (Answer n if compiling for 64 bit)?"
+		echo -n "Enter : "
 		read ANS
 		if [ "$ANS" = "y" ]
 		then
@@ -82,16 +101,16 @@ then
         LDFLAG="-L/usr/X11R6/lib"
         ARFLAG="rs"
         RANLIB=""
-        LIBS="-lglut -lGLU -lGL -lXi -lXmu -lX11 -lm -ljpeg"
+        LIBS="-lglut -lGLU -lGL -lXi -lX11 -lm -lpthread -ljpeg"
         CONFIG="AR_INPUT_V4L"
     elif [ "$ANS" = "3" ]
     then
         VIDEO_DRIVER="VideoLinuxDV"
-        CFLAG="-O -I/usr/include/glib-1.2 -I/usr/lib/glib/include -I/usr/X11R6/include"
-        LDFLAG="-L/usr/X11R6/lib -L/usr/local/lib"
+        CFLAG="-O -I/usr/X11R6/include"
+        LDFLAG="-L/usr/X11R6/lib"
         ARFLAG="rs"
         RANLIB=""
-        LIBS="-lraw1394 -ldv -lpthread -lglut -lGLU -lGL -lXi -lXmu -lX11 -lm"
+        LIBS="-lglut -lGLU -lGL -lXi -lX11 -lm -lpthread -lraw1394 -ldv"
         CONFIG="AR_INPUT_DV"
     elif [ "$ANS" = "4" ]
     then
@@ -100,20 +119,21 @@ then
         LDFLAG="-L/usr/X11R6/lib"
         ARFLAG="rs"
         RANLIB=""
-        LIBS="-lglut -lGLU -lGL -lXi -lXmu -lX11 -lm -lraw1394 -ldc1394_control"
+        LIBS="-lglut -lGLU -lGL -lXi -lX11 -lm -lpthread -lraw1394 -ldc1394_control"
         CONFIG="AR_INPUT_1394CAM"
     elif [ "$ANS" = "5" ]
     then
         VIDEO_DRIVER="VideoGStreamer"
-		GST_INCLUDE=`pkg-config --cflags gstreamer-0.10`
-		GST_LIBS=`pkg-config --libs gstreamer-0.10`
-		
-		CFLAG="-O $GST_INCLUDE -I/usr/X11R6/include -fPIC"
-        LDFLAG="$GST_LIBS -L/usr/X11R6/lib -L/usr/local/lib"
+		CFLAG="-O -I/usr/X11R6/include -fPIC"
+        LDFLAG="-L/usr/X11R6/lib"
         ARFLAG="rs"
         RANLIB=""
-        LIBS="-lpthread -lglut -lGLU -lGL -lXi -lX11 -lm"
+        LIBS="-lglut -lGLU -lGL -lXi -lX11 -lm -lpthread"
         CONFIG="AR_INPUT_GSTREAMER"
+        GST_CFLAGS=`pkg-config --cflags gstreamer-0.10`
+		GST_LIBS=`pkg-config --libs gstreamer-0.10`
+        CFLAG="$CFLAG $GST_CFLAGS"
+        LIBS="$LIBS $GST_LIBS"
     else
         echo "Please enter 1,2,3,4 or 5."
         exit 0
@@ -155,7 +175,7 @@ then
     LDFLAG=""
     ARFLAG="-r"
     RANLIB="ranlib \$\@"
-    LIBS="-framework Carbon -framework QuickTime -framework GLUT -framework OpenGL -framework AppKit -framework Foundation -lobjc"
+    LIBS="-framework Carbon -framework QuickTime -framework GLUT -framework OpenGL -framework Cocoa"
 
     echo "Does your Mac have fast texture mapping hardware? (y or n)"
     echo -n "Enter : "
@@ -192,6 +212,12 @@ else
     exit 0
 fi
 
+#
+# Output step 1.
+# Create Makefiles, setting symbols, and selecting directories for compilation.
+#
+
+# Prefix any slashes with '\' for sed.
 echo $VIDEO_DRIVER | sed -e 's/\//\\\//g' >$SED
 VIDEO_DRIVER=`cat $SED`
 echo $CFLAG | sed -e 's/\//\\\//g' >$SED
@@ -223,6 +249,14 @@ do
     echo "  create $i/Makefile"
     sed -f $SED <$i/Makefile.in > $i/Makefile
 done
+echo "  create share/artoolkit-config"
+sed -f $SED <share/artoolkit-config.in > share/artoolkit-config
+chmod ugo+rx share/artoolkit-config
+
+#
+# Output step 2.
+# Record configuration in config.h.
+#
 
 if [ "$NVEXT" = "y" ]
 then

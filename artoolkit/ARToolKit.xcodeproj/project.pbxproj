@@ -1424,6 +1424,13 @@
 		4A934D80086A2DB700DF2FAC /* libARvrml.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libARvrml.a; sourceTree = "<group>"; };
 		4A99C6520A59DCC3001B4C35 /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
 		4A99C6530A59DCC3001B4C35 /* video.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = video.c; sourceTree = "<group>"; };
+		4A9F9ABD0D6A4E7B00C7456B /* artoolkit-config */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "artoolkit-config"; sourceTree = "<group>"; };
+		4A9F9ABE0D6A4E7B00C7456B /* artoolkit-config.in */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "artoolkit-config.in"; sourceTree = "<group>"; };
+		4A9F9ABF0D6A4E7B00C7456B /* artoolkit-setenv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "artoolkit-setenv"; sourceTree = "<group>"; };
+		4A9F9AC00D6A4E7B00C7456B /* artoolkit-unsetenv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "artoolkit-unsetenv"; sourceTree = "<group>"; };
+		4A9F9AC10D6A4E7B00C7456B /* globals.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = globals.lua; sourceTree = "<group>"; };
+		4A9F9AC20D6A4E7B00C7456B /* modules.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = modules.lua; sourceTree = "<group>"; };
+		4A9F9AC30D6A4E7B00C7456B /* premake.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = premake.lua; sourceTree = "<group>"; };
 		4AAB8C740728934300708844 /* ARToolKit.dsw */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; lineEnding = 2; path = ARToolKit.dsw; sourceTree = "<group>"; };
 		4AAB8C750728934300708844 /* ARToolKit.sln */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = ARToolKit.sln; sourceTree = "<group>"; };
 		4AAB8C760728937100708844 /* libARvideo.dsp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = libARvideo.dsp; sourceTree = "<group>"; };
@@ -1948,6 +1955,7 @@
 				4A427C06048431FA00B56093 /* patterns */,
 				4A427C10048431FA00B56093 /* util */,
 				4A461B5C04843FAA00B56093 /* bin */,
+				4A9F9ABC0D6A4E7B00C7456B /* share */,
 				4A3F1552064A0C7C0042B0D7 /* External Libraries & Frameworks */,
 				4AE2305E0659B7D10047D402 /* Products */,
 			);
@@ -2467,6 +2475,20 @@
 				4A99C6530A59DCC3001B4C35 /* video.c */,
 			);
 			path = VideoGStreamer;
+			sourceTree = "<group>";
+		};
+		4A9F9ABC0D6A4E7B00C7456B /* share */ = {
+			isa = PBXGroup;
+			children = (
+				4A9F9ABD0D6A4E7B00C7456B /* artoolkit-config */,
+				4A9F9ABE0D6A4E7B00C7456B /* artoolkit-config.in */,
+				4A9F9ABF0D6A4E7B00C7456B /* artoolkit-setenv */,
+				4A9F9AC00D6A4E7B00C7456B /* artoolkit-unsetenv */,
+				4A9F9AC10D6A4E7B00C7456B /* globals.lua */,
+				4A9F9AC20D6A4E7B00C7456B /* modules.lua */,
+				4A9F9AC30D6A4E7B00C7456B /* premake.lua */,
+			);
+			path = share;
 			sourceTree = "<group>";
 		};
 		4AC3C076075188AB0073D2C6 /* graphicsTest */ = {
