@@ -166,8 +166,7 @@ arVideoCapStop( void )
 
 int arVideoCapNext( void )
 {
-	ar2VideoCapNext(gVid);
-	return 0;
+	return ar2VideoCapNext(gVid);;
 }
 
 /*---------------------------------------------------------------------------*/
@@ -378,8 +377,7 @@ ar2VideoCapStop(AR2VideoParamT *vid) {
 int 
 ar2VideoCapNext(AR2VideoParamT *vid)
 {
-	/* gstreamer should */
-	return TRUE;
+	return 0;
 }
 
 int
