@@ -61,7 +61,7 @@
 char            *vconf = "-size=FULL";
 #elif defined(__linux)
 #  if defined(AR_INPUT_GSTREAMER)
-char 			*vconf = "videotestsrc";
+char 			*vconf = "";
 #  elif defined(AR_INPUT_V4L)
 char            *vconf = "-width=640 -height=480";
 #  elif defined(AR_INPUT_1394CAM)
